@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bombachas y Colaless - My Bella Afrodita</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        /* Estilos específicos para la sección de productos */
+        .product-card {
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-img-top {
+            height: 300px;
+            /* Altura fija para uniformidad */
+            object-fit: cover;
+        }
+
+        /* Estilo para el texto de precio */
+        .price-text {
+            color: #dc3545;
+            /* Color similar al botón de WhatsApp */
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+            <div class="container">
+                <a class="navbar-brand-custom" href="index.html">My Bella Afrodita</a>
+
+                <button class="navbar-toggler p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fas fa-bars text-light" style="font-size: 1.5rem;"></i>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link" href="./index.html">INICIO</a></li>
+                        <li class="nav-item"><a class="nav-link" href="index.html#nosotros-seccion">NOSOTROS</a></li>
+                        <li class="nav-item"><a class="nav-link" href="catalogo.html">CATÁLOGO</a></li>
+                        <li class="nav-item"><a class="nav-link" href="promociones.html">PROMOCIONES</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="products-listing py-5 bg-white">
+        <div class="container mt-5 pt-4">
+            <h1 class="text-center display-5 mb-5">💖 Bombachas, Colaless y Vedetinas 💖</h1>
+
+            <div class="row g-5">
+
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="card product-card shadow-sm h-100">
+                        <div id="carouselProductoB1" class="carousel slide product-carousel" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img src="bombacha_1_vista_a.jpg" class="d-block w-100 product-img-top"
+                                        alt="Colaless Encaje - Vista A">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="bombacha_1_vista_b.jpg" class="d-block w-100 product-img-top"
+                                        alt="Colaless Encaje - Vista B">
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselProductoB1"
+                                data-bs-slide="prev" aria-label="Imagen anterior de Colaless Encaje Premium">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Anterior</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselProductoB1"
+                                data-bs-slide="next" aria-label="Imagen siguiente de Colaless Encaje Premium">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Siguiente</span>
+                            </button>
+                        </div>
+
+                        <div class="card-body p-4 d-flex flex-column">
+                            <h3 class="card-title text-center">Colaless Encaje Premium</h3>
+                            <p class="card-text text-muted mb-3">Diseño de encaje de alta calidad, tiro bajo y corte
+                                colaless. Comodidad y sensualidad.</p>
+
+                            <p class="price-text text-center display-6 mb-3 mt-auto">$3.500 ARS</p>
+
+                            <button type="button" class="btn btn-danger w-100 btn-whatsapp-product"
+                                data-product="Colaless Encaje Premium" data-size="Único" data-type="Bombacha"
+                                aria-label="Realizar consulta de Colaless Encaje Premium por WhatsApp">
+                                <i class="fab fa-whatsapp me-2"></i> Comprar por WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="card product-card shadow-sm h-100">
+                        <div id="carouselProductoB2" class="carousel slide product-carousel" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img src="bombacha_2_vista_a.jpg" class="d-block w-100 product-img-top"
+                                        alt="Vedetina Algodón - Vista A">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="bombacha_2_vista_b.jpg" class="d-block w-100 product-img-top"
+                                        alt="Vedetina Algodón - Vista B">
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselProductoB2"
+                                data-bs-slide="prev" aria-label="Imagen anterior de Vedetina de Algodón Clásica">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Anterior</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselProductoB2"
+                                data-bs-slide="next" aria-label="Imagen siguiente de Vedetina de Algodón Clásica">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Siguiente</span>
+                            </button>
+                        </div>
+                        <div class="card-body p-4 d-flex flex-column">
+                            <h3 class="card-title text-center">Vedetina de Algodón Clásica</h3>
+                            <p class="card-text text-muted mb-3">Modelo vedetina tiro medio en algodón suave y
+                                microfibra. Ideal para el día a día.</p>
+
+                            <p class="price-text text-center display-6 mb-3 mt-auto">$2.990 ARS</p>
+                            <button type="button" class="btn btn-danger w-100 btn-whatsapp-product"
+                                data-product="Vedetina de Algodón Clásica" data-size="Único" data-type="Bombacha"
+                                aria-label="Realizar consulta de Vedetina de Algodón Clásica por WhatsApp">
+                                <i class="fab fa-whatsapp me-2"></i> Comprar por WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="card product-card shadow-sm h-100">
+                        <div id="carouselProductoB3" class="carousel slide product-carousel" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img src="bombacha_3_vista_a.jpg" class="d-block w-100 product-img-top"
+                                        alt="Pack Microfibra - Vista A">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="bombacha_3_vista_b.jpg" class="d-block w-100 product-img-top"
+                                        alt="Pack Microfibra - Vista B">
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselProductoB3"
+                                data-bs-slide="prev" aria-label="Imagen anterior de Pack de Microfibra Invisible (x3)">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Anterior</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselProductoB3"
+                                data-bs-slide="next" aria-label="Imagen siguiente de Pack de Microfibra Invisible (x3)">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Siguiente</span>
+                            </button>
+                        </div>
+                        <div class="card-body p-4 d-flex flex-column">
+                            <h3 class="card-title text-center">Pack de Microfibra Invisible (x3)</h3>
+                            <p class="card-text text-muted mb-3">Sin costuras, no se marca. Perfecto para usar con ropa
+                                ajustada. Pack de 3 unidades.</p>
+
+                            <p class="price-text text-center display-6 mb-3 mt-auto">$8.500 ARS</p>
+                            <button type="button" class="btn btn-danger w-100 btn-whatsapp-product"
+                                data-product="Pack de Microfibra Invisible (x3)" data-size="Único" data-type="Bombacha"
+                                aria-label="Realizar consulta de Pack de Microfibra Invisible (x3) por WhatsApp">
+                                <i class="fab fa-whatsapp me-2"></i> Comprar por WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="card product-card shadow-sm h-100">
+                        <div id="carouselProductoB4" class="carousel slide product-carousel" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img src="bombacha_4_vista_a.jpg" class="d-block w-100 product-img-top"
+                                        alt="Tanga de Hilo - Vista A">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="bombacha_4_vista_b.jpg" class="d-block w-100 product-img-top"
+                                        alt="Tanga de Hilo - Vista B">
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselProductoB4"
+                                data-bs-slide="prev" aria-label="Imagen anterior de Tanga de Hilo en Seda">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Anterior</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselProductoB4"
+                                data-bs-slide="next" aria-label="Imagen siguiente de Tanga de Hilo en Seda">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Siguiente</span>
+                            </button>
+                        </div>
+                        <div class="card-body p-4 d-flex flex-column">
+                            <h3 class="card-title text-center">Tanga de Hilo en Seda</h3>
+                            <p class="card-text text-muted mb-3">Tejido de seda con terminaciones en hilo.
+                                Ultra-liviana, ideal para seducción.</p>
+
+                            <p class="price-text text-center display-6 mb-3 mt-auto">$4.200 ARS</p>
+                            <button type="button" class="btn btn-danger w-100 btn-whatsapp-product"
+                                data-product="Tanga de Hilo en Seda" data-size="Único" data-type="Bombacha"
+                                aria-label="Realizar consulta de Tanga de Hilo en Seda por WhatsApp">
+                                <i class="fab fa-whatsapp me-2"></i> Comprar por WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="card product-card shadow-sm h-100">
+                        <div id="carouselProductoB5" class="carousel slide product-carousel" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img src="bombacha_5_vista_a.jpg" class="d-block w-100 product-img-top"
+                                        alt="Culotte Less con Red - Vista A">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="bombacha_5_vista_b.jpg" class="d-block w-100 product-img-top"
+                                        alt="Culotte Less con Red - Vista B">
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselProductoB5"
+                                data-bs-slide="prev" aria-label="Imagen anterior de Culotte Less con Red">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Anterior</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselProductoB5"
+                                data-bs-slide="next" aria-label="Imagen siguiente de Culotte Less con Red">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Siguiente</span>
+                            </button>
+                        </div>
+                        <div class="card-body p-4 d-flex flex-column">
+                            <h3 class="card-title text-center">Culotte Less con Red</h3>
+                            <p class="card-text text-muted mb-3">Máxima cobertura frontal con un toque atrevido de red
+                                trasera en corte less. Sensual y cómodo.</p>
+
+                            <p class="price-text text-center display-6 mb-3 mt-auto">$4.900 ARS</p>
+                            <button type="button" class="btn btn-danger w-100 btn-whatsapp-product"
+                                data-product="Culotte Less con Red" data-size="Único" data-type="Bombacha"
+                                aria-label="Realizar consulta de Culotte Less con Red por WhatsApp">
+                                <i class="fab fa-whatsapp me-2"></i> Comprar por WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer-custom text-white py-4">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <a class="navbar-brand-custom me-3" href="index.html">My Bella Afrodita</a>
+                <p class="mb-0 small text-white">&copy; 2025 Lencería Artesanal. | <a href="#"
+                        class="text-white text-decoration-underline">Políticas</a></p>
+            </div>
+            <div class="social-icons">
+                <a href="#" class="text-white me-3" aria-label="Síguenos en Facebook"><i
+                        class="fab fa-facebook-f"></i></a>
+                <a href="#" class="text-white me-3" aria-label="Síguenos en Instagram"><i
+                        class="fab fa-instagram"></i></a>
+                <a href="https://wa.me/5491155554444" target="_blank" class="text-white"
+                    aria-label="Contáctanos por WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/5491155554444?text=Hola,%20quisiera%20hacer%20una%20consulta%20general%20sobre%20lencería."
+        target="_blank" class="whatsapp-flotante" aria-label="Consultas generales por WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

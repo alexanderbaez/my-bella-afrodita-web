@@ -1,0 +1,63 @@
+/* --- ESTILOS DE TARJETAS DE PRODUCTO --- */
+
+.products-listing {
+    background-color: #ffffff; 
+}
+
+.product-card {
+    border: none;
+    border-radius: 10px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    overflow: hidden;
+    background-color: var(--color-rosa-suave); /* Fondo de marca */
+}
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(140, 0, 44, 0.2); 
+}
+
+.product-img-top {
+    height: 350px;
+    object-fit: cover;
+    border-bottom: 3px solid var(--color-terracota-pasión); /* Línea de color de marca */
+}
+
+.product-card .card-title {
+    color: var(--color-pasión); /* Color Borgoña */
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.product-card .card-text {
+    font-size: 0.95rem;
+    line-height: 1.4;
+    height: 40px; /* Altura fija para la descripción */
+    overflow: hidden;
+    text-align: center;
+}
+
+/* Estilo del Dropdown de Talles */
+.product-card .form-select {
+    border-color: var(--color-terracota-pasión);
+    font-family: 'Roboto', sans-serif;
+}
+.product-card .form-select:focus {
+    box-shadow: 0 0 0 0.25rem rgba(179, 26, 74, 0.25); 
+    border-color: var(--color-terracota-pasión);
+}
+
+/* Estilo del precio */
+.price-text {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    color: var(--color-oscuro-elegante);
+}
+
+/* Ajustes para el carrusel de Producto */
+.product-carousel .carousel-control-prev-icon,
+.product-carousel .carousel-control-next-icon {
+    background-color: rgba(140, 0, 44, 0.7); 
+    border-radius: 50%;
+    padding: 15px;
+}

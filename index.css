@@ -1,0 +1,399 @@
+/* Importar fuentes elegantes: Playfair Display y Roboto */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap');
+
+/* --- PALETA DE COLORES (Pasión y Profesionalismo) --- */
+:root {
+    --color-pasión: #8c002c;         /* Borgoña Profundo (Fondo para Header/Footer) */
+    --color-rosa-suave: #fcebeb;     /* Rosa Pálido (Fondo principal del body) */
+    --color-terracota-pasión: #b31a4a; /* Rojo Ladrillo Suave (Acentos) */
+    --color-oscuro-elegante: #333333; /* Texto principal */
+    --color-blanco-nav: #ffffff;
+}
+
+body {
+    /* CORRECCIÓN DE SUPERPOSICIÓN: Padding superior para compensar el navbar fixed-top (Altura estándar 56px) */
+    padding-top: 56px; 
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--color-rosa-suave); 
+    color: var(--color-oscuro-elegante);
+}
+
+h1, h2, h3, h4, h5, .display-6 {
+    font-family: 'Playfair Display', serif;
+    color: var(--color-pasión);
+}
+
+/* --- NAV BAR --- */
+.navbar-brand-custom {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-blanco-nav) !important; 
+    text-decoration: none;
+}
+#mainNav {
+    background-color: var(--color-pasión) !important; 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+#mainNav .nav-link {
+    color: var(--color-blanco-nav) !important;
+    font-weight: 500;
+}
+#mainNav .nav-link:hover {
+    color: var(--color-rosa-suave) !important;
+}
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3csvg%3e") !important;
+}
+
+/* SOLUCIÓN VISIBILIDAD MENÚ MÓVIL (toggler) */
+#mainNav .navbar-collapse {
+    background-color: var(--color-pasión); 
+    padding: 10px 20px;
+    border-radius: 0 0 8px 8px;
+}
+
+/* ------------------- ESTILOS DE PÁGINA ------------------- */
+
+/* --- 1. PORTADA / HERO BANNER --- */
+.hero-banner {
+    height: 90vh; 
+    /* ¡IMAGEN DE FONDO APLICADA! */
+    background: url('/images/vidar-nordli-mathisen-f4OmS_SluJc-unsplash.jpg') no-repeat center right/cover;
+    position: relative;
+    padding-top: 100px;
+    border-bottom: 5px solid var(--color-terracota-pasión);
+}
+.hero-text-box-left {
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); 
+    margin-top: 10vh; 
+}
+.hero-text-box-left h1 {
+    font-weight: 900;
+    font-size: 2.5rem;
+    color: var(--color-pasión); 
+}
+
+/* --- 2. SECCIÓN "QUÉ BUSCAS HOY?" (TARJETAS INTERACTIVAS) --- */
+#que-buscas-hoy-section {
+    background-color: #ffffff;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.05); 
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05); 
+}
+#que-buscas-hoy-section h2 {
+    color: var(--color-pasión);
+    font-weight: 700;
+    margin-bottom: 3rem;
+}
+.card-link-interactive {
+    display: block;
+    height: 300px;
+    text-decoration: none;
+    color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.card-link-interactive:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(140, 0, 44, 0.3);
+}
+.card-body-interactive {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.5); /* Overlay oscuro inicial */
+    transition: background-color 0.3s;
+}
+.card-link-interactive:hover .card-body-interactive {
+    background-color: rgba(140, 0, 44, 0.7); /* Overlay Borgoña al pasar el ratón */
+}
+
+/* --- 3. SECCIÓN NOSOTROS --- */
+.nosotros-presentacion {
+    background-color: var(--color-rosa-suave);
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.05); 
+}
+.nosotros-presentacion .row {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); 
+}
+.nosotros-presentacion .rounded-start {
+    border-top-left-radius: 10px !important;
+    border-bottom-left-radius: 10px !important;
+}
+.nosotros-presentacion img {
+    height: 500px; 
+    width: 100%;
+    object-fit: cover; 
+}
+.nosotros-presentacion h2 {
+    font-weight: 700;
+}
+
+/* --- ESTILOS DE TARJETAS DE PRODUCTO (USADAS EN catalogo-conjuntos.html) --- */
+
+.products-listing {
+    /* Mantenemos el fondo blanco para que las tarjetas resalten */
+    background-color: #ffffff; 
+}
+
+.product-card {
+    border: none;
+    border-radius: 10px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    overflow: hidden;
+    background-color: var(--color-rosa-suave); 
+}
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(140, 0, 44, 0.2); 
+}
+
+.product-img-top {
+    height: 350px; 
+    object-fit: cover;
+    border-bottom: 3px solid var(--color-terracota-pasión);
+}
+
+.product-card .card-title {
+    color: var(--color-pasión);
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.product-card .card-text {
+    font-size: 0.95rem;
+    line-height: 1.4;
+    height: 40px; 
+    overflow: hidden;
+    text-align: center;
+}
+
+.product-card .form-select {
+    border-color: var(--color-terracota-pasión);
+    font-family: 'Roboto', sans-serif;
+}
+.product-card .form-select:focus {
+    box-shadow: 0 0 0 0.25rem rgba(179, 26, 74, 0.25); 
+    border-color: var(--color-terracota-pasión);
+}
+
+.price-text {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    color: var(--color-oscuro-elegante);
+}
+
+.product-carousel .carousel-control-prev-icon,
+.product-carousel .carousel-control-next-icon {
+    background-color: rgba(140, 0, 44, 0.7); 
+    border-radius: 50%;
+    padding: 15px;
+}
+
+/* --- ESTILOS DE GUÍA DE TALLAS (Para tallas.html) --- */
+.size-guide-section {
+    background-color: var(--color-rosa-suave);
+}
+.text-pasión {
+    color: var(--color-pasión);
+}
+.text-terracota-pasión {
+    color: var(--color-terracota-pasión);
+}
+.size-table-custom {
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+.size-table-custom thead.bg-pasión {
+    background-color: var(--color-pasión) !important;
+    color: white;
+}
+.size-table-custom tbody tr:nth-child(even) {
+    background-color: #f5f5f5; 
+}
+.size-table-custom tbody tr:hover {
+    background-color: var(--color-rosa-suave);
+    font-weight: 500;
+}
+
+/* --- FOOTER Y WHATSAPP --- */
+.footer-custom {
+    background-color: var(--color-pasión);
+    font-family: 'Roboto', sans-serif;
+}
+.footer-custom a {
+    color: white;
+    text-decoration: none;
+}
+.whatsapp-flotante {
+    background-color: #25d366; 
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    bottom: 30px;
+    right: 30px;
+    color: #fff;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    line-height: 60px;
+}
+
+/* Colores de botones */
+.btn-danger {
+    background-color: var(--color-pasión) !important;
+    border-color: var(--color-pasión) !important;
+    color: white !important;
+}
+.btn-warning {
+    background-color: #ffc107 !important;
+    border-color: #ffc107 !important;
+    color: var(--color-oscuro-elegante) !important;
+    font-weight: 700;
+}
+.btn-outline-danger {
+    color: var(--color-pasión) !important;
+    border-color: var(--color-pasión) !important;
+}
+.btn-outline-danger:hover {
+    background-color: var(--color-pasión) !important;
+    color: white !important;
+}
+
+/* ================================================= */
+/* OPTIMIZACIÓN PARA MÓVILES (Media Queries) */
+/* ================================================= */
+@media (max-width: 991.98px) {
+    
+    body {
+        padding-top: 70px; 
+    }
+
+    .hero-banner {
+        height: 60vh; 
+        background-position: center center;
+        padding-top: 60px;
+    }
+    .hero-text-box-left {
+        margin-top: 0; 
+        padding: 20px;
+        text-align: center;
+    }
+    .hero-text-box-left h1 {
+        font-size: 1.8rem; 
+    }
+
+    .nosotros-presentacion img {
+        height: 300px; 
+        border-top-left-radius: 10px !important;
+        border-top-right-radius: 10px !important;
+        border-bottom-left-radius: 0 !important; 
+    }
+    .nosotros-presentacion .col-md-6.p-5 {
+        padding: 30px !important; 
+        text-align: center; 
+    }
+    
+    .product-img-top {
+        height: 300px;
+    }
+
+    .footer-custom .container {
+        flex-direction: column;
+        text-align: center;
+    }
+    .footer-custom .d-flex.align-items-center {
+        flex-direction: column;
+        margin-bottom: 10px;
+    }
+}
+/* --- ESTILOS PARA catalogo.html (SELECCIÓN DE CATEGORÍA) --- */
+
+.catalogo-main-section {
+    background-color: var(--color-rosa-suave);
+    padding-top: 8rem; /* Espacio para el Navbar */
+}
+
+.category-bubble {
+    display: block;
+    height: 400px; /* Tamaño grande para las categorías */
+    text-decoration: none;
+    color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 3px solid transparent;
+}
+
+.category-bubble:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(140, 0, 44, 0.4);
+    border: 3px solid var(--color-terracota-pasión);
+}
+
+.bubble-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.55); /* Overlay oscuro */
+    transition: background-color 0.3s;
+}
+
+.category-bubble:hover .bubble-content {
+    background-color: rgba(140, 0, 44, 0.75); /* Overlay Borgoña al pasar el ratón */
+}
+
+.bubble-content h2 {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.bubble-content p {
+    color: #ffdce5;
+    font-size: 1.1rem;
+}
+
+/* Media Query para asegurar visibilidad en móvil */
+@media (max-width: 767px) {
+    .category-bubble {
+        height: 300px;
+    }
+}
