@@ -3,15 +3,15 @@
 
 /* --- PALETA DE COLORES (Pasión y Profesionalismo) --- */
 :root {
-    --color-pasión: #8c002c; 	    /* Borgoña Profundo (Fondo para Header/Footer) */
-    --color-rosa-suave: #fcebeb; 	/* Rosa Pálido (Fondo principal del body) */
+    --color-pasión: #8c002c;          /* Borgoña Profundo (Fondo para Header/Footer) */
+    --color-rosa-suave: #fcebeb;      /* Rosa Pálido (Fondo principal del body) */
     --color-terracota-pasión: #b31a4a; /* Rojo Ladrillo Suave (Acentos) */
     --color-oscuro-elegante: #333333; /* Texto principal */
     --color-blanco-nav: #ffffff;
 }
 
 body {
-    /* CORRECCIÓN DE SUPERPOSICIÓN: Padding superior para compensar el navbar fixed-top (Altura estándar 56px) */
+    /* CORRECCIÓN DE SUPERPOSICIÓN: Padding superior para compensar el navbar fixed-top */
     padding-top: 56px; 
     font-family: 'Roboto', sans-serif;
     background-color: var(--color-rosa-suave); 
@@ -55,14 +55,14 @@ h1, h2, h3, h4, h5, .display-6 {
 
 /* ------------------- ESTILOS DE PÁGINA ------------------- */
 
-/* --- 1. PORTADA / HERO BANNER --- */
+/* --- 1. PORTADA / HERO BANNER (Responsividad corregida) --- */
 .hero-banner {
     height: 90vh; 
-    /* !!! RUTA CORREGIDA PARA GITHUB PAGES !!! 
-       Sale de la carpeta 'css/' a la raíz y entra en 'images/' */
+    /* RUTA VERIFICADA PARA GITHUB PAGES */
     background: url('../images/vidar-nordli-mathisen-f4OmS_SluJc-unsplash.jpg') no-repeat center right/cover;
     position: relative;
-    padding-top: 100px;
+    /* [CORRECCIÓN CRÍTICA]: Eliminamos padding-top fijo para que no cause superposición */
+    padding-top: 0; 
     border-bottom: 5px solid var(--color-terracota-pasión);
 }
 .hero-text-box-left {
@@ -70,7 +70,9 @@ h1, h2, h3, h4, h5, .display-6 {
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); 
-    margin-top: 10vh; 
+    /* [CORRECCIÓN CRÍTICA]: Eliminamos margin-top fijo que causaba el desplazamiento */
+    margin-top: 0; 
+    position: relative; /* Aseguramos un posicionamiento normal */
 }
 .hero-text-box-left h1 {
     font-weight: 900;
@@ -78,7 +80,7 @@ h1, h2, h3, h4, h5, .display-6 {
     color: var(--color-pasión); 
 }
 
-/* --- 2. SECCIÓN "QUÉ BUSCAS HOY?" (TARJETAS INTERACTIVAS) --- */
+/* --- 2. SECCIÓN "QUÉ BUSCAS HOY?" (TARJETAS INTERACTIVAS - Responsividad mejorada) --- */
 #que-buscas-hoy-section {
     background-color: #ffffff;
     padding-top: 5rem;
@@ -92,8 +94,13 @@ h1, h2, h3, h4, h5, .display-6 {
     margin-bottom: 3rem;
 }
 .card-link-interactive {
-    display: block;
-    height: 300px;
+    /* [AJUSTE RESPONSIVO]: Flexbox para centrar contenido, altura consistente */
+    display: flex; /* Cambiamos a flex para centrar mejor el contenido interno */
+    align-items: center; 
+    justify-content: center;
+    text-align: center;
+    height: 300px; /* Mantenemos altura consistente */
+
     text-decoration: none;
     color: white;
     border-radius: 10px;
@@ -296,15 +303,22 @@ h1, h2, h3, h4, h5, .display-6 {
     }
 
     .hero-banner {
-        height: 60vh; 
+        height: auto; 
+        min-height: 400px; 
         background-position: center center;
-        padding-top: 60px;
+        padding-top: 60px; 
+        padding-bottom: 30px;
     }
+    
     .hero-text-box-left {
         margin-top: 0; 
         padding: 20px;
         text-align: center;
+        width: 90%; 
+        margin-left: auto;
+        margin-right: auto;
     }
+    
     .hero-text-box-left h1 {
         font-size: 1.8rem; 
     }
