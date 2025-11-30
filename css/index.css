@@ -59,7 +59,7 @@ h1, h2, h3, h4, h5, .display-6 {
 .hero-banner {
     height: 90vh; 
     /* RUTA VERIFICADA PARA GITHUB PAGES */
-    background: url('../images/vidar-nordli-mathisen-f4OmS_SluJc-unsplash.jpg') no-repeat center right/cover;
+    background: url('../images/portada.jpg') no-repeat center right/cover;
     position: relative;
     /* [CORRECCIÓN CRÍTICA]: Eliminamos padding-top fijo para que no cause superposición */
     padding-top: 0; 

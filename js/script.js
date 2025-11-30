@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 💰 Configuración global (Tu número de contacto fijo)
     // Se mantiene el formato con el prefijo '549' para asegurar compatibilidad internacional.
-    const WHATSAPP_NUMBER = '5492645468570'; 
+    const WHATSAPP_NUMBER = '5492646121771';
 
     // ----------------------------------------------------
     // 1. Lógica para el cambio de color de la barra de navegación (Scroll)
@@ -17,11 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.scrollY > 50) {
             nav.classList.add('scrolled');
         }
-        
+
         window.addEventListener('scroll', () => {
             if (window.scrollY > 50) {
                 // Agrega la clase 'scrolled' cuando el usuario se desplaza
-                nav.classList.add('scrolled'); 
+                nav.classList.add('scrolled');
             } else {
                 // Remueve la clase 'scrolled' al volver arriba
                 nav.classList.remove('scrolled');
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // --- A. Obtención y Validación del Talle ---
             const talleGroupContainer = card.querySelector('.talle-select-group');
-            
+
             if (talleGroupContainer) {
                 // Si existe el grupo de talles, busca la selección
                 const checkedRadio = talleGroupContainer.querySelector('input[type="radio"]:checked');
@@ -56,10 +56,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Si no se seleccionó un talle, notifica al usuario y detiene
                 if (!selectedTalle) {
                     alert(`¡Por favor, selecciona un talle para el/la ${productName} antes de consultar!`);
-                    return; 
+                    return;
                 }
             }
-            
+
             // Si talleGroupContainer NO existe, `selectedTalle` sigue siendo `null`,
             // lo que internamente representa "Talle Único" o "No Aplica" para el mensaje.
             // Si existe y se seleccionó, contendrá el valor.
@@ -67,9 +67,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // --- B. Obtención del Precio ---
             // Busca el precio en las clases: .price-final (promociones) o .price-text (catálogo)
             const priceElement = card.querySelector('.price-final, .price-text');
-            
+
             if (priceElement) {
-                priceText = priceElement.innerText.trim(); 
+                priceText = priceElement.innerText.trim();
             }
 
             // --- C. Construcción del Mensaje Interactivo ---
@@ -83,8 +83,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (selectedTalle) {
                 message += `\n📏 Talle Solicitado: *${selectedTalle}*`;
             } else {
-                 // Si no hay talle seleccionado (Talle Único, N/A, o no aplica), lo dejamos claro
-                 message += `\n📏 Talle: Único/No Aplica la selección`;
+                // Si no hay talle seleccionado (Talle Único, N/A, o no aplica), lo dejamos claro
+                message += `\n📏 Talle: Único/No Aplica la selección`;
             }
 
             message += `\n💰 Precio Estimado: ${priceText}`;
