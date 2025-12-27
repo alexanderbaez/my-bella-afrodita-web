@@ -1,110 +1,176 @@
 // =================================================================
-// script.js - CÓDIGO COMPLETO Y FUNCIONAL DE MY BELLA AFRODITA
+// script.js - VERSIÓN FINAL OPERATIVA MY BELLA AFRODITA
 // =================================================================
+
+// 1. Inicialización Global
+let carrito = JSON.parse(localStorage.getItem('myBellaCarrito')) || [];
+const WHATSAPP_NUMBER = '5492646121771';
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // 💰 Configuración global (Tu número de contacto fijo)
-    // Se mantiene el formato con el prefijo '549' para asegurar compatibilidad internacional.
-    const WHATSAPP_NUMBER = '5492646121771';
+    // Sincronizar UI inicial
+    actualizarContadorUI();
 
-    // ----------------------------------------------------
-    // 1. Lógica para el cambio de color de la barra de navegación (Scroll)
-    // ----------------------------------------------------
+    // --- 1. Lógica Scroll Navbar ---
     const nav = document.getElementById('mainNav');
     if (nav) {
-        // Función inmediata para aplicar el estilo si ya está scroll al cargar
-        if (window.scrollY > 50) {
-            nav.classList.add('scrolled');
-        }
-
+        if (window.scrollY > 50) nav.classList.add('scrolled');
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                // Agrega la clase 'scrolled' cuando el usuario se desplaza
-                nav.classList.add('scrolled');
-            } else {
-                // Remueve la clase 'scrolled' al volver arriba
-                nav.classList.remove('scrolled');
-            }
+            window.scrollY > 50 ? nav.classList.add('scrolled') : nav.classList.remove('scrolled');
         });
     }
 
-    // ----------------------------------------------------
-    // 2. Manejo de la compra por WhatsApp
-    // ----------------------------------------------------
-    const whatsappButtons = document.querySelectorAll('.btn-whatsapp-product');
-
-    whatsappButtons.forEach(button => {
+    // --- 2. Evento Agregar al Carrito ---
+    const buyButtons = document.querySelectorAll('.btn-whatsapp-product');
+    buyButtons.forEach(button => {
         button.addEventListener('click', () => {
-
             const card = button.closest('.card, .promo-card');
             const productName = button.getAttribute('data-product');
             const productType = button.getAttribute('data-type') || 'Artículo';
-            const promoType = button.getAttribute('data-promo-type');
+            
+            let selectedTalle = null;
+            let priceText = '0';
 
-            let selectedTalle = null; // Inicializar a null, no 'N/A'
-            let priceText = 'Precio no especificado';
-
-            // --- A. Obtención y Validación del Talle ---
             const talleGroupContainer = card.querySelector('.talle-select-group');
-
             if (talleGroupContainer) {
-                // Si existe el grupo de talles, busca la selección
                 const checkedRadio = talleGroupContainer.querySelector('input[type="radio"]:checked');
                 selectedTalle = checkedRadio ? checkedRadio.value : null;
-
-                // Si no se seleccionó un talle, notifica al usuario y detiene
                 if (!selectedTalle) {
-                    alert(`¡Por favor, selecciona un talle para el/la ${productName} antes de consultar!`);
+                    alert(`¡Por favor, selecciona un talle para: ${productName}!`);
                     return;
                 }
             }
 
-            // Si talleGroupContainer NO existe, `selectedTalle` sigue siendo `null`,
-            // lo que internamente representa "Talle Único" o "No Aplica" para el mensaje.
-            // Si existe y se seleccionó, contendrá el valor.
-
-            // --- B. Obtención del Precio ---
-            // Busca el precio en las clases: .price-final (promociones) o .price-text (catálogo)
             const priceElement = card.querySelector('.price-final, .price-text');
-
             if (priceElement) {
-                priceText = priceElement.innerText.trim();
+                priceText = priceElement.innerText.replace(/[$. ]/g, '').trim();
             }
 
-            // --- C. Construcción del Mensaje Interactivo ---
-            let message = `¡Hola! 👋 Estoy interesada/o en un artículo de My Bella Afrodita.`;
-            message += `\n\n🛍️ *Detalles de la Consulta*`;
-            message += `\n---------------------------------`;
-            message += `\n✨ Producto: *${productName}*`;
-            message += `\n🏷️ Tipo: ${productType}`;
+            const producto = {
+                id: Date.now(),
+                nombre: productName,
+                tipo: productType,
+                talle: selectedTalle || 'Único',
+                precio: parseInt(priceText) || 0,
+                cantidad: 1
+            };
 
-            // ÚNICA MEJORA DE LÓGICA: Solo incluye el talle si se seleccionó o si venía de un atributo `data-size`
-            if (selectedTalle) {
-                message += `\n📏 Talle Solicitado: *${selectedTalle}*`;
-            } else {
-                // Si no hay talle seleccionado (Talle Único, N/A, o no aplica), lo dejamos claro
-                message += `\n📏 Talle: Único/No Aplica la selección`;
-            }
-
-            message += `\n💰 Precio Estimado: ${priceText}`;
-
-            if (promoType) {
-                message += `\n\n🚨 ¡Quiero aprovechar la OFERTA! Tipo: *${promoType}*.`;
-                message += `\nPor favor, confírmame el precio final y el stock disponible.`;
-            } else {
-                message += `\n\n❓ Quisiera confirmar stock y obtener más detalles de este producto.`;
-            }
-            message += `\n---------------------------------`;
-            message += `\n¡Gracias!`;
-
-            // --- D. Apertura del Enlace ---
-            const encodedMessage = encodeURIComponent(message);
-            // Uso de https://api.whatsapp.com/send, que es el método más robusto.
-            const whatsappUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodedMessage}`;
-
-            // Abre WhatsApp en una nueva pestaña
-            window.open(whatsappUrl, '_blank');
+            agregarProducto(producto);
         });
     });
+
+    // --- 3. Control del Modal (Dibujar items) ---
+    const modalCarrito = document.getElementById('cartModal');
+    if (modalCarrito) {
+        modalCarrito.addEventListener('show.bs.modal', renderizarCarrito);
+    }
+
+    // --- 4. BOTÓN FINALIZAR COMPRA (Dentro del DOMContentLoaded) ---
+    const btnCheckout = document.getElementById('btn-checkout');
+    if (btnCheckout) {
+        btnCheckout.addEventListener('click', () => {
+            if (carrito.length === 0) {
+                alert("El carrito está vacío.");
+                return;
+            }
+
+            let mensaje = "¡Hola My Bella Afrodita! 👋 Quiero realizar el siguiente pedido:\n\n";
+            let total = 0;
+
+            carrito.forEach(item => {
+                const subtotal = item.precio * item.cantidad;
+                mensaje += `🛍️ *${item.nombre}*\n`;
+                mensaje += `   Talle: ${item.talle}\n`;
+                mensaje += `   Cant: ${item.cantidad} x $${item.precio.toLocaleString('es-AR')}\n`;
+                mensaje += `   Subtotal: $${subtotal.toLocaleString('es-AR')}\n\n`;
+                total += subtotal;
+            });
+
+            mensaje += `--------------------------\n`;
+            mensaje += `💰 *TOTAL A PAGAR: $${total.toLocaleString('es-AR')}*`;
+
+            const encodedMessage = encodeURIComponent(mensaje);
+            const url = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodedMessage}`;
+
+            window.open(url, '_blank');
+        });
+    }
 });
+
+// --- FUNCIONES GLOBALES ---
+
+function agregarProducto(itemNuevo) {
+    const index = carrito.findIndex(item => item.nombre === itemNuevo.nombre && item.talle === itemNuevo.talle);
+    if (index !== -1) {
+        carrito[index].cantidad++;
+    } else {
+        carrito.push(itemNuevo);
+    }
+    guardarCarrito();
+    actualizarContadorUI();
+    alert(`✅ ${itemNuevo.nombre} \n-------Añadido al Carrito-------`);
+}
+
+function guardarCarrito() {
+    localStorage.setItem('myBellaCarrito', JSON.stringify(carrito));
+}
+
+function actualizarContadorUI() {
+    const contador = document.getElementById('cart-count');
+    if (contador) {
+        const totalItems = carrito.reduce((total, item) => total + item.cantidad, 0);
+        contador.innerText = totalItems;
+    }
+}
+
+function renderizarCarrito() {
+    const container = document.getElementById('cart-items-container');
+    const totalElement = document.getElementById('cart-total-amount');
+    if (!container) return;
+
+    if (carrito.length === 0) {
+        container.innerHTML = '<p class="text-center py-4">Tu carrito está vacío.</p>';
+        totalElement.innerText = '$0';
+        return;
+    }
+
+    container.innerHTML = '';
+    let totalAcumulado = 0;
+
+    carrito.forEach((item, index) => {
+        const subtotal = item.precio * item.cantidad;
+        totalAcumulado += subtotal;
+        container.innerHTML += `
+            <div class="row align-items-center mb-3 border-bottom pb-2">
+                <div class="col-6">
+                    <h6 class="mb-0 fw-bold">${item.nombre}</h6>
+                    <small class="text-muted">Talle: ${item.talle}</small>
+                </div>
+                <div class="col-4 text-center">
+                    <span>${item.cantidad} x $${item.precio.toLocaleString('es-AR')}</span>
+                </div>
+                <div class="col-2 text-end">
+                    <button class="btn btn-sm text-danger" onclick="eliminarItem(${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>`;
+    });
+    totalElement.innerText = `$${totalAcumulado.toLocaleString('es-AR')}`;
+}
+
+function eliminarItem(index) {
+    carrito.splice(index, 1);
+    guardarCarrito();
+    actualizarContadorUI();
+    renderizarCarrito();
+}
+
+function limpiarCarritoCompleto() {
+    if(confirm("¿Seguro que quieres vaciar el carrito?")) {
+        carrito = [];
+        guardarCarrito();
+        actualizarContadorUI();
+        renderizarCarrito();
+    }
+}
