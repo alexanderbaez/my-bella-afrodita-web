@@ -8,7 +8,16 @@
     <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
-        /* Estilos específicos para alinear el catálogo de conjuntos */
+        /* Estilos para el logo y consistencia visual */
+        .navbar-logo {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
+        .footer-logo {
+            height: 40px;
+            filter: brightness(0) invert(1);
+        }
         #contenedor-productos .col {
             display: flex;
         }
@@ -24,7 +33,7 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
         }
         .card-img-container {
-            height: 450px; /* Un poco más alto para conjuntos */
+            height: 450px; 
             overflow: hidden;
             background: #f8f8f8;
         }
@@ -35,12 +44,16 @@
         }
     </style>
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 
 <header>
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
         <div class="container">
-            <a class="navbar-brand-custom" href="../index.html">My Bella Afrodita</a>
+            <a class="navbar-brand-custom d-flex align-items-center" href="../index.html">
+                <img src="../images/LOGO.png" alt="My Bella Afrodita" class="navbar-logo me-2">
+                <span class="fw-bold d-none d-sm-inline" style="letter-spacing: 1px;">MY BELLA AFRODITA</span>
+            </a>
+
             <div class="d-flex align-items-center order-lg-last">
                 <a class="nav-link position-relative text-light me-3" href="#" id="cartIcon" data-bs-toggle="modal" data-bs-target="#cartModal" style="padding: 0.5rem;">
                     <i class="fas fa-shopping-cart fa-lg"></i>
@@ -61,7 +74,7 @@
     </nav>
 </header>
 
-<main class="py-5 bg-white">
+<main class="py-5 bg-white flex-grow-1">
     <div class="container mt-5 pt-4">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -91,9 +104,9 @@
 
 <div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content rounded-4 border-0">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
             <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title fw-bold">Tu Carrito</h5>
+                <h5 class="modal-title fw-bold"><i class="fas fa-shopping-cart me-2"></i>Tu Carrito</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
@@ -104,18 +117,18 @@
                 </div>
             </div>
             <div class="modal-footer border-0">
-                <button type="button" class="btn btn-outline-secondary rounded-pill" onclick="confirmarVaciarCarrito()">Vaciar Carrito</button>
-                <button type="button" class="btn btn-danger rounded-pill fw-bold" onclick="enviarPedidoWhatsApp()">Finalizar Pedido</button>
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" onclick="confirmarVaciarCarrito()">Vaciar Carrito</button>
+                <button type="button" class="btn btn-danger rounded-pill px-4 fw-bold" onclick="enviarPedidoWhatsApp()">Finalizar Pedido</button>
             </div>
         </div>
     </div>
 </div>
 
 <footer class="footer-custom text-white py-4 mt-auto">
-    <div class="container d-flex justify-content-between align-items-center">
-        <div class="d-flex align-items-center flex-column flex-md-row">
-            <a class="navbar-brand-custom me-md-3 mb-2 mb-md-0" href="../index.html">My Bella Afrodita</a>
-            <p class="mb-0 small">&copy; 2026 My Bella Afrodita.</p>
+    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center text-center text-md-start">
+        <div class="mb-3 mb-md-0">
+            <img src="../images/LogoNEGROANDREA.png" alt="Logo Footer" class="footer-logo mb-2">
+            <p class="mb-0 small">&copy; 2026 My Bella Afrodita. Todos los derechos reservados.</p>
         </div>
         <div class="social-icons">
             <a href="#" class="text-white me-3"><i class="fab fa-instagram fa-lg"></i></a>

@@ -496,6 +496,13 @@ h5.fw-bold {
         flex-direction: column;
     }
 }
+.navbar-brand-custom img {
+    transition: transform 0.3s ease;
+}
+
+.navbar-brand-custom img:hover {
+    transform: scale(1.1);
+}
 
 /* Ajuste para que las imágenes del carrusel no se vean gigantes en móviles */
 @media (max-width: 768px) {

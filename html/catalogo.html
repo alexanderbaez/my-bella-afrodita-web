@@ -8,53 +8,58 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        .navbar-logo {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
+        .footer-logo {
+            height: 40px;
+            filter: brightness(0) invert(1);
+        }
+    </style>
 </head>
 
 <body>
     <header>
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
-        <div class="container">
-            <a class="navbar-brand-custom" href="../index.html">My Bella Afrodita</a>
-
-            <div class="d-flex align-items-center order-lg-last">
-                
-                <a class="nav-link position-relative text-light me-3" href="#" id="cartIcon" data-bs-toggle="modal"
-                    data-bs-target="#cartModal" style="padding: 0.5rem;">
-                    <i class="fas fa-shopping-cart fa-lg"></i>
-                    <span id="cart-count"
-                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
-                        style="font-size: 0.65rem;">
-                        0
-                    </span>
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+            <div class="container">
+                <a class="navbar-brand-custom d-flex align-items-center" href="../index.html">
+                    <img src="../images/LOGO.png" alt="My Bella Afrodita" class="navbar-logo me-2">
+                    <span class="fw-bold d-none d-sm-inline" style="letter-spacing: 1px;">MY BELLA AFRODITA</span>
                 </a>
 
-                <button class="navbar-toggler p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                        class="bi bi-list text-light" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd"
-                            d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
-                    </svg>
-                </button>
-            </div>
+                <div class="d-flex align-items-center order-lg-last">
+                    <a class="nav-link position-relative text-light me-3" href="#" id="cartIcon" data-bs-toggle="modal"
+                        data-bs-target="#cartModal" style="padding: 0.5rem;">
+                        <i class="fas fa-shopping-cart fa-lg"></i>
+                        <span id="cart-count"
+                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
+                            style="font-size: 0.65rem;">0</span>
+                    </a>
 
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item"><a class="nav-link" href="../index.html">INICIO</a></li>
-                    <li class="nav-item"><a class="nav-link" href="../index.html#nosotros-seccion">NOSOTROS</a></li>
-                    <li class="nav-item"><a class="nav-link" href="catalogo.html">CATÁLOGO</a></li>
-                </ul>
+                    <button class="navbar-toggler p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <i class="fas fa-bars text-light"></i>
+                    </button>
+                </div>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto align-items-center">
+                        <li class="nav-item"><a class="nav-link" href="../index.html">INICIO</a></li>
+                        <li class="nav-item"><a class="nav-link" href="../index.html#nosotros-seccion">NOSOTROS</a></li>
+                        <li class="nav-item"><a class="nav-link" href="catalogo.html">CATÁLOGO</a></li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
-</header>
+        </nav>
+    </header>
 
     <section class="catalogo-main-section py-5">
         <div class="container py-5">
             <h1 class="text-center display-5 mb-5 text-pasión">Elige tu Pasión</h1>
 
             <div class="row justify-content-center g-4">
-
                 <div class="col-12 col-md-6">
                     <a href="catalogo-conjuntos.html" class="category-bubble shadow-lg"
                         style="background-image: url('../images/session-Conjuntos.jpg');">
@@ -76,23 +81,19 @@
                         </div>
                     </a>
                 </div>
-
             </div>
         </div>
     </section>
 
     <footer class="footer-custom text-white py-4">
-        <div class="container d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center">
-                <a class="navbar-brand-custom me-3" href="/index.html">My Bella Afrodita</a>
-                <p class="mb-0 small text-white">&copy; 2025 Lencería Artesanal. | <a href="#"
-                        class="text-white text-decoration-underline">Políticas</a></p>
+        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <div class="text-center text-md-start">
+                <img src="../images/LogoNEGROANDREA.png" alt="Logo Footer" class="footer-logo mb-2">
+                <p class="mb-0 small text-white">&copy; 2026 My Bella Afrodita. | <a href="#" class="text-white text-decoration-underline">Políticas</a></p>
             </div>
-            <div class="social-icons">
-                <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
-                <a href="https://wa.me/5492646121771" target="_blank" class="text-white"><i
-                        class="fab fa-whatsapp"></i></a>
+            <div class="social-icons mt-3 mt-md-0">
+                <a href="#" class="text-white me-3"><i class="fab fa-instagram fa-lg"></i></a>
+                <a href="https://wa.me/5492646121771" target="_blank" class="text-white"><i class="fab fa-whatsapp fa-lg"></i></a>
             </div>
         </div>
     </footer>
@@ -101,39 +102,33 @@
         target="_blank" class="whatsapp-flotante">
         <i class="fab fa-whatsapp"></i>
     </a>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../js/script.js"></script>
 
-        <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-dark text-white">
-                    <h5 class="modal-title" id="cartModalLabel"><i class="fas fa-shopping-cart me-2"></i>Tu Carrito - My
-                        Bella Afrodita</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
+    <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header bg-dark text-white border-0 py-3">
+                    <h5 class="modal-title" id="cartModalLabel"><i class="fas fa-shopping-cart me-2"></i>Tu Carrito</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <div id="cart-items-container">
+                <div class="modal-body p-4">
+                    <div id="cart-items">
                         <p class="text-center">El carrito está vacío.</p>
                     </div>
-
-                    <hr>
-
-                    <div class="d-flex justify-content-between align-items-center px-3">
-                        <h4>Total:</h4>
-                        <h4 id="cart-total-amount">$0</h4>
+                    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                        <h4 class="fw-bold mb-0">Total:</h4>
+                        <div id="cart-total" class="fw-bold text-danger mb-0 h4">$0</div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" onclick="limpiarCarritoCompleto()">Vaciar
-                        Carrito</button>
-                    <button type="button" class="btn btn-danger" id="btn-checkout">Finalizar Compra</button>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" onclick="confirmarVaciarCarrito()">Vaciar Carrito</button>
+                    <button type="button" class="btn btn-danger rounded-pill px-4 fw-bold" onclick="enviarPedidoWhatsApp()">Finalizar Pedido</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/productos.js"></script>
+    <script src="../js/script.js"></script>
 </body>
-
 </html>

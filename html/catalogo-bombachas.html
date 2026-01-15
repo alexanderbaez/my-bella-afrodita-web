@@ -9,14 +9,23 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
         /* Ajustes para que el catálogo sea perfecto */
+        .navbar-logo {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
+        .footer-logo {
+            height: 40px;
+            filter: brightness(0) invert(1);
+        }
         #contenedor-productos .col-12 {
-            display: flex; /* Permite que las tarjetas ocupen todo el alto de la columna */
+            display: flex; 
         }
         .product-card {
             display: flex;
             flex-direction: column;
             width: 100%;
-            height: 100%; /* Fuerza a que todas midan lo mismo en la fila */
+            height: 100%; 
         }
         .card-img-container {
             height: 400px;
@@ -29,12 +38,16 @@
         }
     </style>
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 
 <header>
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
         <div class="container">
-            <a class="navbar-brand-custom" href="../index.html">My Bella Afrodita</a>
+            <a class="navbar-brand-custom d-flex align-items-center" href="../index.html">
+                <img src="../images/LOGO.png" alt="My Bella Afrodita" class="navbar-logo me-2">
+                <span class="fw-bold d-none d-sm-inline" style="letter-spacing: 1px;">MY BELLA AFRODITA</span>
+            </a>
+            
             <div class="d-flex align-items-center order-lg-last">
                 <a class="nav-link position-relative text-light me-3" href="#" id="cartIcon" data-bs-toggle="modal" data-bs-target="#cartModal" style="padding: 0.5rem;">
                     <i class="fas fa-shopping-cart fa-lg"></i>
@@ -55,7 +68,7 @@
     </nav>
 </header>
 
-<main class="py-5 bg-white">
+<main class="py-5 bg-white flex-grow-1">
     <div class="container mt-5 pt-4">
         <h1 class="text-center display-5 mb-5">💖 Bombachas, Colaless y Vedetinas 💖</h1>
         
@@ -90,18 +103,18 @@
                 </div>
             </div>
             <div class="modal-footer border-0">
-                <button type="button" class="btn btn-outline-secondary rounded-pill" onclick="confirmarVaciarCarrito()">Vaciar Carrito</button>
-                <button type="button" class="btn btn-danger rounded-pill fw-bold" onclick="enviarPedidoWhatsApp()">Finalizar Pedido</button>
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" onclick="confirmarVaciarCarrito()">Vaciar Carrito</button>
+                <button type="button" class="btn btn-danger rounded-pill px-4 fw-bold" onclick="enviarPedidoWhatsApp()">Finalizar Pedido</button>
             </div>
         </div>
     </div>
 </div>
 
 <footer class="footer-custom text-white py-4 mt-auto">
-    <div class="container d-flex justify-content-between align-items-center text-center text-md-start">
-        <div class="d-flex align-items-center flex-column flex-md-row">
-            <a class="navbar-brand-custom me-md-3 mb-2 mb-md-0" href="../index.html">My Bella Afrodita</a>
-            <p class="mb-0 small">&copy; 2026 My Bella Afrodita.</p>
+    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center text-center text-md-start">
+        <div class="mb-3 mb-md-0">
+            <img src="../images/LogoNEGROANDREA.png" alt="Logo Footer" class="footer-logo mb-2">
+            <p class="mb-0 small">&copy; 2026 My Bella Afrodita. Todos los derechos reservados.</p>
         </div>
         <div class="social-icons">
             <a href="#" class="text-white me-3"><i class="fab fa-instagram fa-lg"></i></a>
