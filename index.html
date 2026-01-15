@@ -12,173 +12,238 @@
 
 <body>
 
-<header>
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
-        <div class="container">
-            <a class="navbar-brand-custom" href="index.html">My Bella Afrodita</a>
-
-            <div class="d-flex align-items-center order-lg-last">
-                
-                <a class="nav-link position-relative text-light me-3" href="#" id="cartIcon" data-bs-toggle="modal"
-                    data-bs-target="#cartModal" style="padding: 0.5rem;">
-                    <i class="fas fa-shopping-cart fa-lg"></i>
-                    <span id="cart-count"
-                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
-                        style="font-size: 0.65rem;">
-                        0
-                    </span>
-                </a>
-
-                <button class="navbar-toggler p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
-                        class="bi bi-list text-light" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd"
-                            d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
-                    </svg>
-                </button>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+            <div class="container">
+                <a class="navbar-brand-custom" href="../tienda_linceria/index.html">My Bella Afrodita</a>
+                <div class="d-flex align-items-center order-lg-last">
+                    <a class="nav-link position-relative text-light me-3" href="#" id="cartIcon" data-bs-toggle="modal"
+                        data-bs-target="#cartModal">
+                        <i class="fas fa-shopping-cart fa-lg"></i>
+                        <span id="cart-count"
+                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                            style="font-size: 0.65rem;">0</span>
+                    </a>
+                    <button class="navbar-toggler p-2" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarNav">
+                        <i class="fas fa-bars text-light"></i>
+                    </button>
+                </div>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto align-items-center">
+                        <li class="nav-item"><a class="nav-link" href="index.html">INICIO</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#nosotros-seccion">NOSOTROS</a></li>
+                        <li class="nav-item"><a class="nav-link" href="html/catalogo.html">CATÁLOGO</a></li>
+                    </ul>
+                </div>
             </div>
+        </nav>
+    </header>
 
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item"><a class="nav-link" href="index.html">INICIO</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#nosotros-seccion">NOSOTROS</a></li>
-                    <li class="nav-item"><a class="nav-link" href="html/catalogo.html">CATÁLOGO</a></li>
-                    <li class="nav-item"><a class="nav-link" href="html/promociones.html">PROMOCIONES</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-</header>
-
-    <section class="hero-banner d-flex align-items-center">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="hero-text-box-left">
-                        <h1 class="display-5">Lencería: Romance, Comodidad y Exclusividad</h1>
-                        <p class="lead">
-                            Hemos seleccionado cuidadosamente cada pieza pensando en la mujer que busca sentirse
-                            poderosa y cómoda en su propia piel. Nuestra misión es simple:
-                            curar la colección perfecta para ti. Explora las prendas que te harán sentir, sin duda, una
-                            Afrodita.
-                        </p>
-                        <a href="html/catalogo.html" class="btn btn-danger btn-lg mt-3">Ver Colección</a>
+    <main>
+        <section class="hero-banner d-flex align-items-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="hero-text-box-left">
+                            <h1 class="display-5 fw-bold">Lencería: Romance, Comodidad y Exclusividad</h1>
+                            <p class="lead">Piezas seleccionadas para que te sientas poderosa. Descubre tu lado más
+                                Afrodita.</p>
+                            <a href="html/catalogo.html"
+                                class="btn btn-danger btn-lg mt-3 rounded-pill px-4 shadow">Explorar Catálogo</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="que-buscas-hoy-section" class="py-5">
-        <div class="container">
-            <h2 class="text-center mb-5 display-6">¿Qué Buscas Hoy?</h2>
+        <section id="essentials-section" class="py-5" style="background-color: #ffffff;">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="display-6 fw-bold">Línea <span class="text-terracota-pasión">Essentials</span></h2>
+                    <p class="text-muted">Boxers y Medias: Comodidad diaria sin perder el estilo.</p>
+                </div>
 
-            <div class="row justify-content-center g-4">
+                <div class="row justify-content-center">
+                    <div class="col-lg-10">
+                        <div id="carouselEssentials"
+                            class="carousel slide p-4 p-md-5 rounded-5 shadow-lg border border-light"
+                            data-bs-ride="carousel" data-bs-interval="5000"
+                            style="background-color: var(--color-rosa-suave);">
 
-                <div class="col-md-6 col-sm-12">
-                    <a href="html/catalogo.html" class="card-link-interactive shadow-lg"
-                        style="background-image: url('./images/session-catalogo.jpg');">
-                        <div class="card-body-interactive">
-                            <i class="fas fa-box-open fa-3x mb-3"></i>
-                            <h3>Catálogo por Categorías</h3>
-                            <p>Explora conjuntos, bodies y bombachas en todos los talles.</p>
-                            <span class="btn btn-outline-light mt-2">Explorar Ahora</span>
+                            <div class="carousel-inner">
+
+                                <div class="carousel-item active">
+                                    <div class="row align-items-center g-4">
+                                        <div class="col-md-6 text-center">
+                                            <img src="./images/Boxer-todos.png" class="img-fluid rounded-4 shadow"
+                                                alt="Boxer Masculino">
+                                        </div>
+                                        <div class="col-md-6 text-center text-md-start">
+                                            <span class="badge bg-dark rounded-pill mb-2 px-3">Para Él</span>
+                                            <h3 class="fw-bold text-dark">Boxer Masculino x3</h3>
+                                            <p class="text-muted">Algodón de alta calidad con el calce perfecto.</p>
+                                            <div class="price-text display-6 mb-4">$10.000</div>
+                                            <button class="btn btn-danger btn-lg rounded-pill px-5 shadow-sm"
+                                                onclick="agregarAlCarritoDirecto('boxer-01', 'Boxer Masculino x3', 10000, './images/Boxer-todos.png')">
+                                                <i class="fas fa-shopping-cart me-2"></i>Sumar al Carrito
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="carousel-item">
+                                    <div class="row align-items-center g-4">
+                                        <div class="col-md-6 text-center">
+                                            <img src="./images/Medias-Kity.png" class="img-fluid rounded-4 shadow"
+                                                alt="Medias Kity">
+                                        </div>
+                                        <div class="col-md-6 text-center text-md-start">
+                                            <span class="badge bg-dark rounded-pill mb-2 px-3">Para Ella</span>
+                                            <h3 class="fw-bold text-dark">Pack Medias Kitty</h3>
+                                            <p class="text-muted">Algodón térmico y duradero con diseño exclusivo.</p>
+                                            <div class="price-text display-6 mb-4">$1.500</div>
+                                            <button class="btn btn-danger btn-lg rounded-pill px-5 shadow-sm"
+                                                onclick="agregarAlCarritoDirecto('medias-01', 'Pack Medias Kitty', 1500, './images/Medias-Kity.png')">
+                                                <i class="fas fa-shopping-cart me-2"></i>Sumar al Carrito
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="carousel-item">
+                                    <div class="row align-items-center g-4">
+                                        <div class="col-md-6 text-center">
+                                            <img src="./images/Medias-men.png" class="img-fluid rounded-4 shadow"
+                                                alt="Medias Urban">
+                                        </div>
+                                        <div class="col-md-6 text-center text-md-start">
+                                            <span class="badge bg-dark rounded-pill mb-2 px-3">Para Él</span>
+                                            <h3 class="fw-bold text-dark">Pack Medias Urban</h3>
+                                            <p class="text-muted">Comodidad y durabilidad para el día a día.</p>
+                                            <div class="price-text display-6 mb-4">$1.500</div>
+                                            <button class="btn btn-danger btn-lg rounded-pill px-5 shadow-sm"
+                                                onclick="agregarAlCarritoDirecto('medias-02', 'Pack Medias Urban', 1500, './images/Medias-men.png')">
+                                                <i class="fas fa-shopping-cart me-2"></i>Sumar al Carrito
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="carousel-item">
+                                    <div class="row align-items-center g-4">
+                                        <div class="col-md-6 text-center">
+                                            <img src="./images/medias-damas.png" class="img-fluid rounded-4 shadow"
+                                                alt="Medias Damas">
+                                        </div>
+                                        <div class="col-md-6 text-center text-md-start">
+                                            <span class="badge bg-dark rounded-pill mb-2 px-3">Para Ella</span>
+                                            <h3 class="fw-bold text-dark">Pack Medias Soft</h3>
+                                            <p class="text-muted">Máxima suavidad para pieles delicadas.</p>
+                                            <div class="price-text display-6 mb-4">$1.500</div>
+                                            <button class="btn btn-danger btn-lg rounded-pill px-5 shadow-sm"
+                                                onclick="agregarAlCarritoDirecto('medias-03', 'Pack Medias Soft', 1500, './images/medias-damas.png')">
+                                                <i class="fas fa-shopping-cart me-2"></i>Sumar al Carrito
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="carousel-item">
+                                    <div class="row align-items-center g-4">
+                                        <div class="col-md-6 text-center">
+                                            <img src="./images/medias-sports.png" class="img-fluid rounded-4 shadow"
+                                                alt="Medias Sports">
+                                        </div>
+                                        <div class="col-md-6 text-center text-md-start">
+                                            <span class="badge bg-dark rounded-pill mb-2 px-3">Para Él</span>
+                                            <h3 class="fw-bold text-dark">Pack Medias Sports</h3>
+                                            <p class="text-muted">Ideales para alto rendimiento deportivo.</p>
+                                            <div class="price-text display-6 mb-4">$4.500</div>
+                                            <button class="btn btn-danger btn-lg rounded-pill px-5 shadow-sm"
+                                                onclick="agregarAlCarritoDirecto('medias-04', 'Pack Medias Sports', 4500, './images/medias-sports.png')">
+                                                <i class="fas fa-shopping-cart me-2"></i>Sumar al Carrito
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselEssentials"
+                                data-bs-slide="prev" style="filter: invert(1); width: 5%;">
+                                <span class="carousel-control-prev-icon"></span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselEssentials"
+                                data-bs-slide="next" style="filter: invert(1); width: 5%;">
+                                <span class="carousel-control-next-icon"></span>
+                            </button>
                         </div>
-                    </a>
-                </div>
-
-                <div class="col-md-6 col-sm-12">
-                    <a href="html/promociones.html" class="card-link-interactive shadow-lg"
-                        style="background-image: url('./images/session-promo.jpg');">
-                        <div class="card-body-interactive">
-                            <i class="fas fa-tags fa-3x mb-3"></i>
-                            <h3>Ofertas 2x1 y Exclusivas</h3>
-                            <p>Aprovecha los precios especiales por tiempo limitado.</p>
-                            <span class="btn btn-warning mt-2">¡Ver Promociones!</span>
-                        </div>
-                    </a>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <section id="nosotros-seccion" class="nosotros-presentacion">
-        <div class="container">
-            <div class="row g-0">
-                <div class="col-md-6">
-                    <img src="images/LogoNEGROANDREA.png" class="img-fluid rounded-start"
-                        alt="Proceso de confección artesanal de lencería">
-                </div>
-                <div class="col-md-6 p-5">
-                    <h2 class="display-6 mb-4">La Magia Detrás de Cada Pieza</h2>
-                    <p class="lead">
-                        My Bella Afrodita nace de la pasión por seleccionar y acercar lencería que celebra
-                        la figura femenina sin comprometer la comodidad. Curamos colecciones que te hacen
-                        sentir radiante.
-                    </p>
-                    <p>
-                        Cada conjunto en nuestra colección ha sido cuidadosamente seleccionado por la
-                        calidad de sus encajes y telas, asegurando un ajuste perfecto y duradero.
-                        En My Bella Afrodita, garantizamos que la verdadera seducción empieza por la
-                        comodidad de las mejores prendas.
-                    </p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+
+        <section id="nosotros-seccion" class="nosotros-presentacion py-5">
+            <div class="container">
+                <div class="row g-0 align-items-center shadow-lg bg-white rounded-4 overflow-hidden">
+                    <div class="col-md-6">
+                        <img src="images/LogoNEGROANDREA.png" class="img-fluid w-100"
+                            style="object-fit: cover; height: 100%;" alt="Nosotros">
+                    </div>
+                    <div class="col-md-6 p-4 p-lg-5">
+                        <h2 class="display-6 mb-4 fw-bold">La Magia Detrás de Cada Pieza</h2>
+                        <p class="lead">My Bella Afrodita nace de la pasión por celebrar la figura femenina.</p>
+                        <p class="text-muted">Garantizamos comodidad en las mejores prendas.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <footer class="footer-custom text-white py-4">
-        <div class="container d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center">
-                <a class="navbar-brand-custom me-3" href="index.html">My Bella Afrodita</a>
-                <p class="mb-0 small text-white">&copy; 2025 Lencería Artesanal. | <a href="#"
-                        class="text-white text-decoration-underline">Políticas</a></p>
+        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <div class="text-center text-md-start">
+                <a class="navbar-brand-custom" href="index.html">My Bella Afrodita</a>
+                <p class="mb-0 small mt-2">&copy; 2026 My Bella Afrodita.</p>
             </div>
-            <div class="social-icons">
-                <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+            <div class="social-icons mt-3 mt-md-0">
+                <a href="#" class="text-white me-3"><i class="fab fa-instagram fa-lg"></i></a>
                 <a href="https://wa.me/5492646121771" target="_blank" class="text-white"><i
-                        class="fab fa-whatsapp"></i></a>
+                        class="fab fa-whatsapp fa-lg"></i></a>
             </div>
         </div>
     </footer>
 
-    <a href="https://wa.me/5492646121771?text=Hola,%20quisiera%20hacer%20una%20consulta%20general%20sobre%20lencería."
-        target="_blank" class="whatsapp-flotante">
-        <i class="fab fa-whatsapp"></i>
-    </a>
+    <a href="https://wa.me/5492646121771" target="_blank" class="whatsapp-flotante"><i class="fab fa-whatsapp"></i></a>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/script.js"></script>
-
-    <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title" id="cartModalLabel"><i class="fas fa-shopping-cart me-2"></i>Tu Carrito - My Bella Afrodita</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div id="cart-items-container">
-                    <p class="text-center">El carrito está vacío.</p>
+    <div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header bg-dark text-white border-0 py-3">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-shopping-cart me-2"></i>Tu Carrito</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                
-                <hr>
-                
-                <div class="d-flex justify-content-between align-items-center px-3">
-                    <h4>Total:</h4>
-                    <h4 id="cart-total-amount">$0</h4>
+                <div class="modal-body p-4">
+                    <div id="cart-items"></div>
+                    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                        <h4 class="fw-bold mb-0">Total:</h4>
+                        <div id="cart-total" class="fw-bold text-danger mb-0 h4">$0</div>
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" onclick="limpiarCarritoCompleto()">Vaciar Carrito</button>
-                <button type="button" class="btn btn-danger" id="btn-checkout">Finalizar Compra</button>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4"
+                        onclick="confirmarVaciarCarrito()">Vaciar Carrito</button>
+                    <button type="button" class="btn btn-danger rounded-pill px-4 fw-bold"
+                        onclick="enviarPedidoWhatsApp()">Finalizar Pedido</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/productos.js"></script>
+    <script src="js/script.js"></script>
 
 </body>
 

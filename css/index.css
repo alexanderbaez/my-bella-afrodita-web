@@ -406,9 +406,101 @@ h1, h2, h3, h4, h5, .display-6 {
     font-size: 1.1rem;
 }
 
+/* Animación suave para la tarjeta */
+.product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+}
+
+/* Efecto para el botón premium */
+.btn-premium {
+    background: #1a1a1a;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-premium:hover {
+    background: #dc3545; /* Cambia a rojo Bella Afrodita en hover */
+    transform: scale(1.02);
+}
+
+/* Fuente elegante para títulos (asegúrate de tenerla en el HTML) */
+h5.fw-bold {
+    font-family: 'Poppins', sans-serif;
+}
+
 /* Media Query para asegurar visibilidad en móvil */
 @media (max-width: 767px) {
     .category-bubble {
         height: 300px;
+    }
+}
+
+/* --- ESTILOS ESPECÍFICOS PARA LA SECCIÓN ESSENTIALS --- */
+
+#carouselEssentials {
+    border: 1px solid rgba(140, 0, 44, 0.1); /* Sutil borde borgoña */
+}
+
+#carouselEssentials .carousel-item {
+    transition: transform .6s ease-in-out;
+}
+
+#carouselEssentials .price-text {
+    color: var(--color-pasión);
+    font-weight: 900;
+}
+
+/* Redondear botones de navegación del carrusel */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(140, 0, 44, 0.2);
+    border-radius: 50%;
+    padding: 20px;
+}
+
+/* --- FIX FINAL CARROUSEL ESSENTIALS --- */
+
+/* Forzar que solo se vea un item a la vez y con transición suave */
+#carouselEssentials .carousel-item {
+    display: none;
+    float: left;
+    width: 100%;
+    margin-right: -100%;
+    backface-visibility: hidden;
+    transition: transform 0.8s cubic-bezier(0.6, 0, 0.3, 1); /* Giro más elegante */
+}
+
+#carouselEssentials .carousel-item.active {
+    display: block;
+}
+
+/* Evitar que las imágenes se estiren y asegurar centrado */
+#carouselEssentials img {
+    max-height: 350px !important;
+    width: auto !important;
+    margin: 0 auto;
+    object-fit: contain !important; /* Evita que se corte la media */
+}
+
+/* Espaciado para que el botón no toque el borde en móviles */
+@media (max-width: 768px) {
+    #carouselEssentials {
+        padding: 20px !important;
+    }
+    #carouselEssentials .price-text {
+        font-size: 1.8rem !important;
+        margin-bottom: 1rem !important;
+    }
+    #carouselEssentials .carousel-item .row {
+        flex-direction: column;
+    }
+}
+
+/* Ajuste para que las imágenes del carrusel no se vean gigantes en móviles */
+@media (max-width: 768px) {
+    #carouselEssentials img {
+        max-height: 250px !important;
+        margin-bottom: 20px;
     }
 }
