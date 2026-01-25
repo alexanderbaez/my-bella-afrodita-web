@@ -220,7 +220,7 @@ const PRODUCTOS = [
     {
         id: "conj-08",
         nombre: "Conjunto Vicblack",
-        precio: 10000,
+        precio: 7500,
         //infoPromo: "Combo: 2 Conjuntos por $18.000",
         imagenes: [
             "../images/Conjunto vicblack FRENTE 1.png",
