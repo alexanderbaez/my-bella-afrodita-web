@@ -90,7 +90,7 @@ const PRODUCTOS = [
         descripcion: "Confeccionadas en algodon con encaje ofrecen un toque sexy y comodo."
     },
 
-        {
+    {
         id: "prod-b7",
         nombre: "Less Calvin Klein",
         precio: 2500,
@@ -107,7 +107,7 @@ const PRODUCTOS = [
         descripcion: "Confeccionadas en algodon con encaje ofrecen un toque sexy y comodo."
     },
 
-            {
+    {
         id: "prod-b8",
         nombre: "Vedetina",
         precio: 2500,
@@ -124,7 +124,7 @@ const PRODUCTOS = [
         esPromo: false,
         descripcion: "Confeccionadas en algodon con encaje ofrecen un toque sexy y comodo."
     },
-                {
+    {
         id: "prod-b9",
         nombre: "Boxers Dama con Faja",
         precio: 2500,
@@ -137,6 +137,31 @@ const PRODUCTOS = [
         esPromo: false,
         descripcion: "Confeccionadas en algodon con encaje ofrecen un toque sexy y comodo."
     },
+    {
+        id: "prod-b10",
+        nombre: "Bombacha Juvenil",
+        precio: 1700,
+        infoPromo: "Llevando 2 pagás $3.000",
+        imagenes: [
+            "../images/Bombacha-juvenil.jpg",
+        ],
+        categoria: "bombachas",
+        esPromo: false,
+        descripcion: "Confeccionadas en algodon con diseño de guerreras K-pop"
+    },
+    {
+        id: "prod-b11",
+        nombre: "Smart Sexi",
+        precio: 2500,
+        infoPromo: "Llevando 2 pagás $4.500",
+        imagenes: [
+            "../images/Smart Sexi.jpg",
+        ],
+        categoria: "bombachas",
+        esPromo: false,
+        descripcion: "Confeccionadas en morley, brinda confort, Disponibles en colores tendencia"
+    },
+
 
 
     // --- CONJUNTOS ---
@@ -249,7 +274,7 @@ const PRODUCTOS = [
         categoria: "conjuntos",
         descripcion: "Colores de la nueva temporada. Con un diseño comodo en morley con detalles de puntilla."
     },
-        {
+    {
         id: "conj-010",
         nombre: "Top Inicial Nena",
         precio: 2000,
@@ -262,5 +287,28 @@ const PRODUCTOS = [
         ],
         categoria: "conjuntos",
         descripcion: "Colores de la nueva temporada. Con un diseño comodo en morley con detalles de puntilla."
+    },
+    {
+        id: "conj-011",
+        nombre: "Conjunto Deportivo",
+        precio: 7500,
+        // infoPromo: "Combo: 2 Conjuntos por $3.500",
+        imagenes: [
+            "../images/Conjunto-Deportivo.jpg",
+        ],
+        categoria: "conjuntos",
+        descripcion: "Colores de la nueva temporada. Con un diseño comodo en morley con detalles de puntilla y tazas desmontables."
+    },
+    {
+        id: "conj-012",
+        nombre: "Sports Bell",
+        precio: 7000,
+        // infoPromo: "Combo: 2 Conjuntos por $3.500",
+        imagenes: [
+            "../images/sports bell.jpg",
+        ],
+        categoria: "conjuntos",
+        descripcion: "Corpiño importado armado sin aro y con 4 broches para mayor ajuste y comodidad."
     }
+
 ];

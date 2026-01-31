@@ -12,11 +12,11 @@ const REGLAS_PROMO = [
                        p.precio === 2500 && 
                        p.id !== "prod-b9" 
     },
-   /* {
-        nombre: "Promo 2 Less Regulables",
+    {
+        nombre: "Promo 2 Bombacha Juvenil",
         cantidad: 2,
-        precioCombo: 8000,
-        filtro: (p) => p.id === "prod-b5" && p.precio === 4500
+        precioCombo: 3000,
+        filtro: (p) => p.id === "prod-b10" && p.precio === 1700
     },
    /* {
         nombre: "Promo 2 Conjuntos",
