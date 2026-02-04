@@ -1,34 +1,43 @@
 🛍️ Bella Afrodita – Tienda Web con Ventas por WhatsApp
 📌 Descripción
 
-Bella Afrodita Web es una tienda online tipo catálogo, desarrollada como proyecto personal, cuyo objetivo es mostrar productos de forma visual y ordenada, permitiendo que las compras se realicen directamente a través de WhatsApp.
+Bella Afrodita Web es una tienda online tipo catálogo, desarrollada como proyecto frontend, pensada para mostrar productos de manera visual y ordenada, donde el proceso de compra se realiza directamente a través de WhatsApp.
 
-A diferencia de una tienda online tradicional (con carrito y pagos integrados), este proyecto prioriza:
-
-el contacto directo con el cliente
-
-la simplicidad
-
-y la conversión rápida mediante WhatsApp
-
-Este enfoque es muy utilizado por emprendimientos reales que venden por redes sociales.
+Este modelo replica el funcionamiento real de muchos emprendimientos actuales:
+el sitio web cumple el rol de vidriera digital, mientras que la venta se concreta mediante contacto directo con el cliente.
 
 🎯 Enfoque del Proyecto
 
-✔ Tienda visual (catálogo)
-✔ Navegación clara de productos
-✔ Llamadas a la acción hacia WhatsApp
-❌ No utiliza carrito de compras
-❌ No maneja pagos online
+✔ Catálogo de productos online
 
-👉 La compra se concreta mediante mensaje directo por WhatsApp, lo que hace al proyecto más simple y adaptable a pequeños negocios.
+✔ Navegación simple y clara
+
+✔ Botones de compra con redirección a WhatsApp
+
+✔ Experiencia orientada a pequeños emprendimientos
+
+❌ Sin carrito de compras
+
+❌ Sin pagos integrados
 
 🛠️ Tecnologías Utilizadas
 
-🧱 HTML – Estructura del sitio
+HTML5 – Estructura del sitio
 
-🎨 CSS – Diseño visual y estilos
+CSS3 – Diseño y estilos
 
-⚡ JavaScript – Interacciones dinámicas
+JavaScript – Interactividad
 
-📁 Imágenes y recursos estáticos
+Assets estáticos (imágenes y recursos)
+
+🛒 Flujo de Compra
+
+El usuario navega el catálogo.
+
+Selecciona un producto.
+
+Hace clic en “Comprar por WhatsApp”.
+
+Se abre una conversación directa con el vendedor.
+
+Este flujo reduce fricción y facilita la venta directa.
