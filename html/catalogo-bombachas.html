@@ -6,103 +6,121 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bombachas - My Bella Afrodita</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <meta property="og:title" content="My Bella Afrodita - Lencería Exclusiva">
     <meta property="og:description" content="Descubre nuestra colección de lencería, conjuntos y línea Essentials.">
-    <meta property="og:image"
-        content="https://raw.githubusercontent.com/alexanderbaez/my-bella-afrodita-web/master/images/LOGO.png">
-    <meta property="og:image:width" content="300">
-    <meta property="og:image:height" content="300">
+    <meta property="og:image" content="https://raw.githubusercontent.com/alexanderbaez/my-bella-afrodita-web/master/images/LOGO.png">
     <meta property="og:url" content="https://alexanderbaez.github.io/my-bella-afrodita-web/">
     <meta property="og:type" content="website">
 
     <style>
-        /* Ajustes para que el catálogo sea perfecto */
-        .navbar-logo {
-            height: 50px;
-            width: auto;
-            object-fit: contain;
-        }
+        .navbar-logo { height: 45px; width: auto; object-fit: contain; }
+        .footer-logo { height: 40px; filter: brightness(0) invert(1); }
 
-        .footer-logo {
-            height: 40px;
-            filter: brightness(0) invert(1);
-        }
-
-        #contenedor-productos .col-12 {
-            display: flex;
-        }
-
+        /* Estilo de Tarjetas de Producto */
         .product-card {
+            border: none;
+            border-radius: 0;
+            transition: all 0.4s ease;
+            background: #fff;
+            height: 100%;
             display: flex;
             flex-direction: column;
-            width: 100%;
-            height: 100%;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08) !important;
         }
 
         .card-img-container {
-            height: 400px;
+            height: 450px;
             overflow: hidden;
+            background: #fdfdfd;
+            position: relative;
         }
 
         .card-img-container img {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             object-fit: cover;
+            transition: transform 0.8s ease;
         }
+
+        .product-card:hover .card-img-container img {
+            transform: scale(1.05);
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            color: var(--color-pasión);
+        }
+
+        .breadcrumb-item a { color: var(--color-terracota-pasión); font-weight: 600; }
     </style>
 </head>
 
-<body class="d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100 bg-white">
 
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow-sm" id="mainNav">
             <div class="container">
                 <a class="navbar-brand-custom d-flex align-items-center" href="../index.html">
                     <img src="../images/LOGO.png" alt="My Bella Afrodita" class="navbar-logo me-2">
-                    <span class="fw-bold d-none d-sm-inline" style="letter-spacing: 1px;">MY BELLA AFRODITA</span>
+                    <span class="fw-bold d-none d-sm-inline" style="letter-spacing: 2px;">My Bella Afrodita</span>
                 </a>
 
                 <div class="d-flex align-items-center order-lg-last">
                     <a class="nav-link position-relative text-light me-3" href="#" id="cartIcon" data-bs-toggle="modal"
                         data-bs-target="#cartModal" style="padding: 0.5rem;">
-                        <i class="fas fa-shopping-cart fa-lg"></i>
-                        <span id="cart-count"
-                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                        <i class="fas fa-shopping-bag fa-lg"></i>
+                        <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
                             style="font-size: 0.65rem;">0</span>
                     </a>
-                    <button class="navbar-toggler p-2" type="button" data-bs-toggle="collapse"
+                    <button class="navbar-toggler p-2 border-0" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarNav">
                         <i class="fas fa-bars text-light"></i>
                     </button>
                 </div>
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto align-items-center">
+                    <ul class="navbar-nav ms-auto align-items-center fw-bold">
                         <li class="nav-item"><a class="nav-link" href="../index.html">INICIO</a></li>
-                        <li class="nav-item"><a class="nav-link" href="../index.html#nosotros-seccion">NOSOTROS</a></li>
-                        <li class="nav-item"><a class="nav-link active fw-bold" href="./catalogo.html">CATÁLOGO</a></li>
+                        <li class="nav-item"><a class="nav-link" href="./catalogo.html">FEMENINO</a></li>
+                        <li class="nav-item"><a class="nav-link" href="./catalogo-hombres.html">MASCULINO</a></li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
 
-    <main class="py-5 bg-white flex-grow-1">
-        <div class="container mt-5 pt-4">
-            <h1 class="text-center display-5 mb-5">💖 Bombachas, Colaless y Vedetinas 💖</h1>
+    <main class="py-5 flex-grow-1 mt-5">
+        <div class="container pt-4">
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="./catalogo.html" class="text-decoration-none small">Para Ellas</a></li>
+                    <li class="breadcrumb-item active small" aria-current="page">Bombachas</li>
+                </ol>
+            </nav>
 
-            <div id="contenedor-productos" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"></div>
+            <div class="text-center mb-5">
+                <span class="text-uppercase small fw-bold" style="letter-spacing: 3px; color: var(--color-terracota-pasión);">Colección Íntima</span>
+                <h1 class="display-4 fw-bold mt-2 section-title">Bombachas, Colaless y Vedetinas</h1>
+                <div style="width: 60px; height: 2px; background: var(--color-pasión); margin: 20px auto;"></div>
+            </div>
 
-            <div class="row mt-5 justify-content-center">
-                <div class="col-lg-4 col-md-6 mb-4 d-flex">
-                    <div class="card border-0 shadow-sm rounded-4 w-100 text-center py-5 bg-light"
-                        style="border: 2px dashed #ddd !important;">
-                        <div class="card-body d-flex flex-column justify-content-center">
-                            <i class="fas fa-box-open fa-3x mb-3 text-muted"></i>
-                            <h4 class="h5 fw-bold text-secondary">¡Próximamente más!</h4>
-                            <p class="text-muted small mb-0">Estamos trabajando en nuevos ingresos para vos.</p>
+            <div id="contenedor-productos" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                </div>
+
+            <div class="row mt-5 pt-4 justify-content-center">
+                <div class="col-lg-5 col-md-8 mb-4">
+                    <div class="card border-0 rounded-0 text-center py-5" 
+                         style="background-color: #fff5f5; border: 1px dashed var(--color-terracota-pasión) !important;">
+                        <div class="card-body">
+                            <i class="fas fa-box-open fa-2x mb-3 opacity-50" style="color: var(--color-pasión);"></i>
+                            <h4 class="h5 fw-bold text-dark text-uppercase" style="letter-spacing: 2px;">¡Próximamente más!</h4>
+                            <p class="text-muted small mb-0">Estamos preparando nuevos ingresos exclusivos para vos.</p>
                         </div>
                     </div>
                 </div>
@@ -112,40 +130,54 @@
 
     <div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content rounded-4 border-0 shadow-lg">
-                <div class="modal-header bg-dark text-white">
-                    <h5 class="modal-title fw-bold"><i class="fas fa-shopping-cart me-2"></i>Tu Carrito</h5>
+            <div class="modal-content rounded-0 border-0 shadow-lg">
+                <div class="modal-header bg-dark text-white border-0 py-3">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-shopping-bag me-2"></i>Tu Carrito</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
                     <div id="cart-items"></div>
                     <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
-                        <h4 class="fw-bold">Total:</h4>
-                        <h4 class="fw-bold text-danger" id="cart-total">$0</h4>
+                        <h4 class="fw-bold mb-0">Total:</h4>
+                        <h4 class="fw-bold text-danger mb-0" id="cart-total">$0</h4>
                     </div>
                 </div>
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4"
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-outline-secondary rounded-0 px-4"
                         onclick="confirmarVaciarCarrito()">Vaciar Carrito</button>
-                    <button type="button" class="btn btn-danger rounded-pill px-4 fw-bold"
+                    <button type="button" class="btn btn-danger rounded-0 px-4 fw-bold shadow-sm"
                         onclick="enviarPedidoWhatsApp()">Finalizar Pedido</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer class="footer-custom text-white py-4 mt-auto">
-        <div
-            class="container d-flex flex-column flex-md-row justify-content-between align-items-center text-center text-md-start">
-            <div class="mb-3 mb-md-0">
-                <img src="../images/LogoNEGROANDREA.png" alt="Logo Footer" class="footer-logo mb-2">
-                <p class="mb-0 small">&copy; 2026 My Bella Afrodita. Todos los derechos reservados.</p>
+    <footer class="footer-custom text-white py-5" style="background-color: #1a1a1a;">
+        <div class="container py-4">
+            <div class="row g-5">
+                <div class="col-md-4 text-center text-md-start">
+                    <img src="../images/LOGO.png" alt="Logo" style="height: 60px;" class="mb-4">
+                    <p class="small opacity-50 pe-md-5">Tu boutique de confianza. Calidad premium y atención personalizada en cada compra.</p>
+                </div>
+                <div class="col-6 col-md-4 text-center">
+                    <h5 class="text-uppercase small fw-bold mb-4" style="letter-spacing: 2px;">Explorar</h5>
+                    <ul class="list-unstyled small opacity-75">
+                        <li class="mb-2"><a href="html/catalogo.html" class="text-white text-decoration-none">Colección Mujer</a></li>
+                        <li class="mb-2"><a href="html/catalogo-hombres.html" class="text-white text-decoration-none">Colección Hombre</a></li>
+                        <li class="mb-2"><a href="#" class="text-white text-decoration-none">Guía de Tallas</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-md-4 text-center text-md-end">
+                    <h5 class="text-uppercase small fw-bold mb-4" style="letter-spacing: 2px;">Contacto</h5>
+                    <div class="d-flex justify-content-center justify-content-md-end gap-3 fs-4 mb-4">
+                        <a href="#" class="text-white"><i class="fab fa-instagram"></i></a>
+                        <a href="https://wa.me/5492646121771" class="text-white"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                    <p class="small opacity-50">San Juan, Argentina</p>
+                </div>
             </div>
-            <div class="social-icons">
-                <a href="#" class="text-white me-3"><i class="fab fa-instagram fa-lg"></i></a>
-                <a href="https://wa.me/5492646121771" target="_blank" class="text-white"><i
-                        class="fab fa-whatsapp fa-lg"></i></a>
-            </div>
+            <hr class="my-5 opacity-10">
+            <p class="text-center mb-0 small opacity-25" style="letter-spacing: 2px;">&copy; 2026 MY BELLA AFRODITA. LINCERIA.</p>
         </div>
     </footer>
 

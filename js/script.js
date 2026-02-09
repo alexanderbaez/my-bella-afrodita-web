@@ -1,40 +1,26 @@
 const WHATSAPP_NUMBER = '5492646121771';
 let carrito = JSON.parse(localStorage.getItem('myBellaCarrito')) || [];
 
-// --- CONFIGURACIÓN DE PROMOCIONES DINÁMICAS ---
-const REGLAS_PROMO = [
-    {
-        nombre: "Promo Bombachas (2 x $4.500)",
-        cantidad: 2,
-        precioCombo: 4500,
-        // Filtra bombachas de 2500, PERO excluye el ID del boxer con faja
-        filtro: (p) => p.categoria.toLowerCase() === "bombachas" && 
-                       p.precio === 2500 && 
-                       p.id !== "prod-b9" 
-    },
-    {
-        nombre: "Promo 2 Bombacha Juvenil",
-        cantidad: 2,
-        precioCombo: 3000,
-        filtro: (p) => p.id === "prod-b10" && p.precio === 1700
-    },
-   /* {
-        nombre: "Promo 2 Conjuntos",
-        cantidad: 2,
-        precioCombo: 18000,
-        filtro: (p) => p.categoria.toLowerCase() === "conjuntos" && p.precio === 10000
-    }*/
-];
-
 document.addEventListener('DOMContentLoaded', () => {
     actualizarContadorUI();
 
     if (typeof PRODUCTOS === 'undefined') return;
 
-    const contenedor = document.getElementById("contenedor-productos");
+const contenedor = document.getElementById("contenedor-productos");
     if (contenedor) {
         const titulo = document.title.toLowerCase();
-        let categoriaBuscada = titulo.includes("conjuntos") ? "conjuntos" : "bombachas";
+        
+        // --- MEJORA AQUÍ: Detección multicanal ---
+        let categoriaBuscada = "";
+        
+        if (titulo.includes("conjuntos")) {
+            categoriaBuscada = "conjuntos";
+        } else if (titulo.includes("bombachas")) {
+            categoriaBuscada = "bombachas";
+        } else if (titulo.includes("hombres") || titulo.includes("essentials")) {
+            categoriaBuscada = "hombres"; // Esta debe coincidir con la de productos.js
+        }
+        
         const filtrados = PRODUCTOS.filter(p => p.categoria.toLowerCase() === categoriaBuscada);
         dibujarProductos(filtrados);
     }
@@ -45,58 +31,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// --- FUNCIÓN MAESTRA: CÁLCULO DE TOTAL CON PROMOS ---
+// --- NUEVA LÓGICA DE NEGOCIO: MAYORISTA X 3 UNIDADES ---
 function calcularTotalCarrito() {
     let totalGeneral = 0;
-    let itemsParaProcesar = [];
-    let desglosePromos = [];
+    let unidadesTotales = carrito.reduce((acc, item) => acc + item.cantidad, 0);
+    let esMayorista = unidadesTotales >= 3;
+    let detallesPromo = [];
 
-    // 1. Creamos la lista para procesar
+    if (esMayorista) {
+        detallesPromo.push("Precio Mayorista Aplicado (3+ unidades)");
+    }
+
     carrito.forEach(item => {
-        // Intentamos buscar en la base de datos de PRODUCTOS
-        const prodData = (typeof PRODUCTOS !== 'undefined') ? PRODUCTOS.find(p => p.id === item.id) : null;
+        // Buscamos el producto en nuestra base de datos para tener los precios actualizados
+        const p = PRODUCTOS.find(prod => prod.id === item.id);
         
-        for (let i = 0; i < item.cantidad; i++) {
-            if (prodData) {
-                // Si existe en la base de datos (Conjuntos/Bombachas), usamos esa info para las promos
-                itemsParaProcesar.push({ ...prodData });
+        if (p) {
+            // Si llegamos a 3 unidades Y el producto tiene precio mayorista definido
+            if (esMayorista && p.precioMayorista) {
+                totalGeneral += p.precioMayorista * item.cantidad;
             } else {
-                // SI NO EXISTE (Boxers/Medias), usamos la info que guardamos directamente en el carrito
-                itemsParaProcesar.push({ 
-                    id: item.id, 
-                    precio: item.precio, 
-                    categoria: "essentials" // Categoría genérica para que no rompa los filtros de promo
-                });
+                // De lo contrario, usamos precio minorista
+                totalGeneral += p.precioMinorista * item.cantidad;
             }
+        } else {
+            // Por si es un producto "extra" que no está en el JS principal
+            totalGeneral += item.precio * item.cantidad;
         }
     });
 
-    // 2. Aplicamos reglas de promo (esto se mantiene igual)
-    REGLAS_PROMO.forEach(regla => {
-        let aptos = itemsParaProcesar.filter(p => p.categoria !== "essentials" && regla.filtro(p));
-        const numCombos = Math.floor(aptos.length / regla.cantidad);
-        
-        if (numCombos > 0) {
-            totalGeneral += numCombos * regla.precioCombo;
-            desglosePromos.push(`${numCombos}x ${regla.nombre}`);
-            let unidadesAEliminar = numCombos * regla.cantidad;
-            let eliminados = 0;
-            itemsParaProcesar = itemsParaProcesar.filter(p => {
-                if (p.categoria !== "essentials" && regla.filtro(p) && eliminados < unidadesAEliminar) {
-                    eliminados++;
-                    return false;
-                }
-                return true;
-            });
-        }
-    });
-
-    // 3. Sumamos lo que quedó (incluyendo Boxers y Medias que quedaron como 'essentials')
-    itemsParaProcesar.forEach(p => {
-        totalGeneral += p.precio;
-    });
-
-    return { total: totalGeneral, promos: desglosePromos };
+    return { total: totalGeneral, promos: detallesPromo, esMayorista: esMayorista };
 }
 
 // --- DIBUJAR PRODUCTOS (Catálogo) ---
@@ -106,40 +70,36 @@ function dibujarProductos(lista) {
     contenedor.innerHTML = "";
 
     lista.forEach(p => {
-        const infoPromoHtml = p.infoPromo ?
-            `<div class="mt-2 py-2 px-3 rounded-4" style="background-color: #fff5f5; border: 1px dashed #ff4d4d;">
-                <span class="text-danger fw-bold small"><i class="fas fa-tag me-1"></i> ${p.infoPromo}</span>
-             </div>` : '';
+        const htmlPrecios = p.precioMayorista 
+            ? `<div class="mb-2 p-2 rounded-4" style="border: 1px solid #f0f0f0; background-color: #fffafa;">
+                <div class="mb-2">
+                    <span class="text-muted small text-uppercase fw-bold" style="font-size: 0.6rem; letter-spacing: 1px;">Precio Individual</span>
+                    <br>
+                    <span class="text-dark fw-bold fs-4">$${p.precioMinorista.toLocaleString('es-AR')}</span>
+                </div>
+                <div class="pt-2 border-top" style="border-top-style: dashed !important; border-top-color: #ffc1c1 !important;">
+                    <span class="text-danger small text-uppercase fw-bold" style="font-size: 0.6rem; letter-spacing: 1px;">⚡ Mayorista (Combinando 3+ prendas)</span>
+                    <br>
+                    <span class="text-danger fw-bolder fs-3">$${p.precioMayorista.toLocaleString('es-AR')}</span>
+                </div>
+               </div>`
+            : `<div class="mb-2 py-3">
+                <span class="text-muted small text-uppercase fw-bold" style="font-size: 0.6rem; letter-spacing: 1px;">Precio Único</span>
+                <br>
+                <span class="text-dark fw-bolder fs-3">$${p.precioMinorista.toLocaleString('es-AR')}</span>
+               </div>`;
 
         contenedor.innerHTML += `
             <div class="col d-flex">
-                <div class="card border-0 rounded-5 shadow-sm overflow-hidden product-card" 
-                     style="background: #ffffff;">
-                    
-                    <div class="card-img-container position-relative" 
-                         style="cursor: pointer;" 
-                         onclick="mostrarDetalleProducto('${p.id}')">
-                        
-                        <img src="${p.imagenes[0]}" 
-                             class="card-img-top" 
-                             style="transition: transform 0.8s ease;"
-                             onmouseover="this.style.transform='scale(1.08)'"
-                             onmouseout="this.style.transform='scale(1)'"
-                             alt="${p.nombre}">
-                        
-                        ${p.esPromo ? `
-                            <div class="position-absolute top-0 start-0 m-3">
-                                <span class="badge rounded-pill bg-danger px-3 py-2 shadow-sm fw-bold text-uppercase" 
-                                      style="font-size: 0.7rem; letter-spacing: 1px;">
-                                    <i class="fas fa-fire me-1"></i> ${p.promoTexto}
-                                </span>
-                            </div>` : ''}
+                <div class="card border-0 rounded-5 shadow-sm overflow-hidden product-card" style="background: #ffffff;">
+                    <div class="card-img-container position-relative" style="cursor: pointer;" onclick="mostrarDetalleProducto('${p.id}')">
+                        <img src="${p.imagenes[0]}" class="card-img-top" style="transition: transform 0.8s ease;"
+                             onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'" alt="${p.nombre}">
                     </div>
 
                     <div class="card-body p-4 d-flex flex-column text-center">
                         <div class="mb-3">
-                            <h5 class="fw-bold text-dark mb-2" 
-                                style="font-size: 1.15rem; font-family: 'Playfair Display', serif; min-height: 3rem; display: flex; align-items: center; justify-content: center;">
+                            <h5 class="fw-bold text-dark mb-2" style="font-family: 'Playfair Display', serif; min-height: 3rem; display: flex; align-items: center; justify-content: center;">
                                 ${p.nombre}
                             </h5>
                             <p class="text-muted mb-0 small" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.5rem;">
@@ -148,14 +108,7 @@ function dibujarProductos(lista) {
                         </div>
                         
                         <div class="mt-auto pt-3 border-top border-light">
-                            <div class="mb-1">
-                                <span class="text-danger fw-bolder fs-3" style="letter-spacing: -1px;">
-                                    $${p.precio.toLocaleString('es-AR')}
-                                </span>
-                            </div>
-                            
-                            ${infoPromoHtml} 
-                            
+                            ${htmlPrecios}
                             <button class="btn btn-dark w-100 rounded-pill py-2 fw-bold shadow-sm mt-3" 
                                     onclick="event.stopPropagation(); agregarAlCarrito(event, '${p.id}')">
                                 <span class="small text-uppercase" style="letter-spacing: 1.5px;">Agregar al carrito</span>
@@ -179,7 +132,7 @@ window.renderizarListaCarrito = function() {
         return;
     }
 
-    const resultadoCalculo = calcularTotalCarrito();
+    const res = calcularTotalCarrito();
 
     let cartHtml = `
         <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
@@ -191,18 +144,18 @@ window.renderizarListaCarrito = function() {
     `;
 
     carrito.forEach((item, index) => {
-        // CORRECCIÓN FOTO:
-        const prodOriginal = PRODUCTOS.find(p => p.id === item.id);
-        const imagenUrl = prodOriginal ? prodOriginal.imagenes[0] : (item.imagen || ""); 
+        const p = PRODUCTOS.find(prod => prod.id === item.id);
+        // Determinamos qué precio mostrar en el carrito según la cantidad total
+        let precioAplicado = (res.esMayorista && p?.precioMayorista) ? p.precioMayorista : (p?.precioMinorista || item.precio);
         
         cartHtml += `
             <div class="row align-items-center mb-4 g-2">
                 <div class="col-3 col-md-2">
-                    <img src="${imagenUrl}" class="img-fluid rounded-3 shadow-sm" style="height: 70px; width: 70px; object-fit: cover;">
+                    <img src="${item.imagen}" class="img-fluid rounded-3 shadow-sm" style="height: 70px; width: 70px; object-fit: cover;">
                 </div>
                 <div class="col-5 col-md-6 px-3">
                     <p class="mb-0 fw-bold text-dark small">${item.nombre}</p>
-                    <span class="text-muted small">$${item.precio.toLocaleString('es-AR')} c/u</span>
+                    <span class="text-muted small">$${precioAplicado.toLocaleString('es-AR')} ${res.esMayorista && p?.precioMayorista ? '(Mayorista)' : ''}</span>
                     <div class="mt-1">
                         <button class="btn btn-sm text-danger p-0 border-0 bg-transparent" style="font-size: 0.75rem;" onclick="eliminarDelCarrito(${index})">
                             <i class="fas fa-trash-alt me-1"></i> Quitar
@@ -217,7 +170,7 @@ window.renderizarListaCarrito = function() {
                             <button class="btn btn-sm btn-light rounded-circle border-0 p-0" style="width:25px; height:25px;" onclick="cambiarCantidad(${index}, 1)">+</button>
                         </div>
                     </div>
-                    <span class="text-muted small">Subtotal: $${(item.precio * item.cantidad).toLocaleString('es-AR')}</span>
+                    <span class="text-muted small">Subtotal: $${(precioAplicado * item.cantidad).toLocaleString('es-AR')}</span>
                 </div>
             </div>`;
     });
@@ -227,14 +180,15 @@ window.renderizarListaCarrito = function() {
     if (totalElement) {
         totalElement.innerHTML = `
             <div class="text-end">
-                ${resultadoCalculo.promos.map(p => `<div class="text-success small fw-bold" style="font-size: 0.8rem;">✨ ${p} aplicada</div>`).join('')}
-                <div class="mt-1">$${resultadoCalculo.total.toLocaleString('es-AR')}</div>
+                ${res.promos.map(p => `<div class="text-success small fw-bold" style="font-size: 0.8rem;">✨ ${p}</div>`).join('')}
+                ${!res.esMayorista ? `<div class="text-muted small" style="font-size: 0.7rem;">Agregá ${3 - carrito.reduce((acc, i) => acc + i.cantidad, 0)} más para precio mayorista</div>` : ''}
+                <div class="mt-1">$${res.total.toLocaleString('es-AR')}</div>
             </div>
         `;
     }
 }
 
-// --- LOGICA DE CARRITO Y PERSISTENCIA ---
+// --- LOGICA DE CARRITO ---
 window.agregarAlCarrito = function (event, id) {
     const p = PRODUCTOS.find(prod => prod.id === id);
     if (!p) return;
@@ -246,8 +200,8 @@ window.agregarAlCarrito = function (event, id) {
         carrito.push({ 
             id: p.id, 
             nombre: p.nombre, 
-            precio: p.precio, 
-            imagen: p.imagenes[0], // <--- IMPORTANTE: Guardamos la imagen aquí también
+            precio: p.precioMinorista, // Guardamos el base, el cálculo se hace en calcularTotalCarrito
+            imagen: p.imagenes[0], 
             cantidad: 1 
         }); 
     }
@@ -305,10 +259,44 @@ function actualizarYGuardar() {
 
 function actualizarContadorUI() {
     const contador = document.getElementById('cart-count');
-    if (contador) {
-        const total = carrito.reduce((acc, item) => acc + item.cantidad, 0);
-        contador.innerText = total;
-        contador.style.display = total === 0 ? 'none' : 'flex';
+    if (!contador) return;
+
+    const totalUnidades = carrito.reduce((acc, item) => acc + item.cantidad, 0);
+    contador.innerText = totalUnidades;
+    contador.style.display = totalUnidades === 0 ? 'none' : 'flex';
+
+    // --- LÓGICA DE COLOR Y CARTELITO ---
+    // Buscamos si ya existe el badge de "MAYORISTA", si no, lo creamos
+    let badgeMayorista = document.getElementById('badge-mayorista');
+    
+    if (totalUnidades >= 3) {
+        // ACTIVADO: Verde y cartelito
+        contador.style.backgroundColor = "#28a745"; // Verde éxito
+        if (!badgeMayorista) {
+            badgeMayorista = document.createElement('span');
+            badgeMayorista.id = 'badge-mayorista';
+            badgeMayorista.innerHTML = 'MAYORISTA';
+            badgeMayorista.style = `
+                position: absolute;
+                top: -10px;
+                right: 35px;
+                background: #28a745;
+                color: white;
+                font-size: 10px;
+                font-weight: bold;
+                padding: 2px 8px;
+                border-radius: 10px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                animation: popIn 0.3s ease-out;
+            `;
+            contador.parentElement.appendChild(badgeMayorista);
+        }
+    } else {
+        // DESACTIVADO: Volvemos al color original (tu color de diseño) y quitamos cartelito
+        contador.style.backgroundColor = "#ff4d4d"; // O el color que prefieras (ej. el de tus 15 años)
+        if (badgeMayorista) {
+            badgeMayorista.remove();
+        }
     }
 }
 
@@ -344,41 +332,31 @@ window.enviarPedidoWhatsApp = function () {
         return;
     }
 
-    const resultado = calcularTotalCarrito();
+    const res = calcularTotalCarrito();
     
-    // Encabezado elegante
     let mensaje = "🌸 *NUEVO PEDIDO - MY BELLA AFRODITA* 🌸\n";
     mensaje += "------------------------------------------\n\n";
-
     mensaje += "Hola! Me gustaría consultar disponibilidad de los siguientes productos:\n\n";
 
-    // Listado de productos detallado
     mensaje += "*DETALLE DEL PEDIDO:*\n";
     carrito.forEach(item => {
+        const p = PRODUCTOS.find(prod => prod.id === item.id);
+        let precioUsado = (res.esMayorista && p?.precioMayorista) ? p.precioMayorista : (p?.precioMinorista || item.precio);
+
         mensaje += `📍 *${item.nombre}*\n`;
         mensaje += `   - Cantidad: ${item.cantidad}\n`;
-        mensaje += `   - Precio unit: $${item.precio.toLocaleString('es-AR')}\n`;
-        mensaje += `   - _Solicito talle y colores disponibles_\n\n`;
+        mensaje += `   - Precio unit: $${precioUsado.toLocaleString('es-AR')} ${res.esMayorista && p?.precioMayorista ? '(Mayorista)' : '(Minorista)'}\n\n`;
     });
 
-    // Sección de Promociones (Si existen)
-    if (resultado.promos.length > 0) {
-        mensaje += "✨ *PROMOS APLICADAS:* \n";
-        resultado.promos.forEach(p => {
-            mensaje += `   ✅ ${p}\n`;
-        });
-        mensaje += "\n";
+    if (res.esMayorista) {
+        mensaje += "✨ *MODO MAYORISTA ACTIVADO* (3+ unidades)\n\n";
     }
 
-    // Cierre con el Total
     mensaje += "------------------------------------------\n";
-    mensaje += `💰 *TOTAL ESTIMADO: $${resultado.total.toLocaleString('es-AR')}*\n`;
+    mensaje += `💰 *TOTAL ESTIMADO: $${res.total.toLocaleString('es-AR')}*\n`;
     mensaje += "------------------------------------------\n\n";
-    
-    mensaje += "💬 *CONSULTA EXTRA:* ¿Qué colores tenés en stock para estos modelos? ¿Hacen envíos?\n\n";
     mensaje += "_Quedo a la espera de tu respuesta para coordinar el pago. Gracias!_";
 
-    // Abrir WhatsApp
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensaje)}`;
     window.open(url, '_blank');
 };
@@ -423,13 +401,8 @@ window.mostrarDetalleProducto = function (id) {
                                 </nav>
                                 <h2 class="fw-bold text-dark mb-3" style="font-family: 'Playfair Display', serif; font-size: 2.2rem;">${p.nombre}</h2>
                                 <div class="mb-4">
-                                    <span class="h3 fw-bold text-danger">$${p.precio.toLocaleString('es-AR')}</span>
-                                    ${p.infoPromo ? `
-                                        <div class="mt-3 p-3 rounded-4" style="background-color: #fff5f5; border: 1px dashed #ff4d4d;">
-                                            <span class="fw-bold text-uppercase small text-danger">¡Oferta!</span>
-                                            <div class="text-dark fw-bolder fs-5 mt-1">${p.infoPromo}</div>
-                                        </div>
-                                    ` : ''}
+                                    <span class="h3 fw-bold text-danger">$${p.precioMinorista.toLocaleString('es-AR')}</span>
+                                    ${p.precioMayorista ? `<div class="text-success fw-bold small">Precio Mayorista: $${p.precioMayorista.toLocaleString('es-AR')} (llevando 3+)</div>` : ''}
                                 </div>
                                 <div class="flex-grow-1">
                                     <h6 class="text-uppercase fw-bold small text-dark mb-2">Descripción</h6>
@@ -452,32 +425,4 @@ window.mostrarDetalleProducto = function (id) {
     if (oldModal) oldModal.remove();
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     new bootstrap.Modal(document.getElementById('modalDetalle')).show();
-};
-
-// Reemplaza TODO el bloque que me mandaste por este:
-
-window.agregarAlCarritoDirecto = function(id, nombre, precio, imagen) {
-    const itemExistente = carrito.find(item => item.id === id);
-
-    if (itemExistente) {
-        itemExistente.cantidad++;
-    } else {
-        carrito.push({
-            id: id,
-            nombre: nombre,
-            precio: precio,
-            imagen: imagen, // <--- Guardamos la ruta de la imagen aquí
-            cantidad: 1
-        });
-    }
-
-    actualizarYGuardar(); 
-    mostrarNotificacion(nombre);
-    
-    // Abrir el modal del carrito
-    const cartModalElement = document.getElementById('cartModal');
-    if (cartModalElement) {
-        const cartModal = bootstrap.Modal.getOrCreateInstance(cartModalElement);
-        cartModal.show();
-    }
 };

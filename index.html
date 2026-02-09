@@ -4,66 +4,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Bella Afrodita - Lencería</title>
+    <title>My Bella Afrodita | Linceria</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-    <meta property="og:title" content="My Bella Afrodita - Lencería Exclusiva">
-    <meta property="og:description" content="Descubre nuestra colección de lencería, conjuntos y línea Essentials.">
-    <meta property="og:image"
-        content="https://raw.githubusercontent.com/alexanderbaez/my-bella-afrodita-web/master/images/LOGO.png">
-    <meta property="og:image:width" content="300">
-    <meta property="og:image:height" content="300">
-    <meta property="og:url" content="https://alexanderbaez.github.io/my-bella-afrodita-web/">
-    <meta property="og:type" content="website">
-
-
-
-    <style>
-        /* Ajuste para que el logo se vea bien en la barra */
-        .navbar-logo {
-            height: 50px;
-            width: auto;
-            object-fit: contain;
-        }
-
-        .footer-logo {
-            height: 40px;
-            filter: brightness(0) invert(1);
-            /* Hace que el logo negro se vea blanco en el footer */
-        }
-    </style>
+    <link rel="stylesheet" href="css/index.css">
 </head>
 
 <body>
 
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+        <nav class="navbar navbar-expand-lg fixed-top shadow-sm" id="mainNav">
             <div class="container">
                 <a class="navbar-brand-custom d-flex align-items-center" href="index.html">
-                    <img src="./images/LOGO.png" alt="My Bella Afrodita" class="navbar-logo me-2">
-                    <span class="fw-bold d-none d-sm-inline" style="letter-spacing: 1px;">MY BELLA AFRODITA</span>
+                    <img src="./images/LOGO.png" alt="Logo" style="height: 45px;" class="me-2">
+                    <span class="d-none d-sm-inline" style="letter-spacing: 2px; font-size: 1.2rem;">My Bella Afrodita</span>
                 </a>
 
                 <div class="d-flex align-items-center order-lg-last">
-                    <a class="nav-link position-relative text-light me-3" href="#" id="cartIcon" data-bs-toggle="modal"
-                        data-bs-target="#cartModal">
-                        <i class="fas fa-shopping-cart fa-lg"></i>
-                        <span id="cart-count"
-                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                            style="font-size: 0.65rem;">0</span>
+                    <a class="nav-link position-relative text-light me-3" href="#" id="cartIcon" data-bs-toggle="modal" data-bs-target="#cartModal">
+                        <i class="fas fa-shopping-bag fa-lg"></i>
+                        <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem; display: none;">0</span>
                     </a>
-                    <button class="navbar-toggler p-2" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#navbarNav">
-                        <i class="fas fa-bars text-light"></i>
+                    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
                     </button>
                 </div>
+
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto align-items-center">
+                    <ul class="navbar-nav ms-auto fw-bold text-center">
                         <li class="nav-item"><a class="nav-link" href="index.html">INICIO</a></li>
+                        <li class="nav-item"><a class="nav-link" href="html/catalogo.html">FEMENINO</a></li>
+                        <li class="nav-item"><a class="nav-link" href="html/catalogo-hombres.html">MASCULINO</a></li>
                         <li class="nav-item"><a class="nav-link" href="#nosotros-seccion">NOSOTROS</a></li>
-                        <li class="nav-item"><a class="nav-link" href="html/catalogo.html">CATÁLOGO</a></li>
                     </ul>
                 </div>
             </div>
@@ -71,177 +44,155 @@
     </header>
 
     <main>
-        <section class="hero-banner d-flex align-items-center">
+<section class="hero-banner d-flex align-items-center">
             <div class="container">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="hero-text-box-left">
-                            <h1 class="display-5 fw-bold">Lencería: Romance, Comodidad y Exclusividad</h1>
-                            <p class="lead">Piezas seleccionadas para que te sientas poderosa. Descubre tu lado más
-                                Afrodita.</p>
-                            <a href="html/catalogo.html"
-                                class="btn btn-danger btn-lg mt-3 rounded-pill px-4 shadow">Explorar Catálogo</a>
+                <div class="hero-text-box-left border-0 bg-transparent shadow-none" style="max-width: 600px;">
+                    <span class="text-uppercase mb-2 d-block" 
+                          style="letter-spacing: 5px; color: #ffffff; font-weight: 700; font-size: 0.9rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
+                          Estilo & Sensualidad
+                    </span>
+                    
+                    <h1 class="display-2 fw-bold mb-3" style="line-height: 1.1; color: var(--brand-primary); text-shadow: 1px 1px 2px rgba(255,255,255,0.2);">
+                        Tu belleza, <br>
+                        <span style="font-style: italic; font-weight: 400; font-family: 'Playfair Display';">sin filtros.</span>
+                    </h1>
+                    
+                    <p class="lead mb-4 text-white" style="font-weight: 400; text-shadow: 1px 1px 3px rgba(0,0,0,0.6);">
+                        Descubrí una colección pensada para abrazar cada curva y potenciar tu luz propia.
+                    </p>
+                    
+                    <div class="d-flex gap-3">
+                        <a href="html/catalogo.html" class="btn btn-danger btn-lg rounded-0 px-5 py-3 shadow-lg" style="letter-spacing: 2px; font-size: 0.8rem;">SHOP FEMME</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="que-buscas-hoy-section" class="py-5 bg-white">
+            <div class="container py-5">
+                <div class="row align-items-end mb-5">
+                    <div class="col-md-8 text-start">
+                        <h2 class="display-4 font-playfair fw-bold m-0" style="color: var(--color-oscuro-elegante);">Curaduría Exclusiva</h2>
+                        <p class="text-muted mt-2">Seleccionamos lo mejor para vos.</p>
+                    </div>
+                </div>
+                
+                <div class="row g-4">
+                    <div class="col-md-8">
+                        <div class="position-relative overflow-hidden group-hover-zoom shadow-lg" style="height: 650px;">
+                            <a href="html/catalogo.html" class="category-bubble w-100 h-100 d-block border-0 rounded-0" style="background-image: url('./images/femenino.jpg'); transition: all 0.6s ease;">
+                                <div class="bubble-content p-5 d-flex flex-column justify-content-end align-items-start text-start" style="background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%);">
+                                    <span class="text-white-50 text-uppercase mb-2" style="letter-spacing: 4px; font-size: 0.8rem;">Seducción & Elegancia</span>
+                                    <h3 class="display-3 text-white fw-bold mb-3" style="font-family: 'Playfair Display';">Mujer</h3>
+                                    <div class="btn btn-outline-light rounded-0 px-5 py-2 fw-bold" style="letter-spacing: 2px;">DESCUBRIR</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <div class="position-relative overflow-hidden shadow-lg" style="height: 350px;">
+                                    <a href="html/catalogo-hombres.html" class="category-bubble w-100 h-100 d-block border-0 rounded-0" style="background-image: url('./images/masculino.png');">
+                                        <div class="bubble-content p-4 d-flex flex-column justify-content-end align-items-start text-start" style="background: linear-gradient(to top, rgba(140, 0, 44, 0.7) 0%, transparent 100%);">
+                                            <h3 class="h2 text-white fw-bold mb-2">Hombres</h3>
+                                            <p class="text-white-50 small text-uppercase mb-3" style="letter-spacing: 2px;">Confort Premium</p>
+                                            <i class="fas fa-arrow-right text-white"></i>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex align-items-center justify-content-center p-4 text-center border" style="height: 275px; background-color: var(--color-rosa-suave);">
+                                    <div>
+                                        <p class="small text-uppercase mb-3" style="letter-spacing: 3px; color: var(--color-terracota-pasión);">Esencia</p>
+                                        <h4 class="font-playfair italic mb-0" style="font-size: 1.4rem;">"Piezas que celebran tu autenticidad"</h4>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="essentials-section" class="py-5" style="background-color: #ffffff;">
-            <div class="container">
-                <div class="text-center mb-5">
-                    <h2 class="display-6 fw-bold">Línea <span class="text-terracota-pasión">Essentials</span></h2>
-                    <p class="text-muted">Boxers y Medias: Comodidad diaria sin perder el estilo.</p>
-                </div>
-
+        <section class="py-5" style="background-color: var(--color-rosa-suave);">
+            <div class="container py-5 text-center">
                 <div class="row justify-content-center">
-                    <div class="col-lg-10">
-                        <div id="carouselEssentials"
-                            class="carousel slide p-4 p-md-5 rounded-5 shadow-lg border border-light"
-                            data-bs-ride="carousel" data-bs-interval="5000" style="background-color: #fff0f0;">
-
-                            <div class="carousel-item">
-                                <div class="row align-items-center g-4">
-                                    <div class="col-md-6 text-center">
-                                        <img src="./images/media-orejita-niños.jpg" class="img-fluid rounded-4 shadow"
-                                            alt="Medias Kity">
-                                    </div>
-                                    <div class="col-md-6 text-center text-md-start">
-                                        <span class="badge bg-dark rounded-pill mb-2 px-3">Para Peques</span>
-                                        <h3 class="fw-bold text-dark">Medias con Orejitas</h3>
-                                        <p class="text-muted">Nuestro ingreso mas cute, su diseño en algodón la brinda
-                                            comodidad y sus orejitas le da diversion y ternura</p>
-                                        <div class="price-text display-6 mb-4">$1.500</div>
-                                        <button class="btn btn-danger btn-lg rounded-pill px-5 shadow-sm"
-                                            onclick="agregarAlCarritoDirecto('medias-01', 'Pack Medias Kitty', 1500, './images/Medias-Kity.png')">
-                                            <i class="fas fa-shopping-cart me-2"></i>Sumar al Carrito
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="carousel-inner">
-                                <div class="carousel-item active">
-                                    <div class="row align-items-center g-4">
-                                        <div class="col-md-6 text-center">
-                                            <img src="./images/Boxer-todos.png" class="img-fluid rounded-4 shadow"
-                                                alt="Boxer Masculino">
-                                        </div>
-                                        <div class="col-md-6 text-center text-md-start">
-                                            <span class="badge bg-dark rounded-pill mb-2 px-3">Para Él</span>
-                                            <h3 class="fw-bold text-dark">Boxer Masculino x3</h3>
-                                            <p class="text-muted">Algodón de alta calidad con el calce perfecto.</p>
-                                            <div class="price-text display-6 mb-4">$10.000</div>
-                                            <button class="btn btn-danger btn-lg rounded-pill px-5 shadow-sm"
-                                                onclick="agregarAlCarritoDirecto('boxer-01', 'Boxer Masculino x3', 10000, './images/Boxer-todos.png')">
-                                                <i class="fas fa-shopping-cart me-2"></i>Sumar al Carrito
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="carousel-item">
-                                    <div class="row align-items-center g-4">
-                                        <div class="col-md-6 text-center">
-                                            <img src="./images/Medias-Kity.png" class="img-fluid rounded-4 shadow"
-                                                alt="Medias Kity">
-                                        </div>
-                                        <div class="col-md-6 text-center text-md-start">
-                                            <span class="badge bg-dark rounded-pill mb-2 px-3">Para Ella</span>
-                                            <h3 class="fw-bold text-dark">Pack Medias Kitty</h3>
-                                            <p class="text-muted">Algodón térmico y duradero con diseño exclusivo.</p>
-                                            <div class="price-text display-6 mb-4">$1.500</div>
-                                            <button class="btn btn-danger btn-lg rounded-pill px-5 shadow-sm"
-                                                onclick="agregarAlCarritoDirecto('medias-01', 'Pack Medias Kitty', 1500, './images/Medias-Kity.png')">
-                                                <i class="fas fa-shopping-cart me-2"></i>Sumar al Carrito
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                            </div>
-
-                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselEssentials"
-                                data-bs-slide="prev" style="filter: invert(1); width: 5%;">
-                                <span class="carousel-control-prev-icon"></span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#carouselEssentials"
-                                data-bs-slide="next" style="filter: invert(1); width: 5%;">
-                                <span class="carousel-control-next-icon"></span>
-                            </button>
-                        </div>
+                    <div class="col-md-7">
+                        <i class="fas fa-quote-left mb-4 opacity-25 fa-3x" style="color: var(--color-pasión);"></i>
+                        <h2 class="display-6 italic" style="font-family: 'Playfair Display', serif; font-style: italic; line-height: 1.5;">
+                            "La belleza no es un estándar que el mercado impone, es una esencia que ya posees."
+                        </h2>
+                        <div style="width: 40px; height: 2px; background: var(--color-terracota-pasión); margin: 30px auto;"></div>
+                        <p class="text-uppercase small fw-bold" style="letter-spacing: 3px;">My Bella Afrodita</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="nosotros-seccion" class="nosotros-presentacion py-5">
-            <div class="container">
-                <div class="row g-0 align-items-center shadow-lg bg-white rounded-4 overflow-hidden">
-                    <div class="col-md-6 text-center bg-light p-4">
-                        <img src="images/LogoNEGROANDREA.png" class="img-fluid" style="max-height: 300px;"
-                            alt="Nosotros">
+        <section id="nosotros-seccion" class="py-5 bg-white">
+            <div class="container py-5">
+                <div class="row align-items-center g-5">
+                    <div class="col-md-6">
+                        <div class="p-4 border">
+                            <img src="images/LogoNEGROANDREA.png" alt="Afrodita Logo" class="img-fluid opacity-75">
+                        </div>
                     </div>
-                    <div class="col-md-6 p-4 p-lg-5">
-                        <h2 class="display-6 mb-4 fw-bold">La Magia Detrás de Cada Pieza</h2>
-                        <p class="lead">My Bella Afrodita nace de la pasión por celebrar la figura femenina.</p>
+                    <div class="col-md-6">
+                        <h4 class="text-uppercase small fw-bold mb-3" style="color: var(--color-terracota-pasión); letter-spacing: 2px;">Nuestra Misión</h4>
+                        <h2 class="display-5 fw-bold mb-4" style="font-family: 'Playfair Display';">La Magia detrás de cada pieza</h2>
+                        <p class="text-muted mb-4 lead">My Bella Afrodita nace de la pasión por celebrar la figura femenina.</p>
                         <p class="text-muted">Creemos firmemente que la belleza no es un estándar que el mercado impone,
                             sino una esencia que cada mujer ya posee.
                             Todas son perfectas, por eso, nuestra misión es acompañar esa autenticidad con piezas
-                            diseñadas para abrazar tu cuerpo y tu confianza.
+                            diseas para abrazar tu cuerpo y tu confianza.
                             Existe una prenda ideal para cada una de nosotras, pensada no para transformarte, sino para
                             ser el reflejo de tu propia luz y el lienzo,
                             donde luzcas tu belleza única, libre y sin filtros.</p>
+                        <a href="#mainNav" class="btn btn-dark rounded-0 px-4 mt-3 py-2">Pensamos en vos</a>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer class="footer-custom text-white py-4">
-        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
-            <div class="text-center text-md-start">
-                <img src="images/LogoNEGROANDREA.png" alt="Logo Footer" class="footer-logo mb-2">
-                <p class="mb-0 small">&copy; 2026 My Bella Afrodita. Todos los derechos reservados.</p>
+    <footer class="footer-custom text-white py-5" style="background-color: #1a1a1a;">
+        <div class="container py-4">
+            <div class="row g-5">
+                <div class="col-md-4 text-center text-md-start">
+                    <img src="images/LOGO.png" alt="Logo" style="height: 60px;" class="mb-4">
+                    <p class="small opacity-50 pe-md-5">Tu boutique de confianza. Calidad premium y atención personalizada en cada compra.</p>
+                </div>
+                <div class="col-6 col-md-4 text-center">
+                    <h5 class="text-uppercase small fw-bold mb-4" style="letter-spacing: 2px;">Explorar</h5>
+                    <ul class="list-unstyled small opacity-75">
+                        <li class="mb-2"><a href="html/catalogo.html" class="text-white text-decoration-none">Colección Mujer</a></li>
+                        <li class="mb-2"><a href="html/catalogo-hombres.html" class="text-white text-decoration-none">Colección Hombre</a></li>
+                        <li class="mb-2"><a href="#" class="text-white text-decoration-none">Guía de Tallas</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-md-4 text-center text-md-end">
+                    <h5 class="text-uppercase small fw-bold mb-4" style="letter-spacing: 2px;">Contacto</h5>
+                    <div class="d-flex justify-content-center justify-content-md-end gap-3 fs-4 mb-4">
+                        <a href="#" class="text-white"><i class="fab fa-instagram"></i></a>
+                        <a href="https://wa.me/5492646121771" class="text-white"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                    <p class="small opacity-50">San Juan, Argentina</p>
+                </div>
             </div>
-            <div class="social-icons mt-3 mt-md-0">
-                <a href="#" class="text-white me-3"><i class="fab fa-instagram fa-lg"></i></a>
-                <a href="https://wa.me/5492646121771" target="_blank" class="text-white"><i
-                        class="fab fa-whatsapp fa-lg"></i></a>
-            </div>
+            <hr class="my-5 opacity-10">
+            <p class="text-center mb-0 small opacity-25" style="letter-spacing: 2px;">&copy; 2026 MY BELLA AFRODITA. LINCERIA.</p>
         </div>
     </footer>
 
-    <a href="https://wa.me/5492646121771" target="_blank" class="whatsapp-flotante"><i class="fab fa-whatsapp"></i></a>
-
-    <div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content rounded-4 border-0 shadow-lg">
-                <div class="modal-header bg-dark text-white border-0 py-3">
-                    <h5 class="modal-title fw-bold"><i class="fas fa-shopping-cart me-2"></i>Tu Carrito</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <div id="cart-items"></div>
-                    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
-                        <h4 class="fw-bold mb-0">Total:</h4>
-                        <div id="cart-total" class="fw-bold text-danger mb-0 h4">$0</div>
-                    </div>
-                </div>
-                <div class="modal-footer border-0 p-4 pt-0">
-                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4"
-                        onclick="confirmarVaciarCarrito()">Vaciar Carrito</button>
-                    <button type="button" class="btn btn-danger rounded-pill px-4 fw-bold"
-                        onclick="enviarPedidoWhatsApp()">Finalizar Pedido</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <a href="https://wa.me/5492646121771" target="_blank" class="whatsapp-flotante shadow-lg">
+        <i class="fab fa-whatsapp"></i>
+    </a>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/productos.js"></script>
     <script src="js/script.js"></script>
-
 </body>
-
 </html>

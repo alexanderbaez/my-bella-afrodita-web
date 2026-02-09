@@ -1,106 +1,93 @@
-/* Importar fuentes elegantes: Playfair Display y Roboto */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap');
+/* ==========================================================================
+   INDEX.CSS - MY BELLA AFRODITA (Versión Optimizada 2026)
+   ========================================================================== */
 
-/* --- PALETA DE COLORES (Pasión y Profesionalismo) --- */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Roboto:wght@300;400;500;700&display=swap');
+
+/* --- PANEL DE CONTROL DE COLORES --- */
 :root {
-    --color-pasión: #8c002c;          /* Borgoña Profundo (Fondo para Header/Footer) */
-    --color-rosa-suave: #fcebeb;      /* Rosa Pálido (Fondo principal del body) */
-    --color-terracota-pasión: #b31a4a; /* Rojo Ladrillo Suave (Acentos) */
-    --color-oscuro-elegante: #333333; /* Texto principal */
-    --color-blanco-nav: #ffffff;
+    --brand-primary: #8c002c;        /* Borgoña (Header, Footer, Títulos) */
+    --brand-accent: #b31a4a;         /* Terracota (Botones, Detalles) */
+    --brand-bg: #fcebeb;             /* Fondo General (Rosa suave) */
+    --text-main: #333333;
+    --white-pure: #ffffff;
+    --transition-smooth: all 0.3s ease;
 }
 
+/* --- ESTILOS BASE --- */
 body {
-    /* CORRECCIÓN DE SUPERPOSICIÓN: Padding superior para compensar el navbar fixed-top */
-    padding-top: 56px; 
+    padding-top: 56px; /* Altura del navbar */
     font-family: 'Roboto', sans-serif;
-    background-color: var(--color-rosa-suave); 
-    color: var(--color-oscuro-elegante);
+    background-color: var(--brand-bg); 
+    color: var(--text-main);
 }
 
-h1, h2, h3, h4, h5, .display-6 {
+h1, h2, h3, h4, h5 {
     font-family: 'Playfair Display', serif;
-    color: var(--color-pasión);
+    color: var(--brand-primary);
 }
 
 /* --- NAV BAR --- */
-.navbar-brand-custom {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--color-blanco-nav) !important; 
-    text-decoration: none;
-}
 #mainNav {
-    background-color: var(--color-pasión) !important; 
+    background-color: var(--brand-primary) !important; 
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
-#mainNav .nav-link {
-    color: var(--color-blanco-nav) !important;
-    font-weight: 500;
-}
-#mainNav .nav-link:hover {
-    color: var(--color-rosa-suave) !important;
-}
-.navbar-toggler-icon {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3csvg%3e") !important;
+
+.navbar-brand-custom {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: var(--white-pure) !important; 
 }
 
-/* SOLUCIÓN VISIBILIDAD MENÚ MÓVIL (toggler) */
+#mainNav .nav-link {
+    color: var(--white-pure) !important;
+    font-weight: 500;
+}
+
+#mainNav .nav-link:hover {
+    color: var(--brand-bg) !important;
+}
+
+/* Fix para el menú desplegable en móviles */
 #mainNav .navbar-collapse {
-    background-color: var(--color-pasión); 
+    background-color: var(--brand-primary);
     padding: 10px 20px;
     border-radius: 0 0 8px 8px;
 }
 
-/* ------------------- ESTILOS DE PÁGINA ------------------- */
-
-/* --- 1. PORTADA / HERO BANNER (Responsividad corregida) --- */
+/* --- 1. PORTADA / HERO BANNER (RESTAURADA) --- */
 .hero-banner {
     height: 90vh; 
-    /* RUTA VERIFICADA PARA GITHUB PAGES */
     background: url('../images/portada.jpg') no-repeat center right/cover;
     position: relative;
-    /* [CORRECCIÓN CRÍTICA]: Eliminamos padding-top fijo para que no cause superposición */
+    display: flex;
+    align-items: center;
     padding-top: 0; 
-    border-bottom: 5px solid var(--color-terracota-pasión);
+    border-bottom: 5px solid var(--brand-accent);
 }
+
 .hero-text-box-left {
     background-color: rgba(255, 255, 255, 0.85);
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); 
-    /* [CORRECCIÓN CRÍTICA]: Eliminamos margin-top fijo que causaba el desplazamiento */
-    margin-top: 0; 
-    position: relative; /* Aseguramos un posicionamiento normal */
+    margin-left: 5%;
+    max-width: 500px;
 }
+
 .hero-text-box-left h1 {
     font-weight: 900;
     font-size: 2.5rem;
-    color: var(--color-pasión); 
+    color: var(--brand-primary); 
 }
 
-/* --- 2. SECCIÓN "QUÉ BUSCAS HOY?" (TARJETAS INTERACTIVAS - Responsividad mejorada) --- */
-#que-buscas-hoy-section {
-    background-color: #ffffff;
-    padding-top: 5rem;
-    padding-bottom: 5rem;
-    border-top: 1px solid rgba(0, 0, 0, 0.05); 
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05); 
-}
-#que-buscas-hoy-section h2 {
-    color: var(--color-pasión);
-    font-weight: 700;
-    margin-bottom: 3rem;
-}
-.card-link-interactive {
-    /* [AJUSTE RESPONSIVO]: Flexbox para centrar contenido, altura consistente */
-    display: flex; /* Cambiamos a flex para centrar mejor el contenido interno */
+/* --- 2. SECCIÓN "QUÉ BUSCAS HOY?" Y CATEGORÍAS --- */
+.card-link-interactive, .category-bubble {
+    display: flex;
     align-items: center; 
     justify-content: center;
     text-align: center;
-    height: 300px; /* Mantenemos altura consistente */
-
+    height: 400px;
     text-decoration: none;
     color: white;
     border-radius: 10px;
@@ -108,154 +95,99 @@ h1, h2, h3, h4, h5, .display-6 {
     position: relative;
     background-size: cover;
     background-position: center;
-    transition: transform 0.3s, box-shadow 0.3s;
+    transition: var(--transition-smooth);
 }
-.card-link-interactive:hover {
+
+.card-link-interactive:hover, .category-bubble:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(140, 0, 44, 0.3);
 }
-.card-body-interactive {
+
+.card-body-interactive, .bubble-content {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     padding: 30px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    text-align: center;
     background-color: rgba(0, 0, 0, 0.5); /* Overlay oscuro inicial */
-    transition: background-color 0.3s;
+    transition: var(--transition-smooth);
 }
-.card-link-interactive:hover .card-body-interactive {
-    background-color: rgba(140, 0, 44, 0.7); /* Overlay Borgoña al pasar el ratón */
+
+.card-link-interactive:hover .card-body-interactive, 
+.category-bubble:hover .bubble-content {
+    background-color: rgba(140, 0, 44, 0.7); /* Overlay Borgoña */
 }
 
 /* --- 3. SECCIÓN NOSOTROS --- */
 .nosotros-presentacion {
-    background-color: var(--color-rosa-suave);
     padding-top: 5rem;
     padding-bottom: 5rem;
-    border-top: 1px solid rgba(0, 0, 0, 0.05); 
 }
+
 .nosotros-presentacion .row {
-    background-color: #ffffff;
+    background-color: var(--white-pure);
     border-radius: 10px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); 
+    overflow: hidden;
 }
-.nosotros-presentacion .rounded-start {
-    border-top-left-radius: 10px !important;
-    border-bottom-left-radius: 10px !important;
-}
+
 .nosotros-presentacion img {
     height: 500px; 
     width: 100%;
     object-fit: cover; 
 }
-.nosotros-presentacion h2 {
-    font-weight: 700;
-}
 
-/* --- ESTILOS DE TARJETAS DE PRODUCTO (USADAS EN catalogo-conjuntos.html) --- */
-
-.products-listing {
-    /* Mantenemos el fondo blanco para que las tarjetas resalten */
-    background-color: #ffffff; 
-}
-
+/* --- TARJETAS DE PRODUCTO (CATÁLOGO) --- */
 .product-card {
     border: none;
     border-radius: 10px;
-    transition: transform 0.3s, box-shadow 0.3s;
+    transition: var(--transition-smooth);
+    background-color: var(--white-pure);
+    height: 100%;
     overflow: hidden;
-    background-color: var(--color-rosa-suave); 
 }
+
 .product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(140, 0, 44, 0.2); 
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
 }
 
-.product-img-top {
-    height: 350px; 
+.card-img-container {
+    height: 450px;
+    overflow: hidden;
+    background: #f8f8f8;
+}
+
+.card-img-container img {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    border-bottom: 3px solid var(--color-terracota-pasión);
+    transition: transform 0.8s ease;
 }
 
-.product-card .card-title {
-    color: var(--color-pasión);
-    font-size: 1.6rem;
-    font-weight: 700;
-    margin-bottom: 10px;
+.product-card:hover .card-img-container img {
+    transform: scale(1.05);
 }
 
-.product-card .card-text {
-    font-size: 0.95rem;
-    line-height: 1.4;
-    height: 40px; 
-    overflow: hidden;
-    text-align: center;
+/* --- BOTONES --- */
+.btn-danger {
+    background-color: var(--brand-primary) !important;
+    border-color: var(--brand-primary) !important;
 }
 
-.product-card .form-select {
-    border-color: var(--color-terracota-pasión);
-    font-family: 'Roboto', sans-serif;
-}
-.product-card .form-select:focus {
-    box-shadow: 0 0 0 0.25rem rgba(179, 26, 74, 0.25); 
-    border-color: var(--color-terracota-pasión);
-}
-
-.price-text {
-    font-family: 'Playfair Display', serif;
-    font-weight: 900;
-    color: var(--color-oscuro-elegante);
-}
-
-.product-carousel .carousel-control-prev-icon,
-.product-carousel .carousel-control-next-icon {
-    background-color: rgba(140, 0, 44, 0.7); 
-    border-radius: 50%;
-    padding: 15px;
-}
-
-/* --- ESTILOS DE GUÍA DE TALLAS (Para tallas.html) --- */
-.size-guide-section {
-    background-color: var(--color-rosa-suave);
-}
-.text-pasión {
-    color: var(--color-pasión);
-}
-.text-terracota-pasión {
-    color: var(--color-terracota-pasión);
-}
-.size-table-custom {
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 2rem;
-}
-.size-table-custom thead.bg-pasión {
-    background-color: var(--color-pasión) !important;
-    color: white;
-}
-.size-table-custom tbody tr:nth-child(even) {
-    background-color: #f5f5f5; 
-}
-.size-table-custom tbody tr:hover {
-    background-color: var(--color-rosa-suave);
-    font-weight: 500;
+.btn-danger:hover {
+    background-color: var(--brand-accent) !important;
 }
 
 /* --- FOOTER Y WHATSAPP --- */
 .footer-custom {
-    background-color: var(--color-pasión);
-    font-family: 'Roboto', sans-serif;
+    background-color: var(--brand-primary);
+    color: var(--white-pure);
+    padding: 3rem 0;
 }
-.footer-custom a {
-    color: white;
-    text-decoration: none;
-}
+
 .whatsapp-flotante {
     background-color: #25d366; 
     position: fixed;
@@ -265,249 +197,125 @@ h1, h2, h3, h4, h5, .display-6 {
     right: 30px;
     color: #fff;
     border-radius: 50%;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 30px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
     z-index: 1000;
-    line-height: 60px;
+    text-decoration: none;
 }
 
-/* Colores de botones */
-.btn-danger {
-    background-color: var(--color-pasión) !important;
-    border-color: var(--color-pasión) !important;
-    color: white !important;
-}
-.btn-warning {
-    background-color: #ffc107 !important;
-    border-color: #ffc107 !important;
-    color: var(--color-oscuro-elegante) !important;
-    font-weight: 700;
-}
-.btn-outline-danger {
-    color: var(--color-pasión) !important;
-    border-color: var(--color-pasión) !important;
-}
-.btn-outline-danger:hover {
-    background-color: var(--color-pasión) !important;
-    color: white !important;
-}
-
-/* ================================================= */
-/* OPTIMIZACIÓN PARA MÓVILES (Media Queries) */
-/* ================================================= */
+/* --- MEDIA QUERIES (MÓVILES) --- */
 @media (max-width: 991.98px) {
-    
-    body {
-        padding-top: 70px; 
-    }
-
     .hero-banner {
         height: auto; 
-        min-height: 400px; 
+        min-height: 450px;
         background-position: center center;
-        padding-top: 60px; 
-        padding-bottom: 30px;
     }
-    
     .hero-text-box-left {
-        margin-top: 0; 
-        padding: 20px;
+        margin: 20px auto;
         text-align: center;
-        width: 90%; 
-        margin-left: auto;
-        margin-right: auto;
+        width: 90%;
     }
+    .hero-text-box-left h1 { font-size: 1.8rem; }
     
-    .hero-text-box-left h1 {
-        font-size: 1.8rem; 
-    }
-
-    .nosotros-presentacion img {
-        height: 300px; 
-        border-top-left-radius: 10px !important;
-        border-top-right-radius: 10px !important;
-        border-bottom-left-radius: 0 !important; 
-    }
-    .nosotros-presentacion .col-md-6.p-5 {
-        padding: 30px !important; 
-        text-align: center; 
-    }
+    .nosotros-presentacion img { height: 300px; }
     
-    .product-img-top {
-        height: 300px;
-    }
-
-    .footer-custom .container {
-        flex-direction: column;
-        text-align: center;
-    }
-    .footer-custom .d-flex.align-items-center {
-        flex-direction: column;
-        margin-bottom: 10px;
-    }
-}
-/* --- ESTILOS PARA catalogo.html (SELECCIÓN DE CATEGORÍA) --- */
-
-.catalogo-main-section {
-    background-color: var(--color-rosa-suave);
-    padding-top: 8rem; /* Espacio para el Navbar */
+    .card-link-interactive, .category-bubble { height: 300px; }
 }
 
-.category-bubble {
-    display: block;
-    height: 400px; /* Tamaño grande para las categorías */
-    text-decoration: none;
-    color: white;
-    border-radius: 10px;
+/* --- EFECTO TOCADOR: FONDO SENSUAL PARA LA SECCIÓN --- */
+main.py-5 {
+    /* Un degradado profundo que va del rosa piel al blanco crema */
+    background: radial-gradient(circle at top, #fff5f5 0%, #fcebeb 100%);
+    position: relative;
+}
+
+/* --- TARJETAS ESTILO "RETRATO LUXURY" --- */
+.product-card {
+    border: none !important;
+    border-radius: 0 !important;
+    background: rgba(255, 255, 255, 0.7); /* Transparencia elegante */
+    backdrop-filter: blur(10px); /* Efecto vidrio esmerilado */
+    padding: 15px;
+    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.product-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    background: #ffffff;
+    box-shadow: 0 20px 40px rgba(140, 0, 44, 0.15) !important;
+}
+
+/* Marco para la imagen */
+.card-img-container {
+    height: 480px;
     overflow: hidden;
     position: relative;
-    background-size: cover;
-    background-position: center;
-    transition: transform 0.3s, box-shadow 0.3s;
-    border: 3px solid transparent;
+    /* Un borde interno sutil que parece un marco de cuadro */
+    border: 1px solid rgba(140, 0, 44, 0.1);
 }
 
-.category-bubble:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 30px rgba(140, 0, 44, 0.4);
-    border: 3px solid var(--color-terracota-pasión);
-}
-
-.bubble-content {
-    position: absolute;
-    top: 0;
-    left: 0;
+.card-img-container img {
     width: 100%;
     height: 100%;
-    padding: 30px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    background-color: rgba(0, 0, 0, 0.55); /* Overlay oscuro */
-    transition: background-color 0.3s;
+    object-fit: cover;
+    filter: brightness(0.95); /* Un toque más oscuro para dar misterio */
+    transition: all 0.9s ease;
 }
 
-.category-bubble:hover .bubble-content {
-    background-color: rgba(140, 0, 44, 0.75); /* Overlay Borgoña al pasar el ratón */
-}
-
-.bubble-content h2 {
-    color: white;
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-}
-
-.bubble-content p {
-    color: #ffdce5;
-    font-size: 1.1rem;
-}
-
-/* Animación suave para la tarjeta */
-.product-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
-}
-
-/* Efecto para el botón premium */
-.btn-premium {
-    background: #1a1a1a;
-    border: none;
-    transition: all 0.3s ease;
-}
-
-.btn-premium:hover {
-    background: #dc3545; /* Cambia a rojo Bella Afrodita en hover */
-    transform: scale(1.02);
-}
-
-/* Fuente elegante para títulos (asegúrate de tenerla en el HTML) */
-h5.fw-bold {
-    font-family: 'Poppins', sans-serif;
-}
-
-/* Media Query para asegurar visibilidad en móvil */
-@media (max-width: 767px) {
-    .category-bubble {
-        height: 300px;
-    }
-}
-
-/* --- ESTILOS ESPECÍFICOS PARA LA SECCIÓN ESSENTIALS --- */
-
-#carouselEssentials {
-    border: 1px solid rgba(140, 0, 44, 0.1); /* Sutil borde borgoña */
-}
-
-#carouselEssentials .carousel-item {
-    transition: transform .6s ease-in-out;
-}
-
-#carouselEssentials .price-text {
-    color: var(--color-pasión);
-    font-weight: 900;
-}
-
-/* Redondear botones de navegación del carrusel */
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-    background-color: rgba(140, 0, 44, 0.2);
-    border-radius: 50%;
-    padding: 20px;
-}
-
-/* --- FIX FINAL CARROUSEL ESSENTIALS --- */
-
-/* Forzar que solo se vea un item a la vez y con transición suave */
-#carouselEssentials .carousel-item {
-    display: none;
-    float: left;
-    width: 100%;
-    margin-right: -100%;
-    backface-visibility: hidden;
-    transition: transform 0.8s cubic-bezier(0.6, 0, 0.3, 1); /* Giro más elegante */
-}
-
-#carouselEssentials .carousel-item.active {
-    display: block;
-}
-
-/* Evitar que las imágenes se estiren y asegurar centrado */
-#carouselEssentials img {
-    max-height: 350px !important;
-    width: auto !important;
-    margin: 0 auto;
-    object-fit: contain !important; /* Evita que se corte la media */
-}
-
-/* Espaciado para que el botón no toque el borde en móviles */
-@media (max-width: 768px) {
-    #carouselEssentials {
-        padding: 20px !important;
-    }
-    #carouselEssentials .price-text {
-        font-size: 1.8rem !important;
-        margin-bottom: 1rem !important;
-    }
-    #carouselEssentials .carousel-item .row {
-        flex-direction: column;
-    }
-}
-.navbar-brand-custom img {
-    transition: transform 0.3s ease;
-}
-
-.navbar-brand-custom img:hover {
+.product-card:hover .card-img-container img {
+    filter: brightness(1.05);
     transform: scale(1.1);
 }
 
-/* Ajuste para que las imágenes del carrusel no se vean gigantes en móviles */
-@media (max-width: 768px) {
-    #carouselEssentials img {
-        max-height: 250px !important;
-        margin-bottom: 20px;
-    }
+/* --- DETALLES DE TEXTO --- */
+.product-card .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    font-style: italic; /* Itálica para más sensualidad */
+    color: var(--brand-primary);
+    margin-top: 20px;
+}
+
+.product-price {
+    font-family: 'Playfair Display', serif; /* Cambiamos a Playfair para el precio */
+    font-size: 1.3rem;
+    color: var(--brand-accent);
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* --- BOTÓN DE COMPRA --- */
+.btn-add-to-cart {
+    background-color: var(--brand-primary);
+    color: white;
+    border: none;
+    border-radius: 0;
+    padding: 15px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+}
+
+.btn-add-to-cart:hover {
+    background-color: #000; /* Negro para un contraste sexy en el hover */
+    color: #fff;
+}
+
+/* Línea decorativa debajo del título de la sección */
+.section-title::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--brand-primary), transparent);
+    margin: 15px auto;
 }
