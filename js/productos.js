@@ -30,8 +30,8 @@ const PRODUCTOS = [
     {
         id: "prod-b4",
         nombre: "Less de Algodón",
-        precioMinorista: 2500,
-        precioMayorista: 2000,
+        precioMinorista: 1670,
+        precioMayorista: 1250,
         imagenes: ["../images/Less algodon FRENTE.png", "../images/Less algodon DORSAL.png"],
         categoria: "bombachas",
         descripcion: "Tejido de algodón con terminaciones ultra-comoda y estampada en corazones."
@@ -39,8 +39,8 @@ const PRODUCTOS = [
     {
         id: "prod-b5-puntilla",
         nombre: "Less de Algodón y Puntilla",
-        precioMinorista: 2500,
-        precioMayorista: 2000,
+        precioMinorista: 1670,
+        precioMayorista: 1250,
         imagenes: ["../images/Less algodon y puntilla FRENTE.png", "../images/Less algodon puntilla DORSAL.png"],
         categoria: "bombachas",
         descripcion: "Máxima cobertura frontal con un toque de sensualidad y cómodidad."
@@ -48,8 +48,8 @@ const PRODUCTOS = [
     {
         id: "prod-b-especial",
         nombre: "Less de Algodón en Talles Especiales",
-        precioMinorista: 2500,
-        precioMayorista: 2000,
+        precioMinorista: 1670,
+        precioMayorista: 1250,
         imagenes: ["../images/Less Frente.png", "../images/Less Dorsal.png"],
         categoria: "bombachas",
         descripcion: "Con su tejido de algodon otorgan un toque de sensualidad y comodidad."
@@ -57,8 +57,8 @@ const PRODUCTOS = [
     {
         id: "prod-b5",
         nombre: "Less Regulables",
-        precioMinorista: 2500,
-        precioMayorista: 2000,
+        precioMinorista: 1770,
+        precioMayorista: 1240,
         imagenes: ["../images/Less regulable FRENTE.png", "../images/Less regulable DORSAL.png"],
         categoria: "bombachas",
         descripcion: "Confeccionadas en algodon con encaje ofrecen un toque sexy y comodo."
@@ -82,8 +82,8 @@ const PRODUCTOS = [
     {
         id: "prod-b7",
         nombre: "Less Calvin Klein",
-        precioMinorista: 2500,
-        precioMayorista: 2000,
+        precioMinorista: 2000,
+        precioMayorista: 1740,
         imagenes: [
             "../images/Less-calvin-klein1.png",
             "../images/Less-calvin-klein2.png",
@@ -97,8 +97,8 @@ const PRODUCTOS = [
     {
         id: "prod-b8",
         nombre: "Vedetina",
-        precioMinorista: 2500,
-        precioMayorista: 1000, // Precio mayorista según tu ejemplo
+        precioMinorista: 1740,
+        precioMayorista: 1460, // Precio mayorista según tu ejemplo
         imagenes: [
             "../images/vedetina1.png",
             "../images/vedetina2.png",
@@ -134,8 +134,8 @@ const PRODUCTOS = [
     {
         id: "prod-b11",
         nombre: "Smart Sexi",
-        precioMinorista: 2500,
-        precioMayorista: 2000,
+        precioMinorista: 2250,
+        precioMayorista: 1860,
         imagenes: ["../images/Smart Sexi.jpg"],
         categoria: "bombachas",
         descripcion: "Confeccionadas en morley, brinda confort, Disponibles en colores tendencia"
@@ -167,8 +167,8 @@ const PRODUCTOS = [
     {
         id: "conj-03",
         nombre: "Conjunto Persefone",
-        precioMinorista: 10000,
-        precioMayorista: 8000,
+        precioMinorista: 7000,
+        precioMayorista: 6330,
         imagenes: [
             "../images/Conjunto parsefone FRENTE.png",
             "../images/Conjunto parsefone DORSAL.png",
@@ -212,8 +212,8 @@ const PRODUCTOS = [
     {
         id: "conj-07",
         nombre: "Conjunto Top + Pollera Pantalon",
-        precioMinorista: 17000,
-        precioMayorista: 14500,
+        precioMinorista: 16500,
+        //precioMayorista: 14500,
         imagenes: [
             "../images/Conjunto top + pollera pantalon 1.png",
             "../images/Conjunto top + pollera pantalon 2.png",
@@ -226,7 +226,7 @@ const PRODUCTOS = [
         id: "conj-08",
         nombre: "Conjunto Vicblack",
         precioMinorista: 7500,
-        precioMayorista: 6000,
+        precioMayorista: 6450,
         imagenes: [
             "../images/Conjunto vicblack FRENTE 1.png",
             "../images/Conjunto vicblack DORSAL 1.png",
@@ -242,7 +242,7 @@ const PRODUCTOS = [
     {
         id: "conj-09",
         nombre: "Conjunto Inicial Nena",
-        precioMinorista: 4000,
+        precioMinorista: 3800,
         precioMayorista: 3200,
         imagenes: [
             "../images/Conjunto-inicial-nena1.png",
@@ -257,7 +257,7 @@ const PRODUCTOS = [
         id: "conj-010",
         nombre: "Top Inicial Nena",
         precioMinorista: 2000,
-        precioMayorista: 1600,
+        precioMayorista: 1740,
         imagenes: [
             "../images/Topcito-inicial-nena1.png",
             "../images/Topcito-inicial-nena2.png",
@@ -270,8 +270,8 @@ const PRODUCTOS = [
     {
         id: "conj-011",
         nombre: "Conjunto Deportivo",
-        precioMinorista: 7500,
-        precioMayorista: 6000,
+        precioMinorista: 7000,
+        precioMayorista: 6330,
         imagenes: ["../images/Conjunto-Deportivo.jpg"],
         categoria: "conjuntos",
         descripcion: "Colores de la nueva temporada. Con un diseño comodo en morley con detalles de puntilla y tazas desmontables."
@@ -279,8 +279,8 @@ const PRODUCTOS = [
     {
         id: "conj-012",
         nombre: "Sports Bell",
-        precioMinorista: 7000,
-        precioMayorista: 5500,
+        precioMinorista: 6500,
+        precioMayorista: 5880,
         imagenes: ["../images/sports bell.jpg"],
         categoria: "conjuntos",
         descripcion: "Corpiño importado armado sin aro y con 4 broches para mayor ajuste y comodidad."
