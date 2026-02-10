@@ -13,7 +13,7 @@ const PRODUCTOS = [
         id: "prod-b2",
         nombre: "Culote de Algodón",
         precioMinorista: 2500,
-        precioMayorista: 1500, // Precio mayorista según tu ejemplo
+        precioMayorista: 1500,
         imagenes: ["../images/Culote algodon FRENTE.png", "../images/Culote algodon DORSAL.png"],
         categoria: "bombachas",
         descripcion: "Modelo de tiro medio en algodón suave. Ideal para el confort de cada día."
@@ -22,7 +22,7 @@ const PRODUCTOS = [
         id: "prod-b3",
         nombre: "Culote de Encaje",
         precioMinorista: 2500,
-        precioMayorista: 1500, // Precio mayorista según tu ejemplo
+        precioMayorista: 1500,
         imagenes: ["../images/Culote encaje FRENTE.png", "../images/Culote encaje DORSAL.png"],
         categoria: "bombachas",
         descripcion: "Sin costuras, no se marca. Perfecto para sentirte comoda y sensual."
@@ -98,7 +98,7 @@ const PRODUCTOS = [
         id: "prod-b8",
         nombre: "Vedetina",
         precioMinorista: 1740,
-        precioMayorista: 1460, // Precio mayorista según tu ejemplo
+        precioMayorista: 1460,
         imagenes: [
             "../images/vedetina1.png",
             "../images/vedetina2.png",
@@ -114,7 +114,7 @@ const PRODUCTOS = [
         id: "prod-b9",
         nombre: "Boxers Dama con Faja",
         precioMinorista: 4500,
-        precioMayorista: 3000, // Precio mayorista según tu ejemplo
+        precioMayorista: 3000,
         imagenes: [
             "../images/boxer-dama-con-faja1.png",
             "../images/boxer-dama-con-faja2.png",
@@ -213,7 +213,7 @@ const PRODUCTOS = [
         id: "conj-07",
         nombre: "Conjunto Top + Pollera Pantalon",
         precioMinorista: 16500,
-        //precioMayorista: 14500,
+        precioMayorista: null,
         imagenes: [
             "../images/Conjunto top + pollera pantalon 1.png",
             "../images/Conjunto top + pollera pantalon 2.png",
@@ -286,16 +286,17 @@ const PRODUCTOS = [
         descripcion: "Corpiño importado armado sin aro y con 4 broches para mayor ajuste y comodidad."
     },
 
-
-    // --- PRODUCTOS DE HOMBRE Y ACCESORIOS ---
+    // --- PRODUCTOS DE HOMBRE ---
     {
         id: "masc-01",
         nombre: "Boxer uomo",
         precioMinorista: 4000,
         precioMayorista: 3000,
-        imagenes: ["../images/Boxer-todos.png",
-            "../images/Boxer.png"
-        ], // Asegurate de subir la foto con este nombre
+        imagenes: ["../images/Boxers1.jpg",
+            "../images/Boxers2.jpg",
+            "../images/Boxers3.jpg",
+
+        ],
         categoria: "hombres",
         descripcion: "Boxer de algodón con lycra, elástico suave con logo de marca."
     },
@@ -308,16 +309,74 @@ const PRODUCTOS = [
         categoria: "hombres",
         descripcion: "Corte clásico, máxima comodidad y ajuste perfecto."
     },
+
+    // ---  SECCIÓN MEDIAS (Detectado por el título "Medias") ---
     {
         id: "acc-01",
-        nombre: "Pack Medias (x3)",
+        nombre: "Pack Medias Con Orejitas Niños (x3)",
         precioMinorista: 1500,
-        // No tiene precio mayorista definido, se vende a precio único
-        imagenes: ["../images/Medias-men.png",
-            "../images/medias-sports.png"
-
+        precioMayorista: null,
+        imagenes: ["../images/medias-orejita1.png",
+            "../images/medias-orejita2.png",
+            "../images/medias-orejita3.png",
+            "../images/medias-orejita4.png",
         ],
-        categoria: "hombres",
-        descripcion: "Pack de 3 pares de medias térmicas ideales para invierno."
+        categoria: "medias",
+        descripcion: "Pack de 3 pares de medias con orejitas para niños"
     },
+    {
+        id: "acc-med-01",
+        nombre: "Medias con dibujitos",
+        precioMinorista: 1500,
+        precioMayorista: null,
+        imagenes: ["../images/medias-niñas.png"],
+        categoria: "medias",
+        descripcion: "Medias de algodón con tus dibujito preferido."
+    },
+    {
+        id: "acc-med-02",
+        nombre: "Medias Sport Girls Socks",
+        precioMinorista: 1500,
+        precioMayorista: null,
+        imagenes: ["../images/medias-femenina.png"],
+        categoria: "medias",
+        descripcion: "Diseño urbano, suaves y cómodas para el uso diario."
+    },
+    {
+        id: "acc-med-03",
+        nombre: "Medias Fasihon women's Socks",
+        precioMinorista: 1500,
+        precioMayorista: null,
+        imagenes: ["../images/medias-femenina2.png"],
+        categoria: "medias",
+        descripcion: "Diseño urbano, suaves y cómodas para el uso diario."
+    },
+
+    {
+        id: "acc-med-04",
+        nombre: "Medias Women's Socks",
+        precioMinorista: 1500,
+        precioMayorista: null,
+        imagenes: ["../images/medias-femenina-sport.png"],
+        categoria: "medias",
+        descripcion: "Diseño urbano, suaves y cómodas para el uso diario."
+    },
+    {
+        id: "acc-med-05",
+        nombre: "Medias Men",
+        precioMinorista: 1500,
+        precioMayorista: null,
+        imagenes: ["../images/medias-hombres.png"],
+        categoria: "medias",
+        descripcion: "Diseño urbano, suaves y super balance."
+    },
+    {
+        id: "acc-med-06",
+        nombre: "Medias Men's Socks",
+        precioMinorista: 1500,
+        precioMayorista: null,
+        imagenes: ["../images/medias-hombre.sport.png"],
+        categoria: "medias",
+        descripcion: "Diseño urbano, suaves y cómodas para el uso diario."
+    }
 ];

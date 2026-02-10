@@ -1,31 +1,42 @@
 /* ==========================================================================
-   INDEX.CSS - MY BELLA AFRODITA (Versión Optimizada 2026)
+   INDEX.CSS - MY BELLA AFRODITA (Versión Boutique Luxury 2026 - FULL)
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Roboto:wght@300;400;500;700&display=swap');
 
 /* --- PANEL DE CONTROL DE COLORES --- */
 :root {
-    --brand-primary: #8c002c;        /* Borgoña (Header, Footer, Títulos) */
-    --brand-accent: #b31a4a;         /* Terracota (Botones, Detalles) */
-    --brand-bg: #fcebeb;             /* Fondo General (Rosa suave) */
+    --brand-primary: #8c002c;        /* Rojo Pasión / Borgoña */
+    --brand-accent: #b31a4a;         /* Terracota */
+    --brand-bg: #fffafa;             /* Blanco Seda */
+    --brand-nude: #fcebeb;           /* Rosa Piel */
     --text-main: #333333;
     --white-pure: #ffffff;
-    --transition-smooth: all 0.3s ease;
+    --transition-smooth: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    
+    /* Variables de compatibilidad para el HTML */
+    --color-pasión: #8c002c;
+    --color-rosa-suave: #fcebeb;
+    --color-oscuro-elegante: #1a1a1a;
+    --color-terracota-pasión: #b31a4a;
 }
 
 /* --- ESTILOS BASE --- */
 body {
-    padding-top: 56px; /* Altura del navbar */
+    padding-top: 56px; 
     font-family: 'Roboto', sans-serif;
     background-color: var(--brand-bg); 
     color: var(--text-main);
+    overflow-x: hidden;
 }
 
 h1, h2, h3, h4, h5 {
     font-family: 'Playfair Display', serif;
     color: var(--brand-primary);
 }
+
+.font-playfair { font-family: 'Playfair Display', serif; }
+.italic { font-style: italic; }
 
 /* --- NAV BAR --- */
 #mainNav {
@@ -37,6 +48,7 @@ h1, h2, h3, h4, h5 {
     font-family: 'Playfair Display', serif;
     font-weight: 700;
     color: var(--white-pure) !important; 
+    text-decoration: none;
 }
 
 #mainNav .nav-link {
@@ -44,41 +56,170 @@ h1, h2, h3, h4, h5 {
     font-weight: 500;
 }
 
-#mainNav .nav-link:hover {
-    color: var(--brand-bg) !important;
-}
-
-/* Fix para el menú desplegable en móviles */
 #mainNav .navbar-collapse {
     background-color: var(--brand-primary);
     padding: 10px 20px;
-    border-radius: 0 0 8px 8px;
 }
 
-/* --- 1. PORTADA / HERO BANNER (RESTAURADA) --- */
+/* --- HERO BANNER --- */
 .hero-banner {
     height: 90vh; 
-    background: url('../images/portada.jpg') no-repeat center right/cover;
+    background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('../images/portada.jpg') no-repeat center center/cover;
     position: relative;
     display: flex;
     align-items: center;
-    padding-top: 0; 
     border-bottom: 5px solid var(--brand-accent);
 }
 
 .hero-text-box-left {
     background-color: rgba(255, 255, 255, 0.85);
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); 
+    padding: 40px;
+    border-radius: 0; 
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); 
     margin-left: 5%;
-    max-width: 500px;
+    max-width: 550px;
+    backdrop-filter: blur(5px);
 }
 
-.hero-text-box-left h1 {
-    font-weight: 900;
-    font-size: 2.5rem;
-    color: var(--brand-primary); 
+/* --- SECCIONES DE FONDO DIVIDIDO --- */
+/* Forzamos que las secciones respeten su color de fondo del HTML */
+.bg-white { 
+    background-color: var(--white-pure) !important; 
+}
+
+#que-buscas-hoy-section {
+    position: relative;
+    z-index: 1;
+}
+
+/* --- CATEGORÍAS (Burbujas/Tarjetas de Inicio) --- */
+.category-bubble {
+    background-size: cover;
+    background-position: center;
+    transition: var(--transition-smooth);
+    text-decoration: none;
+    position: relative;
+}
+
+.group-hover-zoom {
+    overflow: hidden;
+    position: relative;
+}
+
+.group-hover-zoom:hover .category-bubble {
+    transform: scale(1.05);
+}
+
+.bubble-content {
+    transition: background 0.4s ease;
+}
+
+/* --- TARJETAS DE PRODUCTOS (Para Catálogo) --- */
+.product-card {
+    border: none !important;
+    border-radius: 0 !important;
+    background: var(--white-pure);
+    padding: 15px;
+    transition: var(--transition-smooth);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 25px 50px rgba(140, 0, 44, 0.15) !important;
+}
+
+.card-img-container {
+    height: 450px; 
+    overflow: hidden;
+    position: relative;
+    background: #fdfdfd;
+}
+
+.card-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Cambia a 'contain' si las fotos se cortan mucho */
+    filter: brightness(0.97);
+    transition: transform 1.2s ease;
+}
+
+.product-card:hover .card-img-container img {
+    transform: scale(1.08);
+}
+
+/* --- BOTONES --- */
+.btn-add-to-cart, .btn-danger {
+    background-color: var(--brand-primary);
+    color: var(--white-pure);
+    border: none;
+    border-radius: 0;
+    padding: 14px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: var(--transition-smooth);
+}
+
+.btn-add-to-cart:hover, .btn-danger:hover {
+    background-color: #000000;
+    color: var(--white-pure);
+}
+
+/* --- FOOTER --- */
+.footer-custom {
+    background-color: #1a1a1a;
+    color: var(--white-pure);
+    padding: 4rem 0;
+}
+
+.footer-custom a {
+    transition: color 0.3s ease;
+}
+
+.footer-custom a:hover {
+    color: var(--brand-nude) !important;
+}
+
+/* --- WHATSAPP --- */
+.whatsapp-flotante {
+    background-color: #25d366; 
+    position: fixed;
+    width: 65px; height: 65px;
+    bottom: 30px; right: 30px;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    z-index: 1000;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+
+.whatsapp-flotante:hover {
+    transform: scale(1.1);
+    color: white;
+}
+
+/* --- MEDIA QUERIES --- */
+@media (max-width: 991.98px) {
+    .card-img-container { height: 400px; }
+    .hero-text-box-left { 
+        margin: 20px auto; 
+        width: 95%; 
+        padding: 25px;
+        text-align: center;
+    }
+    .hero-banner {
+        background-position: center;
+    }
 }
 
 /* --- 2. SECCIÓN "QUÉ BUSCAS HOY?" Y CATEGORÍAS --- */
@@ -120,202 +261,12 @@ h1, h2, h3, h4, h5 {
     background-color: rgba(140, 0, 44, 0.7); /* Overlay Borgoña */
 }
 
-/* --- 3. SECCIÓN NOSOTROS --- */
-.nosotros-presentacion {
-    padding-top: 5rem;
-    padding-bottom: 5rem;
+#mayorista-alert {
+    animation: fadeInUp 0.5s ease-out;
+    border-left: 5px solid #1e7e34 !important;
 }
 
-.nosotros-presentacion .row {
-    background-color: var(--white-pure);
-    border-radius: 10px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); 
-    overflow: hidden;
-}
-
-.nosotros-presentacion img {
-    height: 500px; 
-    width: 100%;
-    object-fit: cover; 
-}
-
-/* --- TARJETAS DE PRODUCTO (CATÁLOGO) --- */
-.product-card {
-    border: none;
-    border-radius: 10px;
-    transition: var(--transition-smooth);
-    background-color: var(--white-pure);
-    height: 100%;
-    overflow: hidden;
-}
-
-.product-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
-}
-
-.card-img-container {
-    height: 450px;
-    overflow: hidden;
-    background: #f8f8f8;
-}
-
-.card-img-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.8s ease;
-}
-
-.product-card:hover .card-img-container img {
-    transform: scale(1.05);
-}
-
-/* --- BOTONES --- */
-.btn-danger {
-    background-color: var(--brand-primary) !important;
-    border-color: var(--brand-primary) !important;
-}
-
-.btn-danger:hover {
-    background-color: var(--brand-accent) !important;
-}
-
-/* --- FOOTER Y WHATSAPP --- */
-.footer-custom {
-    background-color: var(--brand-primary);
-    color: var(--white-pure);
-    padding: 3rem 0;
-}
-
-.whatsapp-flotante {
-    background-color: #25d366; 
-    position: fixed;
-    width: 60px;
-    height: 60px;
-    bottom: 30px;
-    right: 30px;
-    color: #fff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 30px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-    z-index: 1000;
-    text-decoration: none;
-}
-
-/* --- MEDIA QUERIES (MÓVILES) --- */
-@media (max-width: 991.98px) {
-    .hero-banner {
-        height: auto; 
-        min-height: 450px;
-        background-position: center center;
-    }
-    .hero-text-box-left {
-        margin: 20px auto;
-        text-align: center;
-        width: 90%;
-    }
-    .hero-text-box-left h1 { font-size: 1.8rem; }
-    
-    .nosotros-presentacion img { height: 300px; }
-    
-    .card-link-interactive, .category-bubble { height: 300px; }
-}
-
-/* --- EFECTO TOCADOR: FONDO SENSUAL PARA LA SECCIÓN --- */
-main.py-5 {
-    /* Un degradado profundo que va del rosa piel al blanco crema */
-    background: radial-gradient(circle at top, #fff5f5 0%, #fcebeb 100%);
-    position: relative;
-}
-
-/* --- TARJETAS ESTILO "RETRATO LUXURY" --- */
-.product-card {
-    border: none !important;
-    border-radius: 0 !important;
-    background: rgba(255, 255, 255, 0.7); /* Transparencia elegante */
-    backdrop-filter: blur(10px); /* Efecto vidrio esmerilado */
-    padding: 15px;
-    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-
-.product-card:hover {
-    transform: translateY(-10px) scale(1.02);
-    background: #ffffff;
-    box-shadow: 0 20px 40px rgba(140, 0, 44, 0.15) !important;
-}
-
-/* Marco para la imagen */
-.card-img-container {
-    height: 480px;
-    overflow: hidden;
-    position: relative;
-    /* Un borde interno sutil que parece un marco de cuadro */
-    border: 1px solid rgba(140, 0, 44, 0.1);
-}
-
-.card-img-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: brightness(0.95); /* Un toque más oscuro para dar misterio */
-    transition: all 0.9s ease;
-}
-
-.product-card:hover .card-img-container img {
-    filter: brightness(1.05);
-    transform: scale(1.1);
-}
-
-/* --- DETALLES DE TEXTO --- */
-.product-card .card-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.6rem;
-    font-weight: 700;
-    font-style: italic; /* Itálica para más sensualidad */
-    color: var(--brand-primary);
-    margin-top: 20px;
-}
-
-.product-price {
-    font-family: 'Playfair Display', serif; /* Cambiamos a Playfair para el precio */
-    font-size: 1.3rem;
-    color: var(--brand-accent);
-    font-weight: 700;
-    margin-bottom: 20px;
-}
-
-/* --- BOTÓN DE COMPRA --- */
-.btn-add-to-cart {
-    background-color: var(--brand-primary);
-    color: white;
-    border: none;
-    border-radius: 0;
-    padding: 15px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    width: 100%;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.4s ease;
-}
-
-.btn-add-to-cart:hover {
-    background-color: #000; /* Negro para un contraste sexy en el hover */
-    color: #fff;
-}
-
-/* Línea decorativa debajo del título de la sección */
-.section-title::after {
-    content: '';
-    display: block;
-    width: 80px;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, var(--brand-primary), transparent);
-    margin: 15px auto;
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
