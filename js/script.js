@@ -4,9 +4,12 @@
 
 const WHATSAPP_NUMBER = '5492646121771';
 let carrito = JSON.parse(localStorage.getItem('myBellaCarrito')) || [];
-let avisoMayoristaMostrado = false; // Control para la notificación profesional
+let avisoMayoristaMostrado = false;
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Aplicar el fondo del :root al body
+    document.body.style.backgroundColor = "var(--brand-bg)";
+    
     actualizarContadorUI();
 
     if (typeof PRODUCTOS === 'undefined') return;
@@ -40,17 +43,13 @@ document.addEventListener('DOMContentLoaded', () => {
 function calcularTotalCarrito() {
     let totalGeneral = 0;
     let unidadesTotales = carrito.reduce((acc, item) => acc + item.cantidad, 0);
-    
-    // El beneficio se activa con 3 unidades totales
     let cumpleCriterioCantidad = unidadesTotales >= 3;
     let detallesPromo = [];
     let aplicoAlgunaPromocion = false;
     
     carrito.forEach(item => {
         const p = PRODUCTOS.find(prod => prod.id === item.id);
-        
         if (p) {
-            // LÓGICA CORREGIDA: Cantidad >= 3 Y el producto DEBE tener precio mayorista
             if (cumpleCriterioCantidad && p.precioMayorista && p.precioMayorista > 0) {
                 totalGeneral += p.precioMayorista * item.cantidad;
                 aplicoAlgunaPromocion = true; 
@@ -63,7 +62,7 @@ function calcularTotalCarrito() {
     });
 
     if (aplicoAlgunaPromocion) {
-        detallesPromo.push("Precio Mayorista Aplicado en productos seleccionados");
+        detallesPromo.push("Precio Mayorista Aplicado");
     }
     
     return { 
@@ -79,49 +78,61 @@ function dibujarProductos(lista) {
     contenedor.innerHTML = "";
     
     lista.forEach(p => {
-        let htmlPrecios = "";
+        // Lógica de Stock: Si p.stock es undefined, asumimos que hay stock.
+        const tieneStock = p.stock !== false;
         
+        let htmlPrecios = "";
         if (p.precioMayorista) {
             htmlPrecios = `
-                <div class="price-container mb-3 p-2" style="background-color: #fcfcfc; border-radius: 4px;">
+                <div class="price-container mb-3 p-2" style="background-color: var(--brand-nude); border-radius: 4px; opacity: ${tieneStock ? '1' : '0.5'};">
                     <div class="row g-0 align-items-center">
-                        <div class="col-6 border-end">
+                        <div class="col-6 border-end" style="border-color: rgba(0,0,0,0.1) !important;">
                             <small class="text-muted text-uppercase d-block" style="font-size: 0.6rem; letter-spacing: 1px;">Minorista</small>
                             <span class="fw-bold text-dark" style="font-size: 1.1rem;">$${p.precioMinorista.toLocaleString('es-AR')}</span>
                         </div>
                         <div class="col-6">
-                            <small class="text-danger text-uppercase d-block fw-bold" style="font-size: 0.6rem; letter-spacing: 1px;">Mayorista (3+)</small>
-                            <span class="fw-bold" style="font-size: 1.1rem; color: #8c002c;">$${p.precioMayorista.toLocaleString('es-AR')}</span>
+                            <small class="text-uppercase d-block fw-bold" style="font-size: 0.6rem; letter-spacing: 1px; color: var(--brand-accent);">Mayorista (3+)</small>
+                            <span class="fw-bold" style="font-size: 1.1rem; color: var(--brand-primary);">$${p.precioMayorista.toLocaleString('es-AR')}</span>
                         </div>
                     </div>
                 </div>`;
         } else {
             htmlPrecios = `
-                <div class="price-container mb-3 p-2">
+                <div class="price-container mb-3 p-2" style="opacity: ${tieneStock ? '1' : '0.5'};">
                     <small class="text-muted text-uppercase d-block" style="font-size: 0.6rem; letter-spacing: 1px;">Precio Único</small>
                     <span class="fw-bold text-dark" style="font-size: 1.3rem;">$${p.precioMinorista.toLocaleString('es-AR')}</span>
                 </div>`;
         }
 
+        // Badge de Agotado
+        const badgeAgotado = !tieneStock ? 
+            `<div class="position-absolute top-0 start-0 m-3 z-2">
+                <span class="badge px-3 py-2 text-uppercase" style="background-color: rgba(0,0,0,0.7); color: white; border-radius: 0; font-size: 0.7rem; letter-spacing: 2px;">Agotado</span>
+             </div>` : '';
+
         contenedor.innerHTML += `
             <div class="col-12 col-md-6 col-lg-4 mb-4 d-flex">
-                <div class="product-card shadow-sm w-100 d-flex flex-column" style="transition: transform 0.3s ease;">
-                    <div class="card-img-container" style="cursor: pointer; overflow: hidden;" onclick="mostrarDetalleProducto('${p.id}')">
+                <div class="product-card shadow-sm w-100 d-flex flex-column position-relative" 
+                     style="transition: var(--transition-smooth); background-color: var(--white-pure); border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,0,0,0.05); ${!tieneStock ? 'filter: grayscale(0.4);' : ''}">
+                    ${badgeAgotado}
+                    <div class="card-img-container" style="cursor: ${tieneStock ? 'pointer' : 'default'}; overflow: hidden;" 
+                         onclick="${tieneStock ? `mostrarDetalleProducto('${p.id}')` : ''}">
                         <img src="${p.imagenes[0]}" alt="${p.nombre}" loading="lazy" class="img-fluid"
-                             style="transition: opacity 0.4s ease; min-height: 350px; object-fit: cover;"
-                             onmouseover="if('${p.imagenes[1]}') this.src='${p.imagenes[1] || p.imagenes[0]}'"
+                             style="transition: var(--transition-smooth); min-height: 350px; object-fit: cover; opacity: ${tieneStock ? '1' : '0.6'};"
+                             onmouseover="${tieneStock && p.imagenes[1] ? `this.src='${p.imagenes[1]}'` : ''}"
                              onmouseout="this.src='${p.imagenes[0]}'">
                     </div>
                     <div class="card-body text-center d-flex flex-column justify-content-between p-3">
                         <div>
-                            <h5 class="card-title" style="font-family: 'Playfair Display', serif; font-size: 1.1rem; min-height: 2.8rem; color: #8c002c;">${p.nombre}</h5>
+                            <h5 class="card-title" style="font-family: 'Playfair Display', serif; font-size: 1.1rem; min-height: 2.8rem; color: var(--brand-primary);">${p.nombre}</h5>
                             <p class="text-muted small mb-3" style="font-size: 0.8rem; line-height: 1.3; min-height: 2.5rem;">${p.descripcion}</p>
                         </div>
                         ${htmlPrecios}
-                        <button class="btn btn-add-to-cart w-100 py-2 text-uppercase fw-bold" 
-                                style="letter-spacing: 1px; font-size: 0.8rem;"
-                                onclick="agregarAlCarrito(event, '${p.id}')">
-                            <i class="fas fa-shopping-bag me-2"></i> Añadir a la Bolsa
+                        <button class="btn w-100 py-2 text-uppercase fw-bold" 
+                                style="letter-spacing: 1px; font-size: 0.8rem; background-color: ${tieneStock ? 'var(--brand-primary)' : '#ccc'}; color: white; border-radius: 0; transition: var(--transition-smooth); border: none;"
+                                ${tieneStock ? `onclick="agregarAlCarrito(event, '${p.id}')"` : 'disabled'}>
+                            <i class="fas ${tieneStock ? 'fa-shopping-bag' : 'fa-times'} me-2"></i> 
+                            ${tieneStock ? 'Añadir a la Bolsa' : 'Sin Stock'}
                         </button>
                     </div>
                 </div>
@@ -354,58 +365,34 @@ function enviarPedidoWhatsApp() {
 
 window.mostrarDetalleProducto = function (id) {
     const p = PRODUCTOS.find(prod => prod.id === id);
-    if (!p) return;
+    if (!p || p.stock === false) return;
 
     let slides = p.imagenes.map((img, idx) => `
         <div class="carousel-item ${idx === 0 ? 'active' : ''}">
-            <img src="${img}" class="d-block w-100" style="height: 600px; object-fit: cover;">
+            <img src="${img}" class="d-block w-100" style="height: 500px; object-fit: cover;">
         </div>`).join('');
-
-    const precioMayoristaHtml = p.precioMayorista 
-        ? `<div class="p-3 mb-4" style="background-color: #fdf2f2; border-left: 4px solid #8c002c;">
-             <span class="text-muted small text-uppercase fw-bold d-block mb-1" style="letter-spacing: 1px;">Precio Mayorista (3+ unidades)</span>
-             <h3 class="fw-bold mb-0" style="color: #8c002c;">$${p.precioMayorista.toLocaleString('es-AR')}</h3>
-           </div>` 
-        : '';
 
     const modalHtml = `
         <div class="modal fade" id="modalDetalle" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-xl modal-dialog-centered">
-                <div class="modal-content rounded-0 border-0 shadow-lg">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; overflow: hidden; background-color: var(--brand-bg);">
                     <div class="modal-body p-0">
-                        <button type="button" class="btn-close position-absolute top-0 end-0 m-4 z-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close position-absolute top-0 end-0 m-3 z-3" data-bs-dismiss="modal" aria-label="Close"></button>
                         <div class="row g-0">
-                            <div class="col-md-7 bg-light border-end">
+                            <div class="col-md-6">
                                 <div id="carouselDetalle" class="carousel slide" data-bs-ride="carousel">
                                     <div class="carousel-inner">${slides}</div>
-                                    ${p.imagenes.length > 1 ? `
-                                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselDetalle" data-bs-slide="prev">
-                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                        </button>
-                                        <button class="carousel-control-next" type="button" data-bs-target="#carouselDetalle" data-bs-slide="next">
-                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                        </button>
-                                    ` : ''}
                                 </div>
                             </div>
-                            <div class="col-md-5 p-4 p-lg-5 bg-white d-flex flex-column justify-content-center">
-                                <h2 class="display-6 fw-bold mb-3" style="font-family: 'Playfair Display', serif; color: #8c002c;">${p.nombre}</h2>
-                                <div class="mb-4">
-                                    <span class="text-muted small text-uppercase fw-bold d-block mb-1" style="letter-spacing: 1px;">Precio Minorista</span>
-                                    <h4 class="text-dark fw-light">$${p.precioMinorista.toLocaleString('es-AR')}</h4>
-                                </div>
-                                ${precioMayoristaHtml}
-                                <div class="description-box mb-5">
-                                    <h6 class="text-uppercase fw-bold small mb-2" style="letter-spacing: 1px;">Descripción</h6>
-                                    <p class="text-muted" style="line-height: 1.6;">${p.descripcion}</p>
-                                </div>
-                                <div class="d-grid">
-                                    <button class="btn btn-dark rounded-0 py-3 fw-bold text-uppercase shadow-sm" 
-                                            onclick="agregarAlCarrito(null, '${p.id}'); bootstrap.Modal.getInstance(document.getElementById('modalDetalle')).hide();"
-                                            style="letter-spacing: 2px;">
-                                        <i class="fas fa-shopping-bag me-2"></i> Añadir a la Bolsa
-                                    </button>
-                                </div>
+                            <div class="col-md-6 p-4 d-flex flex-column justify-content-center">
+                                <h2 style="font-family: 'Playfair Display', serif; color: var(--brand-primary);">${p.nombre}</h2>
+                                <h4 class="mb-3">$${p.precioMinorista.toLocaleString('es-AR')}</h4>
+                                <p class="text-muted mb-4">${p.descripcion}</p>
+                                <button class="btn py-3 fw-bold text-uppercase" 
+                                        onclick="agregarAlCarrito(null, '${p.id}'); bootstrap.Modal.getInstance(document.getElementById('modalDetalle')).hide();"
+                                        style="background-color: var(--brand-primary); color: white; border-radius: 0;">
+                                    Añadir a la Bolsa
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -414,29 +401,20 @@ window.mostrarDetalleProducto = function (id) {
         </div>`;
 
     const oldModal = document.getElementById('modalDetalle');
-    if (oldModal) {
-        const modalInst = bootstrap.Modal.getInstance(oldModal);
-        if (modalInst) modalInst.dispose();
-        oldModal.remove();
-    }
-    
+    if (oldModal) oldModal.remove();
     document.body.insertAdjacentHTML('beforeend', modalHtml);
-    const nuevoModal = new bootstrap.Modal(document.getElementById('modalDetalle'));
-    nuevoModal.show();
+    new bootstrap.Modal(document.getElementById('modalDetalle')).show();
 };
 
 function mostrarNotificacion(nombre) {
     const toastHtml = `
         <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 2000">
-            <div class="toast show bg-dark text-white rounded-0 border-0" role="alert">
+            <div class="toast show text-white border-0" role="alert" style="background-color: var(--brand-primary); border-radius: 0;">
                 <div class="d-flex p-3">
-                    <div class="toast-body small">✨ <strong>${nombre}</strong> añadido a la bolsa.</div>
+                    <div class="toast-body small">✨ <strong>${nombre}</strong> en la bolsa.</div>
                 </div>
             </div>
         </div>`;
     document.body.insertAdjacentHTML('beforeend', toastHtml);
-    setTimeout(() => { 
-        const container = document.querySelector('.toast-container');
-        if (container) container.remove(); 
-    }, 3000);
+    setTimeout(() => { document.querySelector('.toast-container')?.remove(); }, 3000);
 }

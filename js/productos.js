@@ -7,6 +7,7 @@ const PRODUCTOS = [
         precioMayorista: 2000,
         imagenes: ["../images/Bombachas encaje FRENTE.png", "../images/Bombacha encaje DORSAL.png"],
         categoria: "bombachas",
+        //stock: false,
         descripcion: "Diseño de encaje de alta calidad, tiro alto y corte clasico."
     },
     {
@@ -16,6 +17,7 @@ const PRODUCTOS = [
         precioMayorista: 1500,
         imagenes: ["../images/Culote algodon FRENTE.png", "../images/Culote algodon DORSAL.png"],
         categoria: "bombachas",
+        //stock: false,
         descripcion: "Modelo de tiro medio en algodón suave. Ideal para el confort de cada día."
     },
     {
@@ -25,6 +27,7 @@ const PRODUCTOS = [
         precioMayorista: 1500,
         imagenes: ["../images/Culote encaje FRENTE.png", "../images/Culote encaje DORSAL.png"],
         categoria: "bombachas",
+        //stock: false,
         descripcion: "Sin costuras, no se marca. Perfecto para sentirte comoda y sensual."
     },
     {
@@ -34,6 +37,7 @@ const PRODUCTOS = [
         precioMayorista: 1250,
         imagenes: ["../images/Less algodon FRENTE.png", "../images/Less algodon DORSAL.png"],
         categoria: "bombachas",
+        //stock: false,
         descripcion: "Tejido de algodón con terminaciones ultra-comoda y estampada en corazones."
     },
     {
@@ -43,6 +47,7 @@ const PRODUCTOS = [
         precioMayorista: 1250,
         imagenes: ["../images/Less algodon y puntilla FRENTE.png", "../images/Less algodon puntilla DORSAL.png"],
         categoria: "bombachas",
+        //stock: false,
         descripcion: "Máxima cobertura frontal con un toque de sensualidad y cómodidad."
     },
     {
@@ -52,6 +57,7 @@ const PRODUCTOS = [
         precioMayorista: 1250,
         imagenes: ["../images/Less Frente.png", "../images/Less Dorsal.png"],
         categoria: "bombachas",
+        //stock: false,
         descripcion: "Con su tejido de algodon otorgan un toque de sensualidad y comodidad."
     },
     {
@@ -61,6 +67,7 @@ const PRODUCTOS = [
         precioMayorista: 1240,
         imagenes: ["../images/Less regulable FRENTE.png", "../images/Less regulable DORSAL.png"],
         categoria: "bombachas",
+        //stock: false,
         descripcion: "Confeccionadas en algodon con encaje ofrecen un toque sexy y comodo."
     },
     {
@@ -77,6 +84,7 @@ const PRODUCTOS = [
             "../images/Bombachas-de-Algodon-con-detalles-de-encaje6.png",
         ],
         categoria: "bombachas",
+        //stock: false,
         descripcion: "Confeccionadas en algodon con encaje ofrecen un toque sexy y comodo."
     },
     {
@@ -92,6 +100,7 @@ const PRODUCTOS = [
             "../images/Less-calvin-klein5.png",
         ],
         categoria: "bombachas",
+        //stock: false,
         descripcion: "Confeccionadas en algodon con encaje ofrecen un toque sexy y comodo."
     },
     {
@@ -108,6 +117,7 @@ const PRODUCTOS = [
             "../images/vedetina6.png",
         ],
         categoria: "bombachas",
+        //stock: false,
         descripcion: "Confeccionadas en algodon con encaje ofrecen un toque sexy y comodo."
     },
     {
@@ -120,6 +130,7 @@ const PRODUCTOS = [
             "../images/boxer-dama-con-faja2.png",
         ],
         categoria: "bombachas",
+        stock: false,
         descripcion: "Confeccionadas en algodon con encaje ofrecen un toque sexy y comodo."
     },
     {
@@ -129,6 +140,7 @@ const PRODUCTOS = [
         precioMayorista: 1300,
         imagenes: ["../images/Bombacha-juvenil.jpg"],
         categoria: "bombachas",
+        //stock: false,
         descripcion: "Confeccionadas en algodon con diseño de guerreras K-pop"
     },
     {
@@ -138,6 +150,7 @@ const PRODUCTOS = [
         precioMayorista: 1860,
         imagenes: ["../images/Smart Sexi.jpg"],
         categoria: "bombachas",
+        //stock: false,
         descripcion: "Confeccionadas en morley, brinda confort, Disponibles en colores tendencia"
     },
 
@@ -149,6 +162,7 @@ const PRODUCTOS = [
         precioMayorista: 19000,
         imagenes: ["../images/Combo alo 1.png", "../images/Combo alo 2.png"],
         categoria: "conjuntos",
+        //stock: false,
         descripcion: "Combo de lycra que incluye remera, top, medias y short de lycra sin frunce."
     },
     {
@@ -162,6 +176,7 @@ const PRODUCTOS = [
             "../images/Conjunto D_lirio top + calza DORSAL 2.png"
         ],
         categoria: "conjuntos",
+        //stock: false,
         descripcion: "Diseño del top de morley con tazas desmontables y calza con frunce, faja y levanta gluteos."
     },
     {
@@ -176,6 +191,7 @@ const PRODUCTOS = [
             "../images/conjunto parsefone DORSAL 2.png"
         ],
         categoria: "conjuntos",
+        //stock: false,
         descripcion: "La base perfecta. Cómodo morley y puntilla, ideal para usar bajo cualquier prenda."
     },
     {
@@ -185,6 +201,7 @@ const PRODUCTOS = [
         precioMayorista: 8000,
         imagenes: ["../images/Conjunto Roma FRENTE.png", "../images/Conjunto roma DORSAL.png"],
         categoria: "conjuntos",
+        //stock: false,
         descripcion: "Copas triangulares de algodón con delicados detalle de encaje. Ideal para la mujer romantica."
     },
     {
@@ -198,6 +215,7 @@ const PRODUCTOS = [
             "../images/Conjunto Top + calza  3.png"
         ],
         categoria: "conjuntos",
+        //stock: false,
         descripcion: "Color de tendencia. Confeccionado en lycra, sin frunce. Ideal para confort y sosten al entrenar."
     },
     {
@@ -207,6 +225,7 @@ const PRODUCTOS = [
         precioMayorista: 8000,
         imagenes: ["../images/Conjunto Top + calza con frunce.png"],
         categoria: "conjuntos",
+        //stock: false,
         descripcion: "Ultimos en color negro. De morley con un top de tazas desmontables y calza con frunce."
     },
     {
@@ -220,6 +239,7 @@ const PRODUCTOS = [
             "../images/Conjunto top + pollera pantalon 3.png"
         ],
         categoria: "conjuntos",
+        //stock: false,
         descripcion: "Color de tendencia. Confeccionado en lycra, con un diseño que ofrece elegancia y comodidad."
     },
     {
@@ -237,6 +257,7 @@ const PRODUCTOS = [
             "../images/Conjunto vicblack FRENTE 6.png"
         ],
         categoria: "conjuntos",
+        //stock: false,
         descripcion: "Colores de la nueva temporada. Con un diseño comodo en morley con detalles de puntilla."
     },
     {
@@ -251,6 +272,7 @@ const PRODUCTOS = [
             "../images/Conjunto-inicial-nena4.png"
         ],
         categoria: "conjuntos",
+        //stock: false,
         descripcion: "Colores de la nueva temporada. Con un diseño comodo en morley con detalles de puntilla."
     },
     {
@@ -265,6 +287,7 @@ const PRODUCTOS = [
             "../images/Topcito-inicial-nena4.png",
         ],
         categoria: "conjuntos",
+        //stock: false,
         descripcion: "Colores de la nueva temporada. Con un diseño comodo en morley con detalles de puntilla."
     },
     {
@@ -274,6 +297,7 @@ const PRODUCTOS = [
         precioMayorista: 6330,
         imagenes: ["../images/Conjunto-Deportivo.jpg"],
         categoria: "conjuntos",
+        //stock: false,
         descripcion: "Colores de la nueva temporada. Con un diseño comodo en morley con detalles de puntilla y tazas desmontables."
     },
     {
@@ -283,6 +307,7 @@ const PRODUCTOS = [
         precioMayorista: 5880,
         imagenes: ["../images/sports bell.jpg"],
         categoria: "conjuntos",
+        //stock: false,
         descripcion: "Corpiño importado armado sin aro y con 4 broches para mayor ajuste y comodidad."
     },
 
@@ -298,6 +323,7 @@ const PRODUCTOS = [
 
         ],
         categoria: "hombres",
+        //stock: false,
         descripcion: "Boxer de algodón con lycra, elástico suave con logo de marca."
     },
     {
@@ -307,6 +333,7 @@ const PRODUCTOS = [
         precioMayorista: 3200,
         imagenes: ["../images/slip-1.jpg"],
         categoria: "hombres",
+        stock: false,
         descripcion: "Corte clásico, máxima comodidad y ajuste perfecto."
     },
 
@@ -322,6 +349,7 @@ const PRODUCTOS = [
             "../images/medias-orejita4.png",
         ],
         categoria: "medias",
+        //stock: false,
         descripcion: "Pack de 3 pares de medias con orejitas para niños"
     },
     {
@@ -331,6 +359,7 @@ const PRODUCTOS = [
         precioMayorista: null,
         imagenes: ["../images/medias-niñas.png"],
         categoria: "medias",
+        //stock: false,
         descripcion: "Medias de algodón con tus dibujito preferido."
     },
     {
@@ -340,6 +369,7 @@ const PRODUCTOS = [
         precioMayorista: null,
         imagenes: ["../images/medias-femenina.png"],
         categoria: "medias",
+        //stock: false,
         descripcion: "Diseño urbano, suaves y cómodas para el uso diario."
     },
     {
@@ -349,6 +379,7 @@ const PRODUCTOS = [
         precioMayorista: null,
         imagenes: ["../images/medias-femenina2.png"],
         categoria: "medias",
+        //stock: false,
         descripcion: "Diseño urbano, suaves y cómodas para el uso diario."
     },
 
@@ -359,6 +390,7 @@ const PRODUCTOS = [
         precioMayorista: null,
         imagenes: ["../images/medias-femenina-sport.png"],
         categoria: "medias",
+        //stock: false,
         descripcion: "Diseño urbano, suaves y cómodas para el uso diario."
     },
     {
@@ -368,6 +400,7 @@ const PRODUCTOS = [
         precioMayorista: null,
         imagenes: ["../images/medias-hombres.png"],
         categoria: "medias",
+        //stock: false,
         descripcion: "Diseño urbano, suaves y super balance."
     },
     {
@@ -377,6 +410,7 @@ const PRODUCTOS = [
         precioMayorista: null,
         imagenes: ["../images/medias-hombre.sport.png"],
         categoria: "medias",
+        //stock: false,
         descripcion: "Diseño urbano, suaves y cómodas para el uso diario."
     }
 ];
