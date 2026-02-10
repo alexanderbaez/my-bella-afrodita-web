@@ -146,7 +146,13 @@ window.renderizarListaCarrito = function() {
     if (!container) return;
 
     if (carrito.length === 0) {
-        container.innerHTML = `<div class="text-center py-5"><h5 class="text-muted">Tu bolsa está vacía</h5></div>`;
+        container.innerHTML = `
+            <div class="text-center py-5">
+                <h5 class="text-muted">Tu bolsa está vacía</h5>
+                <button class="btn btn-outline-dark btn-sm mt-3 rounded-0 text-uppercase" data-bs-dismiss="modal" style="letter-spacing: 1px;">
+                    Continuar Comprando
+                </button>
+            </div>`;
         if (totalElement) totalElement.innerText = '$0';
         return;
     }
@@ -195,7 +201,18 @@ window.renderizarListaCarrito = function() {
             </div>`;
     });
 
+    // AGREGAMOS EL BOTÓN QUE TE FALTABA AL FINAL DEL HTML GENERADO
+    cartHtml += `
+        <div class="text-center border-top pt-3 mt-2">
+            <button class="btn btn-link text-muted small text-decoration-none text-uppercase" 
+                    data-bs-dismiss="modal" style="letter-spacing: 1px;">
+                Continuar Comprando
+            </button>
+        </div>
+    `;
+
     container.innerHTML = cartHtml;
+
     if (totalElement) {
         totalElement.innerHTML = `
             <div class="text-end">
