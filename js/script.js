@@ -367,31 +367,63 @@ window.mostrarDetalleProducto = function (id) {
     const p = PRODUCTOS.find(prod => prod.id === id);
     if (!p || p.stock === false) return;
 
+    // 1. Generar los items del carrusel (fotos)
     let slides = p.imagenes.map((img, idx) => `
         <div class="carousel-item ${idx === 0 ? 'active' : ''}">
-            <img src="${img}" class="d-block w-100" style="height: 500px; object-fit: cover;">
+            <img src="${img}" class="d-block w-100" style="height: 600px; object-fit: cover;">
         </div>`).join('');
+
+    // 2. Generar controles e indicadores SOLO si hay más de una foto
+    let controls = "";
+    let indicators = "";
+    
+    if (p.imagenes.length > 1) {
+        indicators = `
+            <div class="carousel-indicators">
+                ${p.imagenes.map((_, idx) => `
+                    <button type="button" data-bs-target="#carouselDetalle" data-bs-slide-to="${idx}" 
+                            class="${idx === 0 ? 'active' : ''}" aria-current="${idx === 0 ? 'true' : ''}" 
+                            style="background-color: var(--brand-primary); width: 12px; height: 12px; border-radius: 50%;">
+                    </button>
+                `).join('')}
+            </div>`;
+
+        controls = `
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselDetalle" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true" style="filter: invert(1) brightness(0.5);"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselDetalle" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true" style="filter: invert(1) brightness(0.5);"></span>
+                <span class="visually-hidden">Siguiente</span>
+            </button>`;
+    }
 
     const modalHtml = `
         <div class="modal fade" id="modalDetalle" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
                 <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; overflow: hidden; background-color: var(--brand-bg);">
                     <div class="modal-body p-0">
-                        <button type="button" class="btn-close position-absolute top-0 end-0 m-3 z-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close position-absolute top-0 end-0 m-4 z-3" data-bs-dismiss="modal" aria-label="Close"></button>
                         <div class="row g-0">
-                            <div class="col-md-6">
+                            <div class="col-md-7">
                                 <div id="carouselDetalle" class="carousel slide" data-bs-ride="carousel">
+                                    ${indicators}
                                     <div class="carousel-inner">${slides}</div>
+                                    ${controls}
                                 </div>
                             </div>
-                            <div class="col-md-6 p-4 d-flex flex-column justify-content-center">
-                                <h2 style="font-family: 'Playfair Display', serif; color: var(--brand-primary);">${p.nombre}</h2>
-                                <h4 class="mb-3">$${p.precioMinorista.toLocaleString('es-AR')}</h4>
-                                <p class="text-muted mb-4">${p.descripcion}</p>
+                            <div class="col-md-5 p-4 p-lg-5 d-flex flex-column justify-content-center bg-white">
+                                <h2 class="display-6 fw-bold mb-3" style="font-family: 'Playfair Display', serif; color: var(--brand-primary);">${p.nombre}</h2>
+                                <h4 class="mb-4 text-dark">$${p.precioMinorista.toLocaleString('es-AR')}</h4>
+                                <div class="mb-5">
+                                    <h6 class="text-uppercase fw-bold small mb-2" style="letter-spacing: 1px; color: var(--brand-accent);">Descripción</h6>
+                                    <p class="text-muted" style="line-height: 1.6;">${p.descripcion}</p>
+                                </div>
                                 <button class="btn py-3 fw-bold text-uppercase" 
                                         onclick="agregarAlCarrito(null, '${p.id}'); bootstrap.Modal.getInstance(document.getElementById('modalDetalle')).hide();"
-                                        style="background-color: var(--brand-primary); color: white; border-radius: 0;">
-                                    Añadir a la Bolsa
+                                        style="background-color: var(--brand-primary); color: white; border-radius: 0; letter-spacing: 2px; transition: var(--transition-smooth);">
+                                    <i class="fas fa-shopping-bag me-2"></i> Añadir a la Bolsa
                                 </button>
                             </div>
                         </div>
