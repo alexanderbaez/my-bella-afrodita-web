@@ -67,7 +67,7 @@ const PRODUCTOS = [
         precioMayorista: 1240,
         imagenes: ["../images/Less regulable FRENTE.png", "../images/Less regulable DORSAL.png"],
         categoria: "bombachas",
-        //stock: false,
+        stock: false,
         descripcion: "Confeccionadas en algodon con encaje ofrecen un toque sexy y comodo."
     },
     {
