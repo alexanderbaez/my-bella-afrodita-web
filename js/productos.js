@@ -157,16 +157,29 @@ const PRODUCTOS = [
     // --- CONJUNTOS ---
     {
         id: "conj-01",
+        nombre: "Red Velvet",
+        precioMinorista: 15000,
+        precioMayorista: 12000,
+        imagenes: ["../images/Red-Velvet1.jpg", 
+            "../images/Red-Velvet2.jpg",
+            "../images/Red-Velvet3.jpg",
+        ],
+        categoria: "conjuntos",
+        //stock: false,
+        descripcion: "Colección Intimate La sofisticación del encaje se combina con un diseño tipo longline para ofrecerte un ajuste impecable. El conjunto Red Velvet destaca por su acabado artesanal y tirantes ajustables, pensado para quienes buscan sentirse especiales en su día a día sin perder el confort."
+    },
+    {
+        id: "conj-02",
         nombre: "Combo Alo - Remera + top + calza + medias",
         precioMinorista: 23000,
         precioMayorista: 19000,
         imagenes: ["../images/Combo alo 1.png", "../images/Combo alo 2.png"],
         categoria: "conjuntos",
-        //stock: false,
+        stock: false,
         descripcion: "Combo de lycra que incluye remera, top, medias y short de lycra sin frunce."
     },
     {
-        id: "conj-02",
+        id: "conj-03",
         nombre: "Conjunto D'lirio con tazas desmontables",
         precioMinorista: 10500,
         precioMayorista: 8500,
@@ -180,7 +193,7 @@ const PRODUCTOS = [
         descripcion: "Diseño del top de morley con tazas desmontables y calza con frunce, faja y levanta gluteos."
     },
     {
-        id: "conj-03",
+        id: "conj-04",
         nombre: "Conjunto Persefone",
         precioMinorista: 7000,
         precioMayorista: 6330,
@@ -195,7 +208,7 @@ const PRODUCTOS = [
         descripcion: "La base perfecta. Cómodo morley y puntilla, ideal para usar bajo cualquier prenda."
     },
     {
-        id: "conj-04",
+        id: "conj-05",
         nombre: "Conjunto Roma",
         precioMinorista: 10000,
         precioMayorista: 8000,
@@ -205,7 +218,7 @@ const PRODUCTOS = [
         descripcion: "Copas triangulares de algodón con delicados detalle de encaje. Ideal para la mujer romantica."
     },
     {
-        id: "conj-05",
+        id: "conj-06",
         nombre: "Conjunto Top + Calza (Lycra)",
         precioMinorista: 12000,
         precioMayorista: 10000,
@@ -219,7 +232,7 @@ const PRODUCTOS = [
         descripcion: "Color de tendencia. Confeccionado en lycra, sin frunce. Ideal para confort y sosten al entrenar."
     },
     {
-        id: "conj-06",
+        id: "conj-07",
         nombre: "Conjunto Top + Calza (Negro)",
         precioMinorista: 10000,
         precioMayorista: 8000,
@@ -229,7 +242,7 @@ const PRODUCTOS = [
         descripcion: "Ultimos en color negro. De morley con un top de tazas desmontables y calza con frunce."
     },
     {
-        id: "conj-07",
+        id: "conj-08",
         nombre: "Conjunto Top + Pollera Pantalon",
         precioMinorista: 16500,
         precioMayorista: null,
@@ -243,7 +256,7 @@ const PRODUCTOS = [
         descripcion: "Color de tendencia. Confeccionado en lycra, con un diseño que ofrece elegancia y comodidad."
     },
     {
-        id: "conj-08",
+        id: "conj-09",
         nombre: "Conjunto Vicblack",
         precioMinorista: 7500,
         precioMayorista: 6450,
@@ -261,7 +274,7 @@ const PRODUCTOS = [
         descripcion: "Colores de la nueva temporada. Con un diseño comodo en morley con detalles de puntilla."
     },
     {
-        id: "conj-09",
+        id: "conj-10",
         nombre: "Conjunto Inicial Nena",
         precioMinorista: 3800,
         precioMayorista: 3200,
@@ -276,7 +289,7 @@ const PRODUCTOS = [
         descripcion: "Colores de la nueva temporada. Con un diseño comodo en morley con detalles de puntilla."
     },
     {
-        id: "conj-010",
+        id: "conj-011",
         nombre: "Top Inicial Nena",
         precioMinorista: 2000,
         precioMayorista: 1740,
@@ -291,7 +304,7 @@ const PRODUCTOS = [
         descripcion: "Colores de la nueva temporada. Con un diseño comodo en morley con detalles de puntilla."
     },
     {
-        id: "conj-011",
+        id: "conj-012",
         nombre: "Conjunto Deportivo",
         precioMinorista: 7000,
         precioMayorista: 6330,
@@ -301,7 +314,7 @@ const PRODUCTOS = [
         descripcion: "Colores de la nueva temporada. Con un diseño comodo en morley con detalles de puntilla y tazas desmontables."
     },
     {
-        id: "conj-012",
+        id: "conj-013",
         nombre: "Sports Bell",
         precioMinorista: 6500,
         precioMayorista: 5880,
