@@ -362,7 +362,7 @@ const PRODUCTOS = [
             "../images/medias-orejita4.png",
         ],
         categoria: "medias",
-        //stock: false,
+        stock: false,
         descripcion: "Pack de 3 pares de medias con orejitas para niños"
     },
     {

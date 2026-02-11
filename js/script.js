@@ -380,6 +380,10 @@ function enviarPedidoWhatsApp() {
     window.open(url, "_blank");
 }
 
+/* ==========================================================================
+   DETALLE DEL PRODUCTO - DOBLE PRECIO & CARRUSEL (ESTILO MY BELLA AFRODITA)
+   ========================================================================== */
+
 window.mostrarDetalleProducto = function (id) {
     const p = PRODUCTOS.find(prod => prod.id === id);
     if (!p || p.stock === false) return;
@@ -387,13 +391,12 @@ window.mostrarDetalleProducto = function (id) {
     // 1. Generar los items del carrusel (fotos)
     let slides = p.imagenes.map((img, idx) => `
         <div class="carousel-item ${idx === 0 ? 'active' : ''}">
-            <img src="${img}" class="d-block w-100" style="height: 600px; object-fit: cover;">
+            <img src="${img}" class="d-block w-100" style="height: 550px; object-fit: cover;">
         </div>`).join('');
 
-    // 2. Generar controles e indicadores SOLO si hay más de una foto
+    // 2. Generar controles e indicadores
     let controls = "";
     let indicators = "";
-    
     if (p.imagenes.length > 1) {
         indicators = `
             <div class="carousel-indicators">
@@ -408,20 +411,40 @@ window.mostrarDetalleProducto = function (id) {
         controls = `
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselDetalle" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true" style="filter: invert(1) brightness(0.5);"></span>
-                <span class="visually-hidden">Anterior</span>
             </button>
             <button class="carousel-control-next" type="button" data-bs-target="#carouselDetalle" data-bs-slide="next">
                 <span class="carousel-control-next-icon" aria-hidden="true" style="filter: invert(1) brightness(0.5);"></span>
-                <span class="visually-hidden">Siguiente</span>
             </button>`;
     }
 
+    // 3. Generar el bloque de precios (Minorista + Mayorista)
+    let htmlPreciosDetalle = "";
+    if (p.precioMayorista) {
+        htmlPreciosDetalle = `
+            <div class="price-container mb-4 p-3 border" style="background-color: #fcfcfc; border-radius: 8px;">
+                <div class="row text-center">
+                    <div class="col-6 border-end">
+                        <small class="text-muted text-uppercase d-block" style="font-size: 0.7rem; letter-spacing: 1px;">Minorista</small>
+                        <span class="fw-bold text-dark h4">$${p.precioMinorista.toLocaleString('es-AR')}</span>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-uppercase d-block fw-bold" style="font-size: 0.7rem; letter-spacing: 1px; color: var(--brand-accent);">Mayorista (3+)</small>
+                        <span class="fw-bold h4" style="color: var(--brand-primary);">$${p.precioMayorista.toLocaleString('es-AR')}</span>
+                    </div>
+                </div>
+            </div>`;
+    } else {
+        htmlPreciosDetalle = `
+            <h4 class="mb-4 text-dark fw-bold">$${p.precioMinorista.toLocaleString('es-AR')}</h4>`;
+    }
+
+    // 4. Construcción del Modal
     const modalHtml = `
         <div class="modal fade" id="modalDetalle" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-xl modal-dialog-centered">
                 <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; overflow: hidden; background-color: var(--brand-bg);">
                     <div class="modal-body p-0">
-                        <button type="button" class="btn-close position-absolute top-0 end-0 m-4 z-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close position-absolute top-0 end-0 m-4 z-3" data-bs-dismiss="modal"></button>
                         <div class="row g-0">
                             <div class="col-md-7">
                                 <div id="carouselDetalle" class="carousel slide" data-bs-ride="carousel">
@@ -432,14 +455,17 @@ window.mostrarDetalleProducto = function (id) {
                             </div>
                             <div class="col-md-5 p-4 p-lg-5 d-flex flex-column justify-content-center bg-white">
                                 <h2 class="display-6 fw-bold mb-3" style="font-family: 'Playfair Display', serif; color: var(--brand-primary);">${p.nombre}</h2>
-                                <h4 class="mb-4 text-dark">$${p.precioMinorista.toLocaleString('es-AR')}</h4>
+                                
+                                ${htmlPreciosDetalle}
+
                                 <div class="mb-5">
                                     <h6 class="text-uppercase fw-bold small mb-2" style="letter-spacing: 1px; color: var(--brand-accent);">Descripción</h6>
                                     <p class="text-muted" style="line-height: 1.6;">${p.descripcion}</p>
                                 </div>
+
                                 <button class="btn py-3 fw-bold text-uppercase" 
                                         onclick="agregarAlCarrito(null, '${p.id}'); bootstrap.Modal.getInstance(document.getElementById('modalDetalle')).hide();"
-                                        style="background-color: var(--brand-primary); color: white; border-radius: 0; letter-spacing: 2px; transition: var(--transition-smooth);">
+                                        style="background-color: var(--brand-primary); color: white; border-radius: 0; letter-spacing: 2px; transition: var(--transition-smooth); border: none;">
                                     <i class="fas fa-shopping-bag me-2"></i> Añadir a la Bolsa
                                 </button>
                             </div>
