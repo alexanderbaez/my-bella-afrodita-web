@@ -401,88 +401,93 @@ window.mostrarDetalleProducto = function (id) {
     const p = PRODUCTOS.find(prod => prod.id === id);
     if (!p || p.stock === false) return;
 
-    // 1. Generar slides del carrusel con evento para abrir imagen en grande
+    // 1. Slides con altura adaptable
     let slides = p.imagenes.map((img, idx) => `
         <div class="carousel-item ${idx === 0 ? 'active' : ''}">
-            <img src="${img}" class="d-block w-100" 
-                 style="height: 40vh; min-height: 250px; max-height: 400px; object-fit: cover; cursor: pointer;"
-                 onclick="abrirImagenGrande('${img}')">
+            <img src="${img}" class="d-block w-100 img-detalle-adaptable" 
+                 style="object-fit: cover; cursor: pointer;"
+                 onclick="abrirImagenGrande('${img}')"
+                 ondblclick="abrirImagenGrande('${img}')">
         </div>`).join('');
+
+    const styleResponsive = `
+        <style>
+            .img-detalle-adaptable { height: 35vh; min-height: 250px; }
+            @media (min-width: 992px) { 
+                .img-detalle-adaptable { height: 70vh; min-height: 550px; } 
+                .info-col { min-height: 550px; }
+            }
+            @media (max-width: 576px) {
+                #modalDetalle .modal-dialog { margin: 0.5rem; }
+            }
+        </style>
+    `;
 
     // 2. Controles de navegación
     let controls = "";
     let indicators = "";
     if (p.imagenes.length > 1) {
-        indicators = `
-            <div class="carousel-indicators" style="margin-bottom: 0.2rem;">
-                ${p.imagenes.map((_, idx) => `
-                    <button type="button" data-bs-target="#carouselDetalle" data-bs-slide-to="${idx}" 
-                            class="${idx === 0 ? 'active' : ''}" 
-                            style="background-color: var(--brand-primary); width: 7px; height: 7px; border-radius: 50%; border: none;">
-                    </button>
-                `).join('')}
-            </div>`;
-
+        indicators = `<div class="carousel-indicators" style="margin-bottom: 0.5rem;">
+            ${p.imagenes.map((_, idx) => `<button type="button" data-bs-target="#carouselDetalle" data-bs-slide-to="${idx}" class="${idx === 0 ? 'active' : ''}" style="background-color: var(--brand-primary); width: 7px; height: 7px; border-radius: 50%; border: none;"></button>`).join('')}
+        </div>`;
         controls = `
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselDetalle" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true" style="filter: invert(1) brightness(0.5); transform: scale(0.7);"></span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselDetalle" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true" style="filter: invert(1) brightness(0.5); transform: scale(0.7);"></span>
-            </button>`;
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselDetalle" data-bs-slide="prev"><span class="carousel-control-prev-icon" aria-hidden="true" style="filter: invert(1) brightness(0.5); transform: scale(0.6);"></span></button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselDetalle" data-bs-slide="next"><span class="carousel-control-next-icon" aria-hidden="true" style="filter: invert(1) brightness(0.5); transform: scale(0.6);"></span></button>`;
     }
 
-    // 3. Bloque de Precios (Más compacto)
+    // 3. Precios con más presencia
     let htmlPreciosDetalle = p.precioMayorista ? `
-        <div class="price-container mb-3 p-2" style="background-color: var(--brand-nude); border-radius: 8px;">
+        <div class="mb-4 p-3 shadow-sm" style="background-color: var(--brand-nude); border-radius: 12px; border: 1px solid rgba(0,0,0,0.05);">
             <div class="row text-center g-0">
                 <div class="col-6 border-end" style="border-color: rgba(0,0,0,0.1) !important;">
-                    <small class="text-muted text-uppercase d-block" style="font-size: 0.6rem; letter-spacing: 1px;">Minorista</small>
-                    <span class="fw-bold text-dark h5 mb-0">$${p.precioMinorista.toLocaleString('es-AR')}</span>
+                    <small class="text-muted d-block mb-1" style="font-size: 0.7rem; letter-spacing: 1px;">MINORISTA</small>
+                    <span class="fw-bold text-dark h4 mb-0">$${p.precioMinorista.toLocaleString('es-AR')}</span>
                 </div>
                 <div class="col-6">
-                    <small class="text-uppercase d-block fw-bold" style="font-size: 0.6rem; letter-spacing: 1px; color: var(--brand-accent);">Mayorista (3+)</small>
-                    <span class="fw-bold h5 mb-0" style="color: var(--brand-primary);">$${p.precioMayorista.toLocaleString('es-AR')}</span>
+                    <small class="fw-bold d-block mb-1" style="font-size: 0.7rem; letter-spacing: 1px; color: var(--brand-accent);">MAYORISTA</small>
+                    <span class="fw-bold h4 mb-0" style="color: var(--brand-primary);">$${p.precioMayorista.toLocaleString('es-AR')}</span>
                 </div>
             </div>
-        </div>` : `
-        <div class="mb-3">
-            <h4 class="fw-bold text-dark mb-0">$${p.precioMinorista.toLocaleString('es-AR')}</h4>
-        </div>`;
+        </div>` : `<h2 class="fw-bold text-dark mb-4">$${p.precioMinorista.toLocaleString('es-AR')}</h2>`;
 
-    // 4. Construcción del Modal (Más compacto y con Lightbox)
+    // 4. Modal con Flexbox Distribuido
     const modalHtml = `
+        ${styleResponsive}
         <div class="modal fade" id="modalDetalle" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
-                <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; overflow: hidden; background-color: #fff;">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden; background-color: #fff;">
                     <div class="modal-body p-0 position-relative">
-                        <button type="button" class="btn-close position-absolute top-0 end-0 m-2 z-3 bg-white p-2 shadow-sm rounded-circle" 
-                                data-bs-dismiss="modal" style="font-size: 0.7rem;"></button>
+                        <button type="button" class="btn-close position-absolute top-0 end-0 m-3 z-3 bg-white p-2 shadow-sm rounded-circle" data-bs-dismiss="modal" style="font-size: 0.7rem;"></button>
                         
                         <div class="row g-0">
-                            <div class="col-12">
-                                <div id="carouselDetalle" class="carousel slide" data-bs-ride="carousel">
+                            <div class="col-12 col-lg-7">
+                                <div id="carouselDetalle" class="carousel slide h-100" data-bs-ride="carousel">
                                     ${indicators}
-                                    <div class="carousel-inner">${slides}</div>
+                                    <div class="carousel-inner h-100">${slides}</div>
                                     ${controls}
                                 </div>
                             </div>
                             
-                            <div class="col-12 p-3">
-                                <h2 class="h5 fw-bold mb-1" style="font-family: 'Playfair Display', serif; color: var(--brand-primary);">${p.nombre}</h2>
-                                
-                                ${htmlPreciosDetalle}
+                            <div class="col-12 col-lg-5 p-4 p-md-5 info-col d-flex flex-column justify-content-between">
+                                <div>
+                                    <h2 class="display-6 fw-bold mb-3" style="font-family: 'Playfair Display', serif; color: var(--brand-primary); line-height: 1.1;">${p.nombre}</h2>
+                                    <hr class="my-4 opacity-10">
+                                    
+                                    ${htmlPreciosDetalle}
 
-                                <div class="mb-3">
-                                    <h6 class="text-uppercase fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 1px; color: var(--brand-accent);">Descripción</h6>
-                                    <p class="text-muted mb-0" style="font-size: 0.85rem; line-height: 1.4;">${p.descripcion}</p>
+                                    <div class="mb-4">
+                                        <h6 class="text-uppercase fw-bold mb-3" style="font-size: 0.75rem; letter-spacing: 2px; color: var(--brand-accent);">Descripción</h6>
+                                        <p class="text-muted" style="font-size: 1rem; line-height: 1.8;">${p.descripcion}</p>
+                                    </div>
                                 </div>
                                 
-                                <button class="btn btn-dark py-2 fw-bold text-uppercase w-100" 
-                                        onclick="agregarAlCarrito(null, '${p.id}'); bootstrap.Modal.getInstance(document.getElementById('modalDetalle')).hide();"
-                                        style="background-color: var(--brand-primary); border: none; border-radius: 8px; letter-spacing: 1px; font-size: 0.8rem;">
-                                    <i class="fas fa-shopping-bag me-2"></i> Añadir a la Bolsa
-                                </button>
+                                <div class="mt-auto">
+                                    <button class="btn btn-dark py-3 fw-bold text-uppercase w-100" 
+                                            onclick="agregarAlCarrito(null, '${p.id}'); bootstrap.Modal.getInstance(document.getElementById('modalDetalle')).hide();"
+                                            style="background-color: var(--brand-primary); border: none; border-radius: 15px; letter-spacing: 2px; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                                        <i class="fas fa-shopping-bag me-2"></i> Añadir a la Bolsa
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -495,7 +500,6 @@ window.mostrarDetalleProducto = function (id) {
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     new bootstrap.Modal(document.getElementById('modalDetalle')).show();
 };
-
 // --- FUNCIÓN LIGHTBOX PARA ZOOM ---
 window.abrirImagenGrande = function(url) {
     Swal.fire({
