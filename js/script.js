@@ -7,7 +7,7 @@ let carrito = JSON.parse(localStorage.getItem('myBellaCarrito')) || [];
 let avisoMayoristaMostrado = false;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Aplicar el fondo del :root al body
+    // Aplicar el fondo del :root al body (Sincronizado con tu paleta)
     document.body.style.backgroundColor = "var(--brand-bg)";
     
     actualizarContadorUI();
@@ -78,7 +78,6 @@ function dibujarProductos(lista) {
     contenedor.innerHTML = "";
     
     lista.forEach(p => {
-        // Lógica de Stock: Si p.stock es undefined, asumimos que hay stock.
         const tieneStock = p.stock !== false;
         
         let htmlPrecios = "";
@@ -104,7 +103,6 @@ function dibujarProductos(lista) {
                 </div>`;
         }
 
-        // Badge de Agotado
         const badgeAgotado = !tieneStock ? 
             `<div class="position-absolute top-0 start-0 m-3 z-2">
                 <span class="badge px-3 py-2 text-uppercase" style="background-color: rgba(0,0,0,0.7); color: white; border-radius: 0; font-size: 0.7rem; letter-spacing: 2px;">Agotado</span>
@@ -148,65 +146,81 @@ window.renderizarListaCarrito = function() {
     if (carrito.length === 0) {
         container.innerHTML = `
             <div class="text-center py-5">
-                <h5 class="text-muted">Tu bolsa está vacía</h5>
-                <button class="btn btn-outline-dark btn-sm mt-3 rounded-0 text-uppercase" data-bs-dismiss="modal" style="letter-spacing: 1px;">
-                    Continuar Comprando
+                <div class="mb-3" style="font-size: 3rem; opacity: 0.3;">
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+                <h5 class="text-muted fw-light">Tu bolsa está vacía</h5>
+                <button class="btn btn-outline-dark btn-sm mt-3 rounded-pill px-4 text-uppercase" 
+                        data-bs-dismiss="modal" style="letter-spacing: 1px; font-size: 0.7rem;">
+                    Explorar Colección
                 </button>
             </div>`;
-        if (totalElement) totalElement.innerText = '$0';
+        if (totalElement) totalElement.innerHTML = '<div class="text-end fw-bold h4">$0</div>';
         return;
     }
 
     const res = calcularTotalCarrito();
+    const unidadesTotales = carrito.reduce((acc, i) => acc + i.cantidad, 0);
+
     let cartHtml = `
-        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
-            <span class="fw-bold text-uppercase small text-muted">${carrito.reduce((acc, i) => acc + i.cantidad, 0)} Items</span>
-            <button class="btn btn-link text-danger text-decoration-none p-0 small fw-bold" onclick="confirmarVaciarCarrito()">
-                <i class="fas fa-trash-alt me-1"></i> VACIAR BOLSA
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <span class="fw-bold text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px; color: var(--brand-accent);">
+                ${unidadesTotales} ${unidadesTotales === 1 ? 'Producto' : 'Productos'}
+            </span>
+            <button class="btn btn-link text-muted text-decoration-none p-0" 
+                    onclick="confirmarVaciarCarrito()" style="font-size: 0.7rem; letter-spacing: 1px;">
+                <i class="fas fa-trash-alt me-1"></i> VACIAR TODO
             </button>
         </div>
     `;
 
     carrito.forEach((item, index) => {
         const p = PRODUCTOS.find(prod => prod.id === item.id);
-        const unidadesTotales = carrito.reduce((acc, i) => acc + i.cantidad, 0);
-        
-        // Lógica de precio para el carrito: si hay 3+ y el producto tiene precio mayorista
         let precioAplicado = (unidadesTotales >= 3 && p?.precioMayorista) ? p.precioMayorista : (p?.precioMinorista || item.precio);
         
         cartHtml += `
-            <div class="row align-items-center mb-4 g-2">
-                <div class="col-3 col-md-2">
-                    <img src="${item.imagen}" class="img-fluid rounded-3 shadow-sm" style="height: 70px; width: 70px; object-fit: cover;">
+            <div class="row align-items-center mb-3 g-2">
+                <div class="col-3">
+                    <img src="${item.imagen}" class="img-fluid" 
+                         style="height: 65px; width: 100%; object-fit: cover; border-radius: 8px;">
                 </div>
-                <div class="col-5 col-md-6 px-3">
-                    <p class="mb-0 fw-bold text-dark small">${item.nombre}</p>
-                    <span class="text-muted small">$${precioAplicado.toLocaleString('es-AR')}</span>
+                
+                <div class="col-5 ps-2">
+                    <p class="mb-0 fw-bold text-dark" style="font-size: 0.85rem; line-height: 1.2;">${item.nombre}</p>
+                    <span class="text-muted" style="font-size: 0.75rem;">$${precioAplicado.toLocaleString('es-AR')} c/u</span>
                     <div class="mt-1">
-                        <button class="btn btn-sm text-danger p-0 border-0 bg-transparent" style="font-size: 0.75rem;" onclick="eliminarDelCarrito(${index})">
-                            Quitar
+                        <button class="btn btn-sm text-danger p-0 border-0 bg-transparent" 
+                                style="font-size: 0.7rem; font-weight: 500;" 
+                                onclick="eliminarDelCarrito(${index})">
+                            Eliminar
                         </button>
                     </div>
                 </div>
-                <div class="col-4 col-md-4 text-end">
-                    <div class="d-flex align-items-center justify-content-end mb-2">
-                        <div class="d-flex align-items-center bg-light rounded-pill border p-1" style="transform: scale(0.9);">
-                            <button class="btn btn-sm btn-light rounded-circle border-0 p-0" style="width:25px; height:25px;" onclick="cambiarCantidad(${index}, -1)">-</button>
-                            <span class="px-3 small fw-bold text-dark">${item.cantidad}</span>
-                            <button class="btn btn-sm btn-light rounded-circle border-0 p-0" style="width:25px; height:25px;" onclick="cambiarCantidad(${index}, 1)">+</button>
+                
+                <div class="col-4 text-end">
+                    <div class="d-flex align-items-center justify-content-end mb-1">
+                        <div class="d-flex align-items-center bg-white border rounded-pill px-1" style="border-color: #eee !important;">
+                            <button class="btn btn-sm p-0 flex-shrink-0" 
+                                    style="width:22px; height:22px; font-size: 0.8rem;" 
+                                    onclick="cambiarCantidad(${index}, -1)">-</button>
+                            <span class="px-2 fw-bold text-dark" style="font-size: 0.8rem; min-width: 25px; text-align: center;">${item.cantidad}</span>
+                            <button class="btn btn-sm p-0 flex-shrink-0" 
+                                    style="width:22px; height:22px; font-size: 0.8rem;" 
+                                    onclick="cambiarCantidad(${index}, 1)">+</button>
                         </div>
                     </div>
-                    <span class="text-muted small fw-bold text-dark">$${(precioAplicado * item.cantidad).toLocaleString('es-AR')}</span>
+                    <div class="fw-bold text-dark" style="font-size: 0.9rem;">
+                        $${(precioAplicado * item.cantidad).toLocaleString('es-AR')}
+                    </div>
                 </div>
             </div>`;
     });
 
-    // AGREGAMOS EL BOTÓN QUE TE FALTABA AL FINAL DEL HTML GENERADO
     cartHtml += `
-        <div class="text-center border-top pt-3 mt-2">
-            <button class="btn btn-link text-muted small text-decoration-none text-uppercase" 
-                    data-bs-dismiss="modal" style="letter-spacing: 1px;">
-                Continuar Comprando
+        <div class="text-center mt-3 border-top pt-2">
+            <button class="btn btn-link btn-sm text-muted text-decoration-none text-uppercase" 
+                    data-bs-dismiss="modal" style="letter-spacing: 1px; font-size: 0.65rem;">
+                + Seguir Comprando
             </button>
         </div>
     `;
@@ -215,10 +229,21 @@ window.renderizarListaCarrito = function() {
 
     if (totalElement) {
         totalElement.innerHTML = `
-            <div class="text-end">
-                ${res.promos.map(p => `<div class="text-success small fw-bold" style="font-size: 0.8rem;">✨ ${p}</div>`).join('')}
-                ${!res.esMayorista ? `<div class="text-muted small" style="font-size: 0.7rem;">Agregá ${Math.max(0, 3 - carrito.reduce((acc, i) => acc + i.cantidad, 0))} más para precio mayorista</div>` : ''}
-                <div class="mt-1 fw-bold" style="font-size: 1.5rem; color: #8c002c;">$${res.total.toLocaleString('es-AR')}</div>
+            <div class="text-end w-100">
+                ${res.promos.map(p => `
+                    <div class="text-success fw-bold mb-1" style="font-size: 0.75rem;">
+                        <i class="fas fa-check-circle me-1"></i> ${p}
+                    </div>`).join('')}
+                
+                ${!res.esMayorista ? `
+                    <div class="p-2 mb-2" style="background-color: var(--brand-nude); border-radius: 6px; font-size: 0.7rem;">
+                        🎁 Agregá <strong style="color: var(--brand-primary);">${3 - unidadesTotales}</strong> más para <b>Precio Mayorista</b>
+                    </div>` : ''}
+                
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    <span class="text-muted text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">Total a pagar</span>
+                    <span class="fw-bold" style="font-size: 1.6rem; color: var(--brand-primary);">$${res.total.toLocaleString('es-AR')}</span>
+                </div>
             </div>`;
     }
 }
@@ -236,7 +261,7 @@ window.agregarAlCarrito = function (event, id) {
     }
     actualizarYGuardar();
     mostrarNotificacion(p.nombre);
-    verificarHitoMayorista(); // Verifica si desbloqueó la promo
+    verificarHitoMayorista();
 };
 
 window.cambiarCantidad = function (index, valor) {
@@ -257,10 +282,8 @@ window.eliminarDelCarrito = function (index) {
     verificarHitoMayorista();
 };
 
-// --- NOTIFICACIÓN PROFESIONAL MAYORISTA ---
 function verificarHitoMayorista() {
     const { esMayorista } = calcularTotalCarrito();
-    
     if (esMayorista && !avisoMayoristaMostrado) {
         const toastMayorista = Swal.mixin({
             toast: true,
@@ -288,7 +311,7 @@ window.confirmarVaciarCarrito = function() {
         text: "Se eliminarán todos los productos seleccionados.",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#8c002c',
+        confirmButtonColor: 'var(--brand-primary)',
         cancelButtonColor: '#333333',
         confirmButtonText: 'Sí, vaciar',
         cancelButtonText: 'Cancelar',
@@ -299,7 +322,6 @@ window.confirmarVaciarCarrito = function() {
             actualizarYGuardar();
             renderizarListaCarrito();
             avisoMayoristaMostrado = false;
-            
             const Toast = Swal.mixin({
                 toast: true,
                 position: 'bottom-end',
@@ -307,10 +329,7 @@ window.confirmarVaciarCarrito = function() {
                 timer: 2000,
                 timerProgressBar: true
             });
-            Toast.fire({
-                icon: 'success',
-                title: 'Bolsa vaciada'
-            });
+            Toast.fire({ icon: 'success', title: 'Bolsa vaciada' });
         }
     });
 };
@@ -326,10 +345,8 @@ function actualizarContadorUI() {
     const totalUnidades = carrito.reduce((acc, item) => acc + item.cantidad, 0);
     contador.innerText = totalUnidades;
     contador.style.display = totalUnidades === 0 ? 'none' : 'flex';
-    
-    // El contador cambia a verde si ya es mayorista
     const { esMayorista } = calcularTotalCarrito();
-    contador.style.backgroundColor = esMayorista ? "#28a745" : "#8c002c";
+    contador.style.backgroundColor = esMayorista ? "#28a745" : "var(--brand-primary)";
 }
 
 function enviarPedidoWhatsApp() {
@@ -342,7 +359,8 @@ function enviarPedidoWhatsApp() {
     const unidadesTotales = carrito.reduce((acc, item) => acc + item.cantidad, 0);
     const cumpleCriterioGral = unidadesTotales >= 3;
 
-    let mensaje = "¡Hola! My Bella Afrodita, quiero realizar este pedido:\n\n";
+    let mensaje = "✨ *PEDIDO: MY BELLA AFRODITA* ✨\n";
+    mensaje += "------------------------------------------\n\n";
 
     carrito.forEach((item, index) => {
         const p = PRODUCTOS.find(prod => prod.id === item.id);
@@ -360,20 +378,15 @@ function enviarPedidoWhatsApp() {
             precioAplicado = item.precio;
         }
 
-        const subtotalItem = precioAplicado * item.cantidad;
-        mensaje += `${index + 1}. *${item.nombre}*\n`;
+        mensaje += `🛍️ *${item.nombre}*\n`;
         mensaje += `   Cant: ${item.cantidad} x $${precioAplicado.toLocaleString('es-AR')}${etiqueta}\n`;
-        mensaje += `   Subtotal: $${subtotalItem.toLocaleString('es-AR')}\n\n`;
+        mensaje += `   Subtotal: $${(precioAplicado * item.cantidad).toLocaleString('es-AR')}\n\n`;
     });
 
-    mensaje += `--------------------------\n`;
-    mensaje += `*TOTAL ESTIMADO: $${total.toLocaleString('es-AR')}*\n`;
-    
-    if (esMayorista) {
-        mensaje += `_Beneficio mayorista aplicado en productos seleccionados._\n`;
-    }
-    
-    mensaje += `--------------------------\n\n*Datos del cliente:*`;
+    mensaje += `------------------------------------------\n`;
+    mensaje += `💰 *TOTAL ESTIMADO: $${total.toLocaleString('es-AR')}*\n`;
+    if (esMayorista) mensaje += `✅ _Beneficio mayorista aplicado_\n`;
+    mensaje += `\n👤 *Datos del cliente:*`;
     mensaje += `\nNombre: ________________`;
 
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensaje)}`;
@@ -381,91 +394,93 @@ function enviarPedidoWhatsApp() {
 }
 
 /* ==========================================================================
-   DETALLE DEL PRODUCTO - DOBLE PRECIO & CARRUSEL (ESTILO MY BELLA AFRODITA)
+   DETALLE DEL PRODUCTO - RESPONSIVE & LIGHTBOX (BOUTIQUE STYLE)
    ========================================================================== */
 
 window.mostrarDetalleProducto = function (id) {
     const p = PRODUCTOS.find(prod => prod.id === id);
     if (!p || p.stock === false) return;
 
-    // 1. Generar los items del carrusel (fotos)
+    // 1. Generar slides del carrusel con evento para abrir imagen en grande
     let slides = p.imagenes.map((img, idx) => `
         <div class="carousel-item ${idx === 0 ? 'active' : ''}">
-            <img src="${img}" class="d-block w-100" style="height: 550px; object-fit: cover;">
+            <img src="${img}" class="d-block w-100" 
+                 style="height: 40vh; min-height: 250px; max-height: 400px; object-fit: cover; cursor: pointer;"
+                 onclick="abrirImagenGrande('${img}')">
         </div>`).join('');
 
-    // 2. Generar controles e indicadores
+    // 2. Controles de navegación
     let controls = "";
     let indicators = "";
     if (p.imagenes.length > 1) {
         indicators = `
-            <div class="carousel-indicators">
+            <div class="carousel-indicators" style="margin-bottom: 0.2rem;">
                 ${p.imagenes.map((_, idx) => `
                     <button type="button" data-bs-target="#carouselDetalle" data-bs-slide-to="${idx}" 
-                            class="${idx === 0 ? 'active' : ''}" aria-current="${idx === 0 ? 'true' : ''}" 
-                            style="background-color: var(--brand-primary); width: 12px; height: 12px; border-radius: 50%;">
+                            class="${idx === 0 ? 'active' : ''}" 
+                            style="background-color: var(--brand-primary); width: 7px; height: 7px; border-radius: 50%; border: none;">
                     </button>
                 `).join('')}
             </div>`;
 
         controls = `
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselDetalle" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true" style="filter: invert(1) brightness(0.5);"></span>
+                <span class="carousel-control-prev-icon" aria-hidden="true" style="filter: invert(1) brightness(0.5); transform: scale(0.7);"></span>
             </button>
             <button class="carousel-control-next" type="button" data-bs-target="#carouselDetalle" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true" style="filter: invert(1) brightness(0.5);"></span>
+                <span class="carousel-control-next-icon" aria-hidden="true" style="filter: invert(1) brightness(0.5); transform: scale(0.7);"></span>
             </button>`;
     }
 
-    // 3. Generar el bloque de precios (Minorista + Mayorista)
-    let htmlPreciosDetalle = "";
-    if (p.precioMayorista) {
-        htmlPreciosDetalle = `
-            <div class="price-container mb-4 p-3 border" style="background-color: #fcfcfc; border-radius: 8px;">
-                <div class="row text-center">
-                    <div class="col-6 border-end">
-                        <small class="text-muted text-uppercase d-block" style="font-size: 0.7rem; letter-spacing: 1px;">Minorista</small>
-                        <span class="fw-bold text-dark h4">$${p.precioMinorista.toLocaleString('es-AR')}</span>
-                    </div>
-                    <div class="col-6">
-                        <small class="text-uppercase d-block fw-bold" style="font-size: 0.7rem; letter-spacing: 1px; color: var(--brand-accent);">Mayorista (3+)</small>
-                        <span class="fw-bold h4" style="color: var(--brand-primary);">$${p.precioMayorista.toLocaleString('es-AR')}</span>
-                    </div>
+    // 3. Bloque de Precios (Más compacto)
+    let htmlPreciosDetalle = p.precioMayorista ? `
+        <div class="price-container mb-3 p-2" style="background-color: var(--brand-nude); border-radius: 8px;">
+            <div class="row text-center g-0">
+                <div class="col-6 border-end" style="border-color: rgba(0,0,0,0.1) !important;">
+                    <small class="text-muted text-uppercase d-block" style="font-size: 0.6rem; letter-spacing: 1px;">Minorista</small>
+                    <span class="fw-bold text-dark h5 mb-0">$${p.precioMinorista.toLocaleString('es-AR')}</span>
                 </div>
-            </div>`;
-    } else {
-        htmlPreciosDetalle = `
-            <h4 class="mb-4 text-dark fw-bold">$${p.precioMinorista.toLocaleString('es-AR')}</h4>`;
-    }
+                <div class="col-6">
+                    <small class="text-uppercase d-block fw-bold" style="font-size: 0.6rem; letter-spacing: 1px; color: var(--brand-accent);">Mayorista (3+)</small>
+                    <span class="fw-bold h5 mb-0" style="color: var(--brand-primary);">$${p.precioMayorista.toLocaleString('es-AR')}</span>
+                </div>
+            </div>
+        </div>` : `
+        <div class="mb-3">
+            <h4 class="fw-bold text-dark mb-0">$${p.precioMinorista.toLocaleString('es-AR')}</h4>
+        </div>`;
 
-    // 4. Construcción del Modal
+    // 4. Construcción del Modal (Más compacto y con Lightbox)
     const modalHtml = `
         <div class="modal fade" id="modalDetalle" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-xl modal-dialog-centered">
-                <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; overflow: hidden; background-color: var(--brand-bg);">
-                    <div class="modal-body p-0">
-                        <button type="button" class="btn-close position-absolute top-0 end-0 m-4 z-3" data-bs-dismiss="modal"></button>
+            <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; overflow: hidden; background-color: #fff;">
+                    <div class="modal-body p-0 position-relative">
+                        <button type="button" class="btn-close position-absolute top-0 end-0 m-2 z-3 bg-white p-2 shadow-sm rounded-circle" 
+                                data-bs-dismiss="modal" style="font-size: 0.7rem;"></button>
+                        
                         <div class="row g-0">
-                            <div class="col-md-7">
+                            <div class="col-12">
                                 <div id="carouselDetalle" class="carousel slide" data-bs-ride="carousel">
                                     ${indicators}
                                     <div class="carousel-inner">${slides}</div>
                                     ${controls}
                                 </div>
                             </div>
-                            <div class="col-md-5 p-4 p-lg-5 d-flex flex-column justify-content-center bg-white">
-                                <h2 class="display-6 fw-bold mb-3" style="font-family: 'Playfair Display', serif; color: var(--brand-primary);">${p.nombre}</h2>
+                            
+                            <div class="col-12 p-3">
+                                <h2 class="h5 fw-bold mb-1" style="font-family: 'Playfair Display', serif; color: var(--brand-primary);">${p.nombre}</h2>
                                 
                                 ${htmlPreciosDetalle}
 
-                                <div class="mb-5">
-                                    <h6 class="text-uppercase fw-bold small mb-2" style="letter-spacing: 1px; color: var(--brand-accent);">Descripción</h6>
-                                    <p class="text-muted" style="line-height: 1.6;">${p.descripcion}</p>
+                                <div class="mb-3">
+                                    <h6 class="text-uppercase fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 1px; color: var(--brand-accent);">Descripción</h6>
+                                    <p class="text-muted mb-0" style="font-size: 0.85rem; line-height: 1.4;">${p.descripcion}</p>
                                 </div>
-
-                                <button class="btn py-3 fw-bold text-uppercase" 
+                                
+                                <button class="btn btn-dark py-2 fw-bold text-uppercase w-100" 
                                         onclick="agregarAlCarrito(null, '${p.id}'); bootstrap.Modal.getInstance(document.getElementById('modalDetalle')).hide();"
-                                        style="background-color: var(--brand-primary); color: white; border-radius: 0; letter-spacing: 2px; transition: var(--transition-smooth); border: none;">
+                                        style="background-color: var(--brand-primary); border: none; border-radius: 8px; letter-spacing: 1px; font-size: 0.8rem;">
                                     <i class="fas fa-shopping-bag me-2"></i> Añadir a la Bolsa
                                 </button>
                             </div>
@@ -479,6 +494,20 @@ window.mostrarDetalleProducto = function (id) {
     if (oldModal) oldModal.remove();
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     new bootstrap.Modal(document.getElementById('modalDetalle')).show();
+};
+
+// --- FUNCIÓN LIGHTBOX PARA ZOOM ---
+window.abrirImagenGrande = function(url) {
+    Swal.fire({
+        imageUrl: url,
+        imageAlt: 'Imagen del producto',
+        showCloseButton: true,
+        showConfirmButton: false,
+        background: 'transparent',
+        width: 'auto',
+        padding: '0',
+        backdrop: 'rgba(0,0,0,0.8)'
+    });
 };
 
 function mostrarNotificacion(nombre) {
