@@ -6,29 +6,32 @@
 
 /* --- PANEL DE CONTROL DE COLORES --- */
 :root {
-    --brand-primary: #8c002c;        /* Rojo Pasión / Borgoña */
-    --brand-accent: #b31a4a;         /* Terracota */
-    --brand-bg: #fffafa;             /* Blanco Seda */
-    --brand-nude: #fcebeb;           /* Rosa Piel */
-    --text-main: #333333;
+    /* Mantenemos tus variables actuales */
+    --brand-primary: #B794C9;        /* Lavanda Pastel */
+    --brand-accent: #DDA0C2;         /* Rosa Viejo */
+    --brand-bg: #F4F1F4;             /* Gris Nube */
+    --brand-nude: #E7D8E6;
+    --text-main: #555555;
     --white-pure: #ffffff;
     --transition-smooth: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     
-    /* Variables de compatibilidad para el HTML */
-    --color-pasión: #8c002c;
-    --color-rosa-suave: #fcebeb;
-    --color-oscuro-elegante: #1a1a1a;
-    --color-terracota-pasión: #b31a4a;
+    --color-pasión: #B794C9;
+    --color-rosa-suave: #F4F1F4;
+    --color-terracota-pasión: #DDA0C2;
 }
 
-/* --- ESTILOS BASE --- */
 body {
-    padding-top: 56px; 
-    font-family: 'Roboto', sans-serif;
-    background-color: var(--brand-bg); 
+    /* Creamos el degradado: Rosa viejo -> Lavanda -> Gris Nube */
+    background: linear-gradient(135deg, #FDF4FF 0%, #E7D8E6 50%, #F4F1F4 100%);
+    background-attachment: fixed; /* Para que el degrade se vea suave al bajar */
+    min-height: 100vh;
+    margin: 0;
     color: var(--text-main);
-    overflow-x: hidden;
 }
+
+
+
+
 
 h1, h2, h3, h4, h5 {
     font-family: 'Playfair Display', serif;
