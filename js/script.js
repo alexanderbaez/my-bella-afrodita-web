@@ -126,6 +126,15 @@ function dibujarProductos(lista) {
                             <p class="text-muted small mb-3" style="font-size: 0.8rem; line-height: 1.3; min-height: 2.5rem;">${p.descripcion}</p>
                         </div>
                         ${htmlPrecios}
+
+                        <div class="mb-2">
+                             <button class="btn btn-light btn-sm w-100 text-muted border-0" 
+                                     style="font-size: 0.75rem; letter-spacing: 1px; background-color: #f8f9fa;"
+                                     onclick="compartirProducto(event, '${p.id}')">
+                                 <i class="fas fa-share-alt me-1"></i> COMPARTIR
+                             </button>
+                        </div>
+
                         <button class="btn w-100 py-2 text-uppercase fw-bold" 
                                 style="letter-spacing: 1px; font-size: 0.8rem; background-color: ${tieneStock ? 'var(--brand-primary)' : '#ccc'}; color: white; border-radius: 0; transition: var(--transition-smooth); border: none;"
                                 ${tieneStock ? `onclick="agregarAlCarrito(event, '${p.id}')"` : 'disabled'}>
@@ -481,11 +490,17 @@ window.mostrarDetalleProducto = function (id) {
                                     </div>
                                 </div>
                                 
-                                <div class="mt-auto">
-                                    <button class="btn btn-dark py-3 fw-bold text-uppercase w-100" 
+                                <div class="mt-auto d-flex gap-2">
+                                    <button class="btn btn-dark py-3 fw-bold text-uppercase flex-grow-1" 
                                             onclick="agregarAlCarrito(null, '${p.id}'); bootstrap.Modal.getInstance(document.getElementById('modalDetalle')).hide();"
                                             style="background-color: var(--brand-primary); border: none; border-radius: 15px; letter-spacing: 2px; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                                        <i class="fas fa-shopping-bag me-2"></i> Añadir a la Bolsa
+                                        <i class="fas fa-shopping-bag me-2"></i> Añadir
+                                    </button>
+                                    
+                                    <button class="btn btn-outline-secondary px-3" 
+                                            onclick="compartirProducto(event, '${p.id}')"
+                                            style="border-radius: 15px; border: 1px solid #ddd; color: var(--brand-primary);">
+                                        <i class="fas fa-share-alt"></i>
                                     </button>
                                 </div>
                             </div>
@@ -526,3 +541,32 @@ function mostrarNotificacion(nombre) {
     document.body.insertAdjacentHTML('beforeend', toastHtml);
     setTimeout(() => { document.querySelector('.toast-container')?.remove(); }, 3000);
 }
+
+window.compartirProducto = async function(e, id) {
+    if(e) e.stopPropagation(); // Evita que se abra el detalle al tocar compartir
+    const p = PRODUCTOS.find(prod => prod.id === id);
+    if (!p) return;
+
+    const shareData = {
+        title: 'My Bella Afrodita',
+        text: `¡Mira este modelo: ${p.nombre}! 😍\nPrecio: $${p.precioMinorista.toLocaleString('es-AR')}`,
+        url: window.location.href
+    };
+
+    if (navigator.share) {
+        try {
+            await navigator.share(shareData);
+        } catch (err) { console.log('Error compartiendo', err); }
+    } else {
+        // Fallback para PC: Copiar link
+        navigator.clipboard.writeText(window.location.href);
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Link copiado para compartir',
+            showConfirmButton: false,
+            timer: 2000
+        });
+    }
+};
