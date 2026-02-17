@@ -9,7 +9,7 @@ let avisoMayoristaMostrado = false;
 document.addEventListener('DOMContentLoaded', () => {
     // Aplicar el fondo del :root al body (Sincronizado con tu paleta)
     document.body.style.backgroundColor = "var(--brand-bg)";
-    
+
     actualizarContadorUI();
 
     if (typeof PRODUCTOS === 'undefined') return;
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (contenedor) {
         const titulo = document.title.toLowerCase();
         let categoriaBuscada = "";
-        
+
         if (titulo.includes("conjuntos")) {
             categoriaBuscada = "conjuntos";
         } else if (titulo.includes("bombachas")) {
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (titulo.includes("medias")) {
             categoriaBuscada = "medias";
         }
-        
+
         const filtrados = PRODUCTOS.filter(p => p.categoria.toLowerCase() === categoriaBuscada);
         dibujarProductos(filtrados);
     }
@@ -36,6 +36,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalCarrito = document.getElementById('cartModal');
     if (modalCarrito) {
         modalCarrito.addEventListener('show.bs.modal', renderizarListaCarrito);
+    }
+
+    // Detectar si vienen desde un link compartido
+    const urlParams = new URLSearchParams(window.location.search);
+    const productoId = urlParams.get('id');
+    if (productoId) {
+        // Un pequeño delay para que carguen los productos primero
+        setTimeout(() => {
+            mostrarDetalleProducto(productoId);
+        }, 500);
     }
 });
 
@@ -46,13 +56,13 @@ function calcularTotalCarrito() {
     let cumpleCriterioCantidad = unidadesTotales >= 3;
     let detallesPromo = [];
     let aplicoAlgunaPromocion = false;
-    
+
     carrito.forEach(item => {
         const p = PRODUCTOS.find(prod => prod.id === item.id);
         if (p) {
             if (cumpleCriterioCantidad && p.precioMayorista && p.precioMayorista > 0) {
                 totalGeneral += p.precioMayorista * item.cantidad;
-                aplicoAlgunaPromocion = true; 
+                aplicoAlgunaPromocion = true;
             } else {
                 totalGeneral += (p.precioMinorista || p.precio) * item.cantidad;
             }
@@ -64,11 +74,11 @@ function calcularTotalCarrito() {
     if (aplicoAlgunaPromocion) {
         detallesPromo.push("Precio Mayorista Aplicado");
     }
-    
-    return { 
-        total: totalGeneral, 
-        promos: detallesPromo, 
-        esMayorista: aplicoAlgunaPromocion 
+
+    return {
+        total: totalGeneral,
+        promos: detallesPromo,
+        esMayorista: aplicoAlgunaPromocion
     };
 }
 
@@ -76,10 +86,10 @@ function dibujarProductos(lista) {
     const contenedor = document.getElementById("contenedor-productos");
     if (!contenedor) return;
     contenedor.innerHTML = "";
-    
+
     lista.forEach(p => {
         const tieneStock = p.stock !== false;
-        
+
         let htmlPrecios = "";
         if (p.precioMayorista) {
             htmlPrecios = `
@@ -103,7 +113,7 @@ function dibujarProductos(lista) {
                 </div>`;
         }
 
-        const badgeAgotado = !tieneStock ? 
+        const badgeAgotado = !tieneStock ?
             `<div class="position-absolute top-0 start-0 m-3 z-2">
                 <span class="badge px-3 py-2 text-uppercase" style="background-color: rgba(0,0,0,0.7); color: white; border-radius: 0; font-size: 0.7rem; letter-spacing: 2px;">Agotado</span>
              </div>` : '';
@@ -147,7 +157,7 @@ function dibujarProductos(lista) {
     });
 }
 
-window.renderizarListaCarrito = function() {
+window.renderizarListaCarrito = function () {
     const container = document.getElementById('cart-items');
     const totalElement = document.getElementById('cart-total');
     if (!container) return;
@@ -186,7 +196,7 @@ window.renderizarListaCarrito = function() {
     carrito.forEach((item, index) => {
         const p = PRODUCTOS.find(prod => prod.id === item.id);
         let precioAplicado = (unidadesTotales >= 3 && p?.precioMayorista) ? p.precioMayorista : (p?.precioMinorista || item.precio);
-        
+
         cartHtml += `
             <div class="row align-items-center mb-3 g-2">
                 <div class="col-3">
@@ -259,14 +269,14 @@ window.renderizarListaCarrito = function() {
 
 // --- LOGICA DE CARRITO ---
 window.agregarAlCarrito = function (event, id) {
-    if(event) event.stopPropagation();
+    if (event) event.stopPropagation();
     const p = PRODUCTOS.find(prod => prod.id === id);
     if (!p) return;
     const existe = carrito.find(item => item.id === id);
     if (existe) {
-        existe.cantidad++; 
+        existe.cantidad++;
     } else {
-        carrito.push({ id: p.id, nombre: p.nombre, precio: p.precioMinorista, imagen: p.imagenes[0], cantidad: 1 }); 
+        carrito.push({ id: p.id, nombre: p.nombre, precio: p.precioMinorista, imagen: p.imagenes[0], cantidad: 1 });
     }
     actualizarYGuardar();
     mostrarNotificacion(p.nombre);
@@ -314,7 +324,7 @@ function verificarHitoMayorista() {
     }
 }
 
-window.confirmarVaciarCarrito = function() {
+window.confirmarVaciarCarrito = function () {
     Swal.fire({
         title: '¿Vaciar tu bolsa?',
         text: "Se eliminarán todos los productos seleccionados.",
@@ -516,7 +526,7 @@ window.mostrarDetalleProducto = function (id) {
     new bootstrap.Modal(document.getElementById('modalDetalle')).show();
 };
 // --- FUNCIÓN LIGHTBOX PARA ZOOM ---
-window.abrirImagenGrande = function(url) {
+window.abrirImagenGrande = function (url) {
     Swal.fire({
         imageUrl: url,
         imageAlt: 'Imagen del producto',
@@ -542,31 +552,25 @@ function mostrarNotificacion(nombre) {
     setTimeout(() => { document.querySelector('.toast-container')?.remove(); }, 3000);
 }
 
-window.compartirProducto = async function(e, id) {
-    if(e) e.stopPropagation(); // Evita que se abra el detalle al tocar compartir
+window.compartirProducto = async function (e, id) {
+    if (e) e.stopPropagation();
     const p = PRODUCTOS.find(prod => prod.id === id);
     if (!p) return;
 
-    const shareData = {
-        title: 'My Bella Afrodita',
-        text: `¡Mira este modelo: ${p.nombre}! 😍\nPrecio: $${p.precioMinorista.toLocaleString('es-AR')}`,
-        url: window.location.href
-    };
+    // Creamos un link que contiene el ID del producto
+    const urlProducto = `${window.location.origin}${window.location.pathname}?id=${p.id}`;
+    const texto = `¡Mira este modelo de My Bella Afrodita: ${p.nombre}! 😍`;
 
     if (navigator.share) {
         try {
-            await navigator.share(shareData);
-        } catch (err) { console.log('Error compartiendo', err); }
+            await navigator.share({
+                title: 'My Bella Afrodita',
+                text: texto,
+                url: urlProducto // Ahora lleva el ID
+            });
+        } catch (err) { console.log('Error', err); }
     } else {
-        // Fallback para PC: Copiar link
-        navigator.clipboard.writeText(window.location.href);
-        Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'success',
-            title: 'Link copiado para compartir',
-            showConfirmButton: false,
-            timer: 2000
-        });
+        navigator.clipboard.writeText(urlProducto);
+        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Link copiado', showConfirmButton: false, timer: 2000 });
     }
 };
