@@ -154,13 +154,26 @@ const PRODUCTOS = [
         descripcion: "Confeccionadas en morley, brinda confort, Disponibles en colores tendencia"
     },
 
+    {
+        id: "prod-b12",
+        nombre: "Culote Less Con Faja",
+        precioMinorista: 3000,
+        precioMayorista: 2000,
+        imagenes: ["../images/Culote Less Faja1.jpg",
+            "../images/Culote Less Faja2.png"
+        ],
+        categoria: "bombachas",
+        //stock: false,
+        descripcion: "Confeccionadas en morley, brinda confort, Disponibles en colores tendencia"
+    },
+
     // --- CONJUNTOS ---
     {
         id: "conj-01",
         nombre: "Red Velvet",
         precioMinorista: 15000,
         precioMayorista: 12000,
-        imagenes: ["../images/Red-Velvet1.jpg", 
+        imagenes: ["../images/Red-Velvet1.jpg",
             "../images/Red-Velvet2.jpg",
             "../images/Red-Velvet3.jpg",
         ],
@@ -339,14 +352,44 @@ const PRODUCTOS = [
         //stock: false,
         descripcion: "Boxer de algodón con lycra, elástico suave con logo de marca."
     },
+
     {
         id: "masc-02",
-        nombre: "Slip Algodón Clásico",
-        precioMinorista: 3900,
-        precioMayorista: 3200,
-        imagenes: ["../images/slip-1.jpg"],
+        nombre: "Boxers de Algodón Zantino",
+        precioMinorista: 3000,
+        precioMayorista: 2000,
+        imagenes: ["../images/Boxers Niño1.jpg",
+            "../images/Boxers Niño2.png",
+            "../images/Boxers Niño3.png"
+        ],
         categoria: "hombres",
-        stock: false,
+        //stock: false,
+        descripcion: "Boxer de algodón con lycra, elástico suave con logo de marca."
+    },
+    {
+        id: "masc-03",
+        nombre: "Slip Algodón Clásico",
+        precioMinorista: 2700,
+        precioMayorista: 2000,
+        imagenes: ["../images/Slip Adulto1.jpg",
+            "../images/Slip Adulto2.png"
+        ],
+        categoria: "hombres",
+        //stock: false,
+        descripcion: "Corte clásico, máxima comodidad y ajuste perfecto."
+    },
+
+    {
+        id: "masc-04",
+        nombre: "Slip Algodón niño",
+        precioMinorista: 1833,
+        precioMayorista: 1000,
+        imagenes: ["../images/Slip Niño1.jpg",
+            "../images/Slip Niño2.png",
+            "../images/Slip Niño3.png"
+        ],
+        categoria: "hombres",
+        //stock: false,
         descripcion: "Corte clásico, máxima comodidad y ajuste perfecto."
     },
 
@@ -356,7 +399,7 @@ const PRODUCTOS = [
         nombre: "Pack Medias Con Orejitas Niños (x3)",
         precioMinorista: 1500,
         precioMayorista: null,
-        imagenes: ["../images/medias-orejita1.png",
+        imagenes: ["../images/Medias con orejita1.1.png",
             "../images/medias-orejita2.png",
             "../images/medias-orejita3.png",
             "../images/medias-orejita4.png",
@@ -425,5 +468,32 @@ const PRODUCTOS = [
         categoria: "medias",
         //stock: false,
         descripcion: "Diseño urbano, suaves y cómodas para el uso diario."
-    }
+    },
+    {
+        id: "acc-med-07",
+        nombre: "Medias For Girls Socks",
+        precioMinorista: 1500,
+        precioMayorista: null,
+        imagenes: ["../images/Medias Niña1.png",
+            "../images/Medias Niña2.png"
+
+        ],
+        categoria: "medias",
+        //stock: false,
+        descripcion: "Diseño urbano, suaves y cómodas para el uso diario."
+    },
+
+    {
+        id: "acc-med-08",
+        nombre: "Medias For Boys Socks",
+        precioMinorista: 1500,
+        precioMayorista: null,
+        imagenes: ["../images/Medias Niño1.png",
+            "../images/Medias niño2.png"
+
+        ],
+        categoria: "medias",
+        //stock: false,
+        descripcion: "Diseño urbano, suaves y cómodas para el uso diario."
+    },
 ];
