@@ -552,25 +552,27 @@ function mostrarNotificacion(nombre) {
     setTimeout(() => { document.querySelector('.toast-container')?.remove(); }, 3000);
 }
 
-window.compartirProducto = async function (e, id) {
-    if (e) e.stopPropagation();
+window.compartirProducto = async function(e, id) {
+    if(e) e.stopPropagation(); 
     const p = PRODUCTOS.find(prod => prod.id === id);
     if (!p) return;
 
-    // Creamos un link que contiene el ID del producto
     const urlProducto = `${window.location.origin}${window.location.pathname}?id=${p.id}`;
-    const texto = `¡Mira este modelo de My Bella Afrodita: ${p.nombre}! 😍`;
+    
+    // Al poner el link de la imagen al principio, aumentamos la chance de que WhatsApp la muestre
+    const texto = `¡Mira este modelo de My Bella Afrodita! 😍\n\n📌 *${p.nombre}*\n\n📸 Foto: ${p.imagenes[0]}`;
 
     if (navigator.share) {
         try {
             await navigator.share({
                 title: 'My Bella Afrodita',
                 text: texto,
-                url: urlProducto // Ahora lleva el ID
+                url: urlProducto 
             });
         } catch (err) { console.log('Error', err); }
     } else {
-        navigator.clipboard.writeText(urlProducto);
-        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Link copiado', showConfirmButton: false, timer: 2000 });
+        const fullText = `${texto}\n\nVer aquí: ${urlProducto}`;
+        navigator.clipboard.writeText(fullText);
+        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Copiado para compartir', showConfirmButton: false, timer: 2000 });
     }
 };
