@@ -17,7 +17,7 @@ const PRODUCTOS = [
         precioMayorista: 1500,
         imagenes: ["../images/Culote algodon FRENTE.png", "../images/Culote algodon DORSAL.png"],
         categoria: "bombachas",
-        //stock: false,
+        stock: false,
         descripcion: "Modelo de tiro medio en algodón suave. Ideal para el confort de cada día."
     },
     {
@@ -219,9 +219,9 @@ const PRODUCTOS = [
     },
     {
         id: "conj-06",
-        nombre: "Conjunto Top + Calza (Lycra)",
-        precioMinorista: 12000,
-        precioMayorista: 10000,
+        nombre: "Calza (Lycra)",
+        precioMinorista: 4500,
+        precioMayorista: 3500,
         imagenes: [
             "../images/Conjunto Top + calza  1.png",
             "../images/Conjunto Top + calza  2.png",
@@ -362,7 +362,7 @@ const PRODUCTOS = [
             "../images/medias-orejita4.png",
         ],
         categoria: "medias",
-        stock: false,
+        //stock: false,
         descripcion: "Pack de 3 pares de medias con orejitas para niños"
     },
     {
