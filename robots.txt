@@ -1,5 +1,16 @@
 User-agent: *
-Allow: /
+# Permitir solo lo que el usuario debe ver
+Allow: /index.html
+Allow: /css/
+Allow: /images/
+Allow: /js/
 
-# Indica dónde está tu mapa del sitio
+# Bloquear archivos de código y configuración que Bing suele indexar
+Disallow: /README.md
+Disallow: /LICENSE
+Disallow: /.git/
+Disallow: /package.json
+Disallow: /package-lock.json
+
+# Tu mapa del sitio
 Sitemap: https://alexanderbaez.github.io/my-bella-afrodita-web/sitemap.xml
