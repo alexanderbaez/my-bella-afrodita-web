@@ -557,30 +557,24 @@ window.compartirProducto = async function(e, id) {
     const p = PRODUCTOS.find(prod => prod.id === id);
     if (!p) return;
 
+    // Solo el enlace con el ID, sin basura extra
     const urlProducto = `${window.location.origin}${window.location.pathname}?id=${p.id}`;
     
-    // Armamos un mensaje "vendedor"
-    // WhatsApp suele generar previsualización del PRIMER link que encuentra si es una imagen directa
-    const mensajeWhatsApp = `✨ *MY BELLA AFRODITA* ✨
-    
-😍 ¡Mira lo que encontré para vos!
-🛍️ *${p.nombre}*
-💰 Precio: $${p.precioMinorista.toLocaleString('es-AR')}
-
-📸 Ver foto: ${p.imagenes[0]}
-
-🔗 Compralo acá: ${urlProducto}`;
+    // Texto minimalista y elegante
+    const texto = `¡Mirá este modelo! 😍 ${p.nombre}`;
 
     if (navigator.share) {
         try {
             await navigator.share({
                 title: 'My Bella Afrodita',
-                text: mensajeWhatsApp
-                // No enviamos 'url' por separado para que no se pise con el texto
+                text: texto,
+                url: urlProducto 
             });
-        } catch (err) { console.log('Error compartiendo', err); }
+        } catch (err) { console.log('Error', err); }
     } else {
-        navigator.clipboard.writeText(mensajeWhatsApp);
-        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Mensaje copiado', showConfirmButton: false, timer: 2000 });
+        // Fallback para computadoras (copiar al portapapeles)
+        const fullText = `${texto}\n${urlProducto}`;
+        navigator.clipboard.writeText(fullText);
+        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Enlace copiado', showConfirmButton: false, timer: 2000 });
     }
 };
