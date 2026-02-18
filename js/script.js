@@ -504,7 +504,7 @@ window.mostrarDetalleProducto = function (id) {
                                     <button class="btn btn-dark py-3 fw-bold text-uppercase flex-grow-1" 
                                             onclick="agregarAlCarrito(null, '${p.id}'); bootstrap.Modal.getInstance(document.getElementById('modalDetalle')).hide();"
                                             style="background-color: var(--brand-primary); border: none; border-radius: 15px; letter-spacing: 2px; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                                        <i class="fas fa-shopping-bag me-2"></i> Añadir
+                                        <i class="fas fa-shopping-bag me-2"></i> Comprar
                                     </button>
                                     
                                     <button class="btn btn-outline-secondary px-3" 
@@ -540,16 +540,26 @@ window.abrirImagenGrande = function (url) {
 };
 
 function mostrarNotificacion(nombre) {
-    const toastHtml = `
-        <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 2000">
-            <div class="toast show text-white border-0" role="alert" style="background-color: var(--brand-primary); border-radius: 0;">
-                <div class="d-flex p-3">
-                    <div class="toast-body small">✨ <strong>${nombre}</strong> en la bolsa.</div>
-                </div>
-            </div>
-        </div>`;
-    document.body.insertAdjacentHTML('beforeend', toastHtml);
-    setTimeout(() => { document.querySelector('.toast-container')?.remove(); }, 3000);
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end', // O 'bottom-end' si preferís abajo
+        showConfirmButton: false,
+        timer: 2500,
+        timerProgressBar: true,
+        background: '#fff',
+        color: 'var(--brand-primary)',
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+
+    Toast.fire({
+        icon: 'success',
+        iconColor: 'var(--brand-accent)',
+        title: `<span style="font-family: 'Playfair Display', serif; font-size: 0.9rem;">${nombre}</span>`,
+        html: '<span style="font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; color: #666;">¡Añadido con éxito!</span>'
+    });
 }
 
 window.compartirProducto = async function(e, id) {
