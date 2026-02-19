@@ -356,8 +356,8 @@ const PRODUCTOS = [
     {
         id: "masc-02",
         nombre: "Boxers de Algodón Zantino",
-        precioMinorista: 3000,
-        precioMayorista: 2000,
+        precioMinorista: 2200,
+        precioMayorista: 1800,
         imagenes: ["../images/Boxers Niño1.jpg",
             "../images/Boxers Niño2.png",
             "../images/Boxers Niño3.png"
@@ -369,7 +369,7 @@ const PRODUCTOS = [
     {
         id: "masc-03",
         nombre: "Slip Algodón Clásico",
-        precioMinorista: 2700,
+        precioMinorista: 3000,
         precioMayorista: 2000,
         imagenes: ["../images/Slip Adulto1.jpg",
             "../images/Slip Adulto2.png"
