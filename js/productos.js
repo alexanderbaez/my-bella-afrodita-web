@@ -184,11 +184,11 @@ const PRODUCTOS = [
     {
         id: "conj-02",
         nombre: "Combo Alo - Remera + top + calza + medias",
-        precioMinorista: 23000,
-        precioMayorista: 19000,
+        precioMinorista: 25000,
+        precioMayorista: 20000,
         imagenes: ["../images/Combo alo 1.png", "../images/Combo alo 2.png"],
         categoria: "conjuntos",
-        stock: false,
+        //stock: false,
         descripcion: "Combo de lycra que incluye remera, top, medias y short de lycra sin frunce."
     },
     {
