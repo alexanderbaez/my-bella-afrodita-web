@@ -275,6 +275,9 @@ const PRODUCTOS = [
         precioMayorista: 6450,
         imagenes: [
             "../images/Conjunto vicblack FRENTE 1.png",
+            "../images/Conjunto-Vicblack-detalle1.png",
+            "../images/Conjunto-Vicblack-detalle2.png",
+            "../images/Conjunto-Vicblack-detalle3.png",
             "../images/Conjunto vicblack DORSAL 1.png",
             "../images/Conjunto vicblack FRENTE 2.png",
             "../images/Conjunto vicblack FRENTE 3.png",
@@ -321,7 +324,14 @@ const PRODUCTOS = [
         nombre: "Conjunto Deportivo",
         precioMinorista: 7000,
         precioMayorista: 6330,
-        imagenes: ["../images/Conjunto-Deportivo.jpg"],
+        imagenes: ["../images/Conjunto-Deportivo-detalle1.png",
+            "../images/1.1.png",
+            "../images/Conjunto-Deportivo-detalle2.png",
+            "../images/Conjunto-Deportivo-detalle3.png",
+            "../images/Conjunto-Deportivo-detalle4.png",
+            "../images/Conjunto-Deportivo-detalle5.png",
+            
+        ],
         categoria: "conjuntos",
         //stock: false,
         descripcion: "Colores de la nueva temporada. Con un diseño comodo en morley con detalles de puntilla y tazas desmontables."
@@ -331,7 +341,12 @@ const PRODUCTOS = [
         nombre: "Sports Bell",
         precioMinorista: 6500,
         precioMayorista: 5880,
-        imagenes: ["../images/sports bell.jpg"],
+        imagenes: ["../images/Sports-Bell1.png",
+            "../images/Sports-Bell2.png",
+            "../images/Sports-Bell2.2.png",
+            "../images/Sports-Bell3.png",
+            "../images/Sports-Bell4.png",
+        ],
         categoria: "conjuntos",
         //stock: false,
         descripcion: "Corpiño importado armado sin aro y con 4 broches para mayor ajuste y comodidad."
@@ -343,10 +358,8 @@ const PRODUCTOS = [
         nombre: "Boxer uomo",
         precioMinorista: 4000,
         precioMayorista: 3000,
-        imagenes: ["../images/Boxers1.jpg",
-            "../images/Boxers2.jpg",
-            "../images/Boxers3.jpg",
-
+        imagenes: ["../images/Boxer-uomo1.png",
+            "../images/Boxer-uomo2.png",
         ],
         categoria: "hombres",
         //stock: false,
@@ -396,6 +409,29 @@ const PRODUCTOS = [
     // ---  SECCIÓN MEDIAS (Detectado por el título "Medias") ---
     {
         id: "acc-01",
+        nombre: "Medias Escolares ",
+        precioMinorista: 2000,
+        precioMayorista: null,
+        imagenes: ["../images/Medias-escolares-blanca.jpg",
+        ],
+        categoria: "medias",
+        //stock: false,
+        descripcion: "Par de medias escolares blanca"
+    },
+    
+            {
+        id: "acc-02",
+        nombre: "Pack Medias Alo Dama (x3)",
+        precioMinorista: 5500,
+        precioMayorista: null,
+        imagenes: ["../images/Medias-Alo-dama.jpg",
+        ],
+        categoria: "medias",
+        //stock: false,
+        descripcion: "Pack de 3 pares de medias con orejitas para niños"
+    },
+        {
+        id: "acc-03",
         nombre: "Pack Medias Con Orejitas Niños (x3)",
         precioMinorista: 1500,
         precioMayorista: null,
@@ -409,7 +445,7 @@ const PRODUCTOS = [
         descripcion: "Pack de 3 pares de medias con orejitas para niños"
     },
     {
-        id: "acc-med-01",
+        id: "acc-med-04",
         nombre: "Medias con dibujitos",
         precioMinorista: 1500,
         precioMayorista: null,
@@ -419,7 +455,7 @@ const PRODUCTOS = [
         descripcion: "Medias de algodón con tus dibujito preferido."
     },
     {
-        id: "acc-med-02",
+        id: "acc-med-05",
         nombre: "Medias Sport Girls Socks",
         precioMinorista: 1500,
         precioMayorista: null,
@@ -429,7 +465,7 @@ const PRODUCTOS = [
         descripcion: "Diseño urbano, suaves y cómodas para el uso diario."
     },
     {
-        id: "acc-med-03",
+        id: "acc-med-06",
         nombre: "Medias Fasihon women's Socks",
         precioMinorista: 1500,
         precioMayorista: null,
@@ -440,7 +476,7 @@ const PRODUCTOS = [
     },
 
     {
-        id: "acc-med-04",
+        id: "acc-med-07",
         nombre: "Medias Women's Socks",
         precioMinorista: 1500,
         precioMayorista: null,
@@ -450,7 +486,7 @@ const PRODUCTOS = [
         descripcion: "Diseño urbano, suaves y cómodas para el uso diario."
     },
     {
-        id: "acc-med-05",
+        id: "acc-med-08",
         nombre: "Medias Men",
         precioMinorista: 1500,
         precioMayorista: null,
@@ -460,7 +496,7 @@ const PRODUCTOS = [
         descripcion: "Diseño urbano, suaves y super balance."
     },
     {
-        id: "acc-med-06",
+        id: "acc-med-09",
         nombre: "Medias Men's Socks",
         precioMinorista: 1500,
         precioMayorista: null,
@@ -470,7 +506,7 @@ const PRODUCTOS = [
         descripcion: "Diseño urbano, suaves y cómodas para el uso diario."
     },
     {
-        id: "acc-med-07",
+        id: "acc-med-10",
         nombre: "Medias For Girls Socks",
         precioMinorista: 1500,
         precioMayorista: null,
@@ -484,7 +520,7 @@ const PRODUCTOS = [
     },
 
     {
-        id: "acc-med-08",
+        id: "acc-med-11",
         nombre: "Medias For Boys Socks",
         precioMinorista: 1500,
         precioMayorista: null,
