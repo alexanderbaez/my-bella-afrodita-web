@@ -96,7 +96,7 @@ const PRODUCTOS = [
         precioMayorista: 1740,
         imagenes: [
             "../images/Less Calvin Klein1.jpeg",
-            "../images/Less-calvin-klein1.png",
+            "../images/Less Calvin Klein2.png",
             "../images/Less-calvin-klein2.png",
             "../images/Less-calvin-klein3.png",
             "../images/Less-calvin-klein4.png",
@@ -278,6 +278,7 @@ const PRODUCTOS = [
         precioMinorista: 7500,
         precioMayorista: 6450,
         imagenes: [
+            "../images/Conjunto Vicblack1.png",
             "../images/Conjunto vicblack FRENTE 1.png",
             "../images/Conjunto-Vicblack-detalle1.png",
             "../images/Conjunto-Vicblack-detalle2.png",
@@ -299,6 +300,8 @@ const PRODUCTOS = [
         precioMinorista: 3800,
         precioMayorista: 3200,
         imagenes: [
+            "../images/Conjunto Inicial Nena1.jpeg",
+            "../images/Conjunto Inicial Nena2.jpeg",
             "../images/Conjunto-inicial-nena1.png",
             "../images/Conjunto-inicial-nena2.png",
             "../images/Conjunto-inicial-nena3.png",
