@@ -5,7 +5,10 @@ const PRODUCTOS = [
         nombre: "Bombacha de Señora con Encaje",
         precioMinorista: 2500,
         precioMayorista: 2000,
-        imagenes: ["../images/Bombachas encaje FRENTE.png", "../images/Bombacha encaje DORSAL.png"],
+        imagenes: [
+            "../images/Bombacha de Señora con Encaje1.jpg",
+            "../images/Bombachas encaje FRENTE.png",
+            "../images/Bombacha encaje DORSAL.png"],
         categoria: "bombachas",
         //stock: false,
         descripcion: "Diseño de encaje de alta calidad, tiro alto y corte clasico."
@@ -25,7 +28,10 @@ const PRODUCTOS = [
         nombre: "Culote de Encaje",
         precioMinorista: 2500,
         precioMayorista: 1500,
-        imagenes: ["../images/Culote encaje FRENTE.png", "../images/Culote encaje DORSAL.png"],
+        imagenes: [
+            "../images/Culote de Encaje1.jpg",
+            "../images/Culote encaje FRENTE.png",
+            "../images/Culote encaje DORSAL.png"],
         categoria: "bombachas",
         //stock: false,
         descripcion: "Sin costuras, no se marca. Perfecto para sentirte comoda y sensual."
@@ -35,7 +41,11 @@ const PRODUCTOS = [
         nombre: "Less de Algodón",
         precioMinorista: 1670,
         precioMayorista: 1250,
-        imagenes: ["../images/Less algodon FRENTE.png", "../images/Less algodon DORSAL.png"],
+        imagenes: [
+            "../images/Less de Algodón1.jpg",
+            "../images/Less de Algodón2.jpg",
+            "../images/Less algodon FRENTE.png",
+            "../images/Less algodon DORSAL.png"],
         categoria: "bombachas",
         //stock: false,
         descripcion: "Tejido de algodón con terminaciones ultra-comoda y estampada en corazones."
@@ -45,7 +55,12 @@ const PRODUCTOS = [
         nombre: "Less de Algodón y Puntilla",
         precioMinorista: 1670,
         precioMayorista: 1250,
-        imagenes: ["../images/Less algodon y puntilla FRENTE.png", "../images/Less algodon puntilla DORSAL.png"],
+        imagenes: [
+            "../images/Less de Algodón y Puntilla0.1.jpg",
+            "../images/Less de Algodón y Puntilla1.jpg",
+            "../images/Less de Algodón y Puntilla2.jpg",
+            "../images/Less algodon y puntilla FRENTE.png",
+            "../images/Less algodon puntilla DORSAL.png"],
         categoria: "bombachas",
         //stock: false,
         descripcion: "Máxima cobertura frontal con un toque de sensualidad y cómodidad."
@@ -66,7 +81,7 @@ const PRODUCTOS = [
         precioMinorista: 1770,
         precioMayorista: 1240,
         imagenes: ["../images/Less Regulables3.png", "../images/Less Regulables1.jpeg", "../images/Less Regulables2.jpeg",
-             "../images/Less regulable FRENTE.png"
+            "../images/Less regulable FRENTE.png"
         ],
         categoria: "bombachas",
         //stock: false,
@@ -78,6 +93,7 @@ const PRODUCTOS = [
         precioMinorista: 2500,
         precioMayorista: 2000,
         imagenes: [
+            "../images/Bombacha de Señora con Encaje1.jpg",
             "../images/Bombachas-de-Algodon-con-detalles-de-encaje1 (1).png",
             "../images/Bombachas-de-Algodon-con-detalles-de-encaje1.png",
             "../images/Bombachas-de-Algodon-con-detalles-de-encaje3.png",
@@ -112,6 +128,7 @@ const PRODUCTOS = [
         precioMinorista: 1740,
         precioMayorista: 1460,
         imagenes: [
+            "../images/Vedetina1.jpg",
             "../images/vedetina1.png",
             "../images/vedetina2.png",
             "../images/vedetina3.png",
@@ -153,7 +170,7 @@ const PRODUCTOS = [
         precioMayorista: 1860,
         imagenes: ["../images/Smart Sexi.jpg"],
         categoria: "bombachas",
-        //stock: false,
+        stock: false,
         descripcion: "Confeccionadas en morley, brinda confort, Disponibles en colores tendencia"
     },
 
@@ -190,7 +207,12 @@ const PRODUCTOS = [
         nombre: "Combo Alo - Remera + top + calza + medias",
         precioMinorista: 25000,
         precioMayorista: 20000,
-        imagenes: ["../images/Combo alo 1.png", "../images/Combo alo 2.png"],
+        imagenes: [
+            "../images/Combo Alo - Remera + top + calza + medias1.jpg",
+            "../images/Combo Alo - Remera + top + calza + medias2.jpg",
+            "../images/Combo Alo - Remera + top + calza + medias3.jpg",
+            "../images/Combo alo 1.png",
+            "../images/Combo alo 2.png"],
         categoria: "conjuntos",
         //stock: false,
         descripcion: "Combo de lycra que incluye remera, top, medias y short de lycra sin frunce."
@@ -215,6 +237,7 @@ const PRODUCTOS = [
         precioMinorista: 7000,
         precioMayorista: 6330,
         imagenes: [
+            "../images/Conjunto Persefone1.jpg",
             "../images/Conjunto parsefone FRENTE.png",
             "../images/Conjunto parsefone DORSAL.png",
             "../images/conjunto parsefone FRENTE 2.png",
@@ -279,6 +302,7 @@ const PRODUCTOS = [
         precioMayorista: 6450,
         imagenes: [
             "../images/Conjunto Vicblack1.png",
+            "../images/Conjunto Vicblack2.jpg",
             "../images/Conjunto vicblack FRENTE 1.png",
             "../images/Conjunto-Vicblack-detalle1.png",
             "../images/Conjunto-Vicblack-detalle2.png",
@@ -333,7 +357,7 @@ const PRODUCTOS = [
         precioMayorista: 6330,
         imagenes: ["../images/Conjunto Deportivo1.jpeg",
             "../images/Conjunto Deportivo2.jpeg",
-            "../images/Conjunto Deportivo3.jpeg",   
+            "../images/Conjunto Deportivo3.jpeg",
             "../images/1.1.png",
         ],
         categoria: "conjuntos",
@@ -345,7 +369,12 @@ const PRODUCTOS = [
         nombre: "Sports Bell",
         precioMinorista: 6500,
         precioMayorista: 5880,
-        imagenes: ["../images/Sports-Bell1.png",
+        imagenes: [
+            "../images/Sports Bell1.jpg",
+            "../images/Sports Bell2.jpg",
+            "../images/Sports Bell3.jpg",
+            "../images/Sports Bell4.jpg",
+            "../images/Sports-Bell1.png",
             "../images/Sports-Bell2.png",
             "../images/Sports-Bell2.2.png",
             "../images/Sports-Bell3.png",
@@ -362,7 +391,10 @@ const PRODUCTOS = [
         nombre: "Boxer uomo",
         precioMinorista: 4000,
         precioMayorista: 3000,
-        imagenes: ["../images/Boxer-uomo1.png",
+        imagenes: [
+            "../images/Boxer uomo1.jpg",
+            "../images/Boxer uomo2.jpg",
+            "../images/Boxer-uomo1.png",
             "../images/Boxer-uomo2.png",
         ],
         categoria: "hombres",
@@ -422,8 +454,8 @@ const PRODUCTOS = [
         //stock: false,
         descripcion: "Par de medias escolares blanca"
     },
-    
-            {
+
+    {
         id: "acc-02",
         nombre: "Pack Medias Alo Dama (x3)",
         precioMinorista: 5500,
@@ -434,7 +466,7 @@ const PRODUCTOS = [
         //stock: false,
         descripcion: "Pack de 3 pares de medias con orejitas para niños"
     },
-        {
+    {
         id: "acc-03",
         nombre: "Pack Medias Con Orejitas Niños (x3)",
         precioMinorista: 1500,
