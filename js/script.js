@@ -160,7 +160,7 @@ function dibujarProductos(lista) {
         });
 
         divCol.querySelector('.btn-whatsapp').onclick = () => {
-            const msg = `¡Mira esta prenda en BaezPOS! 😍\n*${p.nombre}*\n$${p.precioMinorista}\nLink: ${window.location.href}`;
+            const msg = `¡Mira esta prenda en My Bella Afrodita! 😍\n*${p.nombre}*\n$${p.precioMinorista}\nLink: ${window.location.href}`;
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         };
 
