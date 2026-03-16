@@ -18,7 +18,11 @@ const PRODUCTOS = [
         nombre: "Culote de Algodón",
         precioMinorista: 2500,
         precioMayorista: 1500,
-        imagenes: ["../images/Culote algodon FRENTE.png", "../images/Culote algodon DORSAL.png"],
+        imagenes: [
+            "../images/Culote de Algodón1.png",
+            "../images/Culote de Algodón2.png",
+            "../images/Culote algodon FRENTE.png", 
+            "../images/Culote algodon DORSAL.png"],
         categoria: "bombachas",
         stock: false,
         descripcion: "Modelo de tiro medio en algodón suave. Ideal para el confort de cada día."
@@ -421,7 +425,9 @@ const PRODUCTOS = [
         nombre: "Slip Algodón Clásico",
         precioMinorista: 3000,
         precioMayorista: 2000,
-        imagenes: ["../images/Slip Adulto1.jpg",
+        imagenes: [
+            "../images/Slip Algodón Clásico1.png",
+            "../images/Slip Adulto1.jpg",
             "../images/Slip Adulto2.png"
         ],
         categoria: "hombres",
