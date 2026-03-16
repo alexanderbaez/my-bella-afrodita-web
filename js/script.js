@@ -87,74 +87,145 @@ function dibujarProductos(lista) {
     if (!contenedor) return;
     contenedor.innerHTML = "";
 
+    const fragmento = document.createDocumentFragment();
+
     lista.forEach(p => {
         const tieneStock = p.stock !== false;
+        const divCol = document.createElement("div");
+        divCol.className = "col-12 col-md-6 col-lg-4 mb-4 d-flex";
 
-        let htmlPrecios = "";
-        if (p.precioMayorista) {
-            htmlPrecios = `
-                <div class="price-container mb-3 p-2" style="background-color: var(--brand-nude); border-radius: 4px; opacity: ${tieneStock ? '1' : '0.5'};">
-                    <div class="row g-0 align-items-center">
-                        <div class="col-6 border-end" style="border-color: rgba(0,0,0,0.1) !important;">
-                            <small class="text-muted text-uppercase d-block" style="font-size: 0.6rem; letter-spacing: 1px;">Minorista</small>
-                            <span class="fw-bold text-dark" style="font-size: 1.1rem;">$${p.precioMinorista.toLocaleString('es-AR')}</span>
-                        </div>
-                        <div class="col-6">
-                            <small class="text-uppercase d-block fw-bold" style="font-size: 0.6rem; letter-spacing: 1px; color: var(--brand-accent);">Mayorista (3+)</small>
-                            <span class="fw-bold" style="font-size: 1.1rem; color: var(--brand-primary);">$${p.precioMayorista.toLocaleString('es-AR')}</span>
-                        </div>
+        const htmlPrecios = p.precioMayorista ? `
+            <div class="price-container mb-3 p-2" style="background-color: var(--brand-nude); border-radius: 8px;">
+                <div class="row g-0 align-items-center text-center">
+                    <div class="col-6 border-end" style="border-color: rgba(0,0,0,0.1) !important;">
+                        <small class="text-muted text-uppercase d-block" style="font-size: 0.6rem;">Minorista</small>
+                        <span class="fw-bold">$${p.precioMinorista.toLocaleString('es-AR')}</span>
                     </div>
-                </div>`;
-        } else {
-            htmlPrecios = `
-                <div class="price-container mb-3 p-2" style="opacity: ${tieneStock ? '1' : '0.5'};">
-                    <small class="text-muted text-uppercase d-block" style="font-size: 0.6rem; letter-spacing: 1px;">Precio Único</small>
-                    <span class="fw-bold text-dark" style="font-size: 1.3rem;">$${p.precioMinorista.toLocaleString('es-AR')}</span>
-                </div>`;
-        }
-
-        const badgeAgotado = !tieneStock ?
-            `<div class="position-absolute top-0 start-0 m-3 z-2">
-                <span class="badge px-3 py-2 text-uppercase" style="background-color: rgba(0,0,0,0.7); color: white; border-radius: 0; font-size: 0.7rem; letter-spacing: 2px;">Agotado</span>
-             </div>` : '';
-
-        contenedor.innerHTML += `
-            <div class="col-12 col-md-6 col-lg-4 mb-4 d-flex">
-                <div class="product-card shadow-sm w-100 d-flex flex-column position-relative" 
-                     style="transition: var(--transition-smooth); background-color: var(--white-pure); border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,0,0,0.05); ${!tieneStock ? 'filter: grayscale(0.4);' : ''}">
-                    ${badgeAgotado}
-                    <div class="card-img-container" style="cursor: ${tieneStock ? 'pointer' : 'default'}; overflow: hidden;" 
-                         onclick="${tieneStock ? `mostrarDetalleProducto('${p.id}')` : ''}">
-                        <img src="${p.imagenes[0]}" alt="${p.nombre}" loading="lazy" class="img-fluid"
-                             style="transition: var(--transition-smooth); min-height: 350px; object-fit: cover; opacity: ${tieneStock ? '1' : '0.6'};"
-                             onmouseover="${tieneStock && p.imagenes[1] ? `this.src='${p.imagenes[1]}'` : ''}"
-                             onmouseout="this.src='${p.imagenes[0]}'">
+                    <div class="col-6">
+                        <small class="text-uppercase d-block fw-bold" style="font-size: 0.6rem; color: var(--brand-accent);">Mayorista</small>
+                        <span class="fw-bold" style="color: var(--brand-primary);">$${p.precioMayorista.toLocaleString('es-AR')}</span>
                     </div>
-                    <div class="card-body text-center d-flex flex-column justify-content-between p-3">
-                        <div>
-                            <h5 class="card-title" style="font-family: 'Playfair Display', serif; font-size: 1.1rem; min-height: 2.8rem; color: var(--brand-primary);">${p.nombre}</h5>
-                            <p class="text-muted small mb-3" style="font-size: 0.8rem; line-height: 1.3; min-height: 2.5rem;">${p.descripcion}</p>
-                        </div>
-                        ${htmlPrecios}
+                </div>
+            </div>` : `
+            <div class="price-container mb-3 p-2 text-center">
+                <small class="text-muted text-uppercase d-block" style="font-size: 0.6rem;">Precio Único</small>
+                <span class="fw-bold text-dark" style="font-size: 1.3rem;">$${p.precioMinorista.toLocaleString('es-AR')}</span>
+            </div>`;
 
-                        <div class="mb-2">
-                             <button class="btn btn-light btn-sm w-100 text-muted border-0" 
-                                     style="font-size: 0.75rem; letter-spacing: 1px; background-color: #f8f9fa;"
-                                     onclick="compartirProducto(event, '${p.id}')">
-                                 <i class="fas fa-share-alt me-1"></i> COMPARTIR
-                             </button>
-                        </div>
+        divCol.innerHTML = `
+            <div class="product-card shadow-sm w-100 d-flex flex-column position-relative" 
+                 style="background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,0,0,0.05);">
+                
+                <div class="card-img-container position-relative" style="aspect-ratio: 3/4; overflow: hidden;">
+                    <div class="product-carousel-track d-flex" style="height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch;">
+                        ${p.imagenes.map((img, i) => `
+                            <div class="carousel-slide" style="flex: 0 0 100%; scroll-snap-align: start;">
+                                <img src="${img}" class="img-fluid w-100 h-100 object-fit-cover btn-zoom" 
+                                     data-index="${i}" style="cursor: zoom-in;">
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="indicators position-absolute bottom-0 start-50 translate-middle-x mb-2 d-flex gap-1">
+                        ${p.imagenes.map((_, i) => `<div class="dot-ui" style="width: 6px; height: 6px; border-radius: 50%; background: #fff; opacity: ${i === 0 ? '1' : '0.4'}; transition: 0.3s;"></div>`).join('')}
+                    </div>
+                </div>
 
-                        <button class="btn w-100 py-2 text-uppercase fw-bold" 
-                                style="letter-spacing: 1px; font-size: 0.8rem; background-color: ${tieneStock ? 'var(--brand-primary)' : '#ccc'}; color: white; border-radius: 0; transition: var(--transition-smooth); border: none;"
-                                ${tieneStock ? `onclick="agregarAlCarrito(event, '${p.id}')"` : 'disabled'}>
+                <div class="card-body d-flex flex-column p-3">
+                    <h5 class="text-center text-uppercase mb-1" style="font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--brand-primary);">${p.nombre}</h5>
+                    <p class="text-muted text-center small mb-3">${p.descripcion}</p>
+                    
+                    ${htmlPrecios}
+
+                    <div class="actions mt-auto">
+                        <button class="btn btn-whatsapp w-100 mb-2 border-0 py-2" style="font-size: 0.75rem; background: #f9f9f9; color: #555; border-radius: 4px;">
+                            <i class="fab fa-whatsapp me-1"></i> COMPARTIR POR WHATSAPP
+                        </button>
+                        <button class="btn btn-primary-brand w-100 py-2 fw-bold" 
+                                style="background: var(--brand-primary); color: #fff; border: none; border-radius: 4px;" 
+                                ${!tieneStock ? 'disabled' : ''}
+                                onclick="agregarAlCarrito(event, '${p.id}')">
                             <i class="fas ${tieneStock ? 'fa-shopping-bag' : 'fa-times'} me-2"></i> 
-                            ${tieneStock ? 'Añadir a la Bolsa' : 'Sin Stock'}
+                            ${tieneStock ? 'AÑADIR A LA BOLSA' : 'SIN STOCK'}
                         </button>
                     </div>
                 </div>
             </div>`;
+
+        const track = divCol.querySelector('.product-carousel-track');
+        const dots = divCol.querySelectorAll('.dot-ui');
+        
+        track.addEventListener('scroll', () => {
+            const index = Math.round(track.scrollLeft / track.offsetWidth);
+            dots.forEach((dot, i) => dot.style.opacity = (i === index) ? '1' : '0.4');
+        });
+
+        divCol.querySelector('.btn-whatsapp').onclick = () => {
+            const msg = `¡Mira esta prenda en BaezPOS! 😍\n*${p.nombre}*\n$${p.precioMinorista}\nLink: ${window.location.href}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+        };
+
+        divCol.querySelectorAll('.btn-zoom').forEach(img => {
+            img.onclick = () => abrirZoomLenceria(p.imagenes, parseInt(img.dataset.index));
+        });
+
+        fragmento.appendChild(divCol);
     });
+
+    contenedor.appendChild(fragmento);
+}
+
+function abrirZoomLenceria(imagenes, indexInicial) {
+    const modal = document.createElement('div');
+    modal.id = "lenceria-zoom-modal";
+    Object.assign(modal.style, {
+        position: 'fixed', top: '0', left: '0', width: '100vw', height: '100vh',
+        backgroundColor: '#000', zIndex: '9999', display: 'flex', flexDirection: 'column',
+        touchAction: 'none'
+    });
+
+    modal.innerHTML = `
+        <div style="position: absolute; top: 20px; right: 20px; z-index: 10001;">
+            <button id="close-zoom" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 1.5rem; width: 45px; height: 45px; border-radius: 50%; cursor: pointer;">&times;</button>
+        </div>
+
+        ${imagenes.length > 1 ? `
+            <button id="prev-zoom" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); z-index: 10001; background: rgba(255,255,255,0.1); border: none; color: white; padding: 20px; cursor: pointer; border-radius: 8px;">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button id="next-zoom" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); z-index: 10001; background: rgba(255,255,255,0.1); border: none; color: white; padding: 20px; cursor: pointer; border-radius: 8px;">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        ` : ''}
+
+        <div id="zoom-track" style="display: flex; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; scroll-behavior: smooth;">
+            ${imagenes.map(src => `
+                <div style="flex: 0 0 100vw; height: 100vh; scroll-snap-align: start; display: flex; align-items: center; justify-content: center; overflow: auto; background: #000;">
+                    <img src="${src}" style="max-width: 100%; max-height: 100%; object-fit: contain; touch-action: pinch-zoom;">
+                </div>
+            `).join('')}
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    const track = modal.querySelector('#zoom-track');
+    
+    // Posicionamiento inicial
+    setTimeout(() => {
+        track.scrollLeft = window.innerWidth * indexInicial;
+    }, 10);
+
+    // Lógica de botones de navegación
+    if (imagenes.length > 1) {
+        modal.querySelector('#next-zoom').onclick = () => {
+            track.scrollLeft += window.innerWidth;
+        };
+        modal.querySelector('#prev-zoom').onclick = () => {
+            track.scrollLeft -= window.innerWidth;
+        };
+    }
+
+    modal.querySelector('#close-zoom').onclick = () => modal.remove();
 }
 
 window.renderizarListaCarrito = function () {
@@ -416,7 +487,7 @@ function enviarPedidoWhatsApp() {
    DETALLE DEL PRODUCTO - RESPONSIVE & LIGHTBOX (BOUTIQUE STYLE)
    ========================================================================== */
 
-window.mostrarDetalleProducto = function (id) {
+/*window.mostrarDetalleProducto = function (id) {
     const p = PRODUCTOS.find(prod => prod.id === id);
     if (!p || p.stock === false) return;
 
@@ -524,7 +595,7 @@ window.mostrarDetalleProducto = function (id) {
     if (oldModal) oldModal.remove();
     document.body.insertAdjacentHTML('beforeend', modalHtml);
     new bootstrap.Modal(document.getElementById('modalDetalle')).show();
-};
+};*/
 // --- FUNCIÓN LIGHTBOX PARA ZOOM ---
 window.abrirImagenGrande = function (url) {
     Swal.fire({

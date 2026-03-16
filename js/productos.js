@@ -93,7 +93,8 @@ const PRODUCTOS = [
         precioMinorista: 2500,
         precioMayorista: 2000,
         imagenes: [
-            "../images/Bombacha de Señora con Encaje1.jpg",
+         
+            "../images/Bombachas de Algodon con detalles de encaje1.jpg",
             "../images/Bombachas-de-Algodon-con-detalles-de-encaje1 (1).png",
             "../images/Bombachas-de-Algodon-con-detalles-de-encaje1.png",
             "../images/Bombachas-de-Algodon-con-detalles-de-encaje3.png",

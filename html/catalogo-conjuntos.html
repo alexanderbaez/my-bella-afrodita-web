@@ -76,6 +76,45 @@
             color: var(--color-terracota-pasión);
             font-weight: 600;
         }
+
+        /* Carrusel de la tarjeta */
+        .product-slider {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .product-slider::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Oculta scroll */
+
+        .product-slider img {
+            flex: 0 0 100%;
+            scroll-snap-align: start;
+            object-fit: cover;
+            min-height: 350px;
+        }
+
+        /* Indicadores de fotos (puntitos) */
+        .slider-dots {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+        }
     </style>
 </head>
 
@@ -205,7 +244,8 @@
                 <div class="col-6 col-md-4 text-center text-md-end">
                     <h5 class="text-uppercase small fw-bold mb-4" style="letter-spacing: 2px;">Contacto</h5>
                     <div class="d-flex justify-content-center justify-content-md-end gap-3 fs-4 mb-4">
-                        <a href="https://www.instagram.com/mybellaafrodita/" class="text-white" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.instagram.com/mybellaafrodita/" class="text-white" title="Instagram"><i
+                                class="fab fa-instagram"></i></a>
                         <a href="#" class="text-white" title="Facebook"><i class="fab fa-facebook-f"></i></a>
                         <a href="#" class="text-white" title="TikTok"><i class="fab fa-tiktok"></i></a>
                         <a href="https://wa.me/5492646121771" class="text-white" title="WhatsApp"><i
