@@ -228,6 +228,8 @@ const PRODUCTOS = [
         precioMinorista: 10500,
         precioMayorista: 8500,
         imagenes: [
+            "../images/Conjunto D'lirio con tazas desmontables1.png",
+            "../images/Conjunto D'lirio con tazas desmontables2.png",
             "../images/Conjunto D_lirio top + calza FRENTE 1.png",
             "../images/Conjunto D_lirio top + calza FRENTE 2.png",
             "../images/Conjunto D_lirio top + calza DORSAL 2.png"
