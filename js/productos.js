@@ -74,7 +74,11 @@ const PRODUCTOS = [
         nombre: "Less de Algodón en Talles Especiales",
         precioMinorista: 1670,
         precioMayorista: 1250,
-        imagenes: ["../images/Less Frente.png", "../images/Less Dorsal.png"],
+        imagenes: [
+            "../images/Less de Algodón en Talles Especiales1.png",
+            "../images/Less de Algodón en Talles Especiales2.png",
+            "../images/Less Frente.png", 
+            "../images/Less Dorsal.png"],
         categoria: "bombachas",
         //stock: false,
         descripcion: "Con su tejido de algodon otorgan un toque de sensualidad y comodidad."
@@ -151,6 +155,10 @@ const PRODUCTOS = [
         precioMinorista: 4500,
         precioMayorista: 3000,
         imagenes: [
+            "../images/Boxers Dama con Faja0.1.png",
+            "../images/Boxers Dama con Faja1.png",
+            "../images/Boxers Dama con Faja2.png",
+            "../images/Boxers Dama con Faja3.png",
             "../images/boxer-dama-con-faja1.png",
             "../images/boxer-dama-con-faja2.png",
         ],
@@ -173,7 +181,9 @@ const PRODUCTOS = [
         nombre: "Smart Sexi",
         precioMinorista: 2250,
         precioMayorista: 1860,
-        imagenes: ["../images/Smart Sexi.jpg"],
+        imagenes: [
+            "../images/Smart Sexi1.png",
+            "../images/Smart Sexi.jpg"],
         categoria: "bombachas",
         stock: false,
         descripcion: "Confeccionadas en morley, brinda confort, Disponibles en colores tendencia"
@@ -184,7 +194,11 @@ const PRODUCTOS = [
         nombre: "Culote Less Con Faja",
         precioMinorista: 3000,
         precioMayorista: 2000,
-        imagenes: ["../images/Culote Less Faja1.jpg",
+        imagenes: [
+            "../images/Culote Less Con Faja0.1.png",
+            "../images/Culote Less Con Faja1.png",
+            "../images/Culote Less Con Faja2.png",
+            "../images/Culote Less Faja1.jpg",
             "../images/Culote Less Faja2.png"
         ],
         categoria: "bombachas",
@@ -270,6 +284,7 @@ const PRODUCTOS = [
         precioMinorista: 4500,
         precioMayorista: 3500,
         imagenes: [
+            "../images/Calza (Lycra)1.png",
             "../images/Conjunto Top + calza  1.png",
             "../images/Conjunto Top + calza  2.png",
             "../images/Conjunto Top + calza  3.png"
@@ -283,7 +298,9 @@ const PRODUCTOS = [
         nombre: "Conjunto Top + Calza (Negro)",
         precioMinorista: 10000,
         precioMayorista: 8000,
-        imagenes: ["../images/Conjunto Top + calza con frunce.png"],
+        imagenes: [
+            "../images/Conjunto Top + Calza (Negro)1.png",
+            "../images/Conjunto Top + calza con frunce.png"],
         categoria: "conjuntos",
         //stock: false,
         descripcion: "Ultimos en color negro. De morley con un top de tazas desmontables y calza con frunce."
@@ -294,6 +311,7 @@ const PRODUCTOS = [
         precioMinorista: 16500,
         precioMayorista: null,
         imagenes: [
+            "../images/Conjunto Top + Pollera Pantalon0.1.png",
             "../images/Conjunto top + pollera pantalon 1.png",
             "../images/Conjunto top + pollera pantalon 2.png",
             "../images/Conjunto top + pollera pantalon 3.png"
