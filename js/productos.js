@@ -163,7 +163,7 @@ const PRODUCTOS = [
             "../images/boxer-dama-con-faja2.png",
         ],
         categoria: "bombachas",
-        stock: false,
+        //stock: false,
         descripcion: "Confeccionadas en algodon con encaje ofrecen un toque sexy y comodo."
     },
     {
