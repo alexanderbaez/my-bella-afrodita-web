@@ -1,0 +1,663 @@
+/* ==========================================================================
+   LÓGICA DE NEGOCIO OPTIMIZADA - MY BELLA AFRODITA (BOUTIQUE STYLE)
+   ========================================================================== */
+/*
+const WHATSAPP_NUMBER = '5492646121771';
+let carrito = JSON.parse(localStorage.getItem('myBellaCarrito')) || [];
+let avisoMayoristaMostrado = false;
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Aplicar el fondo del :root al body (Sincronizado con tu paleta)
+    document.body.style.backgroundColor = "var(--brand-bg)";
+
+    actualizarContadorUI();
+
+    if (typeof PRODUCTOS === 'undefined') return;
+
+    const contenedor = document.getElementById("contenedor-productos");
+    if (contenedor) {
+        const titulo = document.title.toLowerCase();
+        let categoriaBuscada = "";
+
+        if (titulo.includes("conjuntos")) {
+            categoriaBuscada = "conjuntos";
+        } else if (titulo.includes("bombachas")) {
+            categoriaBuscada = "bombachas";
+        } else if (titulo.includes("hombres") || titulo.includes("essentials")) {
+            categoriaBuscada = "hombres";
+        } else if (titulo.includes("medias")) {
+            categoriaBuscada = "medias";
+        }
+
+        const filtrados = PRODUCTOS.filter(p => p.categoria.toLowerCase() === categoriaBuscada);
+        dibujarProductos(filtrados);
+    }
+
+    const modalCarrito = document.getElementById('cartModal');
+    if (modalCarrito) {
+        modalCarrito.addEventListener('show.bs.modal', renderizarListaCarrito);
+    }
+
+    // Detectar si vienen desde un link compartido
+    const urlParams = new URLSearchParams(window.location.search);
+    const productoId = urlParams.get('id');
+    if (productoId) {
+        // Un pequeño delay para que carguen los productos primero
+        setTimeout(() => {
+            mostrarDetalleProducto(productoId);
+        }, 500);
+    }
+});
+
+// --- CÁLCULO DE TOTALES ---
+function calcularTotalCarrito() {
+    let totalGeneral = 0;
+    let unidadesTotales = carrito.reduce((acc, item) => acc + item.cantidad, 0);
+    let cumpleCriterioCantidad = unidadesTotales >= 3;
+    let detallesPromo = [];
+    let aplicoAlgunaPromocion = false;
+
+    carrito.forEach(item => {
+        const p = PRODUCTOS.find(prod => prod.id === item.id);
+        if (p) {
+            if (cumpleCriterioCantidad && p.precioMayorista && p.precioMayorista > 0) {
+                totalGeneral += p.precioMayorista * item.cantidad;
+                aplicoAlgunaPromocion = true;
+            } else {
+                totalGeneral += (p.precioMinorista || p.precio) * item.cantidad;
+            }
+        } else {
+            totalGeneral += item.precio * item.cantidad;
+        }
+    });
+
+    if (aplicoAlgunaPromocion) {
+        detallesPromo.push("Precio Mayorista Aplicado");
+    }
+
+    return {
+        total: totalGeneral,
+        promos: detallesPromo,
+        esMayorista: aplicoAlgunaPromocion
+    };
+}
+
+function dibujarProductos(lista) {
+    const contenedor = document.getElementById("contenedor-productos");
+    if (!contenedor) return;
+    contenedor.innerHTML = "";
+
+    const fragmento = document.createDocumentFragment();
+
+    lista.forEach(p => {
+        const tieneStock = p.stock !== false;
+        const divCol = document.createElement("div");
+        divCol.className = "col-12 col-md-6 col-lg-4 mb-4 d-flex";
+
+        const htmlPrecios = p.precioMayorista ? `
+            <div class="price-container mb-3 p-2" style="background-color: var(--brand-nude); border-radius: 8px;">
+                <div class="row g-0 align-items-center text-center">
+                    <div class="col-6 border-end" style="border-color: rgba(0,0,0,0.1) !important;">
+                        <small class="text-muted text-uppercase d-block" style="font-size: 0.6rem;">Minorista</small>
+                        <span class="fw-bold">$${p.precioMinorista.toLocaleString('es-AR')}</span>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-uppercase d-block fw-bold" style="font-size: 0.6rem; color: var(--brand-accent);">Mayorista</small>
+                        <span class="fw-bold" style="color: var(--brand-primary);">$${p.precioMayorista.toLocaleString('es-AR')}</span>
+                    </div>
+                </div>
+            </div>` : `
+            <div class="price-container mb-3 p-2 text-center">
+                <small class="text-muted text-uppercase d-block" style="font-size: 0.6rem;">Precio Único</small>
+                <span class="fw-bold text-dark" style="font-size: 1.3rem;">$${p.precioMinorista.toLocaleString('es-AR')}</span>
+            </div>`;
+
+        divCol.innerHTML = `
+            <div class="product-card shadow-sm w-100 d-flex flex-column position-relative" 
+                 style="background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,0,0,0.05);">
+                
+                <div class="card-img-container position-relative" style="aspect-ratio: 3/4; overflow: hidden;">
+                    <div class="product-carousel-track d-flex" style="height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch;">
+                        ${p.imagenes.map((img, i) => `
+                            <div class="carousel-slide" style="flex: 0 0 100%; scroll-snap-align: start;">
+                                <img src="${img}" class="img-fluid w-100 h-100 object-fit-cover btn-zoom" 
+                                     data-index="${i}" style="cursor: zoom-in;">
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="indicators position-absolute bottom-0 start-50 translate-middle-x mb-2 d-flex gap-1">
+                        ${p.imagenes.map((_, i) => `<div class="dot-ui" style="width: 6px; height: 6px; border-radius: 50%; background: #fff; opacity: ${i === 0 ? '1' : '0.4'}; transition: 0.3s;"></div>`).join('')}
+                    </div>
+                </div>
+
+                <div class="card-body d-flex flex-column p-3">
+                    <h5 class="text-center text-uppercase mb-1" style="font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--brand-primary);">${p.nombre}</h5>
+                    <p class="text-muted text-center small mb-3">${p.descripcion}</p>
+                    
+                    ${htmlPrecios}
+
+                    <div class="actions mt-auto">
+                        <button class="btn btn-whatsapp w-100 mb-2 border-0 py-2" style="font-size: 0.75rem; background: #f9f9f9; color: #555; border-radius: 4px;">
+                            <i class="fab fa-whatsapp me-1"></i> COMPARTIR POR WHATSAPP
+                        </button>
+                        <button class="btn btn-primary-brand w-100 py-2 fw-bold" 
+                                style="background: var(--brand-primary); color: #fff; border: none; border-radius: 4px;" 
+                                ${!tieneStock ? 'disabled' : ''}
+                                onclick="agregarAlCarrito(event, '${p.id}')">
+                            <i class="fas ${tieneStock ? 'fa-shopping-bag' : 'fa-times'} me-2"></i> 
+                            ${tieneStock ? 'AÑADIR A LA BOLSA' : 'SIN STOCK'}
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+
+        const track = divCol.querySelector('.product-carousel-track');
+        const dots = divCol.querySelectorAll('.dot-ui');
+        
+        track.addEventListener('scroll', () => {
+            const index = Math.round(track.scrollLeft / track.offsetWidth);
+            dots.forEach((dot, i) => dot.style.opacity = (i === index) ? '1' : '0.4');
+        });
+
+        divCol.querySelector('.btn-whatsapp').onclick = () => {
+            const msg = `¡Mira esta prenda en My Bella Afrodita! 😍\n*${p.nombre}*\n$${p.precioMinorista}\nLink: ${window.location.href}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+        };
+
+        divCol.querySelectorAll('.btn-zoom').forEach(img => {
+            img.onclick = () => abrirZoomLenceria(p.imagenes, parseInt(img.dataset.index));
+        });
+
+        fragmento.appendChild(divCol);
+    });
+
+    contenedor.appendChild(fragmento);
+}
+
+function abrirZoomLenceria(imagenes, indexInicial) {
+    const modal = document.createElement('div');
+    modal.id = "lenceria-zoom-modal";
+    Object.assign(modal.style, {
+        position: 'fixed', top: '0', left: '0', width: '100vw', height: '100vh',
+        backgroundColor: '#000', zIndex: '9999', display: 'flex', flexDirection: 'column',
+        touchAction: 'none'
+    });
+
+    modal.innerHTML = `
+        <div style="position: absolute; top: 20px; right: 20px; z-index: 10001;">
+            <button id="close-zoom" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 1.5rem; width: 45px; height: 45px; border-radius: 50%; cursor: pointer;">&times;</button>
+        </div>
+
+        ${imagenes.length > 1 ? `
+            <button id="prev-zoom" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); z-index: 10001; background: rgba(255,255,255,0.1); border: none; color: white; padding: 20px; cursor: pointer; border-radius: 8px;">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button id="next-zoom" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); z-index: 10001; background: rgba(255,255,255,0.1); border: none; color: white; padding: 20px; cursor: pointer; border-radius: 8px;">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        ` : ''}
+
+        <div id="zoom-track" style="display: flex; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; scroll-behavior: smooth;">
+            ${imagenes.map(src => `
+                <div style="flex: 0 0 100vw; height: 100vh; scroll-snap-align: start; display: flex; align-items: center; justify-content: center; overflow: auto; background: #000;">
+                    <img src="${src}" style="max-width: 100%; max-height: 100%; object-fit: contain; touch-action: pinch-zoom;">
+                </div>
+            `).join('')}
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    const track = modal.querySelector('#zoom-track');
+    
+    // Posicionamiento inicial
+    setTimeout(() => {
+        track.scrollLeft = window.innerWidth * indexInicial;
+    }, 10);
+
+    // Lógica de botones de navegación
+    if (imagenes.length > 1) {
+        modal.querySelector('#next-zoom').onclick = () => {
+            track.scrollLeft += window.innerWidth;
+        };
+        modal.querySelector('#prev-zoom').onclick = () => {
+            track.scrollLeft -= window.innerWidth;
+        };
+    }
+
+    modal.querySelector('#close-zoom').onclick = () => modal.remove();
+}
+
+window.renderizarListaCarrito = function () {
+    const container = document.getElementById('cart-items');
+    const totalElement = document.getElementById('cart-total');
+    if (!container) return;
+
+    if (carrito.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-5">
+                <div class="mb-3" style="font-size: 3rem; opacity: 0.3;">
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+                <h5 class="text-muted fw-light">Tu bolsa está vacía</h5>
+                <button class="btn btn-outline-dark btn-sm mt-3 rounded-pill px-4 text-uppercase" 
+                        data-bs-dismiss="modal" style="letter-spacing: 1px; font-size: 0.7rem;">
+                    Explorar Colección
+                </button>
+            </div>`;
+        if (totalElement) totalElement.innerHTML = '<div class="text-end fw-bold h4">$0</div>';
+        return;
+    }
+
+    const res = calcularTotalCarrito();
+    const unidadesTotales = carrito.reduce((acc, i) => acc + i.cantidad, 0);
+
+    let cartHtml = `
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <span class="fw-bold text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px; color: var(--brand-accent);">
+                ${unidadesTotales} ${unidadesTotales === 1 ? 'Producto' : 'Productos'}
+            </span>
+            <button class="btn btn-link text-muted text-decoration-none p-0" 
+                    onclick="confirmarVaciarCarrito()" style="font-size: 0.7rem; letter-spacing: 1px;">
+                <i class="fas fa-trash-alt me-1"></i> VACIAR TODO
+            </button>
+        </div>
+    `;
+
+    carrito.forEach((item, index) => {
+        const p = PRODUCTOS.find(prod => prod.id === item.id);
+        let precioAplicado = (unidadesTotales >= 3 && p?.precioMayorista) ? p.precioMayorista : (p?.precioMinorista || item.precio);
+
+        cartHtml += `
+            <div class="row align-items-center mb-3 g-2">
+                <div class="col-3">
+                    <img src="${item.imagen}" class="img-fluid" 
+                         style="height: 65px; width: 100%; object-fit: cover; border-radius: 8px;">
+                </div>
+                
+                <div class="col-5 ps-2">
+                    <p class="mb-0 fw-bold text-dark" style="font-size: 0.85rem; line-height: 1.2;">${item.nombre}</p>
+                    <span class="text-muted" style="font-size: 0.75rem;">$${precioAplicado.toLocaleString('es-AR')} c/u</span>
+                    <div class="mt-1">
+                        <button class="btn btn-sm text-danger p-0 border-0 bg-transparent" 
+                                style="font-size: 0.7rem; font-weight: 500;" 
+                                onclick="eliminarDelCarrito(${index})">
+                            Eliminar
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="col-4 text-end">
+                    <div class="d-flex align-items-center justify-content-end mb-1">
+                        <div class="d-flex align-items-center bg-white border rounded-pill px-1" style="border-color: #eee !important;">
+                            <button class="btn btn-sm p-0 flex-shrink-0" 
+                                    style="width:22px; height:22px; font-size: 0.8rem;" 
+                                    onclick="cambiarCantidad(${index}, -1)">-</button>
+                            <span class="px-2 fw-bold text-dark" style="font-size: 0.8rem; min-width: 25px; text-align: center;">${item.cantidad}</span>
+                            <button class="btn btn-sm p-0 flex-shrink-0" 
+                                    style="width:22px; height:22px; font-size: 0.8rem;" 
+                                    onclick="cambiarCantidad(${index}, 1)">+</button>
+                        </div>
+                    </div>
+                    <div class="fw-bold text-dark" style="font-size: 0.9rem;">
+                        $${(precioAplicado * item.cantidad).toLocaleString('es-AR')}
+                    </div>
+                </div>
+            </div>`;
+    });
+
+    cartHtml += `
+        <div class="text-center mt-3 border-top pt-2">
+            <button class="btn btn-link btn-sm text-muted text-decoration-none text-uppercase" 
+                    data-bs-dismiss="modal" style="letter-spacing: 1px; font-size: 0.65rem;">
+                + Seguir Comprando
+            </button>
+        </div>
+    `;
+
+    container.innerHTML = cartHtml;
+
+    if (totalElement) {
+        totalElement.innerHTML = `
+            <div class="text-end w-100">
+                ${res.promos.map(p => `
+                    <div class="text-success fw-bold mb-1" style="font-size: 0.75rem;">
+                        <i class="fas fa-check-circle me-1"></i> ${p}
+                    </div>`).join('')}
+                
+                ${!res.esMayorista ? `
+                    <div class="p-2 mb-2" style="background-color: var(--brand-nude); border-radius: 6px; font-size: 0.7rem;">
+                        🎁 Agregá <strong style="color: var(--brand-primary);">${3 - unidadesTotales}</strong> más para <b>Precio Mayorista</b>
+                    </div>` : ''}
+                
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    <span class="text-muted text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">Total a pagar</span>
+                    <span class="fw-bold" style="font-size: 1.6rem; color: var(--brand-primary);">$${res.total.toLocaleString('es-AR')}</span>
+                </div>
+            </div>`;
+    }
+}
+
+// --- LOGICA DE CARRITO ---
+window.agregarAlCarrito = function (event, id) {
+    if (event) event.stopPropagation();
+    const p = PRODUCTOS.find(prod => prod.id === id);
+    if (!p) return;
+    const existe = carrito.find(item => item.id === id);
+    if (existe) {
+        existe.cantidad++;
+    } else {
+        carrito.push({ id: p.id, nombre: p.nombre, precio: p.precioMinorista, imagen: p.imagenes[0], cantidad: 1 });
+    }
+    actualizarYGuardar();
+    mostrarNotificacion(p.nombre);
+    verificarHitoMayorista();
+};
+
+window.cambiarCantidad = function (index, valor) {
+    if (carrito[index].cantidad + valor > 0) {
+        carrito[index].cantidad += valor;
+    } else {
+        carrito.splice(index, 1);
+    }
+    actualizarYGuardar();
+    renderizarListaCarrito();
+    verificarHitoMayorista();
+};
+
+window.eliminarDelCarrito = function (index) {
+    carrito.splice(index, 1);
+    actualizarYGuardar();
+    renderizarListaCarrito();
+    verificarHitoMayorista();
+};
+
+function verificarHitoMayorista() {
+    const { esMayorista } = calcularTotalCarrito();
+    if (esMayorista && !avisoMayoristaMostrado) {
+        const toastMayorista = Swal.mixin({
+            toast: true,
+            position: 'top-center',
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+            background: '#28a745',
+            color: '#fff'
+        });
+        toastMayorista.fire({
+            icon: 'success',
+            title: '¡Beneficio Mayorista Activado!',
+            text: 'Has accedido a precios especiales en productos seleccionados.'
+        });
+        avisoMayoristaMostrado = true;
+    } else if (!esMayorista) {
+        avisoMayoristaMostrado = false;
+    }
+}
+
+window.confirmarVaciarCarrito = function () {
+    Swal.fire({
+        title: '¿Vaciar tu bolsa?',
+        text: "Se eliminarán todos los productos seleccionados.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: 'var(--brand-primary)',
+        cancelButtonColor: '#333333',
+        confirmButtonText: 'Sí, vaciar',
+        cancelButtonText: 'Cancelar',
+        borderRadius: '0',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            carrito = [];
+            actualizarYGuardar();
+            renderizarListaCarrito();
+            avisoMayoristaMostrado = false;
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'bottom-end',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+            });
+            Toast.fire({ icon: 'success', title: 'Bolsa vaciada' });
+        }
+    });
+};
+
+function actualizarYGuardar() {
+    localStorage.setItem('myBellaCarrito', JSON.stringify(carrito));
+    actualizarContadorUI();
+}
+
+function actualizarContadorUI() {
+    const contador = document.getElementById('cart-count');
+    if (!contador) return;
+    const totalUnidades = carrito.reduce((acc, item) => acc + item.cantidad, 0);
+    contador.innerText = totalUnidades;
+    contador.style.display = totalUnidades === 0 ? 'none' : 'flex';
+    const { esMayorista } = calcularTotalCarrito();
+    contador.style.backgroundColor = esMayorista ? "#28a745" : "var(--brand-primary)";
+}
+
+function enviarPedidoWhatsApp() {
+    if (carrito.length === 0) {
+        Swal.fire("Carrito vacío", "Agrega algunos productos antes de enviar.", "warning");
+        return;
+    }
+
+    const { total, esMayorista } = calcularTotalCarrito();
+    const unidadesTotales = carrito.reduce((acc, item) => acc + item.cantidad, 0);
+    const cumpleCriterioGral = unidadesTotales >= 3;
+
+    let mensaje = "✨ *PEDIDO: MY BELLA AFRODITA* ✨\n";
+    mensaje += "------------------------------------------\n\n";
+
+    carrito.forEach((item, index) => {
+        const p = PRODUCTOS.find(prod => prod.id === item.id);
+        let precioAplicado;
+        let etiqueta = "";
+
+        if (p) {
+            if (cumpleCriterioGral && p.precioMayorista && p.precioMayorista > 0) {
+                precioAplicado = p.precioMayorista;
+                etiqueta = " (Mayorista)";
+            } else {
+                precioAplicado = p.precioMinorista || p.precio;
+            }
+        } else {
+            precioAplicado = item.precio;
+        }
+
+        mensaje += `🛍️ *${item.nombre}*\n`;
+        mensaje += `   Cant: ${item.cantidad} x $${precioAplicado.toLocaleString('es-AR')}${etiqueta}\n`;
+        mensaje += `   Subtotal: $${(precioAplicado * item.cantidad).toLocaleString('es-AR')}\n\n`;
+    });
+
+    mensaje += `------------------------------------------\n`;
+    mensaje += `💰 *TOTAL ESTIMADO: $${total.toLocaleString('es-AR')}*\n`;
+    if (esMayorista) mensaje += `✅ _Beneficio mayorista aplicado_\n`;
+    mensaje += `\n👤 *Datos del cliente:*`;
+    mensaje += `\nNombre: ________________`;
+
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensaje)}`;
+    window.open(url, "_blank");
+}
+
+/* ==========================================================================
+   DETALLE DEL PRODUCTO - RESPONSIVE & LIGHTBOX (BOUTIQUE STYLE)
+   ========================================================================== */
+
+/*window.mostrarDetalleProducto = function (id) {
+    const p = PRODUCTOS.find(prod => prod.id === id);
+    if (!p || p.stock === false) return;
+
+    // 1. Slides con altura adaptable
+    let slides = p.imagenes.map((img, idx) => `
+        <div class="carousel-item ${idx === 0 ? 'active' : ''}">
+            <img src="${img}" class="d-block w-100 img-detalle-adaptable" 
+                 style="object-fit: cover; cursor: pointer;"
+                 onclick="abrirImagenGrande('${img}')"
+                 ondblclick="abrirImagenGrande('${img}')">
+        </div>`).join('');
+
+    const styleResponsive = `
+        <style>
+            .img-detalle-adaptable { height: 35vh; min-height: 250px; }
+            @media (min-width: 992px) { 
+                .img-detalle-adaptable { height: 70vh; min-height: 550px; } 
+                .info-col { min-height: 550px; }
+            }
+            @media (max-width: 576px) {
+                #modalDetalle .modal-dialog { margin: 0.5rem; }
+            }
+        </style>
+    `;
+
+    // 2. Controles de navegación
+    let controls = "";
+    let indicators = "";
+    if (p.imagenes.length > 1) {
+        indicators = `<div class="carousel-indicators" style="margin-bottom: 0.5rem;">
+            ${p.imagenes.map((_, idx) => `<button type="button" data-bs-target="#carouselDetalle" data-bs-slide-to="${idx}" class="${idx === 0 ? 'active' : ''}" style="background-color: var(--brand-primary); width: 7px; height: 7px; border-radius: 50%; border: none;"></button>`).join('')}
+        </div>`;
+        controls = `
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselDetalle" data-bs-slide="prev"><span class="carousel-control-prev-icon" aria-hidden="true" style="filter: invert(1) brightness(0.5); transform: scale(0.6);"></span></button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselDetalle" data-bs-slide="next"><span class="carousel-control-next-icon" aria-hidden="true" style="filter: invert(1) brightness(0.5); transform: scale(0.6);"></span></button>`;
+    }
+
+    // 3. Precios con más presencia
+    let htmlPreciosDetalle = p.precioMayorista ? `
+        <div class="mb-4 p-3 shadow-sm" style="background-color: var(--brand-nude); border-radius: 12px; border: 1px solid rgba(0,0,0,0.05);">
+            <div class="row text-center g-0">
+                <div class="col-6 border-end" style="border-color: rgba(0,0,0,0.1) !important;">
+                    <small class="text-muted d-block mb-1" style="font-size: 0.7rem; letter-spacing: 1px;">MINORISTA</small>
+                    <span class="fw-bold text-dark h4 mb-0">$${p.precioMinorista.toLocaleString('es-AR')}</span>
+                </div>
+                <div class="col-6">
+                    <small class="fw-bold d-block mb-1" style="font-size: 0.7rem; letter-spacing: 1px; color: var(--brand-accent);">MAYORISTA</small>
+                    <span class="fw-bold h4 mb-0" style="color: var(--brand-primary);">$${p.precioMayorista.toLocaleString('es-AR')}</span>
+                </div>
+            </div>
+        </div>` : `<h2 class="fw-bold text-dark mb-4">$${p.precioMinorista.toLocaleString('es-AR')}</h2>`;
+
+    // 4. Modal con Flexbox Distribuido
+    const modalHtml = `
+        ${styleResponsive}
+        <div class="modal fade" id="modalDetalle" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden; background-color: #fff;">
+                    <div class="modal-body p-0 position-relative">
+                        <button type="button" class="btn-close position-absolute top-0 end-0 m-3 z-3 bg-white p-2 shadow-sm rounded-circle" data-bs-dismiss="modal" style="font-size: 0.7rem;"></button>
+                        
+                        <div class="row g-0">
+                            <div class="col-12 col-lg-7">
+                                <div id="carouselDetalle" class="carousel slide h-100" data-bs-ride="carousel">
+                                    ${indicators}
+                                    <div class="carousel-inner h-100">${slides}</div>
+                                    ${controls}
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-lg-5 p-4 p-md-5 info-col d-flex flex-column justify-content-between">
+                                <div>
+                                    <h2 class="display-6 fw-bold mb-3" style="font-family: 'Playfair Display', serif; color: var(--brand-primary); line-height: 1.1;">${p.nombre}</h2>
+                                    <hr class="my-4 opacity-10">
+                                    
+                                    ${htmlPreciosDetalle}
+
+                                    <div class="mb-4">
+                                        <h6 class="text-uppercase fw-bold mb-3" style="font-size: 0.75rem; letter-spacing: 2px; color: var(--brand-accent);">Descripción</h6>
+                                        <p class="text-muted" style="font-size: 1rem; line-height: 1.8;">${p.descripcion}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-auto d-flex gap-2">
+                                    <button class="btn btn-dark py-3 fw-bold text-uppercase flex-grow-1" 
+                                            onclick="agregarAlCarrito(null, '${p.id}'); bootstrap.Modal.getInstance(document.getElementById('modalDetalle')).hide();"
+                                            style="background-color: var(--brand-primary); border: none; border-radius: 15px; letter-spacing: 2px; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                                        <i class="fas fa-shopping-bag me-2"></i> Comprar
+                                    </button>
+                                    
+                                    <button class="btn btn-outline-secondary px-3" 
+                                            onclick="compartirProducto(event, '${p.id}')"
+                                            style="border-radius: 15px; border: 1px solid #ddd; color: var(--brand-primary);">
+                                        <i class="fas fa-share-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+    const oldModal = document.getElementById('modalDetalle');
+    if (oldModal) oldModal.remove();
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    new bootstrap.Modal(document.getElementById('modalDetalle')).show();
+};*/
+
+/*
+// --- FUNCIÓN LIGHTBOX PARA ZOOM ---
+window.abrirImagenGrande = function (url) {
+    Swal.fire({
+        imageUrl: url,
+        imageAlt: 'Imagen del producto',
+        showCloseButton: true,
+        showConfirmButton: false,
+        background: 'transparent',
+        width: 'auto',
+        padding: '0',
+        backdrop: 'rgba(0,0,0,0.8)'
+    });
+};
+
+function mostrarNotificacion(nombre) {
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end', // O 'bottom-end' si preferís abajo
+        showConfirmButton: false,
+        timer: 2500,
+        timerProgressBar: true,
+        background: '#fff',
+        color: 'var(--brand-primary)',
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+
+    Toast.fire({
+        icon: 'success',
+        iconColor: 'var(--brand-accent)',
+        title: `<span style="font-family: 'Playfair Display', serif; font-size: 0.9rem;">${nombre}</span>`,
+        html: '<span style="font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; color: #666;">¡Añadido con éxito!</span>'
+    });
+}
+
+window.compartirProducto = async function(e, id) {
+    if(e) e.stopPropagation(); 
+    const p = PRODUCTOS.find(prod => prod.id === id);
+    if (!p) return;
+
+    // Solo el enlace con el ID, sin basura extra
+    const urlProducto = `${window.location.origin}${window.location.pathname}?id=${p.id}`;
+    
+    // Texto minimalista y elegante
+    const texto = `¡Mirá este modelo! 😍 ${p.nombre}`;
+
+    if (navigator.share) {
+        try {
+            await navigator.share({
+                title: 'My Bella Afrodita',
+                text: texto,
+                url: urlProducto 
+            });
+        } catch (err) { console.log('Error', err); }
+    } else {
+        // Fallback para computadoras (copiar al portapapeles)
+        const fullText = `${texto}\n${urlProducto}`;
+        navigator.clipboard.writeText(fullText);
+        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Enlace copiado', showConfirmButton: false, timer: 2000 });
+    }
+};*/

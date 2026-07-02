@@ -38,6 +38,7 @@ const PRODUCTOS = [
             "../images/Culote encaje DORSAL.png"],
         categoria: "bombachas",
         //stock: false,
+        etiqueta: "🔥 MÁS VENDIDO", // 🚀 Estrategia: Destacar el encaje sensual
         descripcion: "Sin costuras, no se marca. Perfecto para sentirte comoda y sensual."
     },
     {
@@ -81,6 +82,7 @@ const PRODUCTOS = [
             "../images/Less Dorsal.png"],
         categoria: "bombachas",
         //stock: false,
+        etiqueta: "⚡ POCO STOCK", // 🚀 Estrategia: Apurar la compra en talles específicos
         descripcion: "Con su tejido de algodon otorgan un toque de sensualidad y comodidad."
     },
     {
@@ -101,7 +103,6 @@ const PRODUCTOS = [
         precioMinorista: 2500,
         precioMayorista: 2000,
         imagenes: [
-         
             "../images/Bombachas de Algodon con detalles de encaje1.jpg",
             "../images/Bombachas-de-Algodon-con-detalles-de-encaje1 (1).png",
             "../images/Bombachas-de-Algodon-con-detalles-de-encaje1.png",
@@ -129,6 +130,7 @@ const PRODUCTOS = [
         ],
         categoria: "bombachas",
         //stock: false,
+        etiqueta: "🔥 TENDENCIA", // 🚀 Estrategia: Aprovechar el peso de la marca famosa
         descripcion: "Confeccionadas en algodon con encaje ofrecen un toque sexy y comodo."
     },
     {
@@ -188,7 +190,6 @@ const PRODUCTOS = [
         stock: false,
         descripcion: "Confeccionadas en morley, brinda confort, Disponibles en colores tendencia"
     },
-
     {
         id: "prod-b12",
         nombre: "Culote Less Con Faja",
@@ -219,6 +220,7 @@ const PRODUCTOS = [
         ],
         categoria: "conjuntos",
         //stock: false,
+        etiqueta: "🔥 IMPERDIBLE", // 🚀 Estrategia: Llamar la atención sobre el producto premium estrella
         descripcion: "Colección Intimate La sofisticación del encaje se combina con un diseño tipo longline para ofrecerte un ajuste impecable. El conjunto Red Velvet destaca por su acabado artesanal y tirantes ajustables, pensado para quienes buscan sentirse especiales en su día a día sin perder el confort."
     },
     {
@@ -234,6 +236,7 @@ const PRODUCTOS = [
             "../images/Combo alo 2.png"],
         categoria: "conjuntos",
         //stock: false,
+        etiqueta: "⚡ ÚLTIMOS COMBOS", // 🚀 Estrategia: Generar urgencia por volumen
         descripcion: "Combo de lycra que incluye remera, top, medias y short de lycra sin frunce."
     },
     {
@@ -303,6 +306,7 @@ const PRODUCTOS = [
             "../images/Conjunto Top + calza con frunce.png"],
         categoria: "conjuntos",
         //stock: false,
+        etiqueta: "⚡ ¡VUELA!", // 🚀 Estrategia: Indicar alta rotación por el color básico
         descripcion: "Ultimos en color negro. De morley con un top de tazas desmontables y calza con frunce."
     },
     {
@@ -426,7 +430,6 @@ const PRODUCTOS = [
         //stock: false,
         descripcion: "Boxer de algodón con lycra, elástico suave con logo de marca."
     },
-
     {
         id: "masc-02",
         nombre: "Boxers de Algodón Zantino",
@@ -454,7 +457,6 @@ const PRODUCTOS = [
         //stock: false,
         descripcion: "Corte clásico, máxima comodidad y ajuste perfecto."
     },
-
     {
         id: "masc-04",
         nombre: "Slip Algodón niño",
@@ -469,26 +471,23 @@ const PRODUCTOS = [
         descripcion: "Corte clásico, máxima comodidad y ajuste perfecto."
     },
 
-    // ---  SECCIÓN MEDIAS (Detectado por el título "Medias") ---
+    // --- SECCIÓN MEDIAS ---
     {
         id: "acc-01",
         nombre: "Medias Escolares ",
         precioMinorista: 2000,
         precioMayorista: null,
-        imagenes: ["../images/Medias-escolares-blanca.jpg",
-        ],
+        imagenes: ["../images/Medias-escolares-blanca.jpg"],
         categoria: "medias",
         //stock: false,
         descripcion: "Par de medias escolares blanca"
     },
-
     {
         id: "acc-02",
         nombre: "Pack Medias Alo Dama (x3)",
         precioMinorista: 5500,
         precioMayorista: null,
-        imagenes: ["../images/Medias-Alo-dama.jpg",
-        ],
+        imagenes: ["../images/Medias-Alo-dama.jpg"],
         categoria: "medias",
         //stock: false,
         descripcion: "Pack de 3 pares de medias con orejitas para niños"
@@ -537,7 +536,6 @@ const PRODUCTOS = [
         //stock: false,
         descripcion: "Diseño urbano, suaves y cómodas para el uso diario."
     },
-
     {
         id: "acc-med-07",
         nombre: "Medias Women's Socks",
@@ -575,13 +573,11 @@ const PRODUCTOS = [
         precioMayorista: null,
         imagenes: ["../images/Medias Niña1.png",
             "../images/Medias Niña2.png"
-
         ],
         categoria: "medias",
         //stock: false,
         descripcion: "Diseño urbano, suaves y cómodas para el uso diario."
     },
-
     {
         id: "acc-med-11",
         nombre: "Medias For Boys Socks",
@@ -589,10 +585,9 @@ const PRODUCTOS = [
         precioMayorista: null,
         imagenes: ["../images/Medias Niño1.png",
             "../images/Medias niño2.png"
-
         ],
         categoria: "medias",
         //stock: false,
         descripcion: "Diseño urbano, suaves y cómodas para el uso diario."
-    },
+    }
 ];

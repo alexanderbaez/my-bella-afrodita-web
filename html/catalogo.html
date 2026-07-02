@@ -7,16 +7,13 @@
     <title>Catálogo - My Bella Afrodita</title>
     <link rel="icon" type="image/png" href="images/LOGO.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Roboto:wght@300;400;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <meta property="og:title" content="My Bella Afrodita - Lencería Exclusiva">
     <meta property="og:description" content="Descubre nuestra colección de lencería, conjuntos y línea Essentials.">
-    <meta property="og:image"
-        content="https://raw.githubusercontent.com/alexanderbaez/my-bella-afrodita-web/master/images/LOGO.png">
+    <meta property="og:image" content="https://raw.githubusercontent.com/alexanderbaez/my-bella-afrodita-web/master/images/LOGO.png">
     <meta property="og:image:width" content="300">
     <meta property="og:image:height" content="300">
     <meta property="og:url" content="https://alexanderbaez.github.io/my-bella-afrodita-web/">
@@ -38,7 +35,6 @@
             filter: brightness(0) invert(1);
         }
 
-        /* Estilos específicos para un catálogo profesional */
         .category-card-premium {
             height: 600px;
             position: relative;
@@ -85,6 +81,17 @@
         .category-card-premium:hover .title-divider {
             width: 100px;
         }
+
+        /* Barra UX */
+        .progress-ux-bar {
+            height: 8px;
+            border-radius: 4px;
+            background-color: #e9ecef;
+        }
+        .progress-ux-bar .progress-bar {
+            background-color: var(--color-pasión, #1a1a1a);
+            transition: width 0.4s ease;
+        }
     </style>
 </head>
 
@@ -98,15 +105,11 @@
                 </a>
 
                 <div class="d-flex align-items-center order-lg-last">
-                    <a class="nav-link position-relative text-light me-3" href="#" id="cartIcon" data-bs-toggle="modal"
-                        data-bs-target="#cartModal" style="padding: 0.5rem;">
+                    <a class="nav-link position-relative text-light me-3" href="#" id="cartIcon" data-bs-toggle="modal" data-bs-target="#cartModal" style="padding: 0.5rem;">
                         <i class="fas fa-shopping-bag fa-lg"></i>
-                        <span id="cart-count"
-                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                            style="font-size: 0.65rem;">0</span>
+                        <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">0</span>
                     </a>
-                    <button class="navbar-toggler p-2 border-0" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#navbarNav">
+                    <button class="navbar-toggler p-2 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                         <i class="fas fa-bars text-light"></i>
                     </button>
                 </div>
@@ -114,9 +117,10 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto align-items-center fw-bold">
                         <li class="nav-item"><a class="nav-link" href="../index.html">INICIO</a></li>
-                        <li class="nav-item"><a class="nav-link" href="../index.html#nosotros-seccion">NOSOTROS</a></li>
-                        <li class="nav-item"><a class="nav-link" href="../html/catalogo-hombres.html">MASCULINO</a></li>
-                        <li class="nav-item"><a class="nav-link" href="../html/medias.html">MEDIAS</a></li>
+                        <li class="nav-item"><a class="nav-link" href="./productos.html?cat=conjuntos">CONJUNTOS</a></li>
+                        <li class="nav-item"><a class="nav-link" href="./productos.html?cat=bombachas">BOMBACHAS</a></li>
+                        <li class="nav-item"><a class="nav-link" href="./productos.html?cat=hombres">MASCULINO</a></li>
+                        <li class="nav-item"><a class="nav-link" href="./productos.html?cat=medias">MEDIAS</a></li>
                     </ul>
                 </div>
             </div>
@@ -127,15 +131,14 @@
         <section class="py-5 mt-5">
             <div class="container pt-5">
                 <div class="text-center mb-5">
-                    <span class="text-uppercase small fw-bold"
-                        style="letter-spacing: 4px; color: var(--color-terracota-pasión);">Categorías</span>
-                    <h1 class="display-4 fw-bold mt-2 font-playfair" style="color: var(--color-pasión);">Elige tu Pasión
-                    </h1>
+                    <span class="text-uppercase small fw-bold" style="letter-spacing: 4px; color: var(--color-terracota-pasión);">Categorías</span>
+                    <h1 class="display-4 fw-bold mt-2 font-playfair" style="color: var(--color-pasión);">Elige tu Pasión</h1>
                 </div>
 
                 <div class="row g-4">
                     <div class="col-md-6">
-                        <a href="catalogo-conjuntos.html" class="category-card-premium shadow-lg rounded-0">
+                        <!-- Enlace dinámico modificado -->
+                        <a href="productos.html?cat=conjuntos" class="category-card-premium shadow-lg rounded-0">
                             <img src="../images/session-Conjuntos.jpg" alt="Conjuntos de Lencería">
                             <div class="category-overlay">
                                 <i class="fas fa-heart mb-3 opacity-50"></i>
@@ -148,14 +151,14 @@
                     </div>
 
                     <div class="col-md-6">
-                        <a href="catalogo-bombachas.html" class="category-card-premium shadow-lg rounded-0">
+                        <!-- Enlace dinámico modificado -->
+                        <a href="productos.html?cat=bombachas" class="category-card-premium shadow-lg rounded-0">
                             <img src="../images/session-bombis.jpg" alt="Bombachas y Lencería">
                             <div class="category-overlay">
                                 <i class="fas fa-venus mb-3 opacity-50"></i>
                                 <h2 class="display-5 fw-bold font-playfair">Bombis</h2>
                                 <div class="title-divider"></div>
-                                <p class="lead opacity-75">Comodidad y sensualidad en una sola pieza, diferentes cortes
-                                    y talles.</p>
+                                <p class="lead opacity-75">Comodidad y sensualidad en una sola pieza, diferentes cortes y talles.</p>
                                 <span class="btn btn-outline-light rounded-0 px-4 py-2 mt-2">VER COLECCIÓN</span>
                             </div>
                         </a>
@@ -165,36 +168,49 @@
         </section>
     </main>
 
-
+    <!-- Modal Carrito Estructura UX -->
     <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content rounded-0 border-0 shadow-lg">
                 <div class="modal-header bg-dark text-white border-0 py-3">
                     <h5 class="modal-title" id="cartModalLabel"><i class="fas fa-shopping-bag me-2"></i>Tu Carrito</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4">
+                    <div id="ux-wholesale-progress-container" class="mb-4 p-3 bg-light border-0" style="border-radius: 8px;">
+                        <div class="d-flex justify-content-between mb-1 small">
+                            <span id="ux-progress-text" class="fw-bold text-secondary">Añadiendo prendas...</span>
+                            <span id="ux-progress-percent" class="fw-bold text-dark">0/3</span>
+                        </div>
+                        <div class="progress progress-ux-bar">
+                            <div id="ux-progress-bar-fill" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
                     <div id="cart-items">
                         <p class="text-center py-5">El carrito está vacío.</p>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
-                        <h4 class="fw-bold mb-0">Total:</h4>
-                        <div id="cart-total" class="fw-bold text-danger mb-0 h4">$0</div>
+                    
+                    <div class="mt-4 pt-3 border-top">
+                        <div id="ux-savings-container" class="d-flex justify-content-between align-items-center mb-2 d-none">
+                            <span class="text-success small fw-bold"><i class="fas fa-gift me-1"></i> Tu ahorro por compra Mayorista:</span>
+                            <span id="ux-savings-amount" class="text-success fw-bold small">-$0</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="fw-bold mb-0">Total:</h4>
+                            <div id="cart-total" class="fw-bold text-danger mb-0 h4">$0</div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer border-0 p-4 pt-0">
-                    <button type="button" class="btn btn-outline-secondary rounded-0 px-4"
-                        onclick="confirmarVaciarCarrito()">Vaciar Carrito</button>
-                    <button type="button" class="btn btn-danger rounded-0 px-4 fw-bold shadow"
-                        onclick="enviarPedidoWhatsApp()">Finalizar Pedido</button>
+                    <button type="button" class="btn btn-outline-secondary rounded-0 px-4" onclick="confirmarVaciarCarrito()">Vaciar Carrito</button>
+                    <button type="button" class="btn btn-danger rounded-0 px-4 fw-bold shadow" onclick="enviarPedidoWhatsApp()">Finalizar Pedido</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="mayorista-alert" class="position-fixed bottom-0 start-0 m-3 p-3 shadow-lg border-0 d-none"
-        style="z-index: 1060; background-color: #28a745; color: white; min-width: 250px; border-radius: 4px;">
+    <div id="mayorista-alert" class="position-fixed bottom-0 start-0 m-3 p-3 shadow-lg border-0 d-none" style="z-index: 1060; background-color: #28a745; color: white; min-width: 250px; border-radius: 4px;">
         <div class="d-flex align-items-center">
             <i class="fas fa-check-circle me-3 fa-lg"></i>
             <div>
@@ -204,9 +220,7 @@
         </div>
     </div>
 
-
-    <a href="https://wa.me/5492646121771?text=Hola,%20quisiera%20hacer%20una%20consulta%20general%20sobre%20lencería."
-        target="_blank" class="whatsapp-flotante shadow-lg">
+    <a href="https://wa.me/5492646121771?text=Hola,%20quisiera%20hacer%20una%20consulta%20general%20sobre%20lencería." target="_blank" class="whatsapp-flotante shadow-lg">
         <i class="fab fa-whatsapp"></i>
     </a>
 
@@ -215,34 +229,30 @@
             <div class="row g-5">
                 <div class="col-md-4 text-center text-md-start">
                     <img src="../images/LOGO.png" alt="Logo" style="height: 60px;" class="mb-4">
-                    <p class="small opacity-50 pe-md-5">Tu lenceria de confianza. Calidad premium y atención
-                        personalizada en cada compra.</p>
+                    <p class="small opacity-50 pe-md-5">Tu lencería de confianza. Calidad premium y atención personalizada en cada compra.</p>
                 </div>
                 <div class="col-6 col-md-4 text-center">
                     <h5 class="text-uppercase small fw-bold mb-4" style="letter-spacing: 2px;">Explorar</h5>
                     <ul class="list-unstyled small opacity-75">
-                        <li class="mb-2"><a href="html/catalogo.html" class="text-white text-decoration-none">Colección
-                                Mujer</a></li>
-                        <li class="mb-2"><a href="html/catalogo-hombres.html"
-                                class="text-white text-decoration-none">Colección Hombre</a></li>
+                        <li class="mb-2"><a href="./productos.html?cat=conjuntos" class="text-white text-decoration-none">Conjuntos</a></li>
+                        <li class="mb-2"><a href="./productos.html?cat=bombachas" class="text-white text-decoration-none">Bombachas</a></li>
+                        <li class="mb-2"><a href="./productos.html?cat=hombres" class="text-white text-decoration-none">Colección Hombre</a></li>
+                        <li class="mb-2"><a href="./productos.html?cat=medias" class="text-white text-decoration-none">Medias</a></li>
                     </ul>
                 </div>
                 <div class="col-6 col-md-4 text-center text-md-end">
                     <h5 class="text-uppercase small fw-bold mb-4" style="letter-spacing: 2px;">Contacto</h5>
                     <div class="d-flex justify-content-center justify-content-md-end gap-3 fs-4 mb-4">
-                        <a href="https://www.instagram.com/mybellaafrodita/" class="text-white" title="Instagram"><i
-                                class="fab fa-instagram"></i></a>
+                        <a href="https://www.instagram.com/mybellaafrodita/" class="text-white" title="Instagram"><i class="fab fa-instagram"></i></a>
                         <a href="#" class="text-white" title="Facebook"><i class="fab fa-facebook-f"></i></a>
                         <a href="#" class="text-white" title="TikTok"><i class="fab fa-tiktok"></i></a>
-                        <a href="https://wa.me/5492646121771" class="text-white" title="WhatsApp"><i
-                                class="fab fa-whatsapp"></i></a>
+                        <a href="https://wa.me/5492646121771" class="text-white" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
                     </div>
                     <p class="small opacity-50">San Juan, Argentina</p>
                 </div>
             </div>
             <hr class="my-5 opacity-10">
-            <p class="text-center mb-0 small opacity-25" style="letter-spacing: 2px;">&copy; 2026 MY BELLA AFRODITA.
-                LENCERIA.</p>
+            <p class="text-center mb-0 small opacity-25" style="letter-spacing: 2px;">&copy; 2026 MY BELLA AFRODITA. LENCERÍA.</p>
         </div>
     </footer>
 

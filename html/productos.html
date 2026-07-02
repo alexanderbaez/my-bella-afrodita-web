@@ -4,30 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medias - My Bella Afrodita</title>
-
+    <title>Productos - My Bella Afrodita</title>
     <link rel="icon" type="image/png" href="images/LOGO.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Roboto:wght@300;400;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <meta property="og:title" content="My Bella Afrodita - Medias y Accesorios">
-    <meta property="og:description" content="Descubre nuestra línea de medias de alta calidad para hombre y mujer.">
-    <meta property="og:image"
-        content="https://raw.githubusercontent.com/alexanderbaez/my-bella-afrodita-web/master/images/LOGO.png">
+    <meta property="og:title" content="My Bella Afrodita - Lencería Exclusiva">
+    <meta property="og:description" content="Descubre nuestra colección de lencería, conjuntos y línea Essentials.">
+    <meta property="og:image" content="https://raw.githubusercontent.com/alexanderbaez/my-bella-afrodita-web/master/images/LOGO.png">
+    <meta property="og:image:width" content="300">
+    <meta property="og:image:height" content="300">
     <meta property="og:url" content="https://alexanderbaez.github.io/my-bella-afrodita-web/">
     <meta property="og:type" content="website">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <link rel="icon" type="image/png" href="https://alexanderbaez.github.io/my-bella-afrodita-web/images/LOGO.png">
     <link rel="shortcut icon" href="https://alexanderbaez.github.io/my-bella-afrodita-web/images/LOGO.png">
     <link rel="apple-touch-icon" href="https://alexanderbaez.github.io/my-bella-afrodita-web/images/LOGO.png">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         .navbar-logo {
-            height: 45px;
+            height: 50px;
             width: auto;
             object-fit: contain;
         }
@@ -37,7 +36,7 @@
             filter: brightness(0) invert(1);
         }
 
-        /* Estilo de Tarjetas de Producto - Mantenido de tu plantilla */
+        /* Estilo de Tarjetas de Producto con tus animaciones originales */
         .product-card {
             border: none;
             border-radius: 0;
@@ -81,7 +80,6 @@
             font-weight: 600;
         }
 
-        /* Carrusel de la tarjeta */
         .product-slider {
             display: flex;
             overflow-x: auto;
@@ -94,8 +92,6 @@
             display: none;
         }
 
-        /* Oculta scroll */
-
         .product-slider img {
             flex: 0 0 100%;
             scroll-snap-align: start;
@@ -103,7 +99,6 @@
             min-height: 350px;
         }
 
-        /* Indicadores de fotos (puntitos) */
         .slider-dots {
             position: absolute;
             bottom: 10px;
@@ -119,6 +114,17 @@
             background: rgba(255, 255, 255, 0.5);
             border-radius: 50%;
         }
+
+        /* Estilos de la barra UX */
+        .progress-ux-bar {
+            height: 8px;
+            border-radius: 4px;
+            background-color: #e9ecef;
+        }
+        .progress-ux-bar .progress-bar {
+            background-color: var(--color-pasión, #1a1a1a);
+            transition: width 0.4s ease;
+        }
     </style>
 </head>
 
@@ -133,23 +139,21 @@
                 </a>
 
                 <div class="d-flex align-items-center order-lg-last">
-                    <a class="nav-link position-relative text-light me-3" href="#" id="cartIcon" data-bs-toggle="modal"
-                        data-bs-target="#cartModal" style="padding: 0.5rem;">
+                    <a class="nav-link position-relative text-light me-3" href="#" id="cartIcon" data-bs-toggle="modal" data-bs-target="#cartModal" style="padding: 0.5rem;">
                         <i class="fas fa-shopping-bag fa-lg"></i>
-                        <span id="cart-count"
-                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                            style="font-size: 0.65rem;">0</span>
+                        <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">0</span>
                     </a>
-                    <button class="navbar-toggler p-2 border-0" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#navbarNav">
+                    <button class="navbar-toggler p-2 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                         <i class="fas fa-bars text-light"></i>
                     </button>
                 </div>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto align-items-center fw-bold">
                         <li class="nav-item"><a class="nav-link" href="../index.html">INICIO</a></li>
-                        <li class="nav-item"><a class="nav-link" href="./catalogo.html">FEMENINO</a></li>
-                        <li class="nav-item"><a class="nav-link" href="./catalogo-hombres.html">MASCULINO</a></li>
+                        <li class="nav-item"><a class="nav-link" href="./productos.html?cat=conjuntos">CONJUNTOS</a></li>
+                        <li class="nav-item"><a class="nav-link" href="./productos.html?cat=bombachas">BOMBACHAS</a></li>
+                        <li class="nav-item"><a class="nav-link" href="./productos.html?cat=hombres">MASCULINO</a></li>
+                        <li class="nav-item"><a class="nav-link" href="./productos.html?cat=medias">MEDIAS</a></li>
                     </ul>
                 </div>
             </div>
@@ -160,16 +164,14 @@
         <div class="container pt-4">
             <nav aria-label="breadcrumb" class="mb-4">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="../index.html" class="text-decoration-none small">Inicio</a>
-                    </li>
-                    <li class="breadcrumb-item active small" aria-current="page">Medias</li>
+                    <li class="breadcrumb-item"><a href="./catalogo.html" class="text-decoration-none small">Para Ellas</a></li>
+                    <li id="breadcrumb-categoria" class="breadcrumb-item active small" aria-current="page">Cargando...</li>
                 </ol>
             </nav>
 
             <div class="text-center mb-5">
-                <span class="text-uppercase small fw-bold"
-                    style="letter-spacing: 3px; color: var(--color-terracota-pasión);">Esenciales</span>
-                <h1 class="display-4 fw-bold mt-2 section-title">Medias para El y Ella</h1>
+                <span id="subtitulo-catalogo" class="text-uppercase small fw-bold" style="letter-spacing: 3px; color: var(--color-terracota-pasión);">Colección Íntima</span>
+                <h1 id="titulo-catalogo" class="display-4 fw-bold mt-2 section-title">Cargando...</h1>
                 <div style="width: 60px; height: 2px; background: var(--color-pasión); margin: 20px auto;"></div>
             </div>
 
@@ -178,14 +180,11 @@
 
             <div class="row mt-5 pt-4 justify-content-center">
                 <div class="col-lg-5 col-md-8 mb-4">
-                    <div class="card border-0 rounded-0 text-center py-5"
-                        style="background-color: #fff5f5; border: 1px dashed var(--color-terracota-pasión) !important;">
+                    <div class="card border-0 rounded-0 text-center py-5" style="background-color: #fff5f5; border: 1px dashed var(--color-terracota-pasión) !important;">
                         <div class="card-body">
                             <i class="fas fa-box-open fa-2x mb-3 opacity-50" style="color: var(--color-pasión);"></i>
-                            <h4 class="h5 fw-bold text-dark text-uppercase" style="letter-spacing: 2px;">Más modelos en
-                                camino</h4>
-                            <p class="text-muted small mb-0">Estamos renovando nuestro stock de accesorios
-                                continuamente.</p>
+                            <h4 class="h5 fw-bold text-dark text-uppercase" style="letter-spacing: 2px;">¡Próximamente más!</h4>
+                            <p class="text-muted small mb-0">Estamos preparando nuevos ingresos exclusivos para vos.</p>
                         </div>
                     </div>
                 </div>
@@ -193,32 +192,46 @@
         </div>
     </main>
 
-    <div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content rounded-0 border-0 shadow-lg">
                 <div class="modal-header bg-dark text-white border-0 py-3">
-                    <h5 class="modal-title fw-bold"><i class="fas fa-shopping-bag me-2"></i>Tu Carrito</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title" id="cartModalLabel"><i class="fas fa-shopping-bag me-2"></i>Tu Carrito</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4">
+                    <div id="ux-wholesale-progress-container" class="mb-4 p-3 bg-light border-0" style="border-radius: 8px;">
+                        <div class="d-flex justify-content-between mb-1 small">
+                            <span id="ux-progress-text" class="fw-bold text-secondary">Añadiendo prendas...</span>
+                            <span id="ux-progress-percent" class="fw-bold text-dark">0/3</span>
+                        </div>
+                        <div class="progress progress-ux-bar">
+                            <div id="ux-progress-bar-fill" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
                     <div id="cart-items"></div>
-                    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
-                        <h4 class="fw-bold mb-0">Total:</h4>
-                        <h4 class="fw-bold text-danger mb-0" id="cart-total">$0</h4>
+                    
+                    <div class="mt-4 pt-3 border-top">
+                        <div id="ux-savings-container" class="d-flex justify-content-between align-items-center mb-2 d-none">
+                            <span class="text-success small fw-bold"><i class="fas fa-gift me-1"></i> Tu ahorro por compra Mayorista:</span>
+                            <span id="ux-savings-amount" class="text-success fw-bold small">-$0</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="fw-bold mb-0">Total:</h4>
+                            <div id="cart-total" class="fw-bold text-danger mb-0 h4">$0</div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer border-0 p-4 pt-0">
-                    <button type="button" class="btn btn-outline-secondary rounded-0 px-4"
-                        onclick="confirmarVaciarCarrito()">Vaciar Carrito</button>
-                    <button type="button" class="btn btn-danger rounded-0 px-4 fw-bold shadow-sm"
-                        onclick="enviarPedidoWhatsApp()">Finalizar Pedido</button>
+                    <button type="button" class="btn btn-outline-secondary rounded-0 px-4" onclick="confirmarVaciarCarrito()">Vaciar Carrito</button>
+                    <button type="button" class="btn btn-danger rounded-0 px-4 fw-bold shadow-sm" onclick="enviarPedidoWhatsApp()">Finalizar Pedido</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="mayorista-alert" class="position-fixed bottom-0 start-0 m-3 p-3 shadow-lg border-0 d-none"
-        style="z-index: 1060; background-color: #28a745; color: white; min-width: 250px; border-radius: 4px;">
+    <div id="mayorista-alert" class="position-fixed bottom-0 start-0 m-3 p-3 shadow-lg border-0 d-none" style="z-index: 1060; background-color: #28a745; color: white; min-width: 250px; border-radius: 4px;">
         <div class="d-flex align-items-center">
             <i class="fas fa-check-circle me-3 fa-lg"></i>
             <div>
@@ -233,34 +246,30 @@
             <div class="row g-5">
                 <div class="col-md-4 text-center text-md-start">
                     <img src="../images/LOGO.png" alt="Logo" style="height: 60px;" class="mb-4">
-                    <p class="small opacity-50 pe-md-5">Tu lenceria de confianza. Calidad premium y atención
-                        personalizada en cada compra.</p>
+                    <p class="small opacity-50 pe-md-5">Tu lencería de confianza. Calidad premium y atención personalizada en cada compra.</p>
                 </div>
                 <div class="col-6 col-md-4 text-center">
                     <h5 class="text-uppercase small fw-bold mb-4" style="letter-spacing: 2px;">Explorar</h5>
                     <ul class="list-unstyled small opacity-75">
-                        <li class="mb-2"><a href="html/catalogo.html" class="text-white text-decoration-none">Colección
-                                Mujer</a></li>
-                        <li class="mb-2"><a href="html/catalogo-hombres.html"
-                                class="text-white text-decoration-none">Colección Hombre</a></li>
+                        <li class="mb-2"><a href="./productos.html?cat=conjuntos" class="text-white text-decoration-none">Conjuntos</a></li>
+                        <li class="mb-2"><a href="./productos.html?cat=bombachas" class="text-white text-decoration-none">Bombachas</a></li>
+                        <li class="mb-2"><a href="./productos.html?cat=hombres" class="text-white text-decoration-none">Colección Hombre</a></li>
+                        <li class="mb-2"><a href="./productos.html?cat=medias" class="text-white text-decoration-none">Medias</a></li>
                     </ul>
                 </div>
                 <div class="col-6 col-md-4 text-center text-md-end">
                     <h5 class="text-uppercase small fw-bold mb-4" style="letter-spacing: 2px;">Contacto</h5>
                     <div class="d-flex justify-content-center justify-content-md-end gap-3 fs-4 mb-4">
-                        <a href="https://www.instagram.com/mybellaafrodita/" class="text-white" title="Instagram"><i
-                                class="fab fa-instagram"></i></a>
+                        <a href="https://www.instagram.com/mybellaafrodita/" class="text-white" title="Instagram"><i class="fab fa-instagram"></i></a>
                         <a href="#" class="text-white" title="Facebook"><i class="fab fa-facebook-f"></i></a>
                         <a href="#" class="text-white" title="TikTok"><i class="fab fa-tiktok"></i></a>
-                        <a href="https://wa.me/5492646121771" class="text-white" title="WhatsApp"><i
-                                class="fab fa-whatsapp"></i></a>
+                        <a href="https://wa.me/5492646121771" class="text-white" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
                     </div>
                     <p class="small opacity-50">San Juan, Argentina</p>
                 </div>
             </div>
             <hr class="my-5 opacity-10">
-            <p class="text-center mb-0 small opacity-25" style="letter-spacing: 2px;">&copy; 2026 MY BELLA AFRODITA.
-                LENCERIA.</p>
+            <p class="text-center mb-0 small opacity-25" style="letter-spacing: 2px;">&copy; 2026 MY BELLA AFRODITA. LENCERÍA.</p>
         </div>
     </footer>
 
