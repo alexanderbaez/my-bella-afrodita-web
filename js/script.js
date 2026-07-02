@@ -379,18 +379,17 @@ window.renderizarListaCarrito = function () {
     if (carrito.length === 0) {
         container.innerHTML = `
             <div class="text-center py-5">
-                <div class="mb-3" style="font-size: 2.5rem; opacity: 0.2; color: var(--color-pasión);">
+                <div class="mb-3" style="font-size: 2rem; opacity: 0.15; color: var(--color-pasión, #1a1a1a);">
                     <i class="fas fa-shopping-bag"></i>
                 </div>
-                <h6 class="text-muted fw-light">Tu bolsa de compras está vacía</h6>
-                <button class="btn btn-dark btn-sm mt-3 rounded-0 px-4 text-uppercase" 
-                        data-bs-dismiss="modal" style="letter-spacing: 1px; font-size: 0.7rem; background: var(--color-pasión);">
+                <h6 class="text-uppercase fw-normal text-muted" style="font-size: 0.75rem; letter-spacing: 1.5px;">Tu bolsa de compras está vacía</h6>
+                <button class="btn btn-dark btn-sm mt-3 px-4 text-uppercase" 
+                        data-bs-dismiss="modal" style="letter-spacing: 1.2px; font-size: 0.65rem; background: var(--color-pasión, #1a1a1a); border: none; border-radius: 0px;">
                     Explorar Colección
                 </button>
             </div>`;
         if (totalElement) totalElement.innerHTML = '$0';
         
-        // Limpieza de barras UX en estado vacío
         actualizarBarrasProgresoUX(0, 0);
         return;
     }
@@ -398,17 +397,16 @@ window.renderizarListaCarrito = function () {
     const res = calcularTotalCarrito();
     const unidadesTotales = carrito.reduce((acc, i) => acc + i.cantidad, 0);
 
-    // Actualización instantánea de la barra de progreso mayorista en el modal
     actualizarBarrasProgresoUX(unidadesTotales, res.ahorro);
 
     let cartHtml = `
-        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
-            <span class="fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 1px; color: #555;">
-                ${unidadesTotales} ${unidadesTotales === 1 ? 'Prenda' : 'Prendas'} seleccionadas
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-2" style="border-bottom: 1px solid rgba(0,0,0,0.06);">
+            <span class="text-uppercase text-muted" style="font-size: 0.65rem; letter-spacing: 1.2px; font-weight: 500;">
+                ${unidadesTotales} ${unidadesTotales === 1 ? 'Artículo' : 'Artículos'} en tu bolsa
             </span>
-            <button class="btn btn-link text-danger text-decoration-none p-0" 
-                    onclick="confirmarVaciarCarrito()" style="font-size: 0.7rem; letter-spacing: 1px; font-weight: 600;">
-                <i class="fas fa-trash-alt me-1"></i> VACIAR TODO
+            <button class="btn btn-link text-muted text-decoration-none p-0 hover-opacity" 
+                    onclick="confirmarVaciarCarrito()" style="font-size: 0.65rem; letter-spacing: 1.2px; font-weight: 500; text-transform: uppercase;">
+                <i class="fas fa-trash-alt me-1" style="font-size: 0.6rem;"></i> Vaciar Bolsa
             </button>
         </div>
     `;
@@ -418,33 +416,35 @@ window.renderizarListaCarrito = function () {
         let precioAplicado = (unidadesTotales >= 3 && p?.precioMayorista) ? p.precioMayorista : (p?.precioMinorista || item.precio);
 
         cartHtml += `
-            <div class="row align-items-center mb-3 g-2">
-                <div class="col-3">
-                    <img src="${item.imagen}" class="img-fluid" 
-                         style="height: 75px; width: 100%; object-fit: cover; border-radius: 0px; border: 1px solid #eee;">
-                </div>
-                
-                <div class="col-5 ps-2">
-                    <p class="mb-0 fw-bold text-dark" style="font-size: 0.8rem; line-height: 1.2; text-transform: uppercase;">${item.nombre}</p>
-                    <span class="text-muted" style="font-size: 0.75rem;">$${precioAplicado.toLocaleString('es-AR')} c/u</span>
-                    <div class="mt-1">
-                        <button class="btn btn-sm text-muted p-0 border-0 bg-transparent" 
-                                style="font-size: 0.65rem; text-decoration: underline;" 
-                                onclick="eliminarDelCarrito(${index})">
-                            Quitar
-                        </button>
+            <div class="row align-items-center mb-3 g-2 py-2" style="border-bottom: 1px solid rgba(0,0,0,0.03);">
+                <!-- Imagen del Producto -->
+                <div class="col-3 col-sm-2">
+                    <div style="position: relative; padding-top: 120%; width: 100%; overflow: hidden; background: #fafafa; border: 1px solid rgba(0,0,0,0.04);">
+                        <img src="${item.imagen}" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
                     </div>
                 </div>
                 
+                <!-- Detalles del Producto -->
+                <div class="col-5 col-sm-6 ps-2">
+                    <p class="mb-0 text-dark fw-semibold text-uppercase" style="font-size: 0.75rem; line-height: 1.3; letter-spacing: 0.3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.nombre}</p>
+                    <span class="text-muted d-block mt-0.5" style="font-size: 0.7rem; letter-spacing: 0.3px;">$${precioAplicado.toLocaleString('es-AR')} c/u</span>
+                    <button class="btn btn-link text-muted p-0 border-0 bg-transparent mt-1" 
+                            style="font-size: 0.65rem; text-decoration: none; letter-spacing: 0.5px; opacity: 0.7;" 
+                            onclick="eliminarDelCarrito(${index})">
+                        Quitar
+                    </button>
+                </div>
+                
+                <!-- Controles de Cantidad y Subtotal -->
                 <div class="col-4 text-end">
                     <div class="d-flex align-items-center justify-content-end mb-1">
-                        <div class="d-flex align-items-center bg-light border rounded-0 px-1">
-                            <button class="btn btn-sm p-0 border-0" style="width:20px; height:20px; font-size: 0.75rem;" onclick="cambiarCantidad(${index}, -1)">-</button>
-                            <span class="px-2 fw-bold text-dark" style="font-size: 0.75rem; min-width: 20px; text-align: center;">${item.cantidad}</span>
-                            <button class="btn btn-sm p-0 border-0" style="width:20px; height:20px; font-size: 0.75rem;" onclick="cambiarCantidad(${index}, 1)">+</button>
+                        <div class="d-flex align-items-center border px-1" style="border-color: rgba(0,0,0,0.12) !important; background: #fff; height: 26px;">
+                            <button class="btn btn-sm p-0 border-0 text-muted" style="width:22px; font-size: 0.8rem; line-height: 1;" onclick="cambiarCantidad(${index}, -1)">−</button>
+                            <span class="px-2 font-monospace text-dark" style="font-size: 0.7rem; min-width: 20px; text-align: center; font-weight: 500;">${item.cantidad}</span>
+                            <button class="btn btn-sm p-0 border-0 text-muted" style="width:22px; font-size: 0.8rem; line-height: 1 darkened;" onclick="cambiarCantidad(${index}, 1)">+</button>
                         </div>
                     </div>
-                    <div class="fw-bold text-dark" style="font-size: 0.85rem;">
+                    <div class="fw-semibold text-dark mt-1" style="font-size: 0.8rem; letter-spacing: 0.3px;">
                         $${(precioAplicado * item.cantidad).toLocaleString('es-AR')}
                     </div>
                 </div>
@@ -455,35 +455,33 @@ window.renderizarListaCarrito = function () {
 
     if (totalElement) {
         totalElement.innerHTML = `
-            <div class="text-end w-100">
+            <div class="text-end w-100 mt-2">
                 ${res.promos.map(p => `
-                    <div class="text-success fw-bold mb-2 small">
+                    <div class="text-success fw-medium mb-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">
                         <i class="fas fa-check-circle me-1"></i> ${p}
                     </div>`).join('')}
                 
                 ${res.esMayorista && res.ahorro > 0 ? `
-                    <div id="ux-savings-container" class="p-2 mb-2 text-center text-success fw-bold" style="background-color: #eafaf1; border: 1px solid #28a745; font-size: 0.8rem;">
-                        🎉 ¡Te estás ahorrando $${res.ahorro.toLocaleString('es-AR')} por llevar precio Mayorista!
+                    <div id="ux-savings-container" class="p-2.5 mb-3 text-center text-success" style="background-color: rgba(40, 167, 69, 0.05); border: 1px solid rgba(40, 167, 69, 0.15); font-size: 0.7rem; letter-spacing: 0.3px; font-weight: 500;">
+                        🎉 ¡Excelente! Estás ahorrando $${res.ahorro.toLocaleString('es-AR')} con la tarifa Mayorista.
                     </div>` : ''}
 
                 ${!res.esMayorista ? `
-                    <div class="p-2 mb-2 text-center" style="background-color: #fff5f5; border: 1px dashed var(--color-pasión); border-radius: 0px; font-size: 0.7rem; color: #333;">
-                        🎁 Llevá <strong style="color: var(--color-pasión); font-size: 0.8rem;">${3 - unidadesTotales}</strong> prendas más y pagás todo a <b>Precio Mayorista</b>
+                    <div class="p-2.5 mb-3 text-center" style="background-color: rgba(26, 26, 26, 0.02); border: 1px dashed rgba(0,0,0,0.15); font-size: 0.7rem; color: #444; letter-spacing: 0.3px;">
+                        Agregá <strong style="color: var(--color-pasión, #1a1a1a); font-size: 0.75rem;">${3 - unidadesTotales}</strong> ${3 - unidadesTotales === 1 ? 'prenda' : 'prendas'} más para acceder al <span class="fw-bold text-dark">Precio Mayorista</span>
                     </div>` : ''}
                 
-                <div class="d-flex justify-content-between align-items-center mt-3 pt-2">
-                    <span class="text-muted text-uppercase fw-bold" style="font-size: 0.75rem; letter-spacing: 1px;">Total de tu orden</span>
-                    <span class="fw-bold" style="font-size: 1.4rem; color: var(--color-pasión, #1a1a1a);">$${res.total.toLocaleString('es-AR')}</span>
+                <div class="d-flex justify-content-between align-items-center mt-3 pt-2" style="border-top: 1px solid rgba(0,0,0,0.06);">
+                    <span class="text-muted text-uppercase" style="font-size: 0.65rem; letter-spacing: 1.2px; font-weight: 500;">Subtotal estimado</span>
+                    <span class="fw-bold" style="font-size: 1.25rem; color: #000; letter-spacing: 0.5px;">$${res.total.toLocaleString('es-AR')}</span>
                 </div>
                 
-                <!-- Info explicativa sobre el Checkout transparente de WhatsApp para mitigar ansiedad -->
-                <p class="text-muted text-center mt-3 mb-0 p-2 border bg-light" style="font-size: 0.68rem; line-height: 1.3;">
-                    <i class="fas fa-info-circle text-dark me-1"></i> Al hacer clic en enviar, se abrirá tu WhatsApp con el pedido armado. Nos comunicaremos con vos de inmediato para definir el envío y método de pago (Efectivo o Transferencia).
+                <p class="text-muted text-start mt-3 mb-0 p-2.5" style="font-size: 0.62rem; line-height: 1.4; background: #fafafa; border: 1px solid rgba(0,0,0,0.04); color: #777 !important;">
+                    <i class="fas fa-info-circle text-dark me-1" style="opacity: 0.6;"></i> El pedido se procesará mediante nuestra plataforma de asistencia en WhatsApp. Coordinaremos los métodos de entrega y opciones de transferencia de forma personalizada.
                 </p>
             </div>`;
     }
 }
-
 // --- ACTUALIZADOR DINÁMICO DE BARRAS DE PROGRESO DE BOOTSTRAP (UX ACCIÓN DE VENTA) ---
 function actualizarBarrasProgresoUX(unidades, ahorro) {
     const progressBarFill = document.getElementById('ux-progress-bar-fill');
