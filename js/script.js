@@ -202,7 +202,8 @@ function dibujarProductos(lista) {
 
                 <div class="card-body d-flex flex-column p-2 text-center">
                     <h5 class="text-uppercase mb-1" style="font-family: 'Playfair Display', serif; font-size: 0.85rem; letter-spacing: 0.5px; color: var(--color-pasión, #1a1a1a); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${p.nombre}</h5>
-                    <p class="text-muted small mb-2 flex-grow-1" style="font-size: 0.75rem; min-height: 34px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${p.descripcion}</p>
+                    
+                    <p class="text-muted small mb-2 flex-grow-1" style="font-size: 0.75rem;">${p.descripcion}</p>
                     
                     ${htmlPrecios}
 

@@ -648,5 +648,45 @@ const PRODUCTOS = [
         categoria: "medias",
         //stock: false,
         descripcion: "Diseño urbano, suaves y cómodas para el uso diario."
-    }
+    },
+
+    {
+        id: "acc-med-12",
+        nombre: "Medias Termicas x3",
+        precioMinorista: 6000,
+        precioMayorista: null,
+        imagenes: [
+            "../images/Medias Termicas1.jpeg",
+            "../images/Medias Termicas2.jpeg"
+        ],
+        categoria: "medias",
+        //stock: false,
+        descripcion: "El aliado definitivo contra el frío! Diseñadas especialmente para mantener tus pies abrigados"
+    },
+    {
+        id: "acc-med-13",
+        nombre: "Medias de Vestir x3",
+        precioMinorista: 4000,
+        precioMayorista: null,
+        imagenes: [
+            "../images/Medias de Vestir x31.jpeg",
+            "../images/Medias de Vestir x32.jpeg"
+        ],
+        categoria: "medias",
+        //stock: false,
+        descripcion: "Cómodas, elegantes y con el calce perfecto para lucir impecable en cualquier ocasión formal."
+    },
+    {
+        id: "acc-med-14",
+        nombre: "medias térmicas x2",
+        precioMinorista: 2500,
+        precioMayorista: null,
+        imagenes: [
+            "../images/medias térmicas x21.jpeg",
+            "../images/medias térmicas x22.jpeg"
+        ],
+        categoria: "medias",
+        //stock: false,
+        descripcion: "El secreto de su calidez  está en su interior: una capa de piel  ultra suave que abraza tus pies con suavidad."
+    },
 ];
