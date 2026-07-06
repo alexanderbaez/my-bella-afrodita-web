@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (breadcrumbActive) breadcrumbActive.innerText = "Conjuntos";
                 document.title = "Conjuntos - My Bella Afrodita";
             } else if (categoriaBuscada === 'hombres') {
-                if (tituloSeccion) tituloSeccion.innerText = "Boxers, Slips y Medias";
+                if (tituloSeccion) tituloSeccion.innerText = "Boxers y Slips";
                 if (txtSubtitulo) txtSubtitulo.innerText = "Colección Essential";
                 if (breadcrumbActive) breadcrumbActive.innerText = "Para Ellos";
                 document.title = "Hombres - My Bella Afrodita";
@@ -233,7 +233,7 @@ function dibujarProductos(lista) {
 
         divCol.querySelector('.btn-whatsapp').onclick = (e) => {
             e.stopPropagation();
-            const msg = `¡Mira este modelo en My Bella Afrodita! 😍\n*${p.nombre}*\nPrecio: $${p.precioMinorista.toLocaleString('es-AR')}\nLink: ${window.location.href}?id=${p.id}`;
+            const msg = `¡Mira este modelo en My Bella Afrodita!\n*${p.nombre}*\nPrecio: $${p.precioMinorista.toLocaleString('es-AR')}\nLink: ${window.location.href}?id=${p.id}`;
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         };
 
@@ -463,7 +463,7 @@ window.renderizarListaCarrito = function () {
                 
                 ${res.esMayorista && res.ahorro > 0 ? `
                     <div id="ux-savings-container" class="p-2.5 mb-3 text-center text-success" style="background-color: rgba(40, 167, 69, 0.05); border: 1px solid rgba(40, 167, 69, 0.15); font-size: 0.7rem; letter-spacing: 0.3px; font-weight: 500;">
-                        🎉 ¡Excelente! Estás ahorrando $${res.ahorro.toLocaleString('es-AR')} con la tarifa Mayorista.
+                        ¡Excelente! Estás ahorrando $${res.ahorro.toLocaleString('es-AR')} con la tarifa Mayorista.
                     </div>` : ''}
 
                 ${!res.esMayorista ? `
@@ -662,11 +662,11 @@ function enviarPedidoWhatsApp() {
 
     // Ahora SweetAlert se abre en una pantalla limpia y recupera el control absoluto
     Swal.fire({
-        title: '¿A nombre de quién dejamos el pedido? ✨',
+        title: '¿A nombre de quién dejamos el pedido?',
         input: 'text',
         inputPlaceholder: 'Escribí tu nombre y apellido...',
         showCancelButton: true,
-        confirmButtonText: 'Enviar por WhatsApp 🚀',
+        confirmButtonText: 'Enviar por WhatsApp',
         cancelButtonText: 'Cancelar',
         confirmButtonColor: '#28a745',
         cancelButtonColor: '#777',
@@ -678,7 +678,7 @@ function enviarPedidoWhatsApp() {
         },
         inputValidator: (value) => {
             if (!value) {
-                return '¡Necesitamos tu nombre para procesar la orden! 😊'
+                return '¡Necesitamos tu nombre para procesar la orden!'
             }
         }
     }).then((result) => {
@@ -697,7 +697,7 @@ function enviarPedidoWhatsApp() {
             const unidadesTotales = carrito.reduce((acc, item) => acc + item.cantidad, 0);
             const cumpleCriterioGral = unidadesTotales >= 3;
 
-            let mensaje = "✨ *PEDIDO: MY BELLA AFRODITA* ✨\n";
+            let mensaje = "*PEDIDO: MY BELLA AFRODITA*\n";
             mensaje += "------------------------------------------\n\n";
             
             mensaje += `👤 *Cliente:* ${nombreCliente}\n\n`;
@@ -707,18 +707,18 @@ function enviarPedidoWhatsApp() {
                 let precioAplicado = (cumpleCriterioGral && p?.precioMayorista) ? p.precioMayorista : (p?.precioMinorista || item.precio);
                 let etiqueta = (cumpleCriterioGral && p?.precioMayorista) ? " (Mayorista)" : "";
 
-                mensaje += `🛍️ *${item.nombre.toUpperCase()}*\n`;
+                mensaje += `*${item.nombre.toUpperCase()}*\n`;
                 mensaje += `   Cant: ${item.cantidad} x $${precioAplicado.toLocaleString('es-AR')}${etiqueta}\n`;
                 mensaje += `   Subtotal: $${(precioAplicado * item.cantidad).toLocaleString('es-AR')}\n\n`;
             });
 
             mensaje += `------------------------------------------\n`;
-            mensaje += `💰 *TOTAL ESTIMADO: $${total.toLocaleString('es-AR')}*\n`;
+            mensaje += ` *TOTAL ESTIMADO: $${total.toLocaleString('es-AR')}*\n`;
             
             if (esMayorista) {
-                mensaje += `✅ _Beneficio mayorista aplicado por llevar 3 o más prendas._\n`;
+                mensaje += ` _Beneficio mayorista aplicado por llevar 3 o más prendas._\n`;
                 if (ahorro > 0) {
-                    mensaje += `💵 _¡Ahorro total de esta compra: $${ahorro.toLocaleString('es-AR')}!_\n`;
+                    mensaje += ` _¡Ahorro total de esta compra: $${ahorro.toLocaleString('es-AR')}!_\n`;
                 }
             }
             

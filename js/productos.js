@@ -81,7 +81,7 @@ const PRODUCTOS = [
             "../images/Less Frente.png", 
             "../images/Less Dorsal.png"],
         categoria: "bombachas",
-        //stock: false,
+        stock: false,
         etiqueta: "⚡ POCO STOCK", // 🚀 Estrategia: Apurar la compra en talles específicos
         descripcion: "Con su tejido de algodon otorgan un toque de sensualidad y comodidad."
     },
@@ -207,6 +207,37 @@ const PRODUCTOS = [
         descripcion: "Confeccionadas en morley, brinda confort, Disponibles en colores tendencia"
     },
 
+    {
+        id: "prod-b13",
+        nombre: "Boxers De Dama",
+        precioMinorista: 4000,
+        precioMayorista: 3000,
+        imagenes: [
+            "../images/BoxersDeDama1.jpg",
+            "../images/BoxerDeDama2.jpg",
+            "../images/BoxersDeDama3.jpg",
+            "../images/BoxersDeDama4.jpg",
+        ],
+        categoria: "bombachas",
+        //stock: false,
+        descripcion: "Boxers de dama hechos de suave algodón con detalles de puntilla, ideales para el uso diario."
+    },
+    {
+        id: "prod-b14",
+        nombre: "Less Taller Especiales",
+        precioMinorista: 4500,
+        precioMayorista: 3000,
+        imagenes: [
+            "../images/Less Taller Especiales1.jpg",
+            "../images/Less Taller Especiales2.jpg",
+            "../images/Less Taller Especiales3.jpg",
+            "../images/Less Taller Especiales4.jpg",
+        ],
+        categoria: "bombachas",
+        //stock: false,
+        descripcion: "Hechos de suave algodón con detalles de puntilla, ideales para el uso diario"
+    },
+
     // --- CONJUNTOS ---
     {
         id: "conj-01",
@@ -252,7 +283,7 @@ const PRODUCTOS = [
             "../images/Conjunto D_lirio top + calza DORSAL 2.png"
         ],
         categoria: "conjuntos",
-        //stock: false,
+        stock: false,
         descripcion: "Diseño del top de morley con tazas desmontables y calza con frunce, faja y levanta gluteos."
     },
     {
@@ -268,7 +299,7 @@ const PRODUCTOS = [
             "../images/conjunto parsefone DORSAL 2.png"
         ],
         categoria: "conjuntos",
-        //stock: false,
+        stock: false,
         descripcion: "La base perfecta. Cómodo morley y puntilla, ideal para usar bajo cualquier prenda."
     },
     {
@@ -278,7 +309,7 @@ const PRODUCTOS = [
         precioMayorista: 8000,
         imagenes: ["../images/Conjunto Roma FRENTE.png", "../images/Conjunto roma DORSAL.png"],
         categoria: "conjuntos",
-        //stock: false,
+        stock: false,
         descripcion: "Copas triangulares de algodón con delicados detalle de encaje. Ideal para la mujer romantica."
     },
     {
@@ -410,8 +441,36 @@ const PRODUCTOS = [
             "../images/Sports-Bell4.png",
         ],
         categoria: "conjuntos",
-        //stock: false,
+        stock: false,
         descripcion: "Corpiño importado armado sin aro y con 4 broches para mayor ajuste y comodidad."
+    },
+    {
+        id: "conj-014",
+        nombre: "Top Segunda Piel",
+        precioMinorista: 6000,
+        precioMayorista: 4500,
+        imagenes: [
+            "../images/Top Segunda Piel1.png",
+            "../images/Top Segunda Piel2.png",
+        ],
+        categoria: "conjuntos",
+        //stock: false,
+        descripcion: "Su tela premium se adapta a cada uno de tus movimientos sin marcar ni lastimar."
+    },
+
+    {
+        id: "conj-015",
+        nombre: "Top Deportivo Curvas Reales",
+        precioMinorista: 7000,
+        precioMayorista: 5500,
+        imagenes: [
+            "../images/Top Deportivo Curvas Reales1.jpg",
+            "../images/Top Deportivo Curvas Reales2.jpg",
+            "../images/Top Deportivo Curvas Reales3.jpg",
+        ],
+        categoria: "conjuntos",
+        //stock: false,
+        descripcion: "¡Tu nuevo aliado diario! Un top pensado para darte la máxima libertad y un calce perfecto!"
     },
 
     // --- PRODUCTOS DE HOMBRE ---
@@ -422,9 +481,9 @@ const PRODUCTOS = [
         precioMayorista: 3000,
         imagenes: [
             "../images/Boxer uomo1.jpg",
-            "../images/Boxer uomo2.jpg",
-            "../images/Boxer-uomo1.png",
-            "../images/Boxer-uomo2.png",
+            "../images/Boxer uomo2.png",
+            "../images/Boxer uomo3.png",
+            "../images/Boxer uomo4.png",
         ],
         categoria: "hombres",
         //stock: false,
