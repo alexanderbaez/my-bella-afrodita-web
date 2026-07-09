@@ -1,29 +1,51 @@
-/* --- ESTILOS DE TARJETAS DE PRODUCTO --- */
+/* --- ESTILOS DE TARJETAS DE PRODUCTO CORREGIDOS --- */
 
 .products-listing {
     background-color: #ffffff; 
 }
 
+/* Forzamos a que la tarjeta de producto no tenga bordes ni rellenos extra */
 .product-card {
-    border: none;
-    border-radius: 10px;
-    transition: transform 0.3s, box-shadow 0.3s;
-    overflow: hidden;
-    background-color: var(--color-rosa-suave); /* Fondo de marca */
-}
-.product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(140, 0, 44, 0.2); 
+    border: none !important;
+    border-radius: 0px !important;
+    box-shadow: none !important;
+    background-color: #ffffff !important; /* Eliminamos el fondo rosa suave */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden !important;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
-.product-img-top {
-    height: 350px;
-    object-fit: cover;
-    border-bottom: 3px solid var(--color-terracota-pasión); /* Línea de color de marca */
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important; 
+}
+
+/* Aseguramos que el contenedor de las imágenes ocupe el ancho total real sin padding */
+.card-img-container {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    position: relative;
+    background: #fafafa;
+}
+
+.card-img-container img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+    transition: transform 0.8s ease;
+}
+
+.product-card:hover .card-img-container img {
+    transform: scale(1.05);
 }
 
 .product-card .card-title {
-    color: var(--color-pasión); /* Color Borgoña */
+    color: var(--color-pasión); 
     font-size: 1.6rem;
     font-weight: 700;
     margin-bottom: 10px;
@@ -32,19 +54,9 @@
 .product-card .card-text {
     font-size: 0.95rem;
     line-height: 1.4;
-    height: 40px; /* Altura fija para la descripción */
+    height: 40px; 
     overflow: hidden;
     text-align: center;
-}
-
-/* Estilo del Dropdown de Talles */
-.product-card .form-select {
-    border-color: var(--color-terracota-pasión);
-    font-family: 'Roboto', sans-serif;
-}
-.product-card .form-select:focus {
-    box-shadow: 0 0 0 0.25rem rgba(179, 26, 74, 0.25); 
-    border-color: var(--color-terracota-pasión);
 }
 
 /* Estilo del precio */
@@ -52,12 +64,4 @@
     font-family: 'Playfair Display', serif;
     font-weight: 900;
     color: var(--color-oscuro-elegante);
-}
-
-/* Ajustes para el carrusel de Producto */
-.product-carousel .carousel-control-prev-icon,
-.product-carousel .carousel-control-next-icon {
-    background-color: rgba(140, 0, 44, 0.7); 
-    border-radius: 50%;
-    padding: 15px;
 }

@@ -131,7 +131,8 @@ function dibujarProductos(lista) {
         const tallesProducto = p.talles ? p.talles : [];
         const divCol = document.createElement("div");
         
-        divCol.className = "col-6 col-md-4 col-lg-3 mb-3 d-flex align-items-stretch product-item-card px-2"; 
+        // Espaciado exterior de la grilla en móviles
+        divCol.className = "col-6 col-md-4 col-lg-3 mb-3 d-flex align-items-stretch product-item-card px-1 px-sm-2"; 
         divCol.setAttribute('data-talles', tallesProducto.join(','));
 
         if (talleFiltroActivo !== 'TODOS' && !tallesProducto.includes(talleFiltroActivo)) {
@@ -139,41 +140,38 @@ function dibujarProductos(lista) {
         }
 
         const htmlPrecios = p.precioMayorista ? `
-            <div class="price-container mb-3 p-2 w-100" style="background-color: var(--brand-nude, #fdf4f2); border-radius: 8px;">
+            <div class="price-container mb-2 p-1.5 w-100" style="background-color: var(--brand-nude, #fdf4f2); border-radius: 6px;">
                 <div class="row g-0 align-items-center text-center">
                     <div class="col-6 border-end" style="border-color: rgba(0,0,0,0.1) !important;">
-                        <small class="text-muted text-uppercase d-block" style="font-size: 0.55rem; letter-spacing: 0.5px;">Minorista</small>
-                        <span class="fw-bold text-dark" style="font-size: 0.85rem;">$${p.precioMinorista.toLocaleString('es-AR')}</span>
+                        <small class="text-muted text-uppercase d-block" style="font-size: 0.5rem; letter-spacing: 0.3px;">Min.</small>
+                        <span class="fw-bold text-dark" style="font-size: 0.75rem;">$${p.precioMinorista.toLocaleString('es-AR')}</span>
                     </div>
                     <div class="col-6">
-                        <small class="text-uppercase d-block fw-bold" style="font-size: 0.55rem; color: var(--brand-accent, #d4af37); letter-spacing: 0.5px;">Mayorista (3+)</small>
-                        <span class="fw-bold" style="color: var(--brand-primary, #b33939); font-size: 0.85rem;">$${p.precioMayorista.toLocaleString('es-AR')}</span>
+                        <small class="text-uppercase d-block fw-bold" style="font-size: 0.5rem; color: var(--brand-accent, #d4af37); letter-spacing: 0.3px;">May. (3+)</small>
+                        <span class="fw-bold" style="color: var(--brand-primary, #b33939); font-size: 0.75rem;">$${p.precioMayorista.toLocaleString('es-AR')}</span>
                     </div>
                 </div>
             </div>` : `
-            <div class="price-container mb-3 p-2 text-center w-100">
-                <small class="text-muted text-uppercase d-block" style="font-size: 0.55rem; letter-spacing: 0.5px;">Precio Único</small>
-                <span class="fw-bold text-dark" style="font-size: 1.1rem;">$${p.precioMinorista.toLocaleString('es-AR')}</span>
+            <div class="price-container mb-2 p-1.5 text-center w-100">
+                <small class="text-muted text-uppercase d-block" style="font-size: 0.5rem; letter-spacing: 0.5px;">Precio Único</small>
+                <span class="fw-bold text-dark" style="font-size: 0.95rem;">$${p.precioMinorista.toLocaleString('es-AR')}</span>
             </div>`;
 
-        // ✨ REDISEÑO BOUTIQUE: Talles con un look minimalista, fondo blanco translúcido y bordes imperceptibles
         const htmlTallesBadge = tallesProducto.length > 0 ? `
-            <div class="position-absolute start-0 top-0 m-2 d-flex flex-wrap gap-1" style="z-index: 4;">
-                ${tallesProducto.map(t => `<span class="badge bg-white text-dark border font-monospace px-1.5 py-1" style="font-size: 0.55rem; opacity: 0.85; border-color: rgba(0,0,0,0.08) !important; border-radius: 0px; font-weight: 500; letter-spacing: 0.5px;">T.${t}</span>`).join('')}
+            <div class="position-absolute start-0 top-0 m-1.5" style="z-index: 4;">
+                <div class="d-flex flex-wrap gap-1">
+                    ${tallesProducto.map(t => `<span class="badge bg-white text-dark border font-monospace px-1 py-0.5" style="font-size: 0.5rem; opacity: 0.9; border-color: rgba(0,0,0,0.08) !important; border-radius: 3px; font-weight: 500;">T.${t}</span>`).join('')}
+                </div>
             </div>` : '';
 
-        // ✨ REDISEÑO BOUTIQUE: Etiquetas de urgencia premium (Estilo Zara / Lujo Minimalista)
         let htmlUrgenciaBadge = '';
         if (p.etiqueta) {
             const esStock = p.etiqueta.toUpperCase().includes('STOCK') || p.etiqueta.toUpperCase().includes('ÚLTIM') || p.etiqueta.toUpperCase().includes('VUELA');
-            
-            // Jugamos con colores de alta costura: Negro mate para escasez, Oro viejo refinado para tendencias
             const colorFondo = esStock ? '#000000' : '#c5a059'; 
             
             htmlUrgenciaBadge = `
-                <div class="position-absolute end-0 top-0 m-2" style="z-index: 4;">
-                    <span class="badge text-white px-2 py-1" 
-                          style="background-color: ${colorFondo}; font-size: 0.55rem; font-weight: 600; letter-spacing: 1.2px; border-radius: 0px; text-transform: uppercase; font-family: 'Montserrat', sans-serif; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <div class="position-absolute end-0 top-0 m-1.5" style="z-index: 4;">
+                    <span class="badge text-white px-1.5 py-0.5" style="background-color: ${colorFondo}; font-size: 0.5rem; font-weight: 600; letter-spacing: 0.5px; border-radius: 3px; text-transform: uppercase; font-family: 'Montserrat', sans-serif;">
                         ${p.etiqueta}
                     </span>
                 </div>`;
@@ -181,49 +179,55 @@ function dibujarProductos(lista) {
 
         divCol.innerHTML = `
             <div class="product-card shadow-sm w-100 d-flex flex-column position-relative" 
-                 style="background: #fff; border-radius: 0px; overflow: hidden; border: 1px solid rgba(0,0,0,0.05); transition: transform 0.2s ease;">
+                 style="background: #fff; border-radius: 8px !important; overflow: hidden !important; border: 1px solid rgba(0,0,0,0.04); padding: 0 !important;">
                 
                 ${htmlTallesBadge}
                 ${htmlUrgenciaBadge} 
                 
-                <div class="card-img-container position-relative" style="height: calc(240px + (160 * (100vw - 320px) / 880)); max-height: 400px; overflow: hidden; background: #fafafa;">
-                    <div class="product-carousel-track d-flex h-100" style="overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch;">
+                <!-- FOTO DE BORDE A BORDE ESTRICTO: Sin márgenes ni paddings -->
+                <div class="card-img-container position-relative w-100" 
+                     style="height: calc(180px + (170 * (100vw - 320px) / 880)); min-height: 190px; max-height: 380px; overflow: hidden; background: #fafafa; margin: 0 !important; padding: 0 !important;">
+                    <div class="product-carousel-track d-flex h-100" style="width: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; margin: 0; padding: 0;">
                         ${p.imagenes.map((img, i) => `
-                            <div class="carousel-slide h-100" style="flex: 0 0 100%; scroll-snap-align: start;">
+                            <div class="carousel-slide h-100" style="flex: 0 0 100%; width: 100%; scroll-snap-align: start; margin: 0; padding: 0;">
                                 <img src="${img}" class="w-100 h-100 object-fit-cover btn-zoom" 
-                                     data-index="${i}" style="cursor: zoom-in;" alt="${p.nombre}">
+                                     data-index="${i}" style="cursor: zoom-in; display: block; width: 100% !important; height: 100% !important; margin: 0 !important; padding: 0 !important;" alt="${p.nombre}">
                             </div>
                         `).join('')}
                     </div>
-                    <div class="indicators position-absolute bottom-0 start-50 translate-middle-x mb-2 d-flex gap-1" style="z-index: 5;">
-                        ${p.imagenes.map((_, i) => `<div class="dot-ui" style="width: 5px; height: 5px; border-radius: 50%; background: #fff; opacity: ${i === 0 ? '1' : '0.4'}; transition: 0.3s;"></div>`).join('')}
+                    <div class="indicators position-absolute bottom-0 start-50 translate-middle-x mb-1.5 d-flex gap-1" style="z-index: 5;">
+                        ${p.imagenes.map((_, i) => `<div class="dot-ui" style="width: 4px; height: 4px; border-radius: 50%; background: #fff; opacity: ${i === 0 ? '1' : '0.4'}; transition: 0.3s;"></div>`).join('')}
                     </div>
                 </div>
 
-                <div class="card-body d-flex flex-column p-2 text-center">
-                    <h5 class="text-uppercase mb-1" style="font-family: 'Playfair Display', serif; font-size: 0.85rem; letter-spacing: 0.5px; color: var(--color-pasión, #1a1a1a); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${p.nombre}</h5>
+                <!-- CONTENEDOR DE TEXTOS: El padding solo se aplica acá abajo -->
+                <div class="d-flex flex-column p-2 text-center flex-grow-1 justify-content-between" style="background: #ffffff; width: 100%;">
+                    <div>
+                        <h5 class="text-uppercase mb-1" style="font-family: 'Playfair Display', serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.3px; color: var(--color-pasión, #1a1a1a); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${p.nombre}</h5>
+                        <p class="text-muted small mb-2" style="font-size: 0.65rem; line-height: 1.2; height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">${p.descripcion || ''}</p>
+                    </div>
                     
-                    <p class="text-muted small mb-2 flex-grow-1" style="font-size: 0.75rem;">${p.descripcion}</p>
-                    
-                    ${htmlPrecios}
+                    <div>
+                        ${htmlPrecios}
 
-                    <div class="actions mt-auto w-100">
-                        <button class="btn btn-whatsapp w-100 mb-1 border-0 py-1.5" style="font-size: 0.6rem; background: #f8f9fa; color: #555; border-radius: 0px; letter-spacing: 0.5px;">
-                            <i class="fab fa-whatsapp me-1 text-success"></i> COMPARTIR
-                        </button>
-                        <button class="btn w-100 py-1.5 fw-bold text-uppercase" 
-                                style="background: ${tieneStock ? 'var(--color-pasión, #1a1a1a)' : '#ccc'}; color: #fff; border: none; border-radius: 0px; font-size: 0.65rem; letter-spacing: 0.5px;" 
-                                ${!tieneStock ? 'disabled' : ''}
-                                onclick="agregarAlCarrito(event, '${p.id}')">
-                            <i class="fas ${tieneStock ? 'fa-shopping-bag' : 'fa-times'} me-1"></i> 
-                            ${tieneStock ? 'Añadir' : 'Sin Stock'}
-                        </button>
+                        <div class="actions w-100">
+                            <button class="btn btn-whatsapp w-100 mb-1 border-0 py-1" style="font-size: 0.55rem; background: #f8f9fa; color: #555; border-radius: 4px; letter-spacing: 0.3px;">
+                                <i class="fab fa-whatsapp me-1 text-success"></i> COMPARTIR
+                            </button>
+                            <button class="btn w-100 py-1 fw-bold text-uppercase" 
+                                    style="background: ${tieneStock ? 'var(--color-pasión, #1a1a1a)' : '#ccc'}; color: #fff; border: none; border-radius: 4px; font-size: 0.6rem; letter-spacing: 0.3px;" 
+                                    ${!tieneStock ? 'disabled' : ''}
+                                    onclick="agregarAlCarrito(event, '${p.id}')">
+                                <i class="fas ${tieneStock ? 'fa-shopping-bag' : 'fa-times'} me-1" style="font-size: 0.55rem;"></i> 
+                                ${tieneStock ? 'Añadir' : 'Sin Stock'}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>`;
 
         const track = divCol.querySelector('.product-carousel-track');
-        const dots = divCol.querySelector('.dot-ui');
+        const dots = divCol.querySelectorAll('.dot-ui');
         
         if (track && dots.length > 0) {
             track.addEventListener('scroll', () => {
