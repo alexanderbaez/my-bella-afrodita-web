@@ -37,7 +37,7 @@ const PRODUCTOS = [
             "../images/Culote encaje FRENTE.png",
             "../images/Culote encaje DORSAL.png"],
         categoria: "bombachas",
-        //stock: false,
+        stock: false,
         etiqueta: "🔥 MÁS VENDIDO", // 🚀 Estrategia: Destacar el encaje sensual
         descripcion: "Sin costuras, no se marca. Perfecto para sentirte comoda y sensual."
     },
@@ -52,7 +52,7 @@ const PRODUCTOS = [
             "../images/Less algodon FRENTE.png",
             "../images/Less algodon DORSAL.png"],
         categoria: "bombachas",
-        //stock: false,
+        stock: false,
         descripcion: "Tejido de algodón con terminaciones ultra-comoda y estampada en corazones."
     },
     {
@@ -67,7 +67,7 @@ const PRODUCTOS = [
             "../images/Less algodon y puntilla FRENTE.png",
             "../images/Less algodon puntilla DORSAL.png"],
         categoria: "bombachas",
-        //stock: false,
+        stock: false,
         descripcion: "Máxima cobertura frontal con un toque de sensualidad y cómodidad."
     },
     {
@@ -94,7 +94,7 @@ const PRODUCTOS = [
             "../images/Less regulable FRENTE.png"
         ],
         categoria: "bombachas",
-        //stock: false,
+        stock: false,
         descripcion: "Confeccionadas en algodon con encaje ofrecen un toque sexy y comodo."
     },
     {
@@ -165,7 +165,7 @@ const PRODUCTOS = [
             "../images/boxer-dama-con-faja2.png",
         ],
         categoria: "bombachas",
-        //stock: false,
+        stock: false,
         descripcion: "Confeccionadas en algodon con encaje ofrecen un toque sexy y comodo."
     },
     {
@@ -441,7 +441,7 @@ const PRODUCTOS = [
             "../images/Sports-Bell4.png",
         ],
         categoria: "conjuntos",
-        stock: false,
+        //stock: false,
         descripcion: "Corpiño importado armado sin aro y con 4 broches para mayor ajuste y comodidad."
     },
     {
@@ -548,7 +548,7 @@ const PRODUCTOS = [
         precioMayorista: null,
         imagenes: ["../images/Medias-Alo-dama.jpg"],
         categoria: "medias",
-        //stock: false,
+        stock: false,
         descripcion: "Pack de 3 pares de medias con orejitas para niños"
     },
     {
