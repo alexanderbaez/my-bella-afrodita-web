@@ -58,8 +58,8 @@ const PRODUCTOS = [
     {
         id: "prod-b5-puntilla",
         nombre: "Less de Algodón y Puntilla",
-        precioMinorista: 1670,
-        precioMayorista: 1250,
+        precioMinorista: 2000,
+        precioMayorista: 1500,
         imagenes: [
             "../images/Less de Algodón y Puntilla0.1.jpg",
             "../images/Less de Algodón y Puntilla1.jpg",
@@ -67,7 +67,7 @@ const PRODUCTOS = [
             "../images/Less algodon y puntilla FRENTE.png",
             "../images/Less algodon puntilla DORSAL.png"],
         categoria: "bombachas",
-        stock: false,
+        //stock: false,
         descripcion: "Máxima cobertura frontal con un toque de sensualidad y cómodidad."
     },
     {
@@ -136,8 +136,8 @@ const PRODUCTOS = [
     {
         id: "prod-b8",
         nombre: "Vedetina",
-        precioMinorista: 1740,
-        precioMayorista: 1460,
+        precioMinorista: 2300,
+        precioMayorista: 1700,
         imagenes: [
             "../images/Vedetina1.jpg",
             "../images/vedetina1.png",
