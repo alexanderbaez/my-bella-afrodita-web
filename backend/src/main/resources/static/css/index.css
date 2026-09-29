@@ -1086,4 +1086,86 @@ h1, h2, h3, h4, h5 {
 
 .gallery-preview-item .btn-remove-thumb:hover {
     background: #d33;
+}
+
+/* ==========================================================================
+   BARRA DE BÚSQUEDA Y ORDENAMIENTO BOUTIQUE (CATÁLOGO PÚBLICO)
+   ========================================================================== */
+.catalogo-toolbar {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(183, 148, 201, 0.3);
+    border-radius: 8px;
+    padding: 12px 18px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.search-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: 14px;
+    color: var(--color-pasión, #8e62a3);
+    font-size: 0.9rem;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.search-control-boutique {
+    padding-left: 38px !important;
+    padding-right: 32px !important;
+    height: 40px;
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    font-size: 0.85rem;
+    background-color: #ffffff;
+    transition: all 0.2s ease;
+}
+
+.search-control-boutique:focus {
+    border-color: var(--color-pasión, #8e62a3);
+    box-shadow: 0 0 0 3px rgba(183, 148, 201, 0.25);
+    outline: none;
+}
+
+.btn-clear-search {
+    position: absolute;
+    right: 10px;
+    background: transparent;
+    border: none;
+    color: #888;
+    font-size: 1.15rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px;
+    z-index: 3;
+    transition: color 0.15s ease;
+}
+.btn-clear-search:hover {
+    color: #1a1a1a;
+}
+
+.select-order-boutique {
+    height: 40px;
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #333;
+    padding-left: 12px;
+    padding-right: 32px;
+    background-color: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.select-order-boutique:focus {
+    border-color: var(--color-pasión, #8e62a3);
+    box-shadow: 0 0 0 3px rgba(183, 148, 201, 0.25);
+    outline: none;
 }

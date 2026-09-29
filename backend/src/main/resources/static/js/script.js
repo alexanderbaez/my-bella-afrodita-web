@@ -20,6 +20,8 @@ window.PRODUCTOS = PRODUCTOS;
 let carrito = JSON.parse(localStorage.getItem('myBellaCarrito')) || [];
 let talleFiltroActivo = 'TODOS';
 let categoriaActiva = null;
+let busquedaCatalogo = '';
+let ordenCatalogo = 'destacados';
 const talleSeleccionadoPorProducto = {};
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -93,13 +95,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             // 4. FILTRAMOS PRODUCTOS Y TALLES CONTEXTUALES
-            const filtrados = PRODUCTOS.filter(p => p.categoria && p.categoria.toLowerCase() === catNorm);
             actualizarFiltrosTallesContextuales(catNorm);
-            dibujarProductos(filtrados);
+            aplicarFiltrosYOrdenCatalogo();
         } else {
             if (tituloSeccion) tituloSeccion.innerText = "Nuestro Catálogo Completo";
             actualizarFiltrosTallesContextuales(null);
-            dibujarProductos(PRODUCTOS);
+            aplicarFiltrosYOrdenCatalogo();
         }
     }
 
@@ -185,17 +186,81 @@ window.filtrarPorTalle = function(talleSeleccionado) {
         }
     });
 
-    // Obtener los productos correspondientes a la categoría
-    const base = categoriaActiva 
-        ? PRODUCTOS.filter(p => p.categoria && p.categoria.toLowerCase() === categoriaActiva.toLowerCase())
-        : PRODUCTOS;
-
-    const filtrados = (talleSeleccionado === 'TODOS')
-        ? base
-        : base.filter(p => p.talles && p.talles.includes(talleSeleccionado));
-
-    dibujarProductos(filtrados);
+    aplicarFiltrosYOrdenCatalogo();
 };
+
+// --- CONTROL DE BÚSQUEDA Y ORDENAMIENTO EN VIVO ---
+window.manejarBusquedaCatalogo = function (valor) {
+    busquedaCatalogo = (valor || '').trim().toLowerCase();
+    const btnLimpiar = document.getElementById('btn-limpiar-busqueda');
+    if (btnLimpiar) {
+        if (busquedaCatalogo.length > 0) {
+            btnLimpiar.classList.remove('d-none');
+        } else {
+            btnLimpiar.classList.add('d-none');
+        }
+    }
+    aplicarFiltrosYOrdenCatalogo();
+};
+
+window.limpiarBusquedaCatalogo = function () {
+    const input = document.getElementById('buscador-catalogo');
+    if (input) input.value = '';
+    busquedaCatalogo = '';
+    const btnLimpiar = document.getElementById('btn-limpiar-busqueda');
+    if (btnLimpiar) btnLimpiar.classList.add('d-none');
+    aplicarFiltrosYOrdenCatalogo();
+};
+
+window.manejarOrdenamientoCatalogo = function (criterio) {
+    ordenCatalogo = criterio;
+    aplicarFiltrosYOrdenCatalogo();
+};
+
+function aplicarFiltrosYOrdenCatalogo() {
+    // 1. Filtrar por categoría activa (si existe en URL)
+    let resultado = categoriaActiva 
+        ? PRODUCTOS.filter(p => p.categoria && p.categoria.toLowerCase() === categoriaActiva.toLowerCase())
+        : [...PRODUCTOS];
+
+    // 2. Filtrar por talle activo
+    if (talleFiltroActivo && talleFiltroActivo !== 'TODOS') {
+        resultado = resultado.filter(p => {
+            const coincideTalleArray = Array.isArray(p.talles) && p.talles.includes(talleFiltroActivo);
+            const coincideVariante = Array.isArray(p.variantes) && p.variantes.some(v => v.talle === talleFiltroActivo && (v.stock || 0) > 0);
+            return coincideTalleArray || coincideVariante;
+        });
+    }
+
+    // 3. Filtrar reactivamente por búsqueda de texto (nombre o descripción)
+    if (busquedaCatalogo) {
+        resultado = resultado.filter(p => {
+            const nom = (p.nombre || '').toLowerCase();
+            const desc = (p.descripcion || '').toLowerCase();
+            return nom.includes(busquedaCatalogo) || desc.includes(busquedaCatalogo);
+        });
+    }
+
+    // 4. Ordenamiento reactivo
+    if (ordenCatalogo === 'precio-asc') {
+        resultado.sort((a, b) => (Number(a.precioMinorista) || 0) - (Number(b.precioMinorista) || 0));
+    } else if (ordenCatalogo === 'precio-desc') {
+        resultado.sort((a, b) => (Number(b.precioMinorista) || 0) - (Number(a.precioMinorista) || 0));
+    } else if (ordenCatalogo === 'alfabetico') {
+        resultado.sort((a, b) => (a.nombre || '').localeCompare(b.nombre || ''));
+    } else {
+        // "destacados": prioriza prendas con etiqueta (MÁS VENDIDO, OFERTA, NUEVO, etc.) y luego por ID
+        resultado.sort((a, b) => {
+            const tieneTagA = Boolean(a.etiqueta);
+            const tieneTagB = Boolean(b.etiqueta);
+            if (tieneTagA && !tieneTagB) return -1;
+            if (!tieneTagA && tieneTagB) return 1;
+            return (b.id || 0) - (a.id || 0);
+        });
+    }
+
+    dibujarProductos(resultado);
+}
 
 // --- DIBUJAR GRILLA DE PRODUCTOS (LOOK & FEEL ZARA / SAVAGE X FENTY) ---
 function dibujarProductos(lista) {

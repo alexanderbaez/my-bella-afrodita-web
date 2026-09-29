@@ -216,6 +216,97 @@
             border-color: #fab1a0 !important;
             font-weight: 700 !important;
         }
+
+        /* Gestor Visual de Fotos (Aspect Ratio 3:4) */
+        .gallery-preview-item {
+            position: relative;
+            width: 85px;
+            height: 113px; /* 3:4 aspect-ratio */
+            border-radius: 6px;
+            overflow: hidden;
+            border: 2px solid #e2e8f0;
+            background: #f8fafc;
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.06);
+        }
+        .gallery-preview-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        .gallery-preview-item.is-portada {
+            border-color: var(--color-pasión, #8e62a3);
+            box-shadow: 0 0 0 1px var(--color-pasión, #8e62a3);
+        }
+        .gallery-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .badge-portada {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            background-color: var(--color-pasión, #8e62a3);
+            color: #fff;
+            font-size: 0.52rem;
+            font-weight: 800;
+            letter-spacing: 0.6px;
+            padding: 2px 5px;
+            border-radius: 3px;
+            z-index: 2;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+        }
+        .btn-remove-thumb {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 20px;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.75);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            line-height: 1;
+            cursor: pointer;
+            z-index: 3;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .btn-remove-thumb:hover {
+            background: #d63031;
+            transform: scale(1.15);
+        }
+
+        /* Botones de acción rápida en pedidos */
+        .btn-quick-status {
+            font-size: 0.68rem;
+            font-weight: 600;
+            padding: 2px 7px;
+            border-radius: 3px;
+            letter-spacing: 0.3px;
+            transition: all 0.15s ease;
+        }
+        .btn-quick-wa {
+            background-color: #25d366;
+            color: #fff;
+            font-size: 0.68rem;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 3px;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+        .btn-quick-wa:hover {
+            background-color: #1ebe5d;
+            color: #fff;
+        }
     </style>
 </head>
 
@@ -493,7 +584,7 @@
                             <!-- Categoría -->
                             <div class="col-md-4">
                                 <label for="prod-categoria" class="form-label small fw-bold text-uppercase">Categoría *</label>
-                                <select class="form-select" id="prod-categoria" required>
+                                <select class="form-select" id="prod-categoria" required onchange="cambiarCategoriaEnModal(this.value)">
                                     <option value="conjuntos">Conjuntos</option>
                                     <option value="bombachas">Bombachas</option>
                                     <option value="hombres">Hombres (Masculino)</option>
@@ -531,25 +622,24 @@
                                     <i class="fas fa-boxes me-1"></i> Inventario por Talle (Stock Numérico)
                                 </label>
                                 <div class="p-3 bg-light rounded border">
-                                    <div class="mb-2 text-muted small" style="font-size: 0.72rem;">
-                                        Haz click en los talles para activarlos y asigna la cantidad física exacta disponible:
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="text-muted small" style="font-size: 0.72rem;">
+                                            Talles sugeridos para esta categoría (clic para activar/desactivar):
+                                        </span>
                                     </div>
-                                    <div class="d-flex flex-wrap gap-1.5 mb-3" id="talles-chips-container">
-                                        <span class="talle-chip" data-talle="85">85</span>
-                                        <span class="talle-chip" data-talle="90">90</span>
-                                        <span class="talle-chip" data-talle="95">95</span>
-                                        <span class="talle-chip" data-talle="100">100</span>
-                                        <span class="talle-chip" data-talle="105">105</span>
-                                        <span class="talle-chip" data-talle="1">1</span>
-                                        <span class="talle-chip" data-talle="2">2</span>
-                                        <span class="talle-chip" data-talle="3">3</span>
-                                        <span class="talle-chip" data-talle="4">4</span>
-                                        <span class="talle-chip" data-talle="S">S</span>
-                                        <span class="talle-chip" data-talle="M">M</span>
-                                        <span class="talle-chip" data-talle="L">L</span>
-                                        <span class="talle-chip" data-talle="XL">XL</span>
-                                        <span class="talle-chip" data-talle="XXL">XXL</span>
-                                        <span class="talle-chip" data-talle="ÚNICO">ÚNICO</span>
+                                    <div class="d-flex flex-wrap gap-1.5 mb-2" id="talles-chips-container">
+                                        <!-- Inyectado dinámicamente según categoría -->
+                                    </div>
+
+                                    <!-- Agregar Talle Personalizado -->
+                                    <div class="d-flex align-items-center gap-2 mb-3 pt-1">
+                                        <span class="small text-muted" style="font-size: 0.72rem;">Talle personalizado:</span>
+                                        <div class="input-group input-group-sm" style="max-width: 175px;">
+                                            <input type="text" id="nuevo-talle-custom" class="form-control form-control-sm text-uppercase" placeholder="Ej: 110, XXL">
+                                            <button class="btn btn-dark" type="button" onclick="agregarTalleCustom()" title="Agregar talle a la lista">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
                                     </div>
 
                                     <!-- Inputs dinámicos de cantidad por talle activo -->

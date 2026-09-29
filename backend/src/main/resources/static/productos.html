@@ -103,6 +103,35 @@
                     <h1 class="display-5 fw-bold mt-2 font-playfair section-title" style="color: var(--color-pasión);">Nuestro Catálogo Completo</h1>
                 </div>
 
+                <!-- Barra Interactiva de Búsqueda y Ordenamiento Boutique -->
+                <div class="catalogo-toolbar mb-4">
+                    <div class="row g-3 align-items-center justify-content-between">
+                        <!-- Búsqueda en vivo por nombre o descripción -->
+                        <div class="col-12 col-md-6 col-lg-5">
+                            <div class="search-input-wrap">
+                                <i class="fas fa-search search-icon"></i>
+                                <input type="text" id="buscador-catalogo" class="form-control search-control-boutique" 
+                                       placeholder="Buscar prendas por nombre o descripción..." 
+                                       oninput="manejarBusquedaCatalogo(this.value)" autocomplete="off">
+                                <button type="button" class="btn-clear-search d-none" id="btn-limpiar-busqueda" onclick="limpiarBusquedaCatalogo()" title="Limpiar búsqueda">&times;</button>
+                            </div>
+                        </div>
+
+                        <!-- Selector de Orden Reactivo -->
+                        <div class="col-12 col-md-6 col-lg-4 text-md-end">
+                            <div class="d-flex align-items-center justify-content-md-end gap-2">
+                                <label for="orden-catalogo" class="small text-muted text-uppercase fw-semibold text-nowrap mb-0" style="letter-spacing: 0.8px; font-size: 0.72rem;">Ordenar por:</label>
+                                <select id="orden-catalogo" class="form-select form-select-sm select-order-boutique" onchange="manejarOrdenamientoCatalogo(this.value)">
+                                    <option value="destacados" selected>Destacados</option>
+                                    <option value="precio-asc">Precio: menor a mayor</option>
+                                    <option value="precio-desc">Precio: mayor a menor</option>
+                                    <option value="alfabetico">A - Z</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Filtro de Talles Dinámico y Contextual -->
                 <div class="d-flex justify-content-center align-items-center flex-column mb-4">
                     <span class="small text-muted text-uppercase mb-2 fw-semibold" style="letter-spacing: 1.2px; font-size: 0.68rem;">Filtrar por Talle:</span>

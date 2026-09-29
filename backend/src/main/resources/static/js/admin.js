@@ -41,14 +41,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         modalDetallePedidoInstancia = new bootstrap.Modal(modalPedidoElem);
     }
 
-    // Configurar chips de talles interactivos
-    document.querySelectorAll('#talles-chips-container .talle-chip').forEach(chip => {
-        chip.addEventListener('click', () => {
-            chip.classList.toggle('active');
-            actualizarGridInputsVariantes();
-        });
-    });
-
     // Configurar Drag & Drop en la Dropzone de Fotos
     const dropzone = document.getElementById('dropzone-fotos');
     if (dropzone) {
@@ -346,6 +338,83 @@ async function toggleStock(id, switchElem) {
     }
 }
 
+// --- PRESETS DE TALLES POR CATEGORÍA ---
+const TALLES_PRESETS = {
+    conjuntos: ['85', '90', '95', '100', '105'],
+    bombachas: ['1', '2', '3', '4'],
+    hombres: ['S', 'M', 'L', 'XL', 'XXL'],
+    medias: ['ÚNICO']
+};
+
+// --- RENDERIZADO DINÁMICO DE CHIPS DE TALLES ---
+function renderizarChipsTalles(categoria, tallesActivos = [], mapaStock = {}) {
+    const container = document.getElementById('talles-chips-container');
+    if (!container) return;
+
+    const catKey = (categoria || 'conjuntos').toLowerCase();
+    const presets = TALLES_PRESETS[catKey] || ['S', 'M', 'L', 'XL'];
+
+    // Unir presets con talles activos previos o personalizados sin duplicados
+    const todosTalles = [...presets];
+    tallesActivos.forEach(t => {
+        if (!todosTalles.includes(t)) {
+            todosTalles.push(t);
+        }
+    });
+
+    container.innerHTML = todosTalles.map(talle => {
+        const activo = tallesActivos.includes(talle);
+        return `
+            <span class="talle-chip ${activo ? 'active' : ''}" 
+                  data-talle="${talle}" 
+                  onclick="toggleTalleChip(this)">
+                ${talle}
+            </span>
+        `;
+    }).join('');
+
+    actualizarGridInputsVariantes(mapaStock);
+}
+
+window.toggleTalleChip = function (chip) {
+    chip.classList.toggle('active');
+    actualizarGridInputsVariantes();
+};
+
+window.cambiarCategoriaEnModal = function (nuevaCategoria) {
+    // Capturar stock actual para conservar valores coincidentes
+    const mapaActual = {};
+    document.querySelectorAll('#variantes-stock-grid .input-stock-talle').forEach(input => {
+        mapaActual[input.getAttribute('data-talle')] = input.value;
+    });
+
+    const catKey = (nuevaCategoria || 'conjuntos').toLowerCase();
+    const presets = TALLES_PRESETS[catKey] || ['S', 'M', 'L', 'XL'];
+    renderizarChipsTalles(nuevaCategoria, presets, mapaActual);
+};
+
+window.agregarTalleCustom = function () {
+    const input = document.getElementById('nuevo-talle-custom');
+    if (!input) return;
+    const valor = input.value.trim().toUpperCase();
+    if (!valor) return;
+
+    const container = document.getElementById('talles-chips-container');
+    let chipExistente = container.querySelector(`.talle-chip[data-talle="${valor}"]`);
+    if (chipExistente) {
+        chipExistente.classList.add('active');
+    } else {
+        const nuevoSpan = document.createElement('span');
+        nuevoSpan.className = 'talle-chip active';
+        nuevoSpan.setAttribute('data-talle', valor);
+        nuevoSpan.innerText = valor;
+        nuevoSpan.onclick = function () { toggleTalleChip(this); };
+        container.appendChild(nuevoSpan);
+    }
+    input.value = '';
+    actualizarGridInputsVariantes();
+};
+
 // --- GRID DINÁMICO DE INVENTARIO POR TALLE ---
 function actualizarGridInputsVariantes(mapaValores = {}) {
     const grid = document.getElementById('variantes-stock-grid');
@@ -396,9 +465,11 @@ function abrirModalCrear() {
     document.getElementById('modalProductoLabel').innerHTML = '<i class="fas fa-plus-circle me-2"></i> Nuevo Producto';
     document.getElementById('btn-submit-producto').innerHTML = '<i class="fas fa-save me-1"></i> Guardar Producto';
     
-    // Desmarcar todos los chips de talles
-    document.querySelectorAll('#talles-chips-container .talle-chip').forEach(c => c.classList.remove('active'));
-    actualizarGridInputsVariantes({});
+    // Categoría inicial por defecto y sus chips de talles
+    const catInicial = document.getElementById('prod-categoria').value || 'conjuntos';
+    const presetsIniciales = TALLES_PRESETS[catInicial] || ['85', '90', '95', '100', '105'];
+    renderizarChipsTalles(catInicial, presetsIniciales, {});
+
     document.getElementById('prod-stock').checked = true;
 
     // Resetear galería de imágenes
@@ -418,7 +489,8 @@ function abrirModalEditar(id) {
 
     document.getElementById('prod-id').value = p.id;
     document.getElementById('prod-nombre').value = p.nombre || '';
-    document.getElementById('prod-categoria').value = (p.categoria || 'conjuntos').toLowerCase();
+    const cat = (p.categoria || 'conjuntos').toLowerCase();
+    document.getElementById('prod-categoria').value = cat;
     document.getElementById('prod-descripcion').value = p.descripcion || '';
     document.getElementById('prod-precioMinorista').value = p.precioMinorista || '';
     document.getElementById('prod-precioMayorista').value = p.precioMayorista || '';
@@ -441,16 +513,7 @@ function abrirModalEditar(id) {
         });
     }
 
-    document.querySelectorAll('#talles-chips-container .talle-chip').forEach(chip => {
-        const talle = chip.getAttribute('data-talle');
-        if (tallesActivos.includes(talle)) {
-            chip.classList.add('active');
-        } else {
-            chip.classList.remove('active');
-        }
-    });
-
-    actualizarGridInputsVariantes(mapaStock);
+    renderizarChipsTalles(cat, tallesActivos, mapaStock);
 
     // Imágenes
     imagenesProductoActual = Array.isArray(p.imagenes) ? [...p.imagenes] : [];
@@ -545,7 +608,7 @@ async function subirArchivos(files) {
     }
 }
 
-// --- RENDERIZAR GALERÍA DE PREVIEWS ---
+// --- RENDERIZAR GALERÍA DE PREVIEWS (ASPECT RATIO 3:4 + BADGE PORTADA) ---
 function renderizarGaleriaPreview() {
     const container = document.getElementById('galeria-preview-container');
     const textarea = document.getElementById('prod-imagenes');
@@ -560,12 +623,16 @@ function renderizarGaleriaPreview() {
         return;
     }
 
-    container.innerHTML = imagenesProductoActual.map((url, index) => `
-        <div class="gallery-preview-item" title="${url}">
-            <img src="${url}" alt="Foto ${index + 1}" onerror="this.src='https://via.placeholder.com/80x100?text=Prenda'">
-            <button type="button" class="btn-remove-thumb" onclick="eliminarImagenDeGaleria(${index})" title="Quitar imagen">&times;</button>
-        </div>
-    `).join('');
+    container.innerHTML = imagenesProductoActual.map((url, index) => {
+        const esPortada = index === 0;
+        return `
+            <div class="gallery-preview-item ${esPortada ? 'is-portada' : ''}" title="${url}">
+                ${esPortada ? '<span class="badge-portada">PORTADA</span>' : ''}
+                <img src="${url}" alt="Foto ${index + 1}" onerror="this.src='https://via.placeholder.com/85x113?text=Foto'">
+                <button type="button" class="btn-remove-thumb" onclick="eliminarImagenDeGaleria(${index})" title="Quitar foto">&times;</button>
+            </div>
+        `;
+    }).join('');
 }
 
 window.eliminarImagenDeGaleria = function (index) {
@@ -841,7 +908,44 @@ function renderizarTablaPedidos(ordenes) {
             ? `<span class="badge bg-success ms-1" style="font-size: 0.65rem;">Mayorista</span>`
             : '';
 
-        const telSanitizado = (o.clienteTelefono || '').replace(/[^0-9]/g, '');
+        let telSanitizado = (o.clienteTelefono || '').replace(/[^0-9]/g, '');
+        if (telSanitizado.length === 10) {
+            telSanitizado = '549' + telSanitizado;
+        }
+
+        // Botón de acción rápida según estado
+        let botonAccionRapida = '';
+        if (o.estado === 'PENDIENTE') {
+            botonAccionRapida = `
+                <button type="button" class="btn btn-outline-primary btn-quick-status" 
+                        onclick="cambiarEstadoPedido(${o.id}, 'PAGADO')" 
+                        title="Marcar pedido como pagado">
+                    <i class="fas fa-check-circle me-1"></i>Marcar Pagado
+                </button>`;
+        } else if (o.estado === 'PAGADO' || o.estado === 'EN_PREPARACION') {
+            botonAccionRapida = `
+                <button type="button" class="btn btn-outline-info btn-quick-status" 
+                        onclick="cambiarEstadoPedido(${o.id}, 'ENVIADO')" 
+                        title="Marcar pedido como despachado">
+                    <i class="fas fa-shipping-fast me-1"></i>Marcar Despachado
+                </button>`;
+        } else if (o.estado === 'ENVIADO') {
+            botonAccionRapida = `
+                <button type="button" class="btn btn-outline-success btn-quick-status" 
+                        onclick="cambiarEstadoPedido(${o.id}, 'ENTREGADO')" 
+                        title="Marcar pedido como entregado">
+                    <i class="fas fa-box-check me-1"></i>Marcar Entregado
+                </button>`;
+        }
+
+        // Botón de notificación por WhatsApp con mensaje predeterminado exacto
+        const mensajeNotif = `¡Hola ${o.clienteNombre}! Te avisamos de My Bella Afrodita que tu pedido #${o.codigoSeguimiento} se encuentra ${o.estado}. ¡Muchas gracias por tu compra!`;
+        const waUrl = `https://wa.me/${telSanitizado}?text=${encodeURIComponent(mensajeNotif)}`;
+        const botonWhatsApp = `
+            <a href="${waUrl}" target="_blank" class="btn-quick-wa" title="Avisar por WhatsApp a ${o.clienteNombre}">
+                <i class="fab fa-whatsapp me-1"></i>Avisar por WhatsApp
+            </a>
+        `;
 
         return `
             <tr>
@@ -869,21 +973,27 @@ function renderizarTablaPedidos(ordenes) {
                     $${Number(o.total).toLocaleString('es-AR')}
                 </td>
                 <td>
-                    <select class="form-select form-select-sm" 
-                            style="font-size: 0.75rem; font-weight: 600; width: 145px;"
-                            onchange="cambiarEstadoPedido(${o.id}, this.value)">
-                        <option value="PENDIENTE" ${o.estado === 'PENDIENTE' ? 'selected' : ''}>PENDIENTE</option>
-                        <option value="PAGADO" ${o.estado === 'PAGADO' ? 'selected' : ''}>PAGADO</option>
-                        <option value="EN_PREPARACION" ${o.estado === 'EN_PREPARACION' ? 'selected' : ''}>EN PREPARACIÓN</option>
-                        <option value="ENVIADO" ${o.estado === 'ENVIADO' ? 'selected' : ''}>ENVIADO</option>
-                        <option value="ENTREGADO" ${o.estado === 'ENTREGADO' ? 'selected' : ''}>ENTREGADO</option>
-                        <option value="CANCELADO" ${o.estado === 'CANCELADO' ? 'selected' : ''}>CANCELADO</option>
-                    </select>
+                    <div class="d-flex flex-column gap-1">
+                        <select class="form-select form-select-sm" 
+                                style="font-size: 0.75rem; font-weight: 600; width: 145px;"
+                                onchange="cambiarEstadoPedido(${o.id}, this.value)">
+                            <option value="PENDIENTE" ${o.estado === 'PENDIENTE' ? 'selected' : ''}>PENDIENTE</option>
+                            <option value="PAGADO" ${o.estado === 'PAGADO' ? 'selected' : ''}>PAGADO</option>
+                            <option value="EN_PREPARACION" ${o.estado === 'EN_PREPARACION' ? 'selected' : ''}>EN PREPARACIÓN</option>
+                            <option value="ENVIADO" ${o.estado === 'ENVIADO' ? 'selected' : ''}>ENVIADO</option>
+                            <option value="ENTREGADO" ${o.estado === 'ENTREGADO' ? 'selected' : ''}>ENTREGADO</option>
+                            <option value="CANCELADO" ${o.estado === 'CANCELADO' ? 'selected' : ''}>CANCELADO</option>
+                        </select>
+                        <div>${botonAccionRapida}</div>
+                    </div>
                 </td>
                 <td class="text-end">
-                    <button class="btn btn-outline-dark btn-sm py-1 px-2 rounded-1" onclick="verDetallePedido(${o.id})" title="Ver Detalle">
-                        <i class="fas fa-eye me-1"></i> Detalle
-                    </button>
+                    <div class="d-flex flex-column align-items-end gap-1.5">
+                        ${botonWhatsApp}
+                        <button class="btn btn-outline-dark btn-sm py-1 px-2 rounded-1" onclick="verDetallePedido(${o.id})" title="Ver Detalle">
+                            <i class="fas fa-eye me-1"></i> Detalle
+                        </button>
+                    </div>
                 </td>
             </tr>
         `;
@@ -911,6 +1021,7 @@ window.cambiarEstadoPedido = async function (id, nuevoEstado) {
         if (index !== -1) {
             listaOrdenes[index].estado = ordenActualizada.estado;
             actualizarMetricasPedidos(listaOrdenes);
+            filtrarYRenderizarPedidos();
         }
 
         Swal.fire({
