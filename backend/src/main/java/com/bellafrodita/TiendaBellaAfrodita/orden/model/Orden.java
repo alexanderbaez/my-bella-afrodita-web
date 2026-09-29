@@ -58,6 +58,15 @@ public class Orden {
     @Builder.Default
     private MetodoPago metodoPago = MetodoPago.WHATSAPP_EFECTIVO;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_entrega", nullable = false, length = 30)
+    @Builder.Default
+    private TipoEntrega tipoEntrega = TipoEntrega.RETIRO_SHOWROOM;
+
+    @Column(name = "costo_envio", precision = 12, scale = 2, nullable = false)
+    @Builder.Default
+    private BigDecimal costoEnvio = BigDecimal.ZERO;
+
     @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<OrdenItem> items = new ArrayList<>();
@@ -72,6 +81,12 @@ public class Orden {
         }
         if (this.metodoPago == null) {
             this.metodoPago = MetodoPago.WHATSAPP_EFECTIVO;
+        }
+        if (this.tipoEntrega == null) {
+            this.tipoEntrega = TipoEntrega.RETIRO_SHOWROOM;
+        }
+        if (this.costoEnvio == null) {
+            this.costoEnvio = BigDecimal.ZERO;
         }
     }
 

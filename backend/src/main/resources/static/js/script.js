@@ -29,6 +29,66 @@ let talleSeleccionadoQuickView = null;
 let cantidadQuickView = 1;
 const talleSeleccionadoPorProducto = {};
 
+// --- MÓDULO DE LOGÍSTICA & SELECCIÓN DE ENTREGA ---
+let TIPO_ENTREGA_SELECCIONADO = 'RETIRO_SHOWROOM';
+const COSTOS_ENVIO = {
+    RETIRO_SHOWROOM: 0,
+    ENVIO_SAN_JUAN: 2500,
+    ENVIO_NACIONAL: 6500
+};
+
+window.navegarAProducto = function (id) {
+    if (!id) return;
+    window.location.href = `./producto.html?id=${id}`;
+};
+
+window.abrirCentroConfianza = function (tabName) {
+    const modalEl = document.getElementById('modalCentroConfianza');
+    if (modalEl) {
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
+        if (tabName) {
+            const trigger = document.getElementById(`tab-${tabName}-btn`);
+            if (trigger) {
+                bootstrap.Tab.getOrCreateInstance(trigger).show();
+            }
+        }
+    }
+};
+
+window.abrirGuiaMedidas = function () {
+    const modalEl = document.getElementById('modalGuiaMedidas');
+    if (modalEl) {
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
+    }
+};
+
+window.cambiarMetodoEntrega = function (tipo) {
+    if (!COSTOS_ENVIO.hasOwnProperty(tipo)) return;
+    TIPO_ENTREGA_SELECCIONADO = tipo;
+
+    const radios = document.querySelectorAll('input[name="radioEntrega"]');
+    radios.forEach(r => {
+        r.checked = (r.value === tipo);
+    });
+
+    const cards = [
+        { id: 'card-ship-showroom', tipo: 'RETIRO_SHOWROOM' },
+        { id: 'card-ship-sanjuan', tipo: 'ENVIO_SAN_JUAN' },
+        { id: 'card-ship-nacional', tipo: 'ENVIO_NACIONAL' }
+    ];
+    cards.forEach(c => {
+        const el = document.getElementById(c.id);
+        if (el) {
+            if (c.tipo === tipo) el.classList.add('active');
+            else el.classList.remove('active');
+        }
+    });
+
+    renderizarListaCarrito();
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
     actualizarContadorUI();
     iniciarRotadorAnuncios();
@@ -393,8 +453,8 @@ function dibujarProductos(lista) {
 
         divCol.innerHTML = `
             <div class="product-card-boutique w-100">
-                <!-- Contenedor Imagen 3:4 con Cross-Fade y Quick View al click -->
-                <div class="product-media-container position-relative" style="cursor: pointer;" onclick="abrirQuickView('${p.id}')">
+                <!-- Contenedor Imagen 3:4 con Cross-Fade y Navegación limpia al detalle -->
+                <div class="product-media-container position-relative" style="cursor: pointer;" onclick="navegarAProducto('${p.id}')">
                     ${adminBtnHtml}
                     ${badgeHtml}
                     ${stockBadgeHtml}
@@ -409,7 +469,7 @@ function dibujarProductos(lista) {
                 <div class="product-info-wrap">
                     <div>
                         <div class="product-category-label">${p.categoria || 'Colección'}</div>
-                        <h3 class="product-title-luxury" title="${p.nombre}" style="cursor: pointer;" onclick="abrirQuickView('${p.id}')">${p.nombre}</h3>
+                        <h3 class="product-title-luxury" title="${p.nombre}" style="cursor: pointer;" onclick="navegarAProducto('${p.id}')">${p.nombre}</h3>
                         <p class="product-desc-clamped">${p.descripcion || 'Confección boutique de alta calidad y confort.'}</p>
                     </div>
 
@@ -1033,8 +1093,41 @@ window.renderizarListaCarrito = function () {
 
     container.innerHTML = cartHtml;
 
+    // Cálculo del Costo de Envío y Total Final
+    const costoEnvio = COSTOS_ENVIO[TIPO_ENTREGA_SELECCIONADO] || 0;
+    const totalConEnvio = res.total + costoEnvio;
+
+    const subtotalEl = document.getElementById('drawer-subtotal');
+    if (subtotalEl) {
+        subtotalEl.innerText = `$${res.total.toLocaleString('es-AR')}`;
+    }
+
+    const shippingCostEl = document.getElementById('drawer-shipping-cost');
+    const shippingBadgeEl = document.getElementById('drawer-shipping-badge');
+    if (shippingCostEl) {
+        if (costoEnvio === 0) {
+            shippingCostEl.innerText = 'Gratis';
+            shippingCostEl.className = 'fw-semibold text-success';
+        } else {
+            shippingCostEl.innerText = `+$${costoEnvio.toLocaleString('es-AR')}`;
+            shippingCostEl.className = 'fw-bold text-dark';
+        }
+    }
+    if (shippingBadgeEl) {
+        if (TIPO_ENTREGA_SELECCIONADO === 'RETIRO_SHOWROOM') {
+            shippingBadgeEl.innerText = '¡Gratis!';
+            shippingBadgeEl.className = 'badge-free-shipping';
+        } else if (TIPO_ENTREGA_SELECCIONADO === 'ENVIO_SAN_JUAN') {
+            shippingBadgeEl.innerText = 'San Juan';
+            shippingBadgeEl.className = 'badge bg-warning text-dark';
+        } else {
+            shippingBadgeEl.innerText = 'Nacional';
+            shippingBadgeEl.className = 'badge bg-dark text-white';
+        }
+    }
+
     if (totalElement) {
-        totalElement.innerText = `$${res.total.toLocaleString('es-AR')}`;
+        totalElement.innerText = `$${totalConEnvio.toLocaleString('es-AR')}`;
     }
 
     if (savingsContainer && savingsAmount) {
@@ -1047,7 +1140,7 @@ window.renderizarListaCarrito = function () {
     }
 };
 
-// --- ACTUALIZADOR DE BARRA DE PROGRESO COMERCIAL MAYORISTA ---
+// --- ACTUALIZADOR DE BARRA DE PROGRESO COMERCIAL MAYORISTA CON MICRO-ANIMACIÓN ---
 function actualizarBarrasProgresoUX(unidades, ahorro) {
     const progressBarFill = document.getElementById('ux-progress-bar-fill');
     const progressText = document.getElementById('ux-progress-text');
@@ -1064,18 +1157,22 @@ function actualizarBarrasProgresoUX(unidades, ahorro) {
 
     if (unidades >= 3) {
         progressBarFill.style.width = '100%';
-        progressBarFill.style.background = 'linear-gradient(90deg, #C5A880, #D4AF37)';
+        progressBarFill.style.background = 'linear-gradient(90deg, #C5A880, #D4AF37, #C5A880)';
         
-        if (progressText) progressText.innerHTML = '¡Felicitaciones! Accediste al beneficio mayorista ✨';
+        if (progressText) progressText.innerHTML = '🎉 ¡Felicitaciones! Acceso Mayorista Activado en tu bolsa ✨';
         if (progressPercent) progressPercent.innerText = `${unidades} prendas`;
     } else {
         const faltantes = 3 - unidades;
         const porcentaje = (unidades / 3) * 100;
         
         progressBarFill.style.width = `${porcentaje}%`;
-        progressBarFill.style.background = 'linear-gradient(90deg, #C5A880, #D4AF37)';
+        progressBarFill.style.background = 'linear-gradient(90deg, #C5A880, #D4AF37, #C5A880)';
         
-        if (progressText) progressText.innerHTML = `Te ${faltantes === 1 ? 'falta' : 'faltan'} <b>${faltantes} ${faltantes === 1 ? 'prenda' : 'prendas'}</b> para acceder al beneficio mayorista`;
+        if (faltantes === 1) {
+            if (progressText) progressText.innerHTML = `⚡ ¡Estás a <b>1 sola prenda</b> de activar el Descuento Mayorista!`;
+        } else {
+            if (progressText) progressText.innerHTML = `🔥 Te ${faltantes === 1 ? 'falta' : 'faltan'} <b>${faltantes} prendas</b> para tarifa mayorista`;
+        }
         if (progressPercent) progressPercent.innerText = `${unidades}/3`;
     }
 }
@@ -1284,7 +1381,7 @@ async function enviarPedidoWhatsApp() {
         title: 'Finalizar Pedido',
         html: `
             <div class="text-start">
-                <p class="text-muted small mb-3">Ingresa tus datos para registrar la orden en el sistema y continuar la atención por WhatsApp.</p>
+                <p class="text-muted small mb-3">Ingresa tus datos y confirma el método de entrega para registrar tu orden oficial.</p>
                 <div class="mb-2">
                     <label class="form-label small fw-bold">Nombre y Apellido *</label>
                     <input type="text" id="swal-cliente-nombre" class="form-control" placeholder="Ej: Valentina Gómez">
@@ -1294,8 +1391,17 @@ async function enviarPedidoWhatsApp() {
                     <input type="tel" id="swal-cliente-telefono" class="form-control" placeholder="Ej: 264 555-1234">
                 </div>
                 <div class="mb-2">
-                    <label class="form-label small fw-bold">Dirección de Entrega (Opcional)</label>
-                    <input type="text" id="swal-cliente-direccion" class="form-control" placeholder="Ej: Rivadavia, San Juan">
+                    <label class="form-label small fw-bold">Método de Despacho / Entrega *</label>
+                    <select id="swal-tipo-entrega" class="form-select form-select-sm mb-1" onchange="window.actualizarModalEnvio(this.value)">
+                        <option value="RETIRO_SHOWROOM" ${TIPO_ENTREGA_SELECCIONADO === 'RETIRO_SHOWROOM' ? 'selected' : ''}>1) Retiro en Showroom (San Juan - ¡Gratis!)</option>
+                        <option value="ENVIO_SAN_JUAN" ${TIPO_ENTREGA_SELECCIONADO === 'ENVIO_SAN_JUAN' ? 'selected' : ''}>2) Envío a Domicilio en San Juan (+$2.500)</option>
+                        <option value="ENVIO_NACIONAL" ${TIPO_ENTREGA_SELECCIONADO === 'ENVIO_NACIONAL' ? 'selected' : ''}>3) Envío Nacional por Correo (+$6.500)</option>
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small fw-bold" id="swal-label-direccion">Dirección y Localidad ${TIPO_ENTREGA_SELECCIONADO === 'RETIRO_SHOWROOM' ? '(Opcional)' : '*'}</label>
+                    <input type="text" id="swal-cliente-direccion" class="form-control" placeholder="Calle, Altura, Barrio, Localidad y Código Postal">
+                    <small class="text-muted" style="font-size:0.68rem;">Requerida para envíos a domicilio o despacho nacional.</small>
                 </div>
             </div>
         `,
@@ -1308,11 +1414,21 @@ async function enviarPedidoWhatsApp() {
         didOpen: () => {
             const input = document.getElementById('swal-cliente-nombre');
             if (input) input.focus();
+
+            window.actualizarModalEnvio = function(tipo) {
+                const label = document.getElementById('swal-label-direccion');
+                if (label) {
+                    label.innerText = tipo === 'RETIRO_SHOWROOM' 
+                        ? 'Dirección y Localidad (Opcional)' 
+                        : 'Dirección y Localidad * (Requerida)';
+                }
+            };
         },
         preConfirm: () => {
             const nombre = document.getElementById('swal-cliente-nombre')?.value.trim();
             const telefono = document.getElementById('swal-cliente-telefono')?.value.trim();
             const direccion = document.getElementById('swal-cliente-direccion')?.value.trim();
+            const tipoEntrega = document.getElementById('swal-tipo-entrega')?.value || TIPO_ENTREGA_SELECCIONADO;
 
             if (!nombre) {
                 Swal.showValidationMessage('¡Por favor ingresa tu nombre completo!');
@@ -1322,8 +1438,12 @@ async function enviarPedidoWhatsApp() {
                 Swal.showValidationMessage('¡Ingresa tu número de teléfono para contactarte!');
                 return false;
             }
+            if (tipoEntrega !== 'RETIRO_SHOWROOM' && (!direccion || direccion.length < 5)) {
+                Swal.showValidationMessage('¡Para envíos a domicilio o correo nacional, ingresa tu dirección completa y localidad!');
+                return false;
+            }
 
-            return { nombre, telefono, direccion };
+            return { nombre, telefono, direccion, tipoEntrega };
         }
     });
 
@@ -1331,6 +1451,9 @@ async function enviarPedidoWhatsApp() {
         abrirCarritoDrawer();
         return;
     }
+
+    TIPO_ENTREGA_SELECCIONADO = formValues.tipoEntrega;
+    const costoEnvio = COSTOS_ENVIO[TIPO_ENTREGA_SELECCIONADO] || 0;
 
     Swal.fire({
         title: 'Registrando tu orden...',
@@ -1346,6 +1469,8 @@ async function enviarPedidoWhatsApp() {
             clienteNombre: formValues.nombre,
             clienteTelefono: formValues.telefono,
             clienteDireccion: formValues.direccion || null,
+            tipoEntrega: formValues.tipoEntrega,
+            costoEnvio: costoEnvio,
             items: carrito.map(item => ({
                 productoId: Number(item.id),
                 talle: item.talle || 'Único',

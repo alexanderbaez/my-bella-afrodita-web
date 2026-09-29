@@ -2,6 +2,7 @@ package com.bellafrodita.TiendaBellaAfrodita.orden.dto;
 
 import com.bellafrodita.TiendaBellaAfrodita.orden.model.EstadoOrden;
 import com.bellafrodita.TiendaBellaAfrodita.orden.model.MetodoPago;
+import com.bellafrodita.TiendaBellaAfrodita.orden.model.TipoEntrega;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -24,9 +25,11 @@ public class OrdenResponse {
     private BigDecimal total;
     private BigDecimal subtotal;
     private BigDecimal descuentoMayorista;
+    private BigDecimal costoEnvio;
     private boolean esMayorista;
     private EstadoOrden estado;
     private MetodoPago metodoPago;
+    private TipoEntrega tipoEntrega;
     private List<OrdenItemResponse> items;
     private String whatsappUrl;
 }

@@ -14,6 +14,15 @@
     <meta name="keywords" content="lencería boutique, alta costura, My Bella Afrodita, San Juan, conjuntos, bombachas, boxers, medias">
     <meta name="author" content="Alexander Baez">
 
+    <!-- OpenGraph Metadata -->
+    <meta property="og:site_name" content="My Bella Afrodita">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="My Bella Afrodita | Haute Couture & Lencería Boutique">
+    <meta property="og:description" content="Lencería boutique de alta gama en San Juan. Confección cuidada, calce anatómico y encajes seleccionados. Venta minorista y mayorista.">
+    <meta property="og:image" content="./images/LOGO.png">
+    <meta property="og:url" content="https://alexanderbaez.github.io/my-bella-afrodita-web/">
+    <meta name="twitter:card" content="summary_large_image">
+
     <!-- Framework & Fonts -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -170,7 +179,123 @@
             </div>
         </section>
 
-        <!-- 3. MANIFIESTO DE MARCA ("THE CRAFT") -->
+        <!-- 3. COLECCIÓN DESTACADA: PIEZAS ICÓNICAS ATELIER -->
+        <section class="py-5" style="background-color: #FFFFFF; border-top: 1px solid var(--border-gold-subtle); border-bottom: 1px solid var(--border-gold-subtle);">
+            <div class="container py-3">
+                <div class="section-editorial-header text-center mb-5">
+                    <span class="section-eyebrow">Haute Lingerie Selection</span>
+                    <h2 class="section-heading-editorial">Piezas Icónicas de la Colección</h2>
+                    <p class="section-subtext">Diseños que combinan sensualidad sublime, puntillas selectas y soporte anatómico.</p>
+                </div>
+
+                <div class="row g-4 align-items-stretch" id="featured-products-home">
+                    <!-- Tarjetas boutique con redirección a producto y catálogo -->
+                    <div class="col-6 col-md-3 d-flex align-items-stretch">
+                        <div class="product-card-boutique w-100">
+                            <div class="product-media-container position-relative" style="cursor: pointer;" onclick="window.location.href='./productos.html?cat=conjuntos'">
+                                <span class="badge-luxury-tag">Corsetería</span>
+                                <img src="./images/session-Conjuntos.jpg" alt="Conjunto Premium" class="img-primary">
+                            </div>
+                            <div class="product-info-wrap">
+                                <div>
+                                    <div class="product-category-label">Conjuntos</div>
+                                    <h3 class="product-title-luxury" onclick="window.location.href='./productos.html?cat=conjuntos'">Conjuntos con Aro & Encaje</h3>
+                                    <p class="product-desc-clamped">Diseñados para realzar y armonizar el busto con calce anatómico.</p>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="product-pricing-box d-flex align-items-baseline">
+                                        <span class="price-retail-highlight">Ver Colección</span>
+                                    </div>
+                                    <a href="./productos.html?cat=conjuntos" class="btn btn-outline-dark btn-sm w-100 mt-2 text-uppercase fw-semibold" style="letter-spacing: 1px; font-size: 0.68rem; border-radius: 2px;">
+                                        Explorar Conjuntos
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-3 d-flex align-items-stretch">
+                        <div class="product-card-boutique w-100">
+                            <div class="product-media-container position-relative" style="cursor: pointer;" onclick="window.location.href='./productos.html?cat=bombachas'">
+                                <span class="badge-luxury-tag">Segunda Piel</span>
+                                <img src="./images/session-bombis.jpg" alt="Bombachas y Colaless" class="img-primary">
+                            </div>
+                            <div class="product-info-wrap">
+                                <div>
+                                    <div class="product-category-label">Bombachas</div>
+                                    <h3 class="product-title-luxury" onclick="window.location.href='./productos.html?cat=bombachas'">Colaless & Regulables</h3>
+                                    <p class="product-desc-clamped">Puntillas suaves sin elásticos que marquen ni compriman.</p>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="product-pricing-box d-flex align-items-baseline">
+                                        <span class="price-retail-highlight">Ver Colección</span>
+                                    </div>
+                                    <a href="./productos.html?cat=bombachas" class="btn btn-outline-dark btn-sm w-100 mt-2 text-uppercase fw-semibold" style="letter-spacing: 1px; font-size: 0.68rem; border-radius: 2px;">
+                                        Explorar Bombachas
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-3 d-flex align-items-stretch">
+                        <div class="product-card-boutique w-100">
+                            <div class="product-media-container position-relative" style="cursor: pointer;" onclick="window.location.href='./productos.html?cat=hombres'">
+                                <span class="badge-luxury-tag">Essential</span>
+                                <img src="./images/imagen-hombre.jpg" alt="Línea Masculina" class="img-primary">
+                            </div>
+                            <div class="product-info-wrap">
+                                <div>
+                                    <div class="product-category-label">Masculino</div>
+                                    <h3 class="product-title-luxury" onclick="window.location.href='./productos.html?cat=hombres'">Boxers Anatómicos</h3>
+                                    <p class="product-desc-clamped">Algodón peinado y microfibra respirable para el día a día.</p>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="product-pricing-box d-flex align-items-baseline">
+                                        <span class="price-retail-highlight">Ver Colección</span>
+                                    </div>
+                                    <a href="./productos.html?cat=hombres" class="btn btn-outline-dark btn-sm w-100 mt-2 text-uppercase fw-semibold" style="letter-spacing: 1px; font-size: 0.68rem; border-radius: 2px;">
+                                        Explorar Masculino
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-3 d-flex align-items-stretch">
+                        <div class="product-card-boutique w-100">
+                            <div class="product-media-container position-relative" style="cursor: pointer;" onclick="window.location.href='./productos.html?cat=medias'">
+                                <span class="badge-luxury-tag">Detalles</span>
+                                <img src="./images/medias-femenina2.png" alt="Medias de Lujo" class="img-primary">
+                            </div>
+                            <div class="product-info-wrap">
+                                <div>
+                                    <div class="product-category-label">Medias</div>
+                                    <h3 class="product-title-luxury" onclick="window.location.href='./productos.html?cat=medias'">Medias & Accesorios</h3>
+                                    <p class="product-desc-clamped">El toque de sofisticación perfecto para coronar cada conjunto.</p>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="product-pricing-box d-flex align-items-baseline">
+                                        <span class="price-retail-highlight">Ver Colección</span>
+                                    </div>
+                                    <a href="./productos.html?cat=medias" class="btn btn-outline-dark btn-sm w-100 mt-2 text-uppercase fw-semibold" style="letter-spacing: 1px; font-size: 0.68rem; border-radius: 2px;">
+                                        Explorar Medias
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-5">
+                    <a href="./productos.html" class="btn-haute-couture">
+                        VER TODO EL CATÁLOGO ATELIER <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. MANIFIESTO DE MARCA ("THE CRAFT") -->
         <section class="manifesto-section">
             <div class="container">
                 <div class="manifesto-container">
@@ -278,16 +403,69 @@
 
         <!-- Drawer Footer -->
         <div class="cart-drawer-footer">
-            <div id="ux-savings-container" class="d-flex justify-content-between align-items-center mb-2 d-none">
-                <span class="small fw-semibold" style="color: var(--gold-dark); font-size: 0.75rem;">
-                    <i class="fas fa-sparkles me-1"></i> Beneficio Mayorista Aplicado:
+            <!-- Selector de Método de Entrega en el Carrito -->
+            <div class="shipping-selector-group">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="small text-uppercase fw-bold" style="font-size: 0.68rem; letter-spacing: 1px; color: var(--text-charcoal);">
+                        <i class="fas fa-truck-fast me-1" style="color: var(--gold-dark);"></i> Método de Entrega:
+                    </span>
+                    <span id="drawer-shipping-badge" class="badge-free-shipping">¡Gratis!</span>
+                </div>
+                
+                <div class="shipping-option-card active" id="card-ship-showroom" onclick="cambiarMetodoEntrega('RETIRO_SHOWROOM')">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <label class="d-flex align-items-center mb-0 cursor-pointer small fw-semibold">
+                            <input type="radio" name="radioEntrega" value="RETIRO_SHOWROOM" checked onchange="cambiarMetodoEntrega('RETIRO_SHOWROOM')">
+                            Retiro en Showroom (San Juan)
+                        </label>
+                        <span class="text-success small fw-bold">Gratis</span>
+                    </div>
+                </div>
+
+                <div class="shipping-option-card" id="card-ship-sanjuan" onclick="cambiarMetodoEntrega('ENVIO_SAN_JUAN')">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <label class="d-flex align-items-center mb-0 cursor-pointer small fw-semibold">
+                            <input type="radio" name="radioEntrega" value="ENVIO_SAN_JUAN" onchange="cambiarMetodoEntrega('ENVIO_SAN_JUAN')">
+                            Envío Domicilio San Juan
+                        </label>
+                        <span class="shipping-price-tag">+$2.500</span>
+                    </div>
+                </div>
+
+                <div class="shipping-option-card" id="card-ship-nacional" onclick="cambiarMetodoEntrega('ENVIO_NACIONAL')">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <label class="d-flex align-items-center mb-0 cursor-pointer small fw-semibold">
+                            <input type="radio" name="radioEntrega" value="ENVIO_NACIONAL" onchange="cambiarMetodoEntrega('ENVIO_NACIONAL')">
+                            Envío Nacional (Correo)
+                        </label>
+                        <span class="shipping-price-tag">+$6.500</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resumen de Costos -->
+            <div id="ux-savings-container" class="d-flex justify-content-between align-items-center mb-1 d-none">
+                <span class="small fw-semibold" style="color: var(--gold-dark); font-size: 0.74rem;">
+                    <i class="fas fa-sparkles me-1"></i> Ahorro Mayorista x3:
                 </span>
                 <span id="ux-savings-amount" class="fw-bold small" style="color: var(--gold-dark);">-$0</span>
             </div>
-            <div class="d-flex justify-content-between align-items-baseline mb-3">
-                <span class="text-uppercase small fw-semibold" style="letter-spacing: 1.5px; font-size: 0.72rem; color: var(--text-taupe);">Total Estimado:</span>
+
+            <div class="d-flex justify-content-between align-items-center mb-1 text-muted" style="font-size: 0.76rem;">
+                <span>Subtotal Prendas:</span>
+                <span id="drawer-subtotal" class="fw-semibold text-dark">$0</span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-2 text-muted" style="font-size: 0.76rem;">
+                <span>Costo de Envío:</span>
+                <span id="drawer-shipping-cost" class="fw-semibold text-success">Gratis</span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-baseline mb-3 pt-2 border-top">
+                <span class="text-uppercase small fw-semibold" style="letter-spacing: 1.5px; font-size: 0.72rem; color: var(--text-taupe);">Total Final:</span>
                 <div id="cart-total" class="fw-bold h4 mb-0 font-serif" style="color: var(--text-charcoal);">$0</div>
             </div>
+
             <button type="button" class="btn btn-whatsapp-checkout w-100 mb-2" onclick="enviarPedidoWhatsApp()">
                 <i class="fab fa-whatsapp me-2 fa-lg"></i> FINALIZAR COMPRA VÍA WHATSAPP
             </button>
@@ -315,13 +493,13 @@
                     </p>
                 </div>
                 <div class="col-6 col-md-4 text-center">
-                    <h5>Colecciones</h5>
+                    <h5>Centro de Confianza</h5>
                     <ul class="list-unstyled">
+                        <li><a href="#" onclick="abrirCentroConfianza('higiene'); return false;">Políticas de Higiene & Cambios</a></li>
+                        <li><a href="#" onclick="abrirCentroConfianza('cuidados'); return false;">Cuidados de la Lencería</a></li>
+                        <li><a href="#" onclick="abrirCentroConfianza('faq'); return false;">Preguntas Frecuentes (FAQ)</a></li>
+                        <li><a href="#" onclick="abrirGuiaMedidas(); return false;">Guía de Medidas (cm)</a></li>
                         <li><a href="./productos.html">Catálogo Completo</a></li>
-                        <li><a href="./productos.html?cat=conjuntos">Conjuntos & Corsetería</a></li>
-                        <li><a href="./productos.html?cat=bombachas">Bombachas & Colaless</a></li>
-                        <li><a href="./productos.html?cat=hombres">Colección Masculina</a></li>
-                        <li><a href="./productos.html?cat=medias">Medias & Accesorios</a></li>
                     </ul>
                 </div>
                 <div class="col-6 col-md-4 text-center text-md-end">
@@ -332,7 +510,7 @@
                         <a href="#" class="footer-social-icon" title="TikTok"><i class="fab fa-tiktok"></i></a>
                         <a href="https://wa.me/5492646121771" target="_blank" class="footer-social-icon" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
                     </div>
-                    <p class="small text-muted mb-0">San Juan &bull; Despachos a todo el país</p>
+                    <p class="small text-muted mb-0">San Juan &bull; Despachos discretos a todo el país</p>
                 </div>
             </div>
             <hr class="my-5" style="border-color: rgba(197, 168, 128, 0.2);">
@@ -342,6 +520,278 @@
             </div>
         </div>
     </footer>
+
+    <!-- Modal Guía de Medidas (cm) -->
+    <div class="modal fade" id="modalGuiaMedidas" tabindex="-1" aria-labelledby="modalGuiaMedidasHomeLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content modal-luxury-content">
+                <div class="modal-header modal-luxury-header">
+                    <div>
+                        <span class="section-eyebrow mb-1">Anatomía & Calce Perfecto</span>
+                        <h4 class="modal-luxury-title" id="modalGuiaMedidasHomeLabel">Guía de Medidas (cm)</h4>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <ul class="nav nav-tabs nav-tabs-luxury mb-4" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-home-conjuntos" type="button" role="tab">Conjuntos & Corpiños</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-home-bombachas" type="button" role="tab">Bombachas & Colaless</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-home-hombres" type="button" role="tab">Boxers Masculinos</button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <!-- Conjuntos -->
+                        <div class="tab-pane fade show active" id="tab-home-conjuntos" role="tabpanel">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-measure-guide text-center">
+                                    <thead>
+                                        <tr>
+                                            <th>Talle</th>
+                                            <th>Contorno de Busto</th>
+                                            <th>Bajo Busto (Tórax)</th>
+                                            <th>Equivalencia Arg</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>85</strong></td>
+                                            <td>83 - 87 cm</td>
+                                            <td>68 - 72 cm</td>
+                                            <td>Small (S)</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>90</strong></td>
+                                            <td>88 - 92 cm</td>
+                                            <td>73 - 77 cm</td>
+                                            <td>Medium (M)</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>95</strong></td>
+                                            <td>93 - 97 cm</td>
+                                            <td>78 - 82 cm</td>
+                                            <td>Large (L)</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>100</strong></td>
+                                            <td>98 - 102 cm</td>
+                                            <td>83 - 87 cm</td>
+                                            <td>Extra Large (XL)</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>105</strong></td>
+                                            <td>103 - 108 cm</td>
+                                            <td>88 - 92 cm</td>
+                                            <td>XXL</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="measure-tip-box">
+                                <i class="fas fa-info-circle me-1" style="color: var(--gold-dark);"></i>
+                                <strong>Tip de Asesoramiento:</strong> Mide el contorno de busto pasando la cinta métrica por la parte más prominente del pecho, sin apretar.
+                            </div>
+                        </div>
+
+                        <!-- Bombachas -->
+                        <div class="tab-pane fade" id="tab-home-bombachas" role="tabpanel">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-measure-guide text-center">
+                                    <thead>
+                                        <tr>
+                                            <th>Talle</th>
+                                            <th>Contorno de Cintura</th>
+                                            <th>Contorno de Cadera</th>
+                                            <th>Talle de Jean</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>1 / S</strong></td>
+                                            <td>62 - 68 cm</td>
+                                            <td>88 - 94 cm</td>
+                                            <td>34 - 36</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>2 / M</strong></td>
+                                            <td>69 - 75 cm</td>
+                                            <td>95 - 101 cm</td>
+                                            <td>38 - 40</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>3 / L</strong></td>
+                                            <td>76 - 83 cm</td>
+                                            <td>102 - 108 cm</td>
+                                            <td>42 - 44</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>4 / XL</strong></td>
+                                            <td>84 - 92 cm</td>
+                                            <td>109 - 116 cm</td>
+                                            <td>46 - 48</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Hombres -->
+                        <div class="tab-pane fade" id="tab-home-hombres" role="tabpanel">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-measure-guide text-center">
+                                    <thead>
+                                        <tr>
+                                            <th>Talle</th>
+                                            <th>Cintura</th>
+                                            <th>Equivalencia Jean</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>S</strong></td>
+                                            <td>74 - 80 cm</td>
+                                            <td>38 - 40</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>M</strong></td>
+                                            <td>81 - 88 cm</td>
+                                            <td>42 - 44</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>L</strong></td>
+                                            <td>89 - 96 cm</td>
+                                            <td>46 - 48</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>XL</strong></td>
+                                            <td>97 - 105 cm</td>
+                                            <td>50 - 52</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Centro de Confianza, Políticas y FAQ -->
+    <div class="modal fade" id="modalCentroConfianza" tabindex="-1" aria-labelledby="modalCentroConfianzaHomeLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content modal-luxury-content">
+                <div class="modal-header modal-luxury-header">
+                    <div>
+                        <span class="section-eyebrow mb-1">Compromiso & Seguridad Boutique</span>
+                        <h4 class="modal-luxury-title" id="modalCentroConfianzaHomeLabel">Centro de Confianza & Políticas</h4>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <ul class="nav nav-tabs nav-tabs-luxury mb-4" id="confianzaHomeTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="tab-higiene-btn" data-bs-toggle="tab" data-bs-target="#tab-home-higiene" type="button" role="tab">
+                                <i class="fas fa-stethoscope me-1"></i> Políticas de Higiene & Cambios
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="tab-cuidados-btn" data-bs-toggle="tab" data-bs-target="#tab-home-cuidados" type="button" role="tab">
+                                <i class="fas fa-hand-sparkles me-1"></i> Cuidados del Encaje & Satén
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="tab-faq-btn" data-bs-toggle="tab" data-bs-target="#tab-home-faq" type="button" role="tab">
+                                <i class="fas fa-question-circle me-1"></i> Preguntas Frecuentes (FAQ)
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <!-- Políticas de Higiene -->
+                        <div class="tab-pane fade show active" id="tab-home-higiene" role="tabpanel">
+                            <div class="p-2">
+                                <h6 class="font-serif fw-bold text-dark fs-5 mb-2">Normativa Sanitaria en Prendas Íntimas</h6>
+                                <p class="text-muted small mb-3">Para garantizar la bioseguridad y salubridad de cada clienta, nos regimos bajo estrictos protocolos sanitarios:</p>
+                                
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded-1 bg-light h-100">
+                                            <div class="text-danger small fw-bold text-uppercase mb-1"><i class="fas fa-ban me-1"></i> Sin Cambio ni Devolución</div>
+                                            <p class="small text-muted mb-0">Bombachas, colaless, vedetinas, culottes, boxers y bodies íntimos <strong>no admiten cambios ni devoluciones</strong> una vez entregados o despachados, por estricta higiene sanitaria.</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 border rounded-1 bg-light h-100">
+                                            <div class="text-success small fw-bold text-uppercase mb-1"><i class="fas fa-check-circle me-1"></i> Conjuntos & Corsetería</div>
+                                            <p class="small text-muted mb-0">Se aceptan cambios dentro de los <strong>7 días corridos</strong> de recepcionada la compra. La prenda debe conservar su etiqueta colgante inviolada, protectores higiénicos intactos, sin aroma a perfume ni uso.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cuidados de la Lencería -->
+                        <div class="tab-pane fade" id="tab-home-cuidados" role="tabpanel">
+                            <div class="p-2">
+                                <h6 class="font-serif fw-bold text-dark fs-5 mb-2">Guía Atelier: Cómo Preservar Tus Prendas de Lujo</h6>
+                                <p class="text-muted small mb-3">Los encajes, puntillas y tejidos de satén requieren un trato suave para conservar su elasticidad, color y tersura por años:</p>
+                                <ul class="list-unstyled small text-muted d-flex flex-column gap-2 mb-0">
+                                    <li class="d-flex align-items-start gap-2">
+                                        <i class="fas fa-tint text-primary mt-1"></i>
+                                        <span><strong>Lavado a mano en agua fría:</strong> Temperatura máxima 30°C para no debilitar las fibras elastizadas.</span>
+                                    </li>
+                                    <li class="d-flex align-items-start gap-2">
+                                        <i class="fas fa-pump-soap text-warning mt-1"></i>
+                                        <span><strong>Jabón neutro o delicado:</strong> Emplea jabón líquido para ropa fina o shampoo suave.</span>
+                                    </li>
+                                    <li class="d-flex align-items-start gap-2">
+                                        <i class="fas fa-wind text-info mt-1"></i>
+                                        <span><strong>Sin retorcer:</strong> Presiona delicadamente entre toallas secas y seca en plano a la sombra.</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Preguntas Frecuentes -->
+                        <div class="tab-pane fade" id="tab-home-faq" role="tabpanel">
+                            <div class="accordion accordion-flush" id="faqAccordionHome">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed fw-semibold small" type="button" data-bs-toggle="collapse" data-bs-target="#faq-home-1">
+                                            ¿Cómo funciona la Venta Mayorista desde 3 prendas?
+                                        </button>
+                                    </h2>
+                                    <div id="faq-home-1" class="accordion-collapse collapse" data-bs-parent="#faqAccordionHome">
+                                        <div class="accordion-body small text-muted">
+                                            Combina cualquier modelo, talle y categoría de la tienda. Al acumular 3 o más prendas en tu bolsa, el sistema aplica la tarifa preferencial mayorista en cada prenda de forma instantánea.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed fw-semibold small" type="button" data-bs-toggle="collapse" data-bs-target="#faq-home-2">
+                                            ¿Qué opciones de pago y entrega tienen?
+                                        </button>
+                                    </h2>
+                                    <div id="faq-home-2" class="accordion-collapse collapse" data-bs-parent="#faqAccordionHome">
+                                        <div class="accordion-body small text-muted">
+                                            Aceptamos transferencia bancaria directa, efectivo contra entrega y Mercado Pago. Entregamos mediante Retiro en Showroom San Juan (Gratis), Envíos a Domicilio en San Juan ($2.500) y Envíos Nacionales a todo el país ($6.500).
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Bootstrap & Lógica de Tienda -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

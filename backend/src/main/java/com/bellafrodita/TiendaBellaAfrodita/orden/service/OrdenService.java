@@ -6,6 +6,7 @@ import com.bellafrodita.TiendaBellaAfrodita.orden.model.EstadoOrden;
 import com.bellafrodita.TiendaBellaAfrodita.orden.model.MetodoPago;
 import com.bellafrodita.TiendaBellaAfrodita.orden.model.Orden;
 import com.bellafrodita.TiendaBellaAfrodita.orden.model.OrdenItem;
+import com.bellafrodita.TiendaBellaAfrodita.orden.model.TipoEntrega;
 import com.bellafrodita.TiendaBellaAfrodita.orden.repository.OrdenRepository;
 import com.bellafrodita.TiendaBellaAfrodita.producto.dto.ProductoVarianteDto;
 import com.bellafrodita.TiendaBellaAfrodita.producto.model.Producto;
@@ -29,6 +30,8 @@ import java.util.stream.Collectors;
 public class OrdenService {
 
     private static final String WHATSAPP_PHONE = "5492646121771";
+    public static final BigDecimal COSTO_SAN_JUAN = new BigDecimal("2500.00");
+    public static final BigDecimal COSTO_NACIONAL = new BigDecimal("6500.00");
 
     private final OrdenRepository ordenRepository;
     private final ProductoRepository productoRepository;
@@ -52,7 +55,20 @@ public class OrdenService {
 
         boolean esMayorista = totalUnidades >= 3;
 
-        // 2. Generar código de seguimiento único
+        // 2. Determinar tipo de entrega y costo logístico
+        TipoEntrega tipoEntrega = request.getTipoEntrega() != null ? request.getTipoEntrega() : TipoEntrega.RETIRO_SHOWROOM;
+        BigDecimal costoEnvio = BigDecimal.ZERO;
+        if (tipoEntrega == TipoEntrega.ENVIO_SAN_JUAN) {
+            costoEnvio = (request.getCostoEnvio() != null && request.getCostoEnvio().compareTo(BigDecimal.ZERO) >= 0)
+                    ? request.getCostoEnvio()
+                    : COSTO_SAN_JUAN;
+        } else if (tipoEntrega == TipoEntrega.ENVIO_NACIONAL) {
+            costoEnvio = (request.getCostoEnvio() != null && request.getCostoEnvio().compareTo(BigDecimal.ZERO) >= 0)
+                    ? request.getCostoEnvio()
+                    : COSTO_NACIONAL;
+        }
+
+        // 3. Generar código de seguimiento único
         String timestampPart = String.valueOf(System.currentTimeMillis()).substring(7);
         String randomPart = UUID.randomUUID().toString().substring(0, 4).toUpperCase();
         String codigoSeguimiento = "BA-" + timestampPart + "-" + randomPart;
@@ -63,6 +79,8 @@ public class OrdenService {
                 .clienteTelefono(request.getClienteTelefono().trim())
                 .clienteDireccion(request.getClienteDireccion() != null ? request.getClienteDireccion().trim() : null)
                 .metodoPago(request.getMetodoPago() != null ? request.getMetodoPago() : MetodoPago.WHATSAPP_EFECTIVO)
+                .tipoEntrega(tipoEntrega)
+                .costoEnvio(costoEnvio)
                 .estado(EstadoOrden.PENDIENTE)
                 .esMayorista(esMayorista)
                 .items(new ArrayList<>())
@@ -139,13 +157,17 @@ public class OrdenService {
             descuentoMayorista = BigDecimal.ZERO;
         }
 
+        BigDecimal totalConEnvio = totalCalculado.add(costoEnvio);
+
         orden.setSubtotal(subtotalCalculado.setScale(2, RoundingMode.HALF_UP));
-        orden.setTotal(totalCalculado.setScale(2, RoundingMode.HALF_UP));
+        orden.setTotal(totalConEnvio.setScale(2, RoundingMode.HALF_UP));
         orden.setDescuentoMayorista(descuentoMayorista.setScale(2, RoundingMode.HALF_UP));
+        orden.setCostoEnvio(costoEnvio.setScale(2, RoundingMode.HALF_UP));
+        orden.setTipoEntrega(tipoEntrega);
 
         Orden ordenGuardada = ordenRepository.save(orden);
 
-        // 3. Generar enlace codificado de WhatsApp
+        // 4. Generar enlace codificado de WhatsApp
         String whatsappUrl = generarEnlaceWhatsApp(ordenGuardada);
 
         return mapearAResponse(ordenGuardada, whatsappUrl);
@@ -182,14 +204,26 @@ public class OrdenService {
         symbols.setDecimalSeparator(',');
         DecimalFormat df = new DecimalFormat("#,##0", symbols);
 
+        String metodoEntregaTexto;
+        if (orden.getTipoEntrega() == TipoEntrega.RETIRO_SHOWROOM) {
+            metodoEntregaTexto = "Retiro en Showroom / Punto de Entrega (San Juan - Gratis)";
+        } else if (orden.getTipoEntrega() == TipoEntrega.ENVIO_SAN_JUAN) {
+            metodoEntregaTexto = "Envío a Domicilio en San Juan (+$" + df.format(orden.getCostoEnvio()) + ")";
+        } else if (orden.getTipoEntrega() == TipoEntrega.ENVIO_NACIONAL) {
+            metodoEntregaTexto = "Envío Nacional Correo (+$" + df.format(orden.getCostoEnvio()) + ")";
+        } else {
+            metodoEntregaTexto = orden.getTipoEntrega() != null ? orden.getTipoEntrega().name() : "A coordinar";
+        }
+
         StringBuilder sb = new StringBuilder();
         sb.append("🛍️ *NUEVO PEDIDO: MY BELLA AFRODITA*\n");
         sb.append("🔖 *Código:* #").append(orden.getCodigoSeguimiento()).append("\n");
         sb.append("------------------------------------------\n");
         sb.append("👤 *Cliente:* ").append(orden.getClienteNombre()).append("\n");
         sb.append("📱 *Teléfono:* ").append(orden.getClienteTelefono()).append("\n");
+        sb.append("🚚 *Entrega:* ").append(metodoEntregaTexto).append("\n");
         if (orden.getClienteDireccion() != null && !orden.getClienteDireccion().isBlank()) {
-            sb.append("📍 *Dirección:* ").append(orden.getClienteDireccion()).append("\n");
+            sb.append("📍 *Dirección/Localidad:* ").append(orden.getClienteDireccion()).append("\n");
         }
         sb.append("💳 *Método de Pago:* ").append(orden.getMetodoPago()).append("\n");
         sb.append("------------------------------------------\n\n");
@@ -207,7 +241,10 @@ public class OrdenService {
         }
 
         sb.append("------------------------------------------\n");
-        sb.append("💰 *TOTAL: $").append(df.format(orden.getTotal())).append("*\n");
+        if (orden.getCostoEnvio() != null && orden.getCostoEnvio().compareTo(BigDecimal.ZERO) > 0) {
+            sb.append("📦 *Costo de Envío:* $").append(df.format(orden.getCostoEnvio())).append("\n");
+        }
+        sb.append("💰 *TOTAL FINAL: $").append(df.format(orden.getTotal())).append("*\n");
 
         if (orden.isEsMayorista() && orden.getDescuentoMayorista().compareTo(BigDecimal.ZERO) > 0) {
             sb.append("✨ _Beneficio mayorista aplicado por llevar 3 o más prendas._\n");
@@ -244,6 +281,8 @@ public class OrdenService {
                 .total(orden.getTotal())
                 .subtotal(orden.getSubtotal())
                 .descuentoMayorista(orden.getDescuentoMayorista())
+                .costoEnvio(orden.getCostoEnvio())
+                .tipoEntrega(orden.getTipoEntrega())
                 .esMayorista(orden.isEsMayorista())
                 .estado(orden.getEstado())
                 .metodoPago(orden.getMetodoPago())

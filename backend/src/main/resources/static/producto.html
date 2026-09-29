@@ -4,21 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo Boutique | My Bella Afrodita</title>
-    
+    <title>Detalle de Prenda | My Bella Afrodita Haute Couture</title>
+
     <link rel="icon" type="image/png" href="./images/LOGO.png">
     <link rel="shortcut icon" href="./images/LOGO.png">
     <link rel="apple-touch-icon" href="./images/LOGO.png">
 
-    <meta name="description" content="Catálogo exclusivo de lencería boutique y corsetería de alta gama. Filtra por categoría y talles. Precios minoristas y mayoristas.">
-
+    <meta name="description" content="Detalle exclusivo de prenda boutique en My Bella Afrodita. Confección anatómica, encajes nobles y calce refinado. San Juan, Argentina.">
+    
     <!-- OpenGraph Metadata -->
     <meta property="og:site_name" content="My Bella Afrodita">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Catálogo Boutique | My Bella Afrodita Haute Couture">
-    <meta property="og:description" content="Catálogo exclusivo de lencería boutique y corsetería de alta gama en San Juan. Filtra por categoría y talles. Precios minoristas y mayoristas.">
+    <meta property="og:type" content="product">
+    <meta property="og:title" content="My Bella Afrodita | Haute Couture & Lencería Boutique">
+    <meta property="og:description" content="Lencería boutique de alta costura en San Juan. Encajes importados, satén y diseño anatómico.">
     <meta property="og:image" content="./images/LOGO.png">
-    <meta property="og:url" content="https://alexanderbaez.github.io/my-bella-afrodita-web/productos.html">
+    <meta property="og:url" content="https://alexanderbaez.github.io/my-bella-afrodita-web/">
     <meta name="twitter:card" content="summary_large_image">
 
     <!-- Framework & Fonts -->
@@ -88,76 +88,44 @@
     </header>
 
     <main class="catalogo-main-section pt-5 mt-5">
-        <section class="py-5">
-            <div class="container pt-3">
-                
-                <!-- Breadcrumbs de Alta Gama -->
-                <nav aria-label="breadcrumb" class="mb-4">
-                    <ol class="breadcrumb breadcrumb-boutique mb-0">
-                        <li class="breadcrumb-item"><a href="./index.html">Inicio</a></li>
-                        <li class="breadcrumb-item"><a href="./productos.html">Catálogo</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Colección Completa</li>
-                    </ol>
-                </nav>
+        <div class="container pt-4 pb-5">
+            
+            <!-- Breadcrumbs de Alta Gama -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb breadcrumb-boutique mb-0">
+                    <li class="breadcrumb-item"><a href="./index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="./productos.html">Catálogo</a></li>
+                    <li class="breadcrumb-item"><a href="./productos.html" id="bc-categoria">Categoría</a></li>
+                    <li class="breadcrumb-item active" id="bc-producto" aria-current="page">Cargando prenda...</li>
+                </ol>
+            </nav>
 
-                <!-- Cabecera Editorial del Catálogo -->
-                <div class="text-center mb-5">
-                    <span class="section-eyebrow">Haute Couture Atelier</span>
-                    <h1 class="section-heading-editorial section-title">Colección de Catálogo</h1>
-                    <p class="section-subtext">Piezas confeccionadas con encajes de origen selecto, microfibra suave y calce anatómico.</p>
-                </div>
-
-                <!-- Selector de Categorías en Chips de Línea Sutil (Outline Pills) -->
-                <div class="d-flex flex-wrap gap-2 justify-content-center mb-4">
-                    <a href="./productos.html" class="filter-pill-luxury" id="chip-cat-todos">TODOS</a>
-                    <a href="./productos.html?cat=conjuntos" class="filter-pill-luxury" id="chip-cat-conjuntos">CONJUNTOS</a>
-                    <a href="./productos.html?cat=bombachas" class="filter-pill-luxury" id="chip-cat-bombachas">BOMBACHAS</a>
-                    <a href="./productos.html?cat=hombres" class="filter-pill-luxury" id="chip-cat-hombres">MASCULINO</a>
-                    <a href="./productos.html?cat=medias" class="filter-pill-luxury" id="chip-cat-medias">MEDIAS</a>
-                </div>
-
-                <!-- Barra de Búsqueda y Ordenamiento Boutique -->
-                <div class="catalogo-toolbar-luxury mb-4">
-                    <div class="row g-3 align-items-center justify-content-between">
-                        <!-- Búsqueda en vivo minimalista -->
-                        <div class="col-12 col-md-6 col-lg-5">
-                            <div class="search-input-wrap-luxury">
-                                <i class="fas fa-search search-icon-luxury"></i>
-                                <input type="text" id="buscador-catalogo" class="form-control search-control-luxury" 
-                                       placeholder="Buscar prendas por nombre o estilo..." 
-                                       oninput="manejarBusquedaCatalogo(this.value)" autocomplete="off">
-                                <button type="button" class="btn-clear-search-luxury d-none" id="btn-limpiar-busqueda" onclick="limpiarBusquedaCatalogo()" title="Limpiar búsqueda">&times;</button>
-                            </div>
-                        </div>
-
-                        <!-- Selector de Orden Refinado -->
-                        <div class="col-12 col-md-6 col-lg-4 text-md-end">
-                            <div class="d-flex align-items-center justify-content-md-end gap-2">
-                                <label for="orden-catalogo" class="small text-uppercase fw-semibold text-nowrap mb-0" style="letter-spacing: 1px; font-size: 0.72rem; color: var(--text-taupe);">Ordenar:</label>
-                                <select id="orden-catalogo" class="form-select form-select-sm select-order-luxury" onchange="manejarOrdenamientoCatalogo(this.value)">
-                                    <option value="destacados" selected>Destacados Boutique</option>
-                                    <option value="precio-asc">Precio: Menor a Mayor</option>
-                                    <option value="precio-desc">Precio: Mayor a Menor</option>
-                                    <option value="alfabetico">Nombre: A &ndash; Z</option>
-                                </select>
-                            </div>
-                        </div>
+            <!-- Contenedor Principal de la Ficha Editorial (Inyectado por producto.js) -->
+            <div id="producto-detalle-mount">
+                <div class="product-detail-wrapper text-center py-5">
+                    <div class="spinner-border text-dark" role="status" style="width: 2.2rem; height: 2.2rem; border-width: 0.18em;">
+                        <span class="visually-hidden">Cargando pieza de alta costura...</span>
                     </div>
+                    <p class="text-muted small mt-3 text-uppercase fw-semibold" style="letter-spacing: 1.5px; font-size: 0.72rem;">
+                        Cargando pieza boutique...
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SECCIÓN COMPLETA TU LOOK (CROSS-SELLING) -->
+        <section class="cross-sell-section" id="cross-sell-section">
+            <div class="container">
+                <div class="cross-sell-header">
+                    <span class="section-eyebrow">Curated Combinations</span>
+                    <h2 class="section-heading-editorial" style="font-size: 2rem;">Completa tu Look</h2>
+                    <p class="section-subtext">Prendas seleccionadas del atelier para lograr una armonía perfecta con esta silueta.</p>
                 </div>
 
-                <!-- Filtro Dinámico de Talles en Chips Sutiles -->
-                <div class="d-flex justify-content-center align-items-center flex-column mb-4">
-                    <span class="small text-uppercase mb-2 fw-semibold" style="letter-spacing: 1.5px; font-size: 0.68rem; color: var(--text-taupe);">Talles Disponibles:</span>
-                    <div id="filtro-talles-container" class="d-flex flex-wrap gap-1.5 justify-content-center">
-                        <!-- Generado reactivamente según la categoría activa en script.js -->
-                    </div>
+                <div class="row g-3 g-md-4" id="cross-sell-mount">
+                    <!-- Dinámico inyectado por producto.js -->
                 </div>
-
-                <!-- Grilla de Tarjetas Boutique (3:4, Dual Hover & Translucent Size Overlay) -->
-                <div id="contenedor-productos" class="row g-3 g-md-4">
-                    <!-- Renderizado dinámico desde /api/productos en script.js -->
-                </div>
-
             </div>
         </section>
     </main>
@@ -177,7 +145,7 @@
 
         <!-- Body -->
         <div class="cart-drawer-body">
-            <!-- Barra de Gamificación Mayorista -->
+            <!-- Barra de Gamificación Mayorista con Micro-Animación -->
             <div id="ux-wholesale-progress-container" class="cart-wholesale-banner mb-3">
                 <div class="d-flex justify-content-between mb-1.5 small">
                     <span id="ux-progress-text" class="fw-semibold" style="font-size: 0.74rem; color: var(--text-charcoal);">Agregando prendas...</span>
@@ -194,7 +162,7 @@
             </div>
         </div>
 
-        <!-- Drawer Footer -->
+        <!-- Footer -->
         <div class="cart-drawer-footer">
             <!-- Selector de Método de Entrega en el Carrito -->
             <div class="shipping-selector-group">
@@ -270,77 +238,33 @@
         </div>
     </aside>
 
-    <!-- Botón Flotante de WhatsApp -->
-    <a href="https://wa.me/5492646121771?text=Hola,%20quisiera%20hacer%20una%20consulta%20personalizada%20sobre%20lencería%20boutique." target="_blank" class="whatsapp-flotante" title="Asesoramiento Privado por WhatsApp">
-        <i class="fab fa-whatsapp"></i>
-    </a>
-
-    <!-- Footer Haute Couture -->
-    <footer class="footer-boutique">
-        <div class="container">
-            <div class="row g-5">
-                <div class="col-md-4 text-center text-md-start">
-                    <img src="./images/LOGO.png" alt="My Bella Afrodita" style="height: 52px;" class="mb-3">
-                    <p class="small text-muted pe-md-4" style="line-height: 1.8;">
-                        Boutique de lencería y corsetería de alta gama en San Juan, Argentina. Calce anatómico, texturas nobles y atención exclusiva.
-                    </p>
-                </div>
-                <div class="col-6 col-md-4 text-center">
-                    <h5>Centro de Confianza</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" onclick="abrirCentroConfianza('higiene'); return false;">Políticas de Higiene & Cambios</a></li>
-                        <li><a href="#" onclick="abrirCentroConfianza('cuidados'); return false;">Cuidados de la Lencería</a></li>
-                        <li><a href="#" onclick="abrirCentroConfianza('faq'); return false;">Preguntas Frecuentes (FAQ)</a></li>
-                        <li><a href="#" onclick="abrirGuiaMedidas(); return false;">Guía de Medidas (cm)</a></li>
-                        <li><a href="./productos.html">Catálogo Completo</a></li>
-                    </ul>
-                </div>
-                <div class="col-6 col-md-4 text-center text-md-end">
-                    <h5>Conectar</h5>
-                    <div class="d-flex justify-content-center justify-content-md-end gap-2 mb-4">
-                        <a href="https://www.instagram.com/mybellaafrodita/" target="_blank" class="footer-social-icon" title="Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="footer-social-icon" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="footer-social-icon" title="TikTok"><i class="fab fa-tiktok"></i></a>
-                        <a href="https://wa.me/5492646121771" target="_blank" class="footer-social-icon" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                    </div>
-                    <p class="small text-muted mb-0">San Juan &bull; Despachos discretos a todo el país</p>
-                </div>
-            </div>
-            <hr class="my-5" style="border-color: rgba(197, 168, 128, 0.2);">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center small text-muted" style="letter-spacing: 1.5px; font-size: 0.72rem;">
-                <p class="mb-2 mb-md-0">&copy; 2026 MY BELLA AFRODITA. TODOS LOS DERECHOS RESERVADOS.</p>
-                <p class="mb-0 text-uppercase">Haute Lingerie & Boutique Atelier</p>
-            </div>
-        </div>
-    </footer>
-
     <!-- Modal Guía de Medidas (cm) -->
-    <div class="modal fade" id="modalGuiaMedidas" tabindex="-1" aria-labelledby="modalGuiaMedidasCatLabel" aria-hidden="true">
+    <div class="modal fade" id="modalGuiaMedidas" tabindex="-1" aria-labelledby="modalGuiaMedidasLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content modal-luxury-content">
                 <div class="modal-header modal-luxury-header">
                     <div>
                         <span class="section-eyebrow mb-1">Anatomía & Calce Perfecto</span>
-                        <h4 class="modal-luxury-title" id="modalGuiaMedidasCatLabel">Guía de Medidas (cm)</h4>
+                        <h4 class="modal-luxury-title" id="modalGuiaMedidasLabel">Guía de Medidas (cm)</h4>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body p-4">
-                    <ul class="nav nav-tabs nav-tabs-luxury mb-4" role="tablist">
+                    <ul class="nav nav-tabs nav-tabs-luxury mb-4" id="medidasTabs" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-cat-conjuntos" type="button" role="tab">Conjuntos & Corpiños</button>
+                            <button class="nav-link active" id="tab-conjuntos-btn" data-bs-toggle="tab" data-bs-target="#tab-conjuntos" type="button" role="tab">Conjuntos & Corpiños</button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-cat-bombachas" type="button" role="tab">Bombachas & Colaless</button>
+                            <button class="nav-link" id="tab-bombachas-btn" data-bs-toggle="tab" data-bs-target="#tab-bombachas" type="button" role="tab">Bombachas & Colaless</button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-cat-hombres" type="button" role="tab">Boxers Masculinos</button>
+                            <button class="nav-link" id="tab-hombres-btn" data-bs-toggle="tab" data-bs-target="#tab-hombres" type="button" role="tab">Boxers Masculinos</button>
                         </li>
                     </ul>
 
-                    <div class="tab-content">
-                        <!-- Conjuntos -->
-                        <div class="tab-pane fade show active" id="tab-cat-conjuntos" role="tabpanel">
+                    <div class="tab-content" id="medidasTabsContent">
+                        <!-- Tab Conjuntos -->
+                        <div class="tab-pane fade show active" id="tab-conjuntos" role="tabpanel">
                             <div class="table-responsive">
                                 <table class="table table-bordered table-measure-guide text-center">
                                     <thead>
@@ -387,12 +311,12 @@
                             </div>
                             <div class="measure-tip-box">
                                 <i class="fas fa-info-circle me-1" style="color: var(--gold-dark);"></i>
-                                <strong>Tip de Asesoramiento:</strong> Mide el contorno de busto pasando la cinta métrica por la parte más prominente del pecho, sin apretar.
+                                <strong>Tip de Asesoramiento:</strong> Mide el contorno de busto pasando la cinta métrica por la parte más prominente del pecho, sin apretar, llevando un corpiño sin relleno.
                             </div>
                         </div>
 
-                        <!-- Bombachas -->
-                        <div class="tab-pane fade" id="tab-cat-bombachas" role="tabpanel">
+                        <!-- Tab Bombachas -->
+                        <div class="tab-pane fade" id="tab-bombachas" role="tabpanel">
                             <div class="table-responsive">
                                 <table class="table table-bordered table-measure-guide text-center">
                                     <thead>
@@ -431,10 +355,14 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <div class="measure-tip-box">
+                                <i class="fas fa-info-circle me-1" style="color: var(--gold-dark);"></i>
+                                <strong>Importante:</strong> Nuestras puntillas y encajes cuentan con lycra elastizada de alta resiliencia para adaptarse al cuerpo sin marcar ni apretar.
+                            </div>
                         </div>
 
-                        <!-- Hombres -->
-                        <div class="tab-pane fade" id="tab-cat-hombres" role="tabpanel">
+                        <!-- Tab Hombres -->
+                        <div class="tab-pane fade" id="tab-hombres" role="tabpanel">
                             <div class="table-responsive">
                                 <table class="table table-bordered table-measure-guide text-center">
                                     <thead>
@@ -476,53 +404,53 @@
     </div>
 
     <!-- Modal Centro de Confianza, Políticas y FAQ -->
-    <div class="modal fade" id="modalCentroConfianza" tabindex="-1" aria-labelledby="modalCentroConfianzaCatLabel" aria-hidden="true">
+    <div class="modal fade" id="modalCentroConfianza" tabindex="-1" aria-labelledby="modalCentroConfianzaLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content modal-luxury-content">
                 <div class="modal-header modal-luxury-header">
                     <div>
                         <span class="section-eyebrow mb-1">Compromiso & Seguridad Boutique</span>
-                        <h4 class="modal-luxury-title" id="modalCentroConfianzaCatLabel">Centro de Confianza & Políticas</h4>
+                        <h4 class="modal-luxury-title" id="modalCentroConfianzaLabel">Centro de Confianza & Políticas</h4>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body p-4">
-                    <ul class="nav nav-tabs nav-tabs-luxury mb-4" id="confianzaCatTabs" role="tablist">
+                    <ul class="nav nav-tabs nav-tabs-luxury mb-4" id="confianzaTabs" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="tab-higiene-btn" data-bs-toggle="tab" data-bs-target="#tab-cat-higiene" type="button" role="tab">
+                            <button class="nav-link active" id="tab-higiene-btn" data-bs-toggle="tab" data-bs-target="#tab-higiene" type="button" role="tab">
                                 <i class="fas fa-stethoscope me-1"></i> Políticas de Higiene & Cambios
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="tab-cuidados-btn" data-bs-toggle="tab" data-bs-target="#tab-cat-cuidados" type="button" role="tab">
+                            <button class="nav-link" id="tab-cuidados-btn" data-bs-toggle="tab" data-bs-target="#tab-cuidados" type="button" role="tab">
                                 <i class="fas fa-hand-sparkles me-1"></i> Cuidados del Encaje & Satén
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="tab-faq-btn" data-bs-toggle="tab" data-bs-target="#tab-cat-faq" type="button" role="tab">
+                            <button class="nav-link" id="tab-faq-btn" data-bs-toggle="tab" data-bs-target="#tab-faq" type="button" role="tab">
                                 <i class="fas fa-question-circle me-1"></i> Preguntas Frecuentes (FAQ)
                             </button>
                         </li>
                     </ul>
 
-                    <div class="tab-content">
+                    <div class="tab-content" id="confianzaTabsContent">
                         <!-- Políticas de Higiene -->
-                        <div class="tab-pane fade show active" id="tab-cat-higiene" role="tabpanel">
+                        <div class="tab-pane fade show active" id="tab-higiene" role="tabpanel">
                             <div class="p-2">
                                 <h6 class="font-serif fw-bold text-dark fs-5 mb-2">Normativa Sanitaria en Prendas Íntimas</h6>
-                                <p class="text-muted small mb-3">Para garantizar la bioseguridad y salubridad de cada clienta, nos regimos bajo estrictos protocolos sanitarios:</p>
+                                <p class="text-muted small mb-3">Para garantizar la absoluta bioseguridad, salubridad y respeto de cada clienta, nos regimos bajo estrictos protocolos sanitarios de confección y comercialización:</p>
                                 
                                 <div class="row g-3 mb-3">
                                     <div class="col-md-6">
                                         <div class="p-3 border rounded-1 bg-light h-100">
                                             <div class="text-danger small fw-bold text-uppercase mb-1"><i class="fas fa-ban me-1"></i> Sin Cambio ni Devolución</div>
-                                            <p class="small text-muted mb-0">Bombachas, colaless, vedetinas, culottes, boxers y bodies íntimos <strong>no admiten cambios ni devoluciones</strong> una vez entregados o despachados, por estricta higiene sanitaria.</p>
+                                            <p class="small text-muted mb-0">Bombachas, colaless, vedetinas, culottes, boxers y bodies íntimos <strong>no admiten cambios ni devoluciones</strong> una vez entregados o despachados, por estricta higiene sanitaria y contacto directo mucoso.</p>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="p-3 border rounded-1 bg-light h-100">
                                             <div class="text-success small fw-bold text-uppercase mb-1"><i class="fas fa-check-circle me-1"></i> Conjuntos & Corsetería</div>
-                                            <p class="small text-muted mb-0">Se aceptan cambios dentro de los <strong>7 días corridos</strong> de recepcionada la compra. La prenda debe conservar su etiqueta colgante inviolada, protectores higiénicos intactos, sin aroma a perfume ni uso.</p>
+                                            <p class="small text-muted mb-0">Se aceptan cambios dentro de los <strong>7 días corridos</strong> de recepcionada la compra. La prenda debe conservar su etiqueta colgante inviolada, protectores higiénicos intactos, sin aroma a perfume, lavado ni uso.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -530,51 +458,67 @@
                         </div>
 
                         <!-- Cuidados de la Lencería -->
-                        <div class="tab-pane fade" id="tab-cat-cuidados" role="tabpanel">
+                        <div class="tab-pane fade" id="tab-cuidados" role="tabpanel">
                             <div class="p-2">
                                 <h6 class="font-serif fw-bold text-dark fs-5 mb-2">Guía Atelier: Cómo Preservar Tus Prendas de Lujo</h6>
                                 <p class="text-muted small mb-3">Los encajes, puntillas y tejidos de satén requieren un trato suave para conservar su elasticidad, color y tersura por años:</p>
                                 <ul class="list-unstyled small text-muted d-flex flex-column gap-2 mb-0">
                                     <li class="d-flex align-items-start gap-2">
                                         <i class="fas fa-tint text-primary mt-1"></i>
-                                        <span><strong>Lavado a mano en agua fría:</strong> Temperatura máxima 30°C para no debilitar las fibras elastizadas.</span>
+                                        <span><strong>Lavado a mano en agua fría:</strong> La temperatura ideal es menor a 30°C. El agua caliente debilita las fibras elastizadas y desdibuja el encaje.</span>
                                     </li>
                                     <li class="d-flex align-items-start gap-2">
                                         <i class="fas fa-pump-soap text-warning mt-1"></i>
-                                        <span><strong>Jabón neutro o delicado:</strong> Emplea jabón líquido para ropa fina o shampoo suave.</span>
+                                        <span><strong>Jabón neutro o delicado:</strong> Emplea jabón líquido neutro para ropa fina o shampoo suave para cabello. Evita lavandina o blanqueadores corrosivos.</span>
                                     </li>
                                     <li class="d-flex align-items-start gap-2">
                                         <i class="fas fa-wind text-info mt-1"></i>
-                                        <span><strong>Sin retorcer:</strong> Presiona delicadamente entre toallas secas y seca en plano a la sombra.</span>
+                                        <span><strong>Sin retorcer ni centrifugar:</strong> Escurre presionando delicadamente entre dos toallas secas. Secar en plano y siempre a la sombra.</span>
+                                    </li>
+                                    <li class="d-flex align-items-start gap-2">
+                                        <i class="fas fa-fire-extinguisher text-danger mt-1"></i>
+                                        <span><strong>Cuidado al planchar:</strong> No apliques calor directo sobre puntillas o encaje. Si es necesario en satén, hazlo con paño protector o vaporizador a distancia.</span>
                                     </li>
                                 </ul>
                             </div>
                         </div>
 
                         <!-- Preguntas Frecuentes -->
-                        <div class="tab-pane fade" id="tab-cat-faq" role="tabpanel">
-                            <div class="accordion accordion-flush" id="faqAccordionCat">
+                        <div class="tab-pane fade" id="tab-faq" role="tabpanel">
+                            <div class="accordion accordion-flush" id="faqAccordion">
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed fw-semibold small" type="button" data-bs-toggle="collapse" data-bs-target="#faq-cat-1">
-                                            ¿Cómo funciona la Venta Mayorista desde 3 prendas?
+                                        <button class="accordion-button collapsed fw-semibold small" type="button" data-bs-toggle="collapse" data-bs-target="#faq-1">
+                                            ¿Cómo funciona la Venta Mayorista a partir de 3 prendas?
                                         </button>
                                     </h2>
-                                    <div id="faq-cat-1" class="accordion-collapse collapse" data-bs-parent="#faqAccordionCat">
+                                    <div id="faq-1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                                         <div class="accordion-body small text-muted">
-                                            Combina cualquier modelo, talle y categoría de la tienda. Al acumular 3 o más prendas en tu bolsa, el sistema aplica la tarifa preferencial mayorista en cada prenda de forma instantánea.
+                                            Puedes combinar cualquier modelo, categoría y talle de la tienda. Al sumar 3 prendas o más a tu bolsa de compras, el sistema activa automáticamente la tarifa preferencial mayorista en cada artículo.
                                         </div>
                                     </div>
                                 </div>
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed fw-semibold small" type="button" data-bs-toggle="collapse" data-bs-target="#faq-cat-2">
-                                            ¿Qué opciones de pago y entrega tienen?
+                                        <button class="accordion-button collapsed fw-semibold small" type="button" data-bs-toggle="collapse" data-bs-target="#faq-2">
+                                            ¿Cuáles son los medios de pago disponibles?
                                         </button>
                                     </h2>
-                                    <div id="faq-cat-2" class="accordion-collapse collapse" data-bs-parent="#faqAccordionCat">
+                                    <div id="faq-2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                                         <div class="accordion-body small text-muted">
-                                            Aceptamos transferencia bancaria directa, efectivo contra entrega y Mercado Pago. Entregamos mediante Retiro en Showroom San Juan (Gratis), Envíos a Domicilio en San Juan ($2.500) y Envíos Nacionales a todo el país ($6.500).
+                                            Aceptamos transferencia bancaria directa (enviando comprobante), efectivo contra entrega en nuestro Showroom de San Juan, y dinero en cuenta / tarjetas mediante Mercado Pago.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed fw-semibold small" type="button" data-bs-toggle="collapse" data-bs-target="#faq-3">
+                                            ¿Cuáles son las opciones y tiempos de entrega?
+                                        </button>
+                                    </h2>
+                                    <div id="faq-3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                        <div class="accordion-body small text-muted">
+                                            Ofrecemos <strong>Retiro Gratuito en Showroom</strong> en San Juan (coordinación inmediata), <strong>Envío a Domicilio en San Juan</strong> en el día ($2.500) y <strong>Envíos Nacionales</strong> por Correo prioritario a todo el país ($6.500, demora estimada 2 a 4 días hábiles).
                                         </div>
                                     </div>
                                 </div>
@@ -586,8 +530,53 @@
         </div>
     </div>
 
+    <!-- Botón Flotante de WhatsApp -->
+    <a href="https://wa.me/5492646121771?text=Hola,%20quisiera%20hacer%20una%20consulta%20personalizada%20sobre%20lencería%20boutique." target="_blank" class="whatsapp-flotante" title="Asesoramiento Privado por WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Footer Haute Couture -->
+    <footer class="footer-boutique">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-md-4 text-center text-md-start">
+                    <img src="./images/LOGO.png" alt="My Bella Afrodita" style="height: 52px;" class="mb-3">
+                    <p class="small text-muted pe-md-4" style="line-height: 1.8;">
+                        Boutique de lencería y corsetería de alta gama en San Juan, Argentina. Calce anatómico, texturas nobles y atención exclusiva.
+                    </p>
+                </div>
+                <div class="col-6 col-md-4 text-center">
+                    <h5>Centro de Confianza</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" onclick="abrirCentroConfianza('higiene'); return false;">Políticas de Higiene & Cambios</a></li>
+                        <li><a href="#" onclick="abrirCentroConfianza('cuidados'); return false;">Cuidados de la Lencería</a></li>
+                        <li><a href="#" onclick="abrirCentroConfianza('faq'); return false;">Preguntas Frecuentes (FAQ)</a></li>
+                        <li><a href="#" onclick="abrirGuiaMedidas(); return false;">Guía de Medidas (cm)</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-md-4 text-center text-md-end">
+                    <h5>Conectar</h5>
+                    <div class="d-flex justify-content-center justify-content-md-end gap-2 mb-4">
+                        <a href="https://www.instagram.com/mybellaafrodita/" target="_blank" class="footer-social-icon" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="footer-social-icon" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="footer-social-icon" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                        <a href="https://wa.me/5492646121771" target="_blank" class="footer-social-icon" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                    <p class="small text-muted mb-0">San Juan &bull; Despachos discretos a todo el país</p>
+                </div>
+            </div>
+            <hr class="my-5" style="border-color: rgba(197, 168, 128, 0.2);">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center small text-muted" style="letter-spacing: 1.5px; font-size: 0.72rem;">
+                <p class="mb-2 mb-md-0">&copy; 2026 MY BELLA AFRODITA. TODOS LOS DERECHOS RESERVADOS.</p>
+                <p class="mb-0 text-uppercase">Haute Lingerie & Boutique Atelier</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle & Lógica Compartida -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/script.js"></script>
+    <script src="js/producto.js"></script>
 </body>
 
 </html>

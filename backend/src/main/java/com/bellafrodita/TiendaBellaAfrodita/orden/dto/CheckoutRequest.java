@@ -1,11 +1,13 @@
 package com.bellafrodita.TiendaBellaAfrodita.orden.dto;
 
 import com.bellafrodita.TiendaBellaAfrodita.orden.model.MetodoPago;
+import com.bellafrodita.TiendaBellaAfrodita.orden.model.TipoEntrega;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
@@ -24,6 +26,10 @@ public class CheckoutRequest {
     private String clienteDireccion;
 
     private MetodoPago metodoPago;
+
+    private TipoEntrega tipoEntrega;
+
+    private BigDecimal costoEnvio;
 
     @NotEmpty(message = "El carrito debe contener al menos un producto")
     @Valid

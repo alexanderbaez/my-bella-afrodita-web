@@ -140,4 +140,51 @@ public class InventarioYOrdenIntegrationTest {
 
         Assertions.assertEquals(2, varianteSinModificar.getStock());
     }
+
+    @Test
+    @DisplayName("Debe calcular correctamente el costo logístico de envío y sumarlo al total de la orden")
+    @Transactional
+    public void testCalculoLogisticoYEntrega() {
+        Producto producto = Producto.builder()
+                .nombre("Conjunto Prueba Logística")
+                .descripcion("Prueba de envío")
+                .categoria("conjuntos")
+                .precioMinorista(new BigDecimal("20000.00"))
+                .stock(true)
+                .variantes(new ArrayList<>(List.of(
+                        ProductoVarianteDto.builder()
+                                .talle("95")
+                                .stock(5)
+                                .sku("LOG-95")
+                                .build()
+                )))
+                .build();
+
+        Producto guardado = productoRepository.save(producto);
+
+        // Envío a San Juan ($2.500)
+        CheckoutRequest request = CheckoutRequest.builder()
+                .clienteNombre("Lucía Sanjuanina")
+                .clienteTelefono("2645551122")
+                .clienteDireccion("Av. Libertador 450, San Juan")
+                .tipoEntrega(com.bellafrodita.TiendaBellaAfrodita.orden.model.TipoEntrega.ENVIO_SAN_JUAN)
+                .items(List.of(
+                        CheckoutItemRequest.builder()
+                                .productoId(guardado.getId())
+                                .talle("95")
+                                .cantidad(1)
+                                .build()
+                ))
+                .build();
+
+        OrdenResponse respuesta = ordenService.crearOrden(request);
+
+        Assertions.assertNotNull(respuesta);
+        Assertions.assertEquals(com.bellafrodita.TiendaBellaAfrodita.orden.model.TipoEntrega.ENVIO_SAN_JUAN, respuesta.getTipoEntrega());
+        Assertions.assertEquals(new BigDecimal("2500.00"), respuesta.getCostoEnvio());
+        Assertions.assertEquals(new BigDecimal("20000.00"), respuesta.getSubtotal());
+        Assertions.assertEquals(new BigDecimal("22500.00"), respuesta.getTotal());
+        Assertions.assertTrue(respuesta.getWhatsappUrl().contains("TOTAL"));
+        Assertions.assertTrue(respuesta.getWhatsappUrl().contains("San+Juan"));
+    }
 }
