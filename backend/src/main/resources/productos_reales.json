@@ -1,0 +1,1014 @@
+[
+  {
+    "id": null,
+    "nombre": "Bombacha de Señora con Encaje",
+    "descripcion": "Diseño de encaje de alta calidad, tiro alto y corte clasico.",
+    "categoria": "bombachas",
+    "precioMinorista": 2500,
+    "precioMayorista": 2000,
+    "talles": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "imagenes": [
+      "../images/Bombacha de Señora con Encaje1.jpg",
+      "../images/Bombachas encaje FRENTE.png",
+      "../images/Bombacha encaje DORSAL.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Culote de Algodón",
+    "descripcion": "Modelo de tiro medio en algodón suave. Ideal para el confort de cada día.",
+    "categoria": "bombachas",
+    "precioMinorista": 2500,
+    "precioMayorista": 1500,
+    "talles": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "imagenes": [
+      "../images/Culote de Algodón1.png",
+      "../images/Culote de Algodón2.png",
+      "../images/Culote algodon FRENTE.png",
+      "../images/Culote algodon DORSAL.png"
+    ],
+    "etiqueta": null,
+    "stock": false
+  },
+  {
+    "id": null,
+    "nombre": "Culote de Encaje",
+    "descripcion": "Sin costuras, no se marca. Perfecto para sentirte comoda y sensual.",
+    "categoria": "bombachas",
+    "precioMinorista": 2500,
+    "precioMayorista": 1500,
+    "talles": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "imagenes": [
+      "../images/Culote de Encaje1.jpg",
+      "../images/Culote encaje FRENTE.png",
+      "../images/Culote encaje DORSAL.png"
+    ],
+    "etiqueta": "MÁS VENDIDO",
+    "stock": false
+  },
+  {
+    "id": null,
+    "nombre": "Less de Algodón",
+    "descripcion": "Tejido de algodón con terminaciones ultra-comoda y estampada en corazones.",
+    "categoria": "bombachas",
+    "precioMinorista": 1670,
+    "precioMayorista": 1250,
+    "talles": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "imagenes": [
+      "../images/Less de Algodón1.jpg",
+      "../images/Less de Algodón2.jpg",
+      "../images/Less algodon FRENTE.png",
+      "../images/Less algodon DORSAL.png"
+    ],
+    "etiqueta": null,
+    "stock": false
+  },
+  {
+    "id": null,
+    "nombre": "Less de Algodón y Puntilla",
+    "descripcion": "Máxima cobertura frontal con un toque de sensualidad y cómodidad.",
+    "categoria": "bombachas",
+    "precioMinorista": 2000,
+    "precioMayorista": 1500,
+    "talles": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "imagenes": [
+      "../images/Less de Algodón y Puntilla0.1.jpg",
+      "../images/Less de Algodón y Puntilla1.jpg",
+      "../images/Less de Algodón y Puntilla2.jpg",
+      "../images/Less algodon y puntilla FRENTE.png",
+      "../images/Less algodon puntilla DORSAL.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Less de Algodón en Talles Especiales",
+    "descripcion": "Con su tejido de algodon otorgan un toque de sensualidad y comodidad.",
+    "categoria": "bombachas",
+    "precioMinorista": 1670,
+    "precioMayorista": 1250,
+    "talles": [
+      "3",
+      "4",
+      "5"
+    ],
+    "imagenes": [
+      "../images/Less de Algodón en Talles Especiales1.png",
+      "../images/Less de Algodón en Talles Especiales2.png",
+      "../images/Less Frente.png",
+      "../images/Less Dorsal.png"
+    ],
+    "etiqueta": "POCO STOCK",
+    "stock": false
+  },
+  {
+    "id": null,
+    "nombre": "Less Regulables",
+    "descripcion": "Confeccionadas en algodon con encaje ofrecen un toque sexy y comodo.",
+    "categoria": "bombachas",
+    "precioMinorista": 1770,
+    "precioMayorista": 1240,
+    "talles": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "imagenes": [
+      "../images/Less Regulables3.png",
+      "../images/Less Regulables1.jpeg",
+      "../images/Less Regulables2.jpeg",
+      "../images/Less regulable FRENTE.png"
+    ],
+    "etiqueta": null,
+    "stock": false
+  },
+  {
+    "id": null,
+    "nombre": "Bombachas de Algodon con detalles de encaje",
+    "descripcion": "Confeccionadas en algodon con encaje ofrecen un toque sexy y comodo.",
+    "categoria": "bombachas",
+    "precioMinorista": 2500,
+    "precioMayorista": 2000,
+    "talles": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "imagenes": [
+      "../images/Bombachas de Algodon con detalles de encaje1.jpg",
+      "../images/Bombachas-de-Algodon-con-detalles-de-encaje1 (1).png",
+      "../images/Bombachas-de-Algodon-con-detalles-de-encaje1.png",
+      "../images/Bombachas-de-Algodon-con-detalles-de-encaje3.png",
+      "../images/Bombachas-de-Algodon-con-detalles-de-encaje4.png",
+      "../images/Bombachas-de-Algodon-con-detalles-de-encaje5.png",
+      "../images/Bombachas-de-Algodon-con-detalles-de-encaje6.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Less Calvin Klein",
+    "descripcion": "Confeccionadas en algodon con encaje ofrecen un toque sexy y comodo.",
+    "categoria": "bombachas",
+    "precioMinorista": 2000,
+    "precioMayorista": 1740,
+    "talles": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "imagenes": [
+      "../images/Less Calvin Klein1.jpeg",
+      "../images/Less Calvin Klein2.png",
+      "../images/Less-calvin-klein2.png",
+      "../images/Less-calvin-klein3.png",
+      "../images/Less-calvin-klein4.png",
+      "../images/Less-calvin-klein5.png"
+    ],
+    "etiqueta": "TENDENCIA",
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Vedetina",
+    "descripcion": "Confeccionadas en algodon con encaje ofrecen un toque sexy y comodo.",
+    "categoria": "bombachas",
+    "precioMinorista": 2300,
+    "precioMayorista": 1700,
+    "talles": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "imagenes": [
+      "../images/Vedetina1.jpg",
+      "../images/vedetina1.png",
+      "../images/vedetina2.png",
+      "../images/vedetina3.png",
+      "../images/vedetina4.png",
+      "../images/vedetina5.png",
+      "../images/vedetina6.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Boxers Dama con Faja",
+    "descripcion": "Confeccionadas en algodon con encaje ofrecen un toque sexy y comodo.",
+    "categoria": "bombachas",
+    "precioMinorista": 4500,
+    "precioMayorista": 3000,
+    "talles": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "imagenes": [
+      "../images/Boxers Dama con Faja0.1.png",
+      "../images/Boxers Dama con Faja1.png",
+      "../images/Boxers Dama con Faja2.png",
+      "../images/Boxers Dama con Faja3.png",
+      "../images/boxer-dama-con-faja1.png",
+      "../images/boxer-dama-con-faja2.png"
+    ],
+    "etiqueta": null,
+    "stock": false
+  },
+  {
+    "id": null,
+    "nombre": "Bombacha Juvenil",
+    "descripcion": "Confeccionadas en algodon con diseño de guerreras K-pop",
+    "categoria": "bombachas",
+    "precioMinorista": 1700,
+    "precioMayorista": 1300,
+    "talles": [
+      "1",
+      "2"
+    ],
+    "imagenes": [
+      "../images/Bombacha-juvenil.jpg"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Smart Sexi",
+    "descripcion": "Confeccionadas en morley, brinda confort, Disponibles en colores tendencia",
+    "categoria": "bombachas",
+    "precioMinorista": 2250,
+    "precioMayorista": 1860,
+    "talles": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "imagenes": [
+      "../images/Smart Sexi1.png",
+      "../images/Smart Sexi.jpg"
+    ],
+    "etiqueta": null,
+    "stock": false
+  },
+  {
+    "id": null,
+    "nombre": "Culote Less Con Faja",
+    "descripcion": "Confeccionadas en morley, brinda confort, Disponibles en colores tendencia",
+    "categoria": "bombachas",
+    "precioMinorista": 3000,
+    "precioMayorista": 2000,
+    "talles": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "imagenes": [
+      "../images/Culote Less Con Faja0.1.png",
+      "../images/Culote Less Con Faja1.png",
+      "../images/Culote Less Con Faja2.png",
+      "../images/Culote Less Faja1.jpg",
+      "../images/Culote Less Faja2.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Boxers De Dama",
+    "descripcion": "Boxers de dama hechos de suave algodón con detalles de puntilla, ideales para el uso diario.",
+    "categoria": "bombachas",
+    "precioMinorista": 4000,
+    "precioMayorista": 3000,
+    "talles": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "imagenes": [
+      "../images/BoxersDeDama1.jpg",
+      "../images/BoxerDeDama2.jpg",
+      "../images/BoxersDeDama3.jpg",
+      "../images/BoxersDeDama4.jpg"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Less Taller Especiales",
+    "descripcion": "Hechos de suave algodón con detalles de puntilla, ideales para el uso diario",
+    "categoria": "bombachas",
+    "precioMinorista": 4500,
+    "precioMayorista": 3000,
+    "talles": [
+      "3",
+      "4",
+      "5"
+    ],
+    "imagenes": [
+      "../images/Less Taller Especiales1.jpg",
+      "../images/Less Taller Especiales2.jpg",
+      "../images/Less Taller Especiales3.jpg",
+      "../images/Less Taller Especiales4.jpg"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Red Velvet",
+    "descripcion": "Colección Intimate La sofisticación del encaje se combina con un diseño tipo longline para ofrecerte un ajuste impecable. El conjunto Red Velvet destaca por su acabado artesanal y tirantes ajustables, pensado para quienes buscan sentirse especiales en su día a día sin perder el confort.",
+    "categoria": "conjuntos",
+    "precioMinorista": 15000,
+    "precioMayorista": 12000,
+    "talles": [
+      "85",
+      "90",
+      "95",
+      "100"
+    ],
+    "imagenes": [
+      "../images/Red Velvet0.jpeg",
+      "../images/Red Velvet1.jpeg",
+      "../images/Red Velvet2.jpeg",
+      "../images/Red Velvet3.jpeg"
+    ],
+    "etiqueta": "IMPERDIBLE",
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Combo Alo - Remera + top + calza + medias",
+    "descripcion": "Combo de lycra que incluye remera, top, medias y short de lycra sin frunce.",
+    "categoria": "conjuntos",
+    "precioMinorista": 25000,
+    "precioMayorista": 20000,
+    "talles": [
+      "85",
+      "90",
+      "95",
+      "100"
+    ],
+    "imagenes": [
+      "../images/Combo Alo - Remera + top + calza + medias1.jpg",
+      "../images/Combo Alo - Remera + top + calza + medias2.jpg",
+      "../images/Combo Alo - Remera + top + calza + medias3.jpg",
+      "../images/Combo alo 1.png",
+      "../images/Combo alo 2.png"
+    ],
+    "etiqueta": "ÚLTIMOS COMBOS",
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Conjunto D'lirio con tazas desmontables",
+    "descripcion": "Diseño del top de morley con tazas desmontables y calza con frunce, faja y levanta gluteos.",
+    "categoria": "conjuntos",
+    "precioMinorista": 10500,
+    "precioMayorista": 8500,
+    "talles": [
+      "85",
+      "90",
+      "95",
+      "100"
+    ],
+    "imagenes": [
+      "../images/Conjunto D'lirio con tazas desmontables1.png",
+      "../images/Conjunto D'lirio con tazas desmontables2.png",
+      "../images/Conjunto D_lirio top + calza FRENTE 1.png",
+      "../images/Conjunto D_lirio top + calza FRENTE 2.png",
+      "../images/Conjunto D_lirio top + calza DORSAL 2.png"
+    ],
+    "etiqueta": null,
+    "stock": false
+  },
+  {
+    "id": null,
+    "nombre": "Conjunto Persefone",
+    "descripcion": "La base perfecta. Cómodo morley y puntilla, ideal para usar bajo cualquier prenda.",
+    "categoria": "conjuntos",
+    "precioMinorista": 7000,
+    "precioMayorista": 6330,
+    "talles": [
+      "85",
+      "90",
+      "95",
+      "100"
+    ],
+    "imagenes": [
+      "../images/Conjunto Persefone1.jpg",
+      "../images/Conjunto parsefone FRENTE.png",
+      "../images/Conjunto parsefone DORSAL.png",
+      "../images/conjunto parsefone FRENTE 2.png",
+      "../images/conjunto parsefone DORSAL 2.png"
+    ],
+    "etiqueta": null,
+    "stock": false
+  },
+  {
+    "id": null,
+    "nombre": "Conjunto Roma",
+    "descripcion": "Copas triangulares de algodón con delicados detalle de encaje. Ideal para la mujer romantica.",
+    "categoria": "conjuntos",
+    "precioMinorista": 10000,
+    "precioMayorista": 8000,
+    "talles": [
+      "85",
+      "90",
+      "95",
+      "100"
+    ],
+    "imagenes": [
+      "../images/Conjunto Roma FRENTE.png",
+      "../images/Conjunto roma DORSAL.png"
+    ],
+    "etiqueta": null,
+    "stock": false
+  },
+  {
+    "id": null,
+    "nombre": "Calza (Lycra)",
+    "descripcion": "Color de tendencia. Confeccionado en lycra, sin frunce. Ideal para confort y sosten al entrenar.",
+    "categoria": "conjuntos",
+    "precioMinorista": 4500,
+    "precioMayorista": 3500,
+    "talles": [
+      "85",
+      "90",
+      "95",
+      "100"
+    ],
+    "imagenes": [
+      "../images/Calza (Lycra)1.png",
+      "../images/Conjunto Top + calza  1.png",
+      "../images/Conjunto Top + calza  2.png",
+      "../images/Conjunto Top + calza  3.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Conjunto Top + Calza (Negro)",
+    "descripcion": "Ultimos en color negro. De morley con un top de tazas desmontables y calza con frunce.",
+    "categoria": "conjuntos",
+    "precioMinorista": 10000,
+    "precioMayorista": 8000,
+    "talles": [
+      "85",
+      "90",
+      "95",
+      "100"
+    ],
+    "imagenes": [
+      "../images/Conjunto Top + Calza (Negro)1.png",
+      "../images/Conjunto Top + calza con frunce.png"
+    ],
+    "etiqueta": "VUELA",
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Conjunto Top + Pollera Pantalon",
+    "descripcion": "Color de tendencia. Confeccionado en lycra, con un diseño que ofrece elegancia y comodidad.",
+    "categoria": "conjuntos",
+    "precioMinorista": 16500,
+    "precioMayorista": null,
+    "talles": [
+      "85",
+      "90",
+      "95",
+      "100"
+    ],
+    "imagenes": [
+      "../images/Conjunto Top + Pollera Pantalon0.1.png",
+      "../images/Conjunto top + pollera pantalon 1.png",
+      "../images/Conjunto top + pollera pantalon 2.png",
+      "../images/Conjunto top + pollera pantalon 3.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Conjunto Vicblack",
+    "descripcion": "Colores de la nueva temporada. Con un diseño comodo en morley con detalles de puntilla.",
+    "categoria": "conjuntos",
+    "precioMinorista": 7500,
+    "precioMayorista": 6450,
+    "talles": [
+      "85",
+      "90",
+      "95",
+      "100"
+    ],
+    "imagenes": [
+      "../images/Conjunto Vicblack1.png",
+      "../images/Conjunto Vicblack2.jpg",
+      "../images/Conjunto vicblack FRENTE 1.png",
+      "../images/Conjunto-Vicblack-detalle1.png",
+      "../images/Conjunto-Vicblack-detalle2.png",
+      "../images/Conjunto-Vicblack-detalle3.png",
+      "../images/Conjunto vicblack DORSAL 1.png",
+      "../images/Conjunto vicblack FRENTE 2.png",
+      "../images/Conjunto vicblack FRENTE 3.png",
+      "../images/Conjunto vicblack FRENTE 4.png",
+      "../images/Conjunto vicblack FRENTE 5.png",
+      "../images/Conjunto vicblack FRENTE 6.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Conjunto Inicial Nena",
+    "descripcion": "Colores de la nueva temporada. Con un diseño comodo en morley con detalles de puntilla.",
+    "categoria": "conjuntos",
+    "precioMinorista": 3800,
+    "precioMayorista": 3200,
+    "talles": [
+      "10",
+      "12",
+      "14",
+      "16"
+    ],
+    "imagenes": [
+      "../images/Conjunto Inicial Nena1.jpeg",
+      "../images/Conjunto Inicial Nena2.jpeg",
+      "../images/Conjunto-inicial-nena1.png",
+      "../images/Conjunto-inicial-nena2.png",
+      "../images/Conjunto-inicial-nena3.png",
+      "../images/Conjunto-inicial-nena4.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Top Inicial Nena",
+    "descripcion": "Colores de la nueva temporada. Con un diseño comodo en morley con detalles de puntilla.",
+    "categoria": "conjuntos",
+    "precioMinorista": 2000,
+    "precioMayorista": 1740,
+    "talles": [
+      "10",
+      "12",
+      "14",
+      "16"
+    ],
+    "imagenes": [
+      "../images/Topcito-inicial-nena1.png",
+      "../images/Topcito-inicial-nena2.png",
+      "../images/Topcito-inicial-nena3.png",
+      "../images/Topcito-inicial-nena4.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Conjunto Deportivo",
+    "descripcion": "Colores de la nueva temporada. Con un diseño comodo en morley con detalles de puntilla y tazas desmontables.",
+    "categoria": "conjuntos",
+    "precioMinorista": 7000,
+    "precioMayorista": 6330,
+    "talles": [
+      "85",
+      "90",
+      "95",
+      "100"
+    ],
+    "imagenes": [
+      "../images/Conjunto Deportivo1.jpeg",
+      "../images/Conjunto Deportivo2.jpeg",
+      "../images/Conjunto Deportivo3.jpeg",
+      "../images/1.1.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Sports Bell",
+    "descripcion": "Corpiño importado armado sin aro y con 4 broches para mayor ajuste y comodidad.",
+    "categoria": "conjuntos",
+    "precioMinorista": 6500,
+    "precioMayorista": 5880,
+    "talles": [
+      "85",
+      "90",
+      "95",
+      "100"
+    ],
+    "imagenes": [
+      "../images/Sports Bell1.jpg",
+      "../images/Sports Bell2.jpg",
+      "../images/Sports Bell3.jpg",
+      "../images/Sports Bell4.jpg",
+      "../images/Sports-Bell1.png",
+      "../images/Sports-Bell2.png",
+      "../images/Sports-Bell2.2.png",
+      "../images/Sports-Bell3.png",
+      "../images/Sports-Bell4.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Top Segunda Piel",
+    "descripcion": "Su tela premium se adapta a cada uno de tus movimientos sin marcar ni lastimar.",
+    "categoria": "conjuntos",
+    "precioMinorista": 6000,
+    "precioMayorista": 4500,
+    "talles": [
+      "85",
+      "90",
+      "95",
+      "100"
+    ],
+    "imagenes": [
+      "../images/Top Segunda Piel1.png",
+      "../images/Top Segunda Piel2.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Top Deportivo Curvas Reales",
+    "descripcion": "¡Tu nuevo aliado diario! Un top pensado para darte la máxima libertad y un calce perfecto!",
+    "categoria": "conjuntos",
+    "precioMinorista": 7000,
+    "precioMayorista": 5500,
+    "talles": [
+      "85",
+      "90",
+      "95",
+      "100"
+    ],
+    "imagenes": [
+      "../images/Top Deportivo Curvas Reales1.jpg",
+      "../images/Top Deportivo Curvas Reales2.jpg",
+      "../images/Top Deportivo Curvas Reales3.jpg"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Boxer uomo",
+    "descripcion": "Boxer de algodón con lycra, elástico suave con logo de marca.",
+    "categoria": "hombres",
+    "precioMinorista": 4000,
+    "precioMayorista": 3000,
+    "talles": [
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "imagenes": [
+      "../images/Boxer uomo1.jpg",
+      "../images/Boxer uomo2.png",
+      "../images/Boxer uomo3.png",
+      "../images/Boxer uomo4.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Boxers de Algodón Zantino",
+    "descripcion": "Boxer de algodón con lycra, elástico suave con logo de marca.",
+    "categoria": "hombres",
+    "precioMinorista": 2200,
+    "precioMayorista": 1800,
+    "talles": [
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "imagenes": [
+      "../images/Boxers Niño1.jpg",
+      "../images/Boxers Niño2.png",
+      "../images/Boxers Niño3.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Slip Algodón Clásico",
+    "descripcion": "Corte clásico, máxima comodidad y ajuste perfecto.",
+    "categoria": "hombres",
+    "precioMinorista": 3000,
+    "precioMayorista": 2000,
+    "talles": [
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "imagenes": [
+      "../images/Slip Algodón Clásico1.png",
+      "../images/Slip Adulto1.jpg",
+      "../images/Slip Adulto2.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Slip Algodón niño",
+    "descripcion": "Corte clásico, máxima comodidad y ajuste perfecto.",
+    "categoria": "hombres",
+    "precioMinorista": 1833,
+    "precioMayorista": 1000,
+    "talles": [
+      "4",
+      "6",
+      "8",
+      "10",
+      "12"
+    ],
+    "imagenes": [
+      "../images/Slip Niño1.jpg",
+      "../images/Slip Niño2.png",
+      "../images/Slip Niño3.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Medias Escolares",
+    "descripcion": "Par de medias escolares blanca",
+    "categoria": "medias",
+    "precioMinorista": 2000,
+    "precioMayorista": null,
+    "talles": [
+      "ÚNICO"
+    ],
+    "imagenes": [
+      "../images/Medias-escolares-blanca.jpg"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Pack Medias Alo Dama (x3)",
+    "descripcion": "Pack de 3 pares de medias con orejitas para niños",
+    "categoria": "medias",
+    "precioMinorista": 5500,
+    "precioMayorista": null,
+    "talles": [
+      "ÚNICO"
+    ],
+    "imagenes": [
+      "../images/Medias-Alo-dama.jpg"
+    ],
+    "etiqueta": null,
+    "stock": false
+  },
+  {
+    "id": null,
+    "nombre": "Pack Medias Con Orejitas Niños (x3)",
+    "descripcion": "Pack de 3 pares de medias con orejitas para niños",
+    "categoria": "medias",
+    "precioMinorista": 1500,
+    "precioMayorista": null,
+    "talles": [
+      "INFANTIL"
+    ],
+    "imagenes": [
+      "../images/Medias con orejita1.1.png",
+      "../images/medias-orejita2.png",
+      "../images/medias-orejita3.png",
+      "../images/medias-orejita4.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Medias con dibujitos",
+    "descripcion": "Medias de algodón con tus dibujito preferido.",
+    "categoria": "medias",
+    "precioMinorista": 1500,
+    "precioMayorista": null,
+    "talles": [
+      "ÚNICO"
+    ],
+    "imagenes": [
+      "../images/medias-niñas.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Medias Sport Girls Socks",
+    "descripcion": "Diseño urbano, suaves y cómodas para el uso diario.",
+    "categoria": "medias",
+    "precioMinorista": 1500,
+    "precioMayorista": null,
+    "talles": [
+      "INFANTIL"
+    ],
+    "imagenes": [
+      "../images/medias-femenina.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Medias Fasihon women's Socks",
+    "descripcion": "Diseño urbano, suaves y cómodas para el uso diario.",
+    "categoria": "medias",
+    "precioMinorista": 1500,
+    "precioMayorista": null,
+    "talles": [
+      "ÚNICO"
+    ],
+    "imagenes": [
+      "../images/medias-femenina2.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Medias Women's Socks",
+    "descripcion": "Diseño urbano, suaves y cómodas para el uso diario.",
+    "categoria": "medias",
+    "precioMinorista": 1500,
+    "precioMayorista": null,
+    "talles": [
+      "ÚNICO"
+    ],
+    "imagenes": [
+      "../images/medias-femenina-sport.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Medias Men",
+    "descripcion": "Diseño urbano, suaves y super balance.",
+    "categoria": "medias",
+    "precioMinorista": 1500,
+    "precioMayorista": null,
+    "talles": [
+      "ÚNICO"
+    ],
+    "imagenes": [
+      "../images/medias-hombres.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Medias Men's Socks",
+    "descripcion": "Diseño urbano, suaves y cómodas para el uso diario.",
+    "categoria": "medias",
+    "precioMinorista": 1500,
+    "precioMayorista": null,
+    "talles": [
+      "ÚNICO"
+    ],
+    "imagenes": [
+      "../images/medias-hombre.sport.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Medias For Girls Socks",
+    "descripcion": "Diseño urbano, suaves y cómodas para el uso diario.",
+    "categoria": "medias",
+    "precioMinorista": 1500,
+    "precioMayorista": null,
+    "talles": [
+      "INFANTIL"
+    ],
+    "imagenes": [
+      "../images/Medias Niña1.png",
+      "../images/Medias Niña2.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Medias For Boys Socks",
+    "descripcion": "Diseño urbano, suaves y cómodas para el uso diario.",
+    "categoria": "medias",
+    "precioMinorista": 1500,
+    "precioMayorista": null,
+    "talles": [
+      "INFANTIL"
+    ],
+    "imagenes": [
+      "../images/Medias Niño1.png",
+      "../images/Medias niño2.png"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Medias Termicas x3",
+    "descripcion": "El aliado definitivo contra el frío! Diseñadas especialmente para mantener tus pies abrigados",
+    "categoria": "medias",
+    "precioMinorista": 6000,
+    "precioMayorista": null,
+    "talles": [
+      "ÚNICO"
+    ],
+    "imagenes": [
+      "../images/Medias Termicas1.jpeg",
+      "../images/Medias Termicas2.jpeg"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "Medias de Vestir x3",
+    "descripcion": "Cómodas, elegantes y con el calce perfecto para lucir impecable en cualquier ocasión formal.",
+    "categoria": "medias",
+    "precioMinorista": 4000,
+    "precioMayorista": null,
+    "talles": [
+      "ÚNICO"
+    ],
+    "imagenes": [
+      "../images/Medias de Vestir x31.jpeg",
+      "../images/Medias de Vestir x32.jpeg"
+    ],
+    "etiqueta": null,
+    "stock": true
+  },
+  {
+    "id": null,
+    "nombre": "medias térmicas x2",
+    "descripcion": "El secreto de su calidez  está en su interior: una capa de piel  ultra suave que abraza tus pies con suavidad.",
+    "categoria": "medias",
+    "precioMinorista": 2500,
+    "precioMayorista": null,
+    "talles": [
+      "ÚNICO"
+    ],
+    "imagenes": [
+      "../images/medias térmicas x21.jpeg",
+      "../images/medias térmicas x22.jpeg"
+    ],
+    "etiqueta": null,
+    "stock": true
+  }
+]

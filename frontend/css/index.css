@@ -1,0 +1,275 @@
+/* ==========================================================================
+   INDEX.CSS - MY BELLA AFRODITA (Versión Boutique Luxury 2026 - FULL)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Roboto:wght@300;400;500;700&display=swap');
+
+/* --- PANEL DE CONTROL DE COLORES --- */
+:root {
+    /* Mantenemos tus variables actuales */
+    --brand-primary: #B794C9;        /* Lavanda Pastel */
+    --brand-accent: #DDA0C2;         /* Rosa Viejo */
+    --brand-bg: #F4F1F4;             /* Gris Nube */
+    --brand-nude: #E7D8E6;
+    --text-main: #555555;
+    --white-pure: #ffffff;
+    --transition-smooth: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    
+    --color-pasión: #B794C9;
+    --color-rosa-suave: #F4F1F4;
+    --color-terracota-pasión: #DDA0C2;
+}
+
+body {
+    /* Creamos el degradado: Rosa viejo -> Lavanda -> Gris Nube */
+    background: linear-gradient(135deg, #FDF4FF 0%, #E7D8E6 50%, #F4F1F4 100%);
+    background-attachment: fixed; /* Para que el degrade se vea suave al bajar */
+    min-height: 100vh;
+    margin: 0;
+    color: var(--text-main);
+}
+
+
+
+
+
+h1, h2, h3, h4, h5 {
+    font-family: 'Playfair Display', serif;
+    color: var(--brand-primary);
+}
+
+.font-playfair { font-family: 'Playfair Display', serif; }
+.italic { font-style: italic; }
+
+/* --- NAV BAR --- */
+#mainNav {
+    background-color: var(--brand-primary) !important; 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.navbar-brand-custom {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: var(--white-pure) !important; 
+    text-decoration: none;
+}
+
+#mainNav .nav-link {
+    color: var(--white-pure) !important;
+    font-weight: 500;
+}
+
+#mainNav .navbar-collapse {
+    background-color: var(--brand-primary);
+    padding: 10px 20px;
+}
+
+/* --- HERO BANNER --- */
+.hero-banner {
+    height: 90vh; 
+    background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('../images/portada.jpg') no-repeat center center/cover;
+    position: relative;
+    display: flex;
+    align-items: center;
+    border-bottom: 5px solid var(--brand-accent);
+}
+
+.hero-text-box-left {
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 40px;
+    border-radius: 0; 
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); 
+    margin-left: 5%;
+    max-width: 550px;
+    backdrop-filter: blur(5px);
+}
+
+/* --- SECCIONES DE FONDO DIVIDIDO --- */
+/* Forzamos que las secciones respeten su color de fondo del HTML */
+.bg-white { 
+    background-color: var(--white-pure) !important; 
+}
+
+#que-buscas-hoy-section {
+    position: relative;
+    z-index: 1;
+}
+
+/* --- CATEGORÍAS (Burbujas/Tarjetas de Inicio) --- */
+.category-bubble {
+    background-size: cover;
+    background-position: center;
+    transition: var(--transition-smooth);
+    text-decoration: none;
+    position: relative;
+}
+
+.group-hover-zoom {
+    overflow: hidden;
+    position: relative;
+}
+
+.group-hover-zoom:hover .category-bubble {
+    transform: scale(1.05);
+}
+
+.bubble-content {
+    transition: background 0.4s ease;
+}
+
+/* --- TARJETAS DE PRODUCTOS (Para Catálogo) --- */
+.product-card {
+    border: none !important;
+    border-radius: 0 !important;
+    background: var(--white-pure);
+    padding: 15px;
+    transition: var(--transition-smooth);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 25px 50px rgba(140, 0, 44, 0.15) !important;
+}
+
+.card-img-container {
+    height: 450px; 
+    overflow: hidden;
+    position: relative;
+    background: #fdfdfd;
+}
+
+.card-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Cambia a 'contain' si las fotos se cortan mucho */
+    filter: brightness(0.97);
+    transition: transform 1.2s ease;
+}
+
+.product-card:hover .card-img-container img {
+    transform: scale(1.08);
+}
+
+/* --- BOTONES --- */
+.btn-add-to-cart, .btn-danger {
+    background-color: var(--brand-primary);
+    color: var(--white-pure);
+    border: none;
+    border-radius: 0;
+    padding: 14px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: var(--transition-smooth);
+}
+
+.btn-add-to-cart:hover, .btn-danger:hover {
+    background-color: #000000;
+    color: var(--white-pure);
+}
+
+/* --- FOOTER --- */
+.footer-custom {
+    background-color: #1a1a1a;
+    color: var(--white-pure);
+    padding: 4rem 0;
+}
+
+.footer-custom a {
+    transition: color 0.3s ease;
+}
+
+.footer-custom a:hover {
+    color: var(--brand-nude) !important;
+}
+
+/* --- WHATSAPP --- */
+.whatsapp-flotante {
+    background-color: #25d366; 
+    position: fixed;
+    width: 65px; height: 65px;
+    bottom: 30px; right: 30px;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    z-index: 1000;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+
+.whatsapp-flotante:hover {
+    transform: scale(1.1);
+    color: white;
+}
+
+/* --- MEDIA QUERIES --- */
+@media (max-width: 991.98px) {
+    .card-img-container { height: 400px; }
+    .hero-text-box-left { 
+        margin: 20px auto; 
+        width: 95%; 
+        padding: 25px;
+        text-align: center;
+    }
+    .hero-banner {
+        background-position: center;
+    }
+}
+
+/* --- 2. SECCIÓN "QUÉ BUSCAS HOY?" Y CATEGORÍAS --- */
+.card-link-interactive, .category-bubble {
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    text-align: center;
+    height: 400px;
+    text-decoration: none;
+    color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    transition: var(--transition-smooth);
+}
+
+.card-link-interactive:hover, .category-bubble:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(140, 0, 44, 0.3);
+}
+
+.card-body-interactive, .bubble-content {
+    position: absolute;
+    inset: 0;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5); /* Overlay oscuro inicial */
+    transition: var(--transition-smooth);
+}
+
+.card-link-interactive:hover .card-body-interactive, 
+.category-bubble:hover .bubble-content {
+    background-color: rgba(140, 0, 44, 0.7); /* Overlay Borgoña */
+}
+
+#mayorista-alert {
+    animation: fadeInUp 0.5s ease-out;
+    border-left: 5px solid #1e7e34 !important;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
