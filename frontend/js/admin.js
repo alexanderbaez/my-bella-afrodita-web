@@ -5,8 +5,11 @@
 const API_BASE = 'http://localhost:8080/api/productos';
 const AUTH_VERIFY = 'http://localhost:8080/api/auth/verify';
 
-// Credenciales por defecto (admin / admin123)
-let authHeader = sessionStorage.getItem('myBellaAdminAuth') || 'Basic ' + btoa('admin:admin123');
+// Verificación de Sesión Administrativa
+let authHeader = sessionStorage.getItem('myBellaAdminAuth');
+if (!authHeader) {
+    window.location.href = './login.html';
+}
 
 let listaProductos = [];
 let modalInstancia = null;
@@ -33,15 +36,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (inputBusqueda) inputBusqueda.addEventListener('input', filtrarYRenderizar);
     if (selectCategoria) selectCategoria.addEventListener('change', filtrarYRenderizar);
 
-    // Botón de credenciales
-    const btnAuth = document.getElementById('btn-config-auth');
-    if (btnAuth) {
-        btnAuth.addEventListener('click', configurarCredenciales);
-    }
-
     // Cargar productos
     cargarProductos();
 });
+
+window.cerrarSesionAdmin = function () {
+    sessionStorage.removeItem('myBellaAdminAuth');
+    sessionStorage.removeItem('myBellaAdminUser');
+    window.location.href = './login.html';
+};
 
 // --- OBTENER PRODUCTOS DESDE LA API ---
 async function cargarProductos() {

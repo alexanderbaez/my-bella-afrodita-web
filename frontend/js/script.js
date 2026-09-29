@@ -1,24 +1,22 @@
 /* ==========================================================================
-   LÓGICA DE NEGOCIO OPTIMIZADA V2 - MY BELLA AFRODITA (BOUTIQUE UX STYLE)
+   LÓGICA DE NEGOCIO Y EXPERIENCIA DE COMPRA - MY BELLA AFRODITA
+   (Estándar Boutique Luxury 2026 - Zara / Savage X Fenty UX Style)
    ========================================================================== */
 
 const WHATSAPP_NUMBER = '5492646121771';
 const API_URL = 'http://localhost:8080/api/productos';
+
 let PRODUCTOS = [];
 window.PRODUCTOS = PRODUCTOS;
 let carrito = JSON.parse(localStorage.getItem('myBellaCarrito')) || [];
-let avisoMayoristaMostrado = JSON.parse(localStorage.getItem('avisoMayoristaMostrado')) || false;
-let talleFiltroActivo = 'TODOS'; // Estado global del filtro de talles
+let talleFiltroActivo = 'TODOS';
+let categoriaActiva = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // Aplicar el fondo del :root al body
-    document.body.style.backgroundColor = "var(--brand-bg)";
-
     actualizarContadorUI();
 
-    const contenedor = document.getElementById("contenedor-productos");
-
     // 1. CARGA ASÍNCRONA DE PRODUCTOS DESDE LA API SPRING BOOT / MYSQL
+    const contenedor = document.getElementById("contenedor-productos");
     try {
         if (contenedor) {
             contenedor.innerHTML = `
@@ -26,13 +24,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <div class="spinner-border text-dark" role="status" style="width: 2.2rem; height: 2.2rem; border-width: 0.18em;">
                         <span class="visually-hidden">Cargando colección...</span>
                     </div>
-                    <p class="text-muted small mt-2 text-uppercase fw-semibold" style="letter-spacing: 1.5px; font-size: 0.7rem;">Cargando catálogo...</p>
+                    <p class="text-muted small mt-2 text-uppercase fw-semibold" style="letter-spacing: 1.5px; font-size: 0.72rem;">Cargando colección boutique...</p>
                 </div>`;
         }
 
         const response = await fetch(API_URL);
         if (!response.ok) {
-            throw new Error(`Error en servidor: ${response.status}`);
+            throw new Error(`Error HTTP: ${response.status}`);
         }
         PRODUCTOS = await response.json();
         window.PRODUCTOS = PRODUCTOS;
@@ -42,76 +40,358 @@ document.addEventListener('DOMContentLoaded', async () => {
             contenedor.innerHTML = `
                 <div class="col-12 text-center py-5">
                     <i class="fas fa-exclamation-circle text-danger fa-2x mb-3"></i>
-                    <h5 class="fw-bold text-dark">No pudimos conectar con el catálogo</h5>
-                    <p class="text-muted small">Por favor, confirma que el servidor backend de Spring Boot esté en ejecución.</p>
+                    <h5 class="fw-bold text-dark font-playfair">No pudimos conectar con el catálogo</h5>
+                    <p class="text-muted small">Por favor, confirma que el servidor de Tienda Bella Afrodita esté activo en el puerto 8080.</p>
                 </div>`;
         }
         return;
     }
 
     if (contenedor) {
-        // 2. CAPTURAMOS LA CATEGORÍA DESDE LA URL (ej: catalogo.html?cat=bombachas)
+        // 2. CAPTURAMOS LA CATEGORÍA DESDE LA URL (ej: productos.html?cat=conjuntos)
         const urlParams = new URLSearchParams(window.location.search);
-        const categoriaBuscada = urlParams.get('cat'); 
+        categoriaBuscada = urlParams.get('cat');
+        categoriaActiva = categoriaBuscada;
 
-        // 3. CAMBIAMOS EL TÍTULO VISUAL SEGÚN LA CATEGORÍA
+        // 3. CAMBIAMOS EL TÍTULO Y SUBTÍTULO VISUAL SEGÚN LA CATEGORÍA
         const tituloSeccion = document.querySelector('.section-title');
         const txtSubtitulo = document.querySelector('.text-uppercase.small.fw-bold');
         const breadcrumbActive = document.querySelector('.breadcrumb-item.active');
 
         if (categoriaBuscada) {
-            if (categoriaBuscada === 'bombachas') {
+            const catNorm = categoriaBuscada.toLowerCase();
+            if (catNorm === 'bombachas') {
                 if (tituloSeccion) tituloSeccion.innerText = "Bombachas, Colaless y Vedetinas";
                 if (txtSubtitulo) txtSubtitulo.innerText = "Colección Íntima";
                 if (breadcrumbActive) breadcrumbActive.innerText = "Bombachas";
                 document.title = "Bombachas - My Bella Afrodita";
-            } else if (categoriaBuscada === 'conjuntos') {
+            } else if (catNorm === 'conjuntos') {
                 if (tituloSeccion) tituloSeccion.innerText = "Conjuntos Exclusivos";
                 if (txtSubtitulo) txtSubtitulo.innerText = "Colección Premium";
                 if (breadcrumbActive) breadcrumbActive.innerText = "Conjuntos";
                 document.title = "Conjuntos - My Bella Afrodita";
-            } else if (categoriaBuscada === 'hombres') {
+            } else if (catNorm === 'hombres') {
                 if (tituloSeccion) tituloSeccion.innerText = "Boxers y Slips";
                 if (txtSubtitulo) txtSubtitulo.innerText = "Colección Essential";
                 if (breadcrumbActive) breadcrumbActive.innerText = "Para Ellos";
                 document.title = "Hombres - My Bella Afrodita";
-            } else if (categoriaBuscada === 'medias') {
+            } else if (catNorm === 'medias') {
                 if (tituloSeccion) tituloSeccion.innerText = "Medias para Él y Ella";
                 if (txtSubtitulo) txtSubtitulo.innerText = "Esenciales";
                 if (breadcrumbActive) breadcrumbActive.innerText = "Medias";
                 document.title = "Medias - My Bella Afrodita";
             }
 
-            // 4. FILTRAMOS TU ARRAY DE PRODUCTOS
-            const filtrados = PRODUCTOS.filter(p => p.categoria && p.categoria.toLowerCase() === categoriaBuscada.toLowerCase());
+            // 4. FILTRAMOS PRODUCTOS Y TALLES CONTEXTUALES
+            const filtrados = PRODUCTOS.filter(p => p.categoria && p.categoria.toLowerCase() === catNorm);
+            actualizarFiltrosTallesContextuales(catNorm);
             dibujarProductos(filtrados);
         } else {
             if (tituloSeccion) tituloSeccion.innerText = "Nuestro Catálogo Completo";
+            actualizarFiltrosTallesContextuales(null);
             dibujarProductos(PRODUCTOS);
         }
     }
 
-    const modalCarrito = document.getElementById('cartModal');
-    if (modalCarrito) {
-        modalCarrito.addEventListener('show.bs.modal', renderizarListaCarrito);
-    }
+    // Cerrar el Drawer con la tecla Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            cerrarCarritoDrawer();
+        }
+    });
 
-    // Detectar si vienen desde un link compartido de un producto específico (Quick View / Detalle Directo)
+    // Detectar si vienen desde un link compartido con id directo
     const urlParamsShared = new URLSearchParams(window.location.search);
     const productoId = urlParamsShared.get('id');
     if (productoId) {
         setTimeout(() => {
-            if (typeof mostrarDetalleProducto === 'function') {
-                mostrarDetalleProducto(productoId);
+            const p = PRODUCTOS.find(prod => String(prod.id) === String(productoId));
+            if (p && p.imagenes && p.imagenes.length > 0) {
+                abrirZoomLenceria(p.imagenes, 0);
             }
         }, 500);
     }
 });
 
+// --- FILTROS DE TALLES CONTEXTUALES E INTELIGENTES ---
+function actualizarFiltrosTallesContextuales(categoria) {
+    const contenedorFiltros = document.getElementById('filtro-talles-container');
+    if (!contenedorFiltros) return;
+
+    // Obtener productos de la categoría activa (o todos si es general)
+    const productosContexto = categoria 
+        ? PRODUCTOS.filter(p => p.categoria && p.categoria.toLowerCase() === categoria.toLowerCase())
+        : PRODUCTOS;
+
+    // Extraer talles únicos existentes en estos productos
+    const tallesSet = new Set();
+    productosContexto.forEach(p => {
+        if (Array.isArray(p.talles)) {
+            p.talles.forEach(t => {
+                if (t && String(t).trim().length > 0) {
+                    tallesSet.add(String(t).trim());
+                }
+            });
+        }
+    });
+
+    // Ordenamiento natural (números primero, luego letras S, M, L, XL, etc.)
+    const tallesOrdenados = Array.from(tallesSet).sort((a, b) => {
+        const numA = parseFloat(a);
+        const numB = parseFloat(b);
+        if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+        if (!isNaN(numA)) return -1;
+        if (!isNaN(numB)) return 1;
+        return a.localeCompare(b);
+    });
+
+    if (talleFiltroActivo !== 'TODOS' && !tallesSet.has(talleFiltroActivo)) {
+        talleFiltroActivo = 'TODOS';
+    }
+
+    let html = `<button class="btn btn-sm rounded-1 px-3 py-1 ${talleFiltroActivo === 'TODOS' ? 'btn-dark' : 'btn-outline-dark'}" onclick="filtrarPorTalle('TODOS')">TODOS</button>`;
+
+    tallesOrdenados.forEach(t => {
+        const activo = talleFiltroActivo === t;
+        html += `<button class="btn btn-sm rounded-1 px-2.5 py-1 ${activo ? 'btn-dark' : 'btn-outline-dark'}" onclick="filtrarPorTalle('${t}')">${t}</button>`;
+    });
+
+    contenedorFiltros.innerHTML = html;
+}
+
+// --- FILTRADO POR TALLE DESDE LA BARRA ---
+window.filtrarPorTalle = function(talleSeleccionado) {
+    talleFiltroActivo = talleSeleccionado;
+
+    // Actualizar botones de talle en la UI
+    const botones = document.querySelectorAll('#filtro-talles-container .btn');
+    botones.forEach(btn => {
+        if (btn.innerText.trim() === talleSeleccionado) {
+            btn.classList.remove('btn-outline-dark');
+            btn.classList.add('btn-dark');
+        } else {
+            btn.classList.remove('btn-dark');
+            btn.classList.add('btn-outline-dark');
+        }
+    });
+
+    // Obtener los productos correspondientes a la categoría
+    const base = categoriaActiva 
+        ? PRODUCTOS.filter(p => p.categoria && p.categoria.toLowerCase() === categoriaActiva.toLowerCase())
+        : PRODUCTOS;
+
+    const filtrados = (talleSeleccionado === 'TODOS')
+        ? base
+        : base.filter(p => p.talles && p.talles.includes(talleSeleccionado));
+
+    dibujarProductos(filtrados);
+};
+
+// --- DIBUJAR GRILLA DE PRODUCTOS (LOOK & FEEL ZARA / SAVAGE X FENTY) ---
+function dibujarProductos(lista) {
+    const contenedor = document.getElementById("contenedor-productos");
+    if (!contenedor) return;
+    contenedor.innerHTML = "";
+
+    if (lista.length === 0) {
+        contenedor.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-tag text-muted fa-2x mb-3" style="opacity: 0.4;"></i>
+                <h5 class="fw-bold text-dark font-playfair">No hay modelos disponibles con este filtro</h5>
+                <p class="text-muted small">Intenta seleccionando "TODOS" o explorando otra categoría.</p>
+                <button class="btn btn-dark btn-sm rounded-1 px-3 mt-2" onclick="filtrarPorTalle('TODOS')">Ver Todos</button>
+            </div>`;
+        return;
+    }
+
+    const fragmento = document.createDocumentFragment();
+
+    lista.forEach(p => {
+        const tieneStock = p.stock !== false;
+        const tallesProducto = Array.isArray(p.talles) ? p.talles : [];
+        const divCol = document.createElement("div");
+        divCol.className = "col-6 col-md-4 col-lg-3 d-flex align-items-stretch product-item-card";
+
+        // Fotos para el efecto hover cross-fade (Zara / Savage X Fenty style)
+        const fotos = Array.isArray(p.imagenes) && p.imagenes.length > 0 
+            ? p.imagenes 
+            : ['https://via.placeholder.com/300x400?text=My+Bella+Afrodita'];
+        const fotoPrincipal = fotos[0];
+        const fotoSecundaria = fotos.length > 1 ? fotos[1] : null;
+
+        // Badge de Promoción / Urgencia
+        let badgeHtml = '';
+        if (p.etiqueta) {
+            badgeHtml = `<span class="badge-luxury-tag">${p.etiqueta}</span>`;
+        }
+
+        // Badge de Sin Stock
+        const stockBadgeHtml = !tieneStock 
+            ? `<span class="badge-stock-out"><i class="fas fa-times me-0.5"></i> Agotado</span>` 
+            : '';
+
+        // Talles pequeños sutiles sobre la base de la foto
+        const tallesHtml = tallesProducto.length > 0
+            ? `<div class="product-sizes-overlay">
+                   ${tallesProducto.slice(0, 4).map(t => `<span class="size-pill-mini">T.${t}</span>`).join('')}
+                   ${tallesProducto.length > 4 ? `<span class="size-pill-mini">+${tallesProducto.length - 4}</span>` : ''}
+               </div>`
+            : '';
+
+        // Bloque de Precios (Minorista destacado + Mayorista sutil)
+        const wholesaleHtml = p.precioMayorista 
+            ? `<span class="price-wholesale-pill" title="Llevando 3 o más prendas de la tienda">May. x3: $${Number(p.precioMayorista).toLocaleString('es-AR')}</span>`
+            : '';
+
+        divCol.innerHTML = `
+            <div class="product-card-boutique w-100">
+                <!-- Contenedor Imagen 3:4 con Cross-Fade -->
+                <div class="product-media-container" style="cursor: zoom-in;" onclick="abrirZoomPorProducto('${p.id}')">
+                    ${badgeHtml}
+                    ${stockBadgeHtml}
+
+                    <img src="${fotoPrincipal}" alt="${p.nombre}" class="img-primary" onerror="this.src='https://via.placeholder.com/300x400?text=My+Bella+Afrodita'">
+                    ${fotoSecundaria ? `<img src="${fotoSecundaria}" alt="${p.nombre} dorsal" class="img-secondary">` : ''}
+                    
+                    ${tallesHtml}
+                </div>
+
+                <!-- Detalles del Producto y Acciones Alineadas -->
+                <div class="product-info-wrap">
+                    <div>
+                        <div class="product-category-label">${p.categoria || 'Colección'}</div>
+                        <h3 class="product-title-luxury" title="${p.nombre}">${p.nombre}</h3>
+                        <p class="product-desc-clamped">${p.descripcion || 'Confección boutique de alta calidad y confort.'}</p>
+                    </div>
+
+                    <div>
+                        <!-- Precios Unificados -->
+                        <div class="product-pricing-box d-flex align-items-baseline">
+                            <span class="price-retail-highlight">$${Number(p.precioMinorista).toLocaleString('es-AR')}</span>
+                            ${wholesaleHtml}
+                        </div>
+
+                        <!-- Botones de Acción -->
+                        <div class="product-card-actions">
+                            <button class="btn btn-add-boutique" 
+                                    ${!tieneStock ? 'disabled' : ''} 
+                                    onclick="agregarAlCarrito(event, '${p.id}')">
+                                <i class="fas ${tieneStock ? 'fa-shopping-bag' : 'fa-times'} me-1.5"></i>
+                                ${tieneStock ? 'Añadir a la Bolsa' : 'Agotado'}
+                            </button>
+                            <button class="btn btn-share-boutique" onclick="compartirWhatsApp(event, '${p.id}')" title="Compartir modelo por WhatsApp">
+                                <i class="fab fa-whatsapp"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+
+        fragmento.appendChild(divCol);
+    });
+
+    contenedor.appendChild(fragmento);
+}
+
+// --- ZOOM DE PRODUCTO ---
+window.abrirZoomPorProducto = function(id) {
+    const p = PRODUCTOS.find(prod => String(prod.id) === String(id));
+    if (p && Array.isArray(p.imagenes) && p.imagenes.length > 0) {
+        abrirZoomLenceria(p.imagenes, 0);
+    }
+};
+
+function abrirZoomLenceria(imagenes, indexInicial) {
+    const modalExistente = document.getElementById("lenceria-zoom-modal");
+    if (modalExistente) modalExistente.remove();
+
+    const modal = document.createElement('div');
+    modal.id = "lenceria-zoom-modal";
+    Object.assign(modal.style, {
+        position: 'fixed', top: '0', left: '0', width: '100vw', height: '100vh',
+        backgroundColor: 'rgba(0,0,0,0.95)', zIndex: '99999', display: 'flex', flexDirection: 'column',
+        touchAction: 'none'
+    });
+
+    modal.innerHTML = `
+        <div style="position: absolute; top: 20px; right: 20px; z-index: 100001;">
+            <button id="close-zoom" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 1.5rem; width: 45px; height: 45px; border-radius: 50%; cursor: pointer;">&times;</button>
+        </div>
+
+        ${imagenes.length > 1 ? `
+            <button id="prev-zoom" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); z-index: 100001; background: rgba(255,255,255,0.15); border: none; color: white; width: 45px; height: 45px; cursor: pointer; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button id="next-zoom" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); z-index: 100001; background: rgba(255,255,255,0.15); border: none; color: white; width: 45px; height: 45px; cursor: pointer; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        ` : ''}
+
+        <div id="zoom-track" style="display: flex; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; scroll-behavior: smooth;">
+            ${imagenes.map(src => `
+                <div style="flex: 0 0 100vw; height: 100vh; scroll-snap-align: start; display: flex; align-items: center; justify-content: center; padding: 20px;">
+                    <img src="${src}" style="max-width: 90%; max-height: 90%; object-fit: contain; border-radius: 6px;">
+                </div>
+            `).join('')}
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+    const track = modal.querySelector('#zoom-track');
+    
+    setTimeout(() => {
+        track.scrollLeft = window.innerWidth * indexInicial;
+    }, 50);
+
+    if (imagenes.length > 1) {
+        modal.querySelector('#next-zoom').onclick = () => track.scrollLeft += window.innerWidth;
+        modal.querySelector('#prev-zoom').onclick = () => track.scrollLeft -= window.innerWidth;
+    }
+
+    modal.querySelector('#close-zoom').onclick = () => modal.remove();
+}
+
+// --- COMPARTIR POR WHATSAPP ---
+window.compartirWhatsApp = function (event, id) {
+    if (event) event.stopPropagation();
+    const p = PRODUCTOS.find(prod => String(prod.id) === String(id));
+    if (!p) return;
+
+    const precioTxt = Number(p.precioMinorista).toLocaleString('es-AR');
+    const msg = `¡Mira este modelo exclusivo en My Bella Afrodita!\n*${p.nombre}*\nPrecio: $${precioTxt}\nLink: ${window.location.origin}${window.location.pathname}?id=${p.id}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+};
+
+// ==========================================================================
+// SLIDE-OVER CART (DRAWER LATERAL DERECHO)
+// ==========================================================================
+
+window.abrirCarritoDrawer = function () {
+    const drawer = document.getElementById('cart-drawer');
+    const overlay = document.getElementById('cart-drawer-overlay');
+    if (!drawer || !overlay) return;
+
+    renderizarListaCarrito();
+
+    overlay.classList.add('open');
+    drawer.classList.add('open');
+    document.body.style.overflow = 'hidden';
+};
+
+window.cerrarCarritoDrawer = function () {
+    const drawer = document.getElementById('cart-drawer');
+    const overlay = document.getElementById('cart-drawer-overlay');
+    if (!drawer || !overlay) return;
+
+    overlay.classList.remove('open');
+    drawer.classList.remove('open');
+    document.body.style.overflow = '';
+};
+
 // --- CÁLCULO DE TOTALES (EVALÚA MINORISTA VS MAYORISTA Y CALCULA AHORRO) ---
 function calcularTotalCarrito() {
     let totalGeneral = 0;
-    let totalBaseMinorista = 0; // Para saber cuánto habría gastado sin descuento
+    let totalBaseMinorista = 0;
     let unidadesTotales = carrito.reduce((acc, item) => acc + item.cantidad, 0);
     let cumpleCriterioCantidad = unidadesTotales >= 3;
     let detallesPromo = [];
@@ -143,348 +423,86 @@ function calcularTotalCarrito() {
         total: totalGeneral,
         ahorro: totalBaseMinorista - totalGeneral,
         promos: detallesPromo,
-        esMayorista: aplicoAlgunaPromocion
+        esMayorista: aplicoAlgunaPromocion,
+        unidades: unidadesTotales
     };
 }
 
-function dibujarProductos(lista) {
-    const contenedor = document.getElementById("contenedor-productos");
-    if (!contenedor) return;
-    contenedor.innerHTML = "";
-
-    if (lista.length === 0) {
-        contenedor.innerHTML = `<div class="col-12 text-center py-5 text-muted">No se encontraron productos en esta categoría.</div>`;
-        return;
-    }
-
-    const fragmento = document.createDocumentFragment();
-
-    lista.forEach(p => {
-        const tieneStock = p.stock !== false;
-        const tallesProducto = p.talles ? p.talles : [];
-        const divCol = document.createElement("div");
-        
-        // Espaciado exterior de la grilla en móviles
-        divCol.className = "col-6 col-md-4 col-lg-3 mb-3 d-flex align-items-stretch product-item-card px-1 px-sm-2"; 
-        divCol.setAttribute('data-talles', tallesProducto.join(','));
-
-        if (talleFiltroActivo !== 'TODOS' && !tallesProducto.includes(talleFiltroActivo)) {
-            divCol.classList.add('d-none');
-        }
-
-        const htmlPrecios = p.precioMayorista ? `
-            <div class="price-container mb-2 p-1.5 w-100" style="background-color: var(--brand-nude, #fdf4f2); border-radius: 6px;">
-                <div class="row g-0 align-items-center text-center">
-                    <div class="col-6 border-end" style="border-color: rgba(0,0,0,0.1) !important;">
-                        <small class="text-muted text-uppercase d-block" style="font-size: 0.5rem; letter-spacing: 0.3px;">Min.</small>
-                        <span class="fw-bold text-dark" style="font-size: 0.75rem;">$${p.precioMinorista.toLocaleString('es-AR')}</span>
-                    </div>
-                    <div class="col-6">
-                        <small class="text-uppercase d-block fw-bold" style="font-size: 0.5rem; color: var(--brand-accent, #d4af37); letter-spacing: 0.3px;">May. (3+)</small>
-                        <span class="fw-bold" style="color: var(--brand-primary, #b33939); font-size: 0.75rem;">$${p.precioMayorista.toLocaleString('es-AR')}</span>
-                    </div>
-                </div>
-            </div>` : `
-            <div class="price-container mb-2 p-1.5 text-center w-100">
-                <small class="text-muted text-uppercase d-block" style="font-size: 0.5rem; letter-spacing: 0.5px;">Precio Único</small>
-                <span class="fw-bold text-dark" style="font-size: 0.95rem;">$${p.precioMinorista.toLocaleString('es-AR')}</span>
-            </div>`;
-
-        const htmlTallesBadge = tallesProducto.length > 0 ? `
-            <div class="position-absolute start-0 top-0 m-1.5" style="z-index: 4;">
-                <div class="d-flex flex-wrap gap-1">
-                    ${tallesProducto.map(t => `<span class="badge bg-white text-dark border font-monospace px-1 py-0.5" style="font-size: 0.5rem; opacity: 0.9; border-color: rgba(0,0,0,0.08) !important; border-radius: 3px; font-weight: 500;">T.${t}</span>`).join('')}
-                </div>
-            </div>` : '';
-
-        let htmlUrgenciaBadge = '';
-        if (p.etiqueta) {
-            const esStock = p.etiqueta.toUpperCase().includes('STOCK') || p.etiqueta.toUpperCase().includes('ÚLTIM') || p.etiqueta.toUpperCase().includes('VUELA');
-            const colorFondo = esStock ? '#000000' : '#c5a059'; 
-            
-            htmlUrgenciaBadge = `
-                <div class="position-absolute end-0 top-0 m-1.5" style="z-index: 4;">
-                    <span class="badge text-white px-1.5 py-0.5" style="background-color: ${colorFondo}; font-size: 0.5rem; font-weight: 600; letter-spacing: 0.5px; border-radius: 3px; text-transform: uppercase; font-family: 'Montserrat', sans-serif;">
-                        ${p.etiqueta}
-                    </span>
-                </div>`;
-        }
-
-        divCol.innerHTML = `
-            <div class="product-card shadow-sm w-100 d-flex flex-column position-relative" 
-                 style="background: #fff; border-radius: 8px !important; overflow: hidden !important; border: 1px solid rgba(0,0,0,0.04); padding: 0 !important;">
-                
-                ${htmlTallesBadge}
-                ${htmlUrgenciaBadge} 
-                
-                <!-- FOTO DE BORDE A BORDE ESTRICTO: Sin márgenes ni paddings -->
-                <div class="card-img-container position-relative w-100" 
-                     style="height: calc(180px + (170 * (100vw - 320px) / 880)); min-height: 190px; max-height: 380px; overflow: hidden; background: #fafafa; margin: 0 !important; padding: 0 !important;">
-                    <div class="product-carousel-track d-flex h-100" style="width: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; margin: 0; padding: 0;">
-                        ${p.imagenes.map((img, i) => `
-                            <div class="carousel-slide h-100" style="flex: 0 0 100%; width: 100%; scroll-snap-align: start; margin: 0; padding: 0;">
-                                <img src="${img}" class="w-100 h-100 object-fit-cover btn-zoom" 
-                                     data-index="${i}" style="cursor: zoom-in; display: block; width: 100% !important; height: 100% !important; margin: 0 !important; padding: 0 !important;" alt="${p.nombre}">
-                            </div>
-                        `).join('')}
-                    </div>
-                    <div class="indicators position-absolute bottom-0 start-50 translate-middle-x mb-1.5 d-flex gap-1" style="z-index: 5;">
-                        ${p.imagenes.map((_, i) => `<div class="dot-ui" style="width: 4px; height: 4px; border-radius: 50%; background: #fff; opacity: ${i === 0 ? '1' : '0.4'}; transition: 0.3s;"></div>`).join('')}
-                    </div>
-                </div>
-
-                <!-- CONTENEDOR DE TEXTOS: El padding solo se aplica acá abajo -->
-                <div class="d-flex flex-column p-2 text-center flex-grow-1 justify-content-between" style="background: #ffffff; width: 100%;">
-                    <div>
-                        <h5 class="text-uppercase mb-1" style="font-family: 'Playfair Display', serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.3px; color: var(--color-pasión, #1a1a1a); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${p.nombre}</h5>
-                        <p class="text-muted small mb-2" style="font-size: 0.65rem; line-height: 1.2; height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">${p.descripcion || ''}</p>
-                    </div>
-                    
-                    <div>
-                        ${htmlPrecios}
-
-                        <div class="actions w-100">
-                            <button class="btn btn-whatsapp w-100 mb-1 border-0 py-1" style="font-size: 0.55rem; background: #f8f9fa; color: #555; border-radius: 4px; letter-spacing: 0.3px;">
-                                <i class="fab fa-whatsapp me-1 text-success"></i> COMPARTIR
-                            </button>
-                            <button class="btn w-100 py-1 fw-bold text-uppercase" 
-                                    style="background: ${tieneStock ? 'var(--color-pasión, #1a1a1a)' : '#ccc'}; color: #fff; border: none; border-radius: 4px; font-size: 0.6rem; letter-spacing: 0.3px;" 
-                                    ${!tieneStock ? 'disabled' : ''}
-                                    onclick="agregarAlCarrito(event, '${p.id}')">
-                                <i class="fas ${tieneStock ? 'fa-shopping-bag' : 'fa-times'} me-1" style="font-size: 0.55rem;"></i> 
-                                ${tieneStock ? 'Añadir' : 'Sin Stock'}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>`;
-
-        const track = divCol.querySelector('.product-carousel-track');
-        const dots = divCol.querySelectorAll('.dot-ui');
-        
-        if (track && dots.length > 0) {
-            track.addEventListener('scroll', () => {
-                const index = Math.round(track.scrollLeft / track.offsetWidth);
-                dots.forEach((dot, i) => dot.style.opacity = (i === index) ? '1' : '0.4');
-            });
-        }
-
-        divCol.querySelector('.btn-whatsapp').onclick = (e) => {
-            e.stopPropagation();
-            const msg = `¡Mira este modelo en My Bella Afrodita!\n*${p.nombre}*\nPrecio: $${p.precioMinorista.toLocaleString('es-AR')}\nLink: ${window.location.href}?id=${p.id}`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-        };
-
-        divCol.querySelectorAll('.btn-zoom').forEach(img => {
-            img.onclick = (e) => {
-                e.stopPropagation();
-                abrirZoomLenceria(p.imagenes, parseInt(img.dataset.index));
-            };
-        });
-
-        fragmento.appendChild(divCol);
-    });
-
-    contenedor.appendChild(fragmento);
-}
-
-// --- FILTRO DE TALLES DINÁMICO DESDE LA UI ---
-window.filtrarPorTalle = function(talleSeleccionado) {
-    talleFiltroActivo = talleSeleccionado;
-    
-    // Alternar clases activas de los botones de la interfaz
-    const botones = document.querySelectorAll('#filtro-talles-container .btn');
-    botones.forEach(btn => {
-        if (btn.innerText === talleSeleccionado) {
-            btn.classList.remove('btn-outline-dark');
-            btn.classList.add('btn-dark');
-        } else {
-            btn.classList.remove('btn-dark');
-            btn.classList.add('btn-outline-dark');
-        }
-    });
-
-    // Cambiar la visualización de las tarjetas directamente en el DOM
-    const tarjetas = document.querySelectorAll('.product-item-card');
-    let visibles = 0;
-
-    tarjetas.forEach(tarjeta => {
-        const tallesString = tarjeta.getAttribute('data-talles') || "";
-        const listaTalles = tallesString ? tallesString.split(',') : [];
-
-        if (talleSeleccionado === 'TODOS' || listaTalles.includes(talleSeleccionado)) {
-            tarjeta.classList.remove('d-none');
-            visibles++;
-        } else {
-            tarjeta.classList.add('d-none');
-        }
-    });
-
-    // Control de aviso de talle sin stock
-    const contenedor = document.getElementById("contenedor-productos");
-    const avisoExistente = document.getElementById("aviso-sin-stock-talle");
-    if (avisoExistente) avisoExistente.remove();
-
-    if (visibles === 0 && contenedor) {
-        const aviso = document.createElement("div");
-        aviso.id = "aviso-sin-stock-talle";
-        aviso.className = "col-12 text-center py-5 text-muted small";
-        aviso.innerHTML = `<i class="fas fa-info-circle me-1"></i> Por el momento no contamos con modelos disponibles en Talle ${talleSeleccionado}.`;
-        contenedor.appendChild(aviso);
-    }
-};
-
-// --- ZOOM DEL PRODUCTO ---
-function abrirZoomLenceria(imagenes, indexInicial) {
-    const modal = document.createElement('div');
-    modal.id = "lenceria-zoom-modal";
-    Object.assign(modal.style, {
-        position: 'fixed', top: '0', left: '0', width: '100vw', height: '100vh',
-        backgroundColor: 'rgba(0,0,0,0.95)', zIndex: '9999', display: 'flex', flexDirection: 'column',
-        touchAction: 'none'
-    });
-
-    modal.innerHTML = `
-        <div style="position: absolute; top: 20px; right: 20px; z-index: 10001;">
-            <button id="close-zoom" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 1.5rem; width: 45px; height: 45px; border-radius: 50%; cursor: pointer;">&times;</button>
-        </div>
-
-        ${imagenes.length > 1 ? `
-            <button id="prev-zoom" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); z-index: 10001; background: rgba(255,255,255,0.1); border: none; color: white; padding: 15px; cursor: pointer; border-radius: 8px;">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <button id="next-zoom" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); z-index: 10001; background: rgba(255,255,255,0.1); border: none; color: white; padding: 15px; cursor: pointer; border-radius: 8px;">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-        ` : ''}
-
-        <div id="zoom-track" style="display: flex; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; scroll-behavior: smooth;">
-            ${imagenes.map(src => `
-                <div style="flex: 0 0 100vw; height: 100vh; scroll-snap-align: start; display: flex; align-items: center; justify-content: center; overflow: auto;">
-                    <img src="${src}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
-                </div>
-            `).join('')}
-        </div>
-    `;
-
-    document.body.appendChild(modal);
-    const track = modal.querySelector('#zoom-track');
-    
-    setTimeout(() => {
-        track.scrollLeft = window.innerWidth * indexInicial;
-    }, 50);
-
-    if (imagenes.length > 1) {
-        modal.querySelector('#next-zoom').onclick = () => track.scrollLeft += window.innerWidth;
-        modal.querySelector('#prev-zoom').onclick = () => track.scrollLeft -= window.innerWidth;
-    }
-
-    modal.querySelector('#close-zoom').onclick = () => modal.remove();
-}
-
-// --- LÓGICA DE NOTIFICACIÓN FLOTANTE (AGREGADO AL CARRITO) ---
-function mostrarNotificacion(nombreProducto) {
-    Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: 'success',
-        title: '¡Añadido a la bolsa!',
-        text: nombreProducto,
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
-        background: '#fff',
-        color: '#1a1a1a',
-        iconColor: '#b33939', 
-        width: '320px', 
-        customClass: {
-            popup: 'notification-boutique-toast'
-        },
-        didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer);
-            toast.addEventListener('mouseleave', Swal.resumeTimer);
-            toast.style.fontSize = '0.85rem'; 
-        }
-    });
-}
-
-// --- RENDERIZAR LISTA DENTRO DEL CARRITO (CON PROGRESOS Y AHORROS VISUALES) ---
+// --- RENDERIZAR LISTA DENTRO DEL DRAWER ---
 window.renderizarListaCarrito = function () {
     const container = document.getElementById('cart-items');
     const totalElement = document.getElementById('cart-total');
+    const savingsContainer = document.getElementById('ux-savings-container');
+    const savingsAmount = document.getElementById('ux-savings-amount');
+    const drawerBadgeCount = document.getElementById('drawer-cart-count');
+
     if (!container) return;
+
+    const res = calcularTotalCarrito();
+    if (drawerBadgeCount) drawerBadgeCount.innerText = res.unidades;
+
+    actualizarBarrasProgresoUX(res.unidades, res.ahorro);
 
     if (carrito.length === 0) {
         container.innerHTML = `
             <div class="text-center py-5">
-                <div class="mb-3" style="font-size: 2rem; opacity: 0.15; color: var(--color-pasión, #1a1a1a);">
+                <div class="mb-3" style="font-size: 2.2rem; opacity: 0.2; color: var(--color-pasión, #8e62a3);">
                     <i class="fas fa-shopping-bag"></i>
                 </div>
-                <h6 class="text-uppercase fw-normal text-muted" style="font-size: 0.75rem; letter-spacing: 1.5px;">Tu bolsa de compras está vacía</h6>
-                <button class="btn btn-dark btn-sm mt-3 px-4 text-uppercase" 
-                        data-bs-dismiss="modal" style="letter-spacing: 1.2px; font-size: 0.65rem; background: var(--color-pasión, #1a1a1a); border: none; border-radius: 0px;">
+                <h6 class="text-uppercase fw-normal text-muted mb-3" style="font-size: 0.78rem; letter-spacing: 1.5px;">Tu bolsa de compras está vacía</h6>
+                <button class="btn btn-dark btn-sm px-4 text-uppercase" 
+                        onclick="cerrarCarritoDrawer()" 
+                        style="letter-spacing: 1px; font-size: 0.68rem; border-radius: 3px;">
                     Explorar Colección
                 </button>
             </div>`;
-        if (totalElement) totalElement.innerHTML = '$0';
-        
-        actualizarBarrasProgresoUX(0, 0);
+
+        if (totalElement) totalElement.innerText = '$0';
+        if (savingsContainer) savingsContainer.classList.add('d-none');
         return;
     }
 
-    const res = calcularTotalCarrito();
-    const unidadesTotales = carrito.reduce((acc, i) => acc + i.cantidad, 0);
-
-    actualizarBarrasProgresoUX(unidadesTotales, res.ahorro);
-
-    let cartHtml = `
-        <div class="d-flex justify-content-between align-items-center mb-4 pb-2" style="border-bottom: 1px solid rgba(0,0,0,0.06);">
-            <span class="text-uppercase text-muted" style="font-size: 0.65rem; letter-spacing: 1.2px; font-weight: 500;">
-                ${unidadesTotales} ${unidadesTotales === 1 ? 'Artículo' : 'Artículos'} en tu bolsa
-            </span>
-            <button class="btn btn-link text-muted text-decoration-none p-0 hover-opacity" 
-                    onclick="confirmarVaciarCarrito()" style="font-size: 0.65rem; letter-spacing: 1.2px; font-weight: 500; text-transform: uppercase;">
-                <i class="fas fa-trash-alt me-1" style="font-size: 0.6rem;"></i> Vaciar Bolsa
-            </button>
-        </div>
-    `;
+    let cartHtml = '';
 
     carrito.forEach((item, index) => {
         const p = PRODUCTOS.find(prod => String(prod.id) === String(item.id));
-        let precioAplicado = (unidadesTotales >= 3 && p?.precioMayorista) ? p.precioMayorista : (p?.precioMinorista || item.precio);
+        const precioAplicado = (res.esMayorista && p?.precioMayorista) ? p.precioMayorista : (p?.precioMinorista || item.precio);
+        const subtotalItem = precioAplicado * item.cantidad;
+        const fotoItem = item.imagen || (p?.imagenes && p.imagenes[0]) || 'https://via.placeholder.com/80x100?text=Prenda';
 
         cartHtml += `
-            <div class="row align-items-center mb-3 g-2 py-2" style="border-bottom: 1px solid rgba(0,0,0,0.03);">
-                <!-- Imagen del Producto -->
-                <div class="col-3 col-sm-2">
-                    <div style="position: relative; padding-top: 120%; width: 100%; overflow: hidden; background: #fafafa; border: 1px solid rgba(0,0,0,0.04);">
-                        <img src="${item.imagen}" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
+            <div class="drawer-cart-item">
+                <!-- Miniatura 3:4 -->
+                <img src="${fotoItem}" alt="${item.nombre}" class="drawer-item-img">
+
+                <!-- Info Producto -->
+                <div class="flex-grow-1 ps-1">
+                    <div class="drawer-item-title">${item.nombre}</div>
+                    <div class="small text-muted" style="font-size: 0.7rem;">
+                        $${precioAplicado.toLocaleString('es-AR')} c/u
+                        ${res.esMayorista && p?.precioMayorista ? '<span class="badge bg-success ms-1" style="font-size: 0.55rem;">MAYORISTA</span>' : ''}
                     </div>
-                </div>
-                
-                <!-- Detalles del Producto -->
-                <div class="col-5 col-sm-6 ps-2">
-                    <p class="mb-0 text-dark fw-semibold text-uppercase" style="font-size: 0.75rem; line-height: 1.3; letter-spacing: 0.3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.nombre}</p>
-                    <span class="text-muted d-block mt-0.5" style="font-size: 0.7rem; letter-spacing: 0.3px;">$${precioAplicado.toLocaleString('es-AR')} c/u</span>
-                    <button class="btn btn-link text-muted p-0 border-0 bg-transparent mt-1" 
-                            style="font-size: 0.65rem; text-decoration: none; letter-spacing: 0.5px; opacity: 0.7;" 
-                            onclick="eliminarDelCarrito(${index})">
-                        Quitar
-                    </button>
-                </div>
-                
-                <!-- Controles de Cantidad y Subtotal -->
-                <div class="col-4 text-end">
-                    <div class="d-flex align-items-center justify-content-end mb-1">
-                        <div class="d-flex align-items-center border px-1" style="border-color: rgba(0,0,0,0.12) !important; background: #fff; height: 26px;">
-                            <button class="btn btn-sm p-0 border-0 text-muted" style="width:22px; font-size: 0.8rem; line-height: 1;" onclick="cambiarCantidad(${index}, -1)">−</button>
-                            <span class="px-2 font-monospace text-dark" style="font-size: 0.7rem; min-width: 20px; text-align: center; font-weight: 500;">${item.cantidad}</span>
-                            <button class="btn btn-sm p-0 border-0 text-muted" style="width:22px; font-size: 0.8rem; line-height: 1 darkened;" onclick="cambiarCantidad(${index}, 1)">+</button>
+
+                    <div class="d-flex align-items-center justify-content-between mt-2">
+                        <!-- Stepper Cantidad -->
+                        <div class="drawer-qty-stepper">
+                            <button type="button" class="drawer-qty-btn" onclick="cambiarCantidad(${index}, -1)" title="Restar">−</button>
+                            <span class="drawer-qty-num">${item.cantidad}</span>
+                            <button type="button" class="drawer-qty-btn" onclick="cambiarCantidad(${index}, 1)" title="Sumar">+</button>
+                        </div>
+
+                        <!-- Subtotal -->
+                        <div class="fw-bold text-dark small">
+                            $${subtotalItem.toLocaleString('es-AR')}
                         </div>
                     </div>
-                    <div class="fw-semibold text-dark mt-1" style="font-size: 0.8rem; letter-spacing: 0.3px;">
-                        $${(precioAplicado * item.cantidad).toLocaleString('es-AR')}
-                    </div>
+                </div>
+
+                <!-- Eliminar Item -->
+                <div>
+                    <button class="btn btn-link text-muted p-1 border-0" onclick="eliminarDelCarrito(${index})" title="Quitar">
+                        <i class="fas fa-times" style="font-size: 0.85rem;"></i>
+                    </button>
                 </div>
             </div>`;
     });
@@ -492,87 +510,84 @@ window.renderizarListaCarrito = function () {
     container.innerHTML = cartHtml;
 
     if (totalElement) {
-        totalElement.innerHTML = `
-            <div class="text-end w-100 mt-2">
-                ${res.promos.map(p => `
-                    <div class="text-success fw-medium mb-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">
-                        <i class="fas fa-check-circle me-1"></i> ${p}
-                    </div>`).join('')}
-                
-                ${res.esMayorista && res.ahorro > 0 ? `
-                    <div id="ux-savings-container" class="p-2.5 mb-3 text-center text-success" style="background-color: rgba(40, 167, 69, 0.05); border: 1px solid rgba(40, 167, 69, 0.15); font-size: 0.7rem; letter-spacing: 0.3px; font-weight: 500;">
-                        ¡Excelente! Estás ahorrando $${res.ahorro.toLocaleString('es-AR')} con la tarifa Mayorista.
-                    </div>` : ''}
-
-                ${!res.esMayorista ? `
-                    <div class="p-2.5 mb-3 text-center" style="background-color: rgba(26, 26, 26, 0.02); border: 1px dashed rgba(0,0,0,0.15); font-size: 0.7rem; color: #444; letter-spacing: 0.3px;">
-                        Agregá <strong style="color: var(--color-pasión, #1a1a1a); font-size: 0.75rem;">${3 - unidadesTotales}</strong> ${3 - unidadesTotales === 1 ? 'prenda' : 'prendas'} más para acceder al <span class="fw-bold text-dark">Precio Mayorista</span>
-                    </div>` : ''}
-                
-                <div class="d-flex justify-content-between align-items-center mt-3 pt-2" style="border-top: 1px solid rgba(0,0,0,0.06);">
-                    <span class="text-muted text-uppercase" style="font-size: 0.65rem; letter-spacing: 1.2px; font-weight: 500;">Subtotal estimado</span>
-                    <span class="fw-bold" style="font-size: 1.25rem; color: #000; letter-spacing: 0.5px;">$${res.total.toLocaleString('es-AR')}</span>
-                </div>
-                
-                <p class="text-muted text-start mt-3 mb-0 p-2.5" style="font-size: 0.62rem; line-height: 1.4; background: #fafafa; border: 1px solid rgba(0,0,0,0.04); color: #777 !important;">
-                    <i class="fas fa-info-circle text-dark me-1" style="opacity: 0.6;"></i> El pedido se procesará mediante nuestra plataforma de asistencia en WhatsApp. Coordinaremos los métodos de entrega y opciones de transferencia de forma personalizada.
-                </p>
-            </div>`;
+        totalElement.innerText = `$${res.total.toLocaleString('es-AR')}`;
     }
-}
-// --- ACTUALIZADOR DINÁMICO DE BARRAS DE PROGRESO DE BOOTSTRAP (UX ACCIÓN DE VENTA) ---
+
+    if (savingsContainer && savingsAmount) {
+        if (res.esMayorista && res.ahorro > 0) {
+            savingsContainer.classList.remove('d-none');
+            savingsAmount.innerText = `-$${res.ahorro.toLocaleString('es-AR')}`;
+        } else {
+            savingsContainer.classList.add('d-none');
+        }
+    }
+};
+
+// --- ACTUALIZADOR DE BARRA DE PROGRESO COMERCIAL MAYORISTA ---
 function actualizarBarrasProgresoUX(unidades, ahorro) {
     const progressBarFill = document.getElementById('ux-progress-bar-fill');
     const progressText = document.getElementById('ux-progress-text');
     const progressPercent = document.getElementById('ux-progress-percent');
     
-    if (!progressBarFill) return; // Si no está renderizado en el DOM, previene errores
+    if (!progressBarFill) return;
 
     if (unidades === 0) {
         progressBarFill.style.width = '0%';
-        if (progressText) progressText.innerHTML = 'Agregá prendas para activar el descuento mayorista.';
+        if (progressText) progressText.innerHTML = 'Agrega prendas para activar el descuento mayorista.';
         if (progressPercent) progressPercent.innerText = '0/3';
         return;
     }
 
     if (unidades >= 3) {
         progressBarFill.style.width = '100%';
-        progressBarFill.classList.remove('bg-dark');
-        progressBarFill.classList.add('bg-success'); // Verde premium de logro activado
+        progressBarFill.style.backgroundColor = '#28a745';
         
-        if (progressText) progressText.innerHTML = '¡Felicidades! Activaste el precio Mayorista 🎁';
+        if (progressText) progressText.innerHTML = '¡Felicitaciones! Activaste el precio Mayorista 🎁';
         if (progressPercent) progressPercent.innerText = `${unidades} prendas`;
     } else {
         const faltantes = 3 - unidades;
         const porcentaje = (unidades / 3) * 100;
         
         progressBarFill.style.width = `${porcentaje}%`;
-        progressBarFill.classList.remove('bg-success');
-        progressBarFill.classList.add('bg-dark'); // Negro boutique elegante por defecto
+        progressBarFill.style.backgroundColor = 'var(--color-pasión, #8e62a3)';
         
-        if (progressText) progressText.innerHTML = `¡Estás a solo <b>${faltantes} ${faltantes === 1 ? 'prenda' : 'prendas'}</b> del descuento Mayorista! 🔥`;
+        if (progressText) progressText.innerHTML = `Agrega <b>${faltantes} ${faltantes === 1 ? 'prenda' : 'prendas'}</b> más para precio Mayorista 🔥`;
         if (progressPercent) progressPercent.innerText = `${unidades}/3`;
     }
 }
 
-// --- CONTROLES DE ARRAY ---
+// --- AGREGAR AL CARRITO (DISPARA EL DRAWER SLIDE-OVER INMEDIATO) ---
 window.agregarAlCarrito = function (event, id) {
     if (event) event.stopPropagation();
     const p = PRODUCTOS.find(prod => String(prod.id) === String(id));
     if (!p) return;
+
     const existe = carrito.find(item => String(item.id) === String(id));
     if (existe) {
         existe.cantidad++;
     } else {
-        carrito.push({ id: p.id, nombre: p.nombre, precio: p.precioMinorista, imagen: p.imagenes[0], cantidad: 1 });
+        const foto = (p.imagenes && p.imagenes.length > 0) ? p.imagenes[0] : '';
+        carrito.push({ id: p.id, nombre: p.nombre, precio: p.precioMinorista, imagen: foto, cantidad: 1 });
     }
+
     actualizarYGuardar();
-    
-    // 1. Mostrar cartel bonito de agregado en cualquier sección del sitio
-    mostrarNotificacion(p.nombre);
-    
-    // 2. Verificar si saltó al hito mayorista
-    verificarHitoMayorista();
+
+    // Notificación toast boutique
+    Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: '¡Añadido a tu bolsa!',
+        text: p.nombre,
+        showConfirmButton: false,
+        timer: 1800,
+        timerProgressBar: true,
+        iconColor: '#8e62a3',
+        width: '320px'
+    });
+
+    // Abrir Slide-Over Drawer automáticamente
+    abrirCarritoDrawer();
 };
 
 window.cambiarCantidad = function (index, valor) {
@@ -583,49 +598,17 @@ window.cambiarCantidad = function (index, valor) {
     }
     actualizarYGuardar();
     renderizarListaCarrito();
-    verificarHitoMayorista();
 };
 
 window.eliminarDelCarrito = function (index) {
     carrito.splice(index, 1);
     actualizarYGuardar();
     renderizarListaCarrito();
-    verificarHitoMayorista();
 };
 
-// --- ALERTA GLOBAL DE PRECIO MAYORISTA (DISEÑO TÁCTIL) ---
-function verificarHitoMayorista() {
-    const { esMayorista } = calcularTotalCarrito();
-    
-    if (esMayorista && !avisoMayoristaMostrado) {
-        Swal.fire({
-            toast: true, 
-            position: 'top-end', 
-            icon: 'success',
-            title: '¡BENEFICIO MAYORISTA ACTIVADO! 🎁',
-            text: 'Toda tu orden pasó a Precio Mayorista.',
-            showConfirmButton: false, 
-            timer: 3500, 
-            timerProgressBar: true,
-            background: '#fff',
-            color: '#1a1a1a',
-            iconColor: '#28a745', 
-            width: '320px', 
-            didOpen: (toast) => {
-                toast.addEventListener('mouseenter', Swal.stopTimer);
-                toast.addEventListener('mouseleave', Swal.resumeTimer);
-                toast.style.fontSize = '0.85rem';
-            }
-        });
-        avisoMayoristaMostrado = true;
-        localStorage.setItem('avisoMayoristaMostrado', true);
-    } else if (!esMayorista) {
-        avisoMayoristaMostrado = false;
-        localStorage.setItem('avisoMayoristaMostrado', false);
-    }
-}
-
 window.confirmarVaciarCarrito = function () {
+    if (carrito.length === 0) return;
+
     Swal.fire({
         title: '¿Vaciar tu bolsa?',
         text: "Se quitarán todos los artículos seleccionados hasta el momento.",
@@ -641,8 +624,6 @@ window.confirmarVaciarCarrito = function () {
             carrito = [];
             actualizarYGuardar();
             renderizarListaCarrito();
-            avisoMayoristaMostrado = false;
-            localStorage.setItem('avisoMayoristaMostrado', false);
         }
     });
 };
@@ -652,7 +633,6 @@ function actualizarYGuardar() {
     actualizarContadorUI();
 }
 
-
 function actualizarContadorUI() {
     const contador = document.getElementById('cart-count');
     if (!contador) return;
@@ -661,23 +641,16 @@ function actualizarContadorUI() {
     
     const ocultarFalta = totalUnidades === 0;
     contador.style.display = ocultarFalta ? 'none' : 'flex';
-    
-    if (ocultarFalta) return;
 
     const { esMayorista } = calcularTotalCarrito();
-    
-    // Cambiar color del contador a verde celebrativo si se activa el descuento mayorista
     if (esMayorista) {
         contador.style.backgroundColor = "#28a745";
-        // Pequeño impulso visual de celebración
-        contador.style.transform = "scale(1.2)";
-        contador.style.transition = "transform 0.3s ease";
     } else {
         contador.style.backgroundColor = "#1a1a1a";
-        contador.style.transform = "scale(1)";
     }
 }
 
+// --- CHECKOUT DIRECTO POR WHATSAPP ---
 function enviarPedidoWhatsApp() {
     if (carrito.length === 0) {
         Swal.fire({
@@ -689,55 +662,40 @@ function enviarPedidoWhatsApp() {
         return;
     }
 
-    // 🔥 DESTRABAR FOCO: Cerramos el modal del carrito para liberar el teclado del navegador
-    const modalElement = document.getElementById('cartModal');
-    if (modalElement) {
-        const modalInstance = bootstrap.Modal.getInstance(modalElement);
-        if (modalInstance) {
-            modalInstance.hide();
-        }
-    }
+    cerrarCarritoDrawer();
 
-    // Ahora SweetAlert se abre en una pantalla limpia y recupera el control absoluto
     Swal.fire({
         title: '¿A nombre de quién dejamos el pedido?',
         input: 'text',
         inputPlaceholder: 'Escribí tu nombre y apellido...',
         showCancelButton: true,
         confirmButtonText: 'Enviar por WhatsApp',
-        cancelButtonText: 'Cancelar',
+        cancelButtonText: 'Volver',
         confirmButtonColor: '#28a745',
         cancelButtonColor: '#777',
-        borderRadius: '0',
+        borderRadius: '4px',
         didOpen: () => {
-            // Ponemos el cursor listo automáticamente
             const input = Swal.getInput();
             if (input) input.focus();
         },
         inputValidator: (value) => {
             if (!value) {
-                return '¡Necesitamos tu nombre para procesar la orden!'
+                return '¡Necesitamos tu nombre para coordinar la entrega!'
             }
         }
     }).then((result) => {
-        // Si el usuario cancela la ventana del nombre, volvemos a abrir el carrito para que no se pierda
         if (result.isDismissed || result.isDenied) {
-            if (modalElement) {
-                const modalInstance = new bootstrap.Modal(modalElement);
-                modalInstance.show();
-            }
+            abrirCarritoDrawer();
             return;
         }
 
         if (result.isConfirmed) {
             const nombreCliente = result.value;
-            const { total, esMayorista, ahorro } = calcularTotalCarrito();
-            const unidadesTotales = carrito.reduce((acc, item) => acc + item.cantidad, 0);
-            const cumpleCriterioGral = unidadesTotales >= 3;
+            const res = calcularTotalCarrito();
+            const cumpleCriterioGral = res.unidades >= 3;
 
             let mensaje = "*PEDIDO: MY BELLA AFRODITA*\n";
             mensaje += "------------------------------------------\n\n";
-            
             mensaje += `👤 *Cliente:* ${nombreCliente}\n\n`;
 
             carrito.forEach((item) => {
@@ -751,12 +709,12 @@ function enviarPedidoWhatsApp() {
             });
 
             mensaje += `------------------------------------------\n`;
-            mensaje += ` *TOTAL ESTIMADO: $${total.toLocaleString('es-AR')}*\n`;
+            mensaje += ` *TOTAL ESTIMADO: $${res.total.toLocaleString('es-AR')}*\n`;
             
-            if (esMayorista) {
+            if (res.esMayorista) {
                 mensaje += ` _Beneficio mayorista aplicado por llevar 3 o más prendas._\n`;
-                if (ahorro > 0) {
-                    mensaje += ` _¡Ahorro total de esta compra: $${ahorro.toLocaleString('es-AR')}!_\n`;
+                if (res.ahorro > 0) {
+                    mensaje += ` _¡Ahorro total de esta compra: $${res.ahorro.toLocaleString('es-AR')}!_\n`;
                 }
             }
             
