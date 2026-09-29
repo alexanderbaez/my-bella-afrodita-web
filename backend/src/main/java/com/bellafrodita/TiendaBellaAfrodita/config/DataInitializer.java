@@ -24,11 +24,14 @@ public class DataInitializer {
                 try (InputStream is = resource.getInputStream()) {
                     List<Producto> productosReales = mapper.readValue(is, new TypeReference<List<Producto>>() {});
                     
-                    // Si la base de datos tiene productos de prueba anteriores o menos de 40, sincronizamos con el catálogo real
-                    if (repository.count() < 40) {
+                    // Si la base de datos tiene productos de prueba o rutas ../images/ obsoletas, sincronizamos con el catálogo real normalizado
+                    boolean necesitaActualizarRutas = repository.findAll().stream()
+                            .anyMatch(p -> p.getImagenes() != null && p.getImagenes().stream().anyMatch(img -> img.startsWith("../images/")));
+
+                    if (repository.count() < 40 || necesitaActualizarRutas) {
                         repository.deleteAll();
                         repository.saveAll(productosReales);
-                        System.out.println(">>> [DataInitializer] ¡ÉXITO! Se sembraron " + productosReales.size() + " productos reales del catálogo en MySQL.");
+                        System.out.println(">>> [DataInitializer] ¡ÉXITO! Se sincronizaron " + productosReales.size() + " productos reales con rutas normalizadas /images/ en MySQL.");
                     } else {
                         System.out.println(">>> [DataInitializer] Catálogo ya inicializado con " + repository.count() + " productos.");
                     }

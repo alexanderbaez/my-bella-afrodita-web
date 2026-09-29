@@ -13,9 +13,9 @@
       "4"
     ],
     "imagenes": [
-      "../images/Bombacha de Señora con Encaje1.jpg",
-      "../images/Bombachas encaje FRENTE.png",
-      "../images/Bombacha encaje DORSAL.png"
+      "/images/Bombacha de Señora con Encaje1.jpg",
+      "/images/Bombachas encaje FRENTE.png",
+      "/images/Bombacha encaje DORSAL.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -34,10 +34,10 @@
       "4"
     ],
     "imagenes": [
-      "../images/Culote de Algodón1.png",
-      "../images/Culote de Algodón2.png",
-      "../images/Culote algodon FRENTE.png",
-      "../images/Culote algodon DORSAL.png"
+      "/images/Culote de Algodón1.png",
+      "/images/Culote de Algodón2.png",
+      "/images/Culote algodon FRENTE.png",
+      "/images/Culote algodon DORSAL.png"
     ],
     "etiqueta": null,
     "stock": false
@@ -56,9 +56,9 @@
       "4"
     ],
     "imagenes": [
-      "../images/Culote de Encaje1.jpg",
-      "../images/Culote encaje FRENTE.png",
-      "../images/Culote encaje DORSAL.png"
+      "/images/Culote de Encaje1.jpg",
+      "/images/Culote encaje FRENTE.png",
+      "/images/Culote encaje DORSAL.png"
     ],
     "etiqueta": "MÁS VENDIDO",
     "stock": false
@@ -77,10 +77,10 @@
       "4"
     ],
     "imagenes": [
-      "../images/Less de Algodón1.jpg",
-      "../images/Less de Algodón2.jpg",
-      "../images/Less algodon FRENTE.png",
-      "../images/Less algodon DORSAL.png"
+      "/images/Less de Algodón1.jpg",
+      "/images/Less de Algodón2.jpg",
+      "/images/Less algodon FRENTE.png",
+      "/images/Less algodon DORSAL.png"
     ],
     "etiqueta": null,
     "stock": false
@@ -99,11 +99,11 @@
       "4"
     ],
     "imagenes": [
-      "../images/Less de Algodón y Puntilla0.1.jpg",
-      "../images/Less de Algodón y Puntilla1.jpg",
-      "../images/Less de Algodón y Puntilla2.jpg",
-      "../images/Less algodon y puntilla FRENTE.png",
-      "../images/Less algodon puntilla DORSAL.png"
+      "/images/Less de Algodón y Puntilla0.1.jpg",
+      "/images/Less de Algodón y Puntilla1.jpg",
+      "/images/Less de Algodón y Puntilla2.jpg",
+      "/images/Less algodon y puntilla FRENTE.png",
+      "/images/Less algodon puntilla DORSAL.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -121,10 +121,10 @@
       "5"
     ],
     "imagenes": [
-      "../images/Less de Algodón en Talles Especiales1.png",
-      "../images/Less de Algodón en Talles Especiales2.png",
-      "../images/Less Frente.png",
-      "../images/Less Dorsal.png"
+      "/images/Less de Algodón en Talles Especiales1.png",
+      "/images/Less de Algodón en Talles Especiales2.png",
+      "/images/Less Frente.png",
+      "/images/Less Dorsal.png"
     ],
     "etiqueta": "POCO STOCK",
     "stock": false
@@ -143,10 +143,10 @@
       "4"
     ],
     "imagenes": [
-      "../images/Less Regulables3.png",
-      "../images/Less Regulables1.jpeg",
-      "../images/Less Regulables2.jpeg",
-      "../images/Less regulable FRENTE.png"
+      "/images/Less Regulables3.png",
+      "/images/Less Regulables1.jpeg",
+      "/images/Less Regulables2.jpeg",
+      "/images/Less regulable FRENTE.png"
     ],
     "etiqueta": null,
     "stock": false
@@ -165,13 +165,13 @@
       "4"
     ],
     "imagenes": [
-      "../images/Bombachas de Algodon con detalles de encaje1.jpg",
-      "../images/Bombachas-de-Algodon-con-detalles-de-encaje1 (1).png",
-      "../images/Bombachas-de-Algodon-con-detalles-de-encaje1.png",
-      "../images/Bombachas-de-Algodon-con-detalles-de-encaje3.png",
-      "../images/Bombachas-de-Algodon-con-detalles-de-encaje4.png",
-      "../images/Bombachas-de-Algodon-con-detalles-de-encaje5.png",
-      "../images/Bombachas-de-Algodon-con-detalles-de-encaje6.png"
+      "/images/Bombachas de Algodon con detalles de encaje1.jpg",
+      "/images/Bombachas-de-Algodon-con-detalles-de-encaje1 (1).png",
+      "/images/Bombachas-de-Algodon-con-detalles-de-encaje1.png",
+      "/images/Bombachas-de-Algodon-con-detalles-de-encaje3.png",
+      "/images/Bombachas-de-Algodon-con-detalles-de-encaje4.png",
+      "/images/Bombachas-de-Algodon-con-detalles-de-encaje5.png",
+      "/images/Bombachas-de-Algodon-con-detalles-de-encaje6.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -190,12 +190,12 @@
       "4"
     ],
     "imagenes": [
-      "../images/Less Calvin Klein1.jpeg",
-      "../images/Less Calvin Klein2.png",
-      "../images/Less-calvin-klein2.png",
-      "../images/Less-calvin-klein3.png",
-      "../images/Less-calvin-klein4.png",
-      "../images/Less-calvin-klein5.png"
+      "/images/Less Calvin Klein1.jpeg",
+      "/images/Less Calvin Klein2.png",
+      "/images/Less-calvin-klein2.png",
+      "/images/Less-calvin-klein3.png",
+      "/images/Less-calvin-klein4.png",
+      "/images/Less-calvin-klein5.png"
     ],
     "etiqueta": "TENDENCIA",
     "stock": true
@@ -214,13 +214,13 @@
       "4"
     ],
     "imagenes": [
-      "../images/Vedetina1.jpg",
-      "../images/vedetina1.png",
-      "../images/vedetina2.png",
-      "../images/vedetina3.png",
-      "../images/vedetina4.png",
-      "../images/vedetina5.png",
-      "../images/vedetina6.png"
+      "/images/Vedetina1.jpg",
+      "/images/vedetina1.png",
+      "/images/vedetina2.png",
+      "/images/vedetina3.png",
+      "/images/vedetina4.png",
+      "/images/vedetina5.png",
+      "/images/vedetina6.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -239,12 +239,12 @@
       "4"
     ],
     "imagenes": [
-      "../images/Boxers Dama con Faja0.1.png",
-      "../images/Boxers Dama con Faja1.png",
-      "../images/Boxers Dama con Faja2.png",
-      "../images/Boxers Dama con Faja3.png",
-      "../images/boxer-dama-con-faja1.png",
-      "../images/boxer-dama-con-faja2.png"
+      "/images/Boxers Dama con Faja0.1.png",
+      "/images/Boxers Dama con Faja1.png",
+      "/images/Boxers Dama con Faja2.png",
+      "/images/Boxers Dama con Faja3.png",
+      "/images/boxer-dama-con-faja1.png",
+      "/images/boxer-dama-con-faja2.png"
     ],
     "etiqueta": null,
     "stock": false
@@ -261,7 +261,7 @@
       "2"
     ],
     "imagenes": [
-      "../images/Bombacha-juvenil.jpg"
+      "/images/Bombacha-juvenil.jpg"
     ],
     "etiqueta": null,
     "stock": true
@@ -280,8 +280,8 @@
       "4"
     ],
     "imagenes": [
-      "../images/Smart Sexi1.png",
-      "../images/Smart Sexi.jpg"
+      "/images/Smart Sexi1.png",
+      "/images/Smart Sexi.jpg"
     ],
     "etiqueta": null,
     "stock": false
@@ -300,11 +300,11 @@
       "4"
     ],
     "imagenes": [
-      "../images/Culote Less Con Faja0.1.png",
-      "../images/Culote Less Con Faja1.png",
-      "../images/Culote Less Con Faja2.png",
-      "../images/Culote Less Faja1.jpg",
-      "../images/Culote Less Faja2.png"
+      "/images/Culote Less Con Faja0.1.png",
+      "/images/Culote Less Con Faja1.png",
+      "/images/Culote Less Con Faja2.png",
+      "/images/Culote Less Faja1.jpg",
+      "/images/Culote Less Faja2.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -323,10 +323,10 @@
       "4"
     ],
     "imagenes": [
-      "../images/BoxersDeDama1.jpg",
-      "../images/BoxerDeDama2.jpg",
-      "../images/BoxersDeDama3.jpg",
-      "../images/BoxersDeDama4.jpg"
+      "/images/BoxersDeDama1.jpg",
+      "/images/BoxerDeDama2.jpg",
+      "/images/BoxersDeDama3.jpg",
+      "/images/BoxersDeDama4.jpg"
     ],
     "etiqueta": null,
     "stock": true
@@ -344,10 +344,10 @@
       "5"
     ],
     "imagenes": [
-      "../images/Less Taller Especiales1.jpg",
-      "../images/Less Taller Especiales2.jpg",
-      "../images/Less Taller Especiales3.jpg",
-      "../images/Less Taller Especiales4.jpg"
+      "/images/Less Taller Especiales1.jpg",
+      "/images/Less Taller Especiales2.jpg",
+      "/images/Less Taller Especiales3.jpg",
+      "/images/Less Taller Especiales4.jpg"
     ],
     "etiqueta": null,
     "stock": true
@@ -366,10 +366,10 @@
       "100"
     ],
     "imagenes": [
-      "../images/Red Velvet0.jpeg",
-      "../images/Red Velvet1.jpeg",
-      "../images/Red Velvet2.jpeg",
-      "../images/Red Velvet3.jpeg"
+      "/images/Red Velvet0.jpeg",
+      "/images/Red Velvet1.jpeg",
+      "/images/Red Velvet2.jpeg",
+      "/images/Red Velvet3.jpeg"
     ],
     "etiqueta": "IMPERDIBLE",
     "stock": true
@@ -388,11 +388,11 @@
       "100"
     ],
     "imagenes": [
-      "../images/Combo Alo - Remera + top + calza + medias1.jpg",
-      "../images/Combo Alo - Remera + top + calza + medias2.jpg",
-      "../images/Combo Alo - Remera + top + calza + medias3.jpg",
-      "../images/Combo alo 1.png",
-      "../images/Combo alo 2.png"
+      "/images/Combo Alo - Remera + top + calza + medias1.jpg",
+      "/images/Combo Alo - Remera + top + calza + medias2.jpg",
+      "/images/Combo Alo - Remera + top + calza + medias3.jpg",
+      "/images/Combo alo 1.png",
+      "/images/Combo alo 2.png"
     ],
     "etiqueta": "ÚLTIMOS COMBOS",
     "stock": true
@@ -411,11 +411,11 @@
       "100"
     ],
     "imagenes": [
-      "../images/Conjunto D'lirio con tazas desmontables1.png",
-      "../images/Conjunto D'lirio con tazas desmontables2.png",
-      "../images/Conjunto D_lirio top + calza FRENTE 1.png",
-      "../images/Conjunto D_lirio top + calza FRENTE 2.png",
-      "../images/Conjunto D_lirio top + calza DORSAL 2.png"
+      "/images/Conjunto D'lirio con tazas desmontables1.png",
+      "/images/Conjunto D'lirio con tazas desmontables2.png",
+      "/images/Conjunto D_lirio top + calza FRENTE 1.png",
+      "/images/Conjunto D_lirio top + calza FRENTE 2.png",
+      "/images/Conjunto D_lirio top + calza DORSAL 2.png"
     ],
     "etiqueta": null,
     "stock": false
@@ -434,11 +434,11 @@
       "100"
     ],
     "imagenes": [
-      "../images/Conjunto Persefone1.jpg",
-      "../images/Conjunto parsefone FRENTE.png",
-      "../images/Conjunto parsefone DORSAL.png",
-      "../images/conjunto parsefone FRENTE 2.png",
-      "../images/conjunto parsefone DORSAL 2.png"
+      "/images/Conjunto Persefone1.jpg",
+      "/images/Conjunto parsefone FRENTE.png",
+      "/images/Conjunto parsefone DORSAL.png",
+      "/images/conjunto parsefone FRENTE 2.png",
+      "/images/conjunto parsefone DORSAL 2.png"
     ],
     "etiqueta": null,
     "stock": false
@@ -457,8 +457,8 @@
       "100"
     ],
     "imagenes": [
-      "../images/Conjunto Roma FRENTE.png",
-      "../images/Conjunto roma DORSAL.png"
+      "/images/Conjunto Roma FRENTE.png",
+      "/images/Conjunto roma DORSAL.png"
     ],
     "etiqueta": null,
     "stock": false
@@ -477,10 +477,10 @@
       "100"
     ],
     "imagenes": [
-      "../images/Calza (Lycra)1.png",
-      "../images/Conjunto Top + calza  1.png",
-      "../images/Conjunto Top + calza  2.png",
-      "../images/Conjunto Top + calza  3.png"
+      "/images/Calza (Lycra)1.png",
+      "/images/Conjunto Top + calza  1.png",
+      "/images/Conjunto Top + calza  2.png",
+      "/images/Conjunto Top + calza  3.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -499,8 +499,8 @@
       "100"
     ],
     "imagenes": [
-      "../images/Conjunto Top + Calza (Negro)1.png",
-      "../images/Conjunto Top + calza con frunce.png"
+      "/images/Conjunto Top + Calza (Negro)1.png",
+      "/images/Conjunto Top + calza con frunce.png"
     ],
     "etiqueta": "VUELA",
     "stock": true
@@ -519,10 +519,10 @@
       "100"
     ],
     "imagenes": [
-      "../images/Conjunto Top + Pollera Pantalon0.1.png",
-      "../images/Conjunto top + pollera pantalon 1.png",
-      "../images/Conjunto top + pollera pantalon 2.png",
-      "../images/Conjunto top + pollera pantalon 3.png"
+      "/images/Conjunto Top + Pollera Pantalon0.1.png",
+      "/images/Conjunto top + pollera pantalon 1.png",
+      "/images/Conjunto top + pollera pantalon 2.png",
+      "/images/Conjunto top + pollera pantalon 3.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -541,18 +541,18 @@
       "100"
     ],
     "imagenes": [
-      "../images/Conjunto Vicblack1.png",
-      "../images/Conjunto Vicblack2.jpg",
-      "../images/Conjunto vicblack FRENTE 1.png",
-      "../images/Conjunto-Vicblack-detalle1.png",
-      "../images/Conjunto-Vicblack-detalle2.png",
-      "../images/Conjunto-Vicblack-detalle3.png",
-      "../images/Conjunto vicblack DORSAL 1.png",
-      "../images/Conjunto vicblack FRENTE 2.png",
-      "../images/Conjunto vicblack FRENTE 3.png",
-      "../images/Conjunto vicblack FRENTE 4.png",
-      "../images/Conjunto vicblack FRENTE 5.png",
-      "../images/Conjunto vicblack FRENTE 6.png"
+      "/images/Conjunto Vicblack1.png",
+      "/images/Conjunto Vicblack2.jpg",
+      "/images/Conjunto vicblack FRENTE 1.png",
+      "/images/Conjunto-Vicblack-detalle1.png",
+      "/images/Conjunto-Vicblack-detalle2.png",
+      "/images/Conjunto-Vicblack-detalle3.png",
+      "/images/Conjunto vicblack DORSAL 1.png",
+      "/images/Conjunto vicblack FRENTE 2.png",
+      "/images/Conjunto vicblack FRENTE 3.png",
+      "/images/Conjunto vicblack FRENTE 4.png",
+      "/images/Conjunto vicblack FRENTE 5.png",
+      "/images/Conjunto vicblack FRENTE 6.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -571,12 +571,12 @@
       "16"
     ],
     "imagenes": [
-      "../images/Conjunto Inicial Nena1.jpeg",
-      "../images/Conjunto Inicial Nena2.jpeg",
-      "../images/Conjunto-inicial-nena1.png",
-      "../images/Conjunto-inicial-nena2.png",
-      "../images/Conjunto-inicial-nena3.png",
-      "../images/Conjunto-inicial-nena4.png"
+      "/images/Conjunto Inicial Nena1.jpeg",
+      "/images/Conjunto Inicial Nena2.jpeg",
+      "/images/Conjunto-inicial-nena1.png",
+      "/images/Conjunto-inicial-nena2.png",
+      "/images/Conjunto-inicial-nena3.png",
+      "/images/Conjunto-inicial-nena4.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -595,10 +595,10 @@
       "16"
     ],
     "imagenes": [
-      "../images/Topcito-inicial-nena1.png",
-      "../images/Topcito-inicial-nena2.png",
-      "../images/Topcito-inicial-nena3.png",
-      "../images/Topcito-inicial-nena4.png"
+      "/images/Topcito-inicial-nena1.png",
+      "/images/Topcito-inicial-nena2.png",
+      "/images/Topcito-inicial-nena3.png",
+      "/images/Topcito-inicial-nena4.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -617,10 +617,10 @@
       "100"
     ],
     "imagenes": [
-      "../images/Conjunto Deportivo1.jpeg",
-      "../images/Conjunto Deportivo2.jpeg",
-      "../images/Conjunto Deportivo3.jpeg",
-      "../images/1.1.png"
+      "/images/Conjunto Deportivo1.jpeg",
+      "/images/Conjunto Deportivo2.jpeg",
+      "/images/Conjunto Deportivo3.jpeg",
+      "/images/1.1.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -639,15 +639,15 @@
       "100"
     ],
     "imagenes": [
-      "../images/Sports Bell1.jpg",
-      "../images/Sports Bell2.jpg",
-      "../images/Sports Bell3.jpg",
-      "../images/Sports Bell4.jpg",
-      "../images/Sports-Bell1.png",
-      "../images/Sports-Bell2.png",
-      "../images/Sports-Bell2.2.png",
-      "../images/Sports-Bell3.png",
-      "../images/Sports-Bell4.png"
+      "/images/Sports Bell1.jpg",
+      "/images/Sports Bell2.jpg",
+      "/images/Sports Bell3.jpg",
+      "/images/Sports Bell4.jpg",
+      "/images/Sports-Bell1.png",
+      "/images/Sports-Bell2.png",
+      "/images/Sports-Bell2.2.png",
+      "/images/Sports-Bell3.png",
+      "/images/Sports-Bell4.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -666,8 +666,8 @@
       "100"
     ],
     "imagenes": [
-      "../images/Top Segunda Piel1.png",
-      "../images/Top Segunda Piel2.png"
+      "/images/Top Segunda Piel1.png",
+      "/images/Top Segunda Piel2.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -686,9 +686,9 @@
       "100"
     ],
     "imagenes": [
-      "../images/Top Deportivo Curvas Reales1.jpg",
-      "../images/Top Deportivo Curvas Reales2.jpg",
-      "../images/Top Deportivo Curvas Reales3.jpg"
+      "/images/Top Deportivo Curvas Reales1.jpg",
+      "/images/Top Deportivo Curvas Reales2.jpg",
+      "/images/Top Deportivo Curvas Reales3.jpg"
     ],
     "etiqueta": null,
     "stock": true
@@ -707,10 +707,10 @@
       "XXL"
     ],
     "imagenes": [
-      "../images/Boxer uomo1.jpg",
-      "../images/Boxer uomo2.png",
-      "../images/Boxer uomo3.png",
-      "../images/Boxer uomo4.png"
+      "/images/Boxer uomo1.jpg",
+      "/images/Boxer uomo2.png",
+      "/images/Boxer uomo3.png",
+      "/images/Boxer uomo4.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -729,9 +729,9 @@
       "XXL"
     ],
     "imagenes": [
-      "../images/Boxers Niño1.jpg",
-      "../images/Boxers Niño2.png",
-      "../images/Boxers Niño3.png"
+      "/images/Boxers Niño1.jpg",
+      "/images/Boxers Niño2.png",
+      "/images/Boxers Niño3.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -750,9 +750,9 @@
       "XXL"
     ],
     "imagenes": [
-      "../images/Slip Algodón Clásico1.png",
-      "../images/Slip Adulto1.jpg",
-      "../images/Slip Adulto2.png"
+      "/images/Slip Algodón Clásico1.png",
+      "/images/Slip Adulto1.jpg",
+      "/images/Slip Adulto2.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -772,9 +772,9 @@
       "12"
     ],
     "imagenes": [
-      "../images/Slip Niño1.jpg",
-      "../images/Slip Niño2.png",
-      "../images/Slip Niño3.png"
+      "/images/Slip Niño1.jpg",
+      "/images/Slip Niño2.png",
+      "/images/Slip Niño3.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -790,7 +790,7 @@
       "ÚNICO"
     ],
     "imagenes": [
-      "../images/Medias-escolares-blanca.jpg"
+      "/images/Medias-escolares-blanca.jpg"
     ],
     "etiqueta": null,
     "stock": true
@@ -806,7 +806,7 @@
       "ÚNICO"
     ],
     "imagenes": [
-      "../images/Medias-Alo-dama.jpg"
+      "/images/Medias-Alo-dama.jpg"
     ],
     "etiqueta": null,
     "stock": false
@@ -822,10 +822,10 @@
       "INFANTIL"
     ],
     "imagenes": [
-      "../images/Medias con orejita1.1.png",
-      "../images/medias-orejita2.png",
-      "../images/medias-orejita3.png",
-      "../images/medias-orejita4.png"
+      "/images/Medias con orejita1.1.png",
+      "/images/medias-orejita2.png",
+      "/images/medias-orejita3.png",
+      "/images/medias-orejita4.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -841,7 +841,7 @@
       "ÚNICO"
     ],
     "imagenes": [
-      "../images/medias-niñas.png"
+      "/images/medias-niñas.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -857,7 +857,7 @@
       "INFANTIL"
     ],
     "imagenes": [
-      "../images/medias-femenina.png"
+      "/images/medias-femenina.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -873,7 +873,7 @@
       "ÚNICO"
     ],
     "imagenes": [
-      "../images/medias-femenina2.png"
+      "/images/medias-femenina2.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -889,7 +889,7 @@
       "ÚNICO"
     ],
     "imagenes": [
-      "../images/medias-femenina-sport.png"
+      "/images/medias-femenina-sport.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -905,7 +905,7 @@
       "ÚNICO"
     ],
     "imagenes": [
-      "../images/medias-hombres.png"
+      "/images/medias-hombres.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -921,7 +921,7 @@
       "ÚNICO"
     ],
     "imagenes": [
-      "../images/medias-hombre.sport.png"
+      "/images/medias-hombre.sport.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -937,8 +937,8 @@
       "INFANTIL"
     ],
     "imagenes": [
-      "../images/Medias Niña1.png",
-      "../images/Medias Niña2.png"
+      "/images/Medias Niña1.png",
+      "/images/Medias Niña2.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -954,8 +954,8 @@
       "INFANTIL"
     ],
     "imagenes": [
-      "../images/Medias Niño1.png",
-      "../images/Medias niño2.png"
+      "/images/Medias Niño1.png",
+      "/images/Medias niño2.png"
     ],
     "etiqueta": null,
     "stock": true
@@ -971,8 +971,8 @@
       "ÚNICO"
     ],
     "imagenes": [
-      "../images/Medias Termicas1.jpeg",
-      "../images/Medias Termicas2.jpeg"
+      "/images/Medias Termicas1.jpeg",
+      "/images/Medias Termicas2.jpeg"
     ],
     "etiqueta": null,
     "stock": true
@@ -988,8 +988,8 @@
       "ÚNICO"
     ],
     "imagenes": [
-      "../images/Medias de Vestir x31.jpeg",
-      "../images/Medias de Vestir x32.jpeg"
+      "/images/Medias de Vestir x31.jpeg",
+      "/images/Medias de Vestir x32.jpeg"
     ],
     "etiqueta": null,
     "stock": true
@@ -1005,8 +1005,8 @@
       "ÚNICO"
     ],
     "imagenes": [
-      "../images/medias térmicas x21.jpeg",
-      "../images/medias térmicas x22.jpeg"
+      "/images/medias térmicas x21.jpeg",
+      "/images/medias térmicas x22.jpeg"
     ],
     "etiqueta": null,
     "stock": true

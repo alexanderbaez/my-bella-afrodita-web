@@ -31,9 +31,10 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/images/**", "/static/**").permitAll()
+                .requestMatchers("/", "/index.html", "/*.html", "/html/**", "/css/**", "/js/**", "/images/**", "/static/**", "/uploads/**", "/favicon.ico").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/productos/**").permitAll()
                 .requestMatchers("/error").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/upload/**").authenticated()
                 .requestMatchers(HttpMethod.POST, "/api/productos/**").authenticated()
                 .requestMatchers(HttpMethod.PUT, "/api/productos/**").authenticated()
                 .requestMatchers(HttpMethod.PATCH, "/api/productos/**").authenticated()
