@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.querySelectorAll('#talles-chips-container .talle-chip').forEach(chip => {
         chip.addEventListener('click', () => {
             chip.classList.toggle('active');
+            actualizarGridInputsVariantes();
         });
     });
 
@@ -213,9 +214,25 @@ function renderizarTabla(productos) {
             ? p.imagenes[0] 
             : 'https://via.placeholder.com/80x100?text=Sin+Foto';
 
-        const tallesHtml = (p.talles && p.talles.length > 0)
-            ? p.talles.map(t => `<span class="badge-talle me-1">${t}</span>`).join('')
-            : '<span class="text-muted small">-</span>';
+        const variantes = Array.isArray(p.variantes) ? p.variantes : [];
+        const stockTotal = variantes.length > 0
+            ? variantes.reduce((acc, v) => acc + (v.stock || 0), 0)
+            : (p.stock !== false ? 1 : 0);
+
+        const hayCritico = variantes.length > 0 && variantes.some(v => (v.stock || 0) < 2);
+        const criticoBadge = hayCritico 
+            ? `<span class="badge-stock-critico d-block mt-1">STOCK CRÍTICO</span>` 
+            : '';
+
+        const tallesHtml = variantes.length > 0
+            ? variantes.map(v => `
+                <span class="badge-talle ${v.stock < 2 ? 'badge-talle-critico' : ''} me-1 mb-1" 
+                      title="Stock disponible: ${v.stock} unidades">
+                    ${v.talle}: ${v.stock}u
+                </span>`).join('')
+            : ((p.talles && p.talles.length > 0) 
+                ? p.talles.map(t => `<span class="badge-talle me-1">${t}</span>`).join('') 
+                : '<span class="text-muted small">-</span>');
 
         const etiquetaHtml = p.etiqueta 
             ? `<span class="badge bg-dark ms-1" style="font-size: 0.6rem;">${p.etiqueta}</span>` 
@@ -250,14 +267,18 @@ function renderizarTabla(productos) {
                     ${precioMay}
                 </td>
                 <td>
-                    <div class="d-flex flex-wrap gap-1">
+                    <div class="d-flex flex-wrap gap-1" style="max-width: 220px;">
                         ${tallesHtml}
                     </div>
                 </td>
                 <td class="text-center">
-                    <div class="form-check form-switch d-inline-block">
+                    <div class="fw-bold ${stockTotal === 0 ? 'text-danger' : (hayCritico ? 'text-warning' : 'text-success')}" style="font-size: 0.85rem;">
+                        ${stockTotal} u.
+                    </div>
+                    ${criticoBadge}
+                    <div class="form-check form-switch d-inline-block mt-1">
                         <input class="form-check-input" type="checkbox" role="switch" 
-                               ${p.stock !== false ? 'checked' : ''} 
+                               ${p.stock !== false && stockTotal > 0 ? 'checked' : ''} 
                                onchange="toggleStock('${p.id}', this)"
                                title="Click para alternar disponibilidad">
                     </div>
@@ -325,6 +346,49 @@ async function toggleStock(id, switchElem) {
     }
 }
 
+// --- GRID DINÁMICO DE INVENTARIO POR TALLE ---
+function actualizarGridInputsVariantes(mapaValores = {}) {
+    const grid = document.getElementById('variantes-stock-grid');
+    if (!grid) return;
+
+    // Guardar valores existentes
+    const valoresActuales = { ...mapaValores };
+    grid.querySelectorAll('.input-stock-talle').forEach(input => {
+        const t = input.getAttribute('data-talle');
+        if (valoresActuales[t] === undefined) {
+            valoresActuales[t] = input.value;
+        }
+    });
+
+    grid.innerHTML = '';
+    const chipsActivos = document.querySelectorAll('#talles-chips-container .talle-chip.active');
+
+    if (chipsActivos.length === 0) {
+        grid.innerHTML = '<div class="col-12 text-muted small py-1" style="font-size: 0.72rem;">Ningún talle seleccionado todavía. Haz clic arriba para activar.</div>';
+        return;
+    }
+
+    chipsActivos.forEach(chip => {
+        const talle = chip.getAttribute('data-talle');
+        const valorStock = valoresActuales[talle] !== undefined ? valoresActuales[talle] : 5;
+
+        const col = document.createElement('div');
+        col.className = 'col-6 col-sm-4 col-md-3';
+        col.innerHTML = `
+            <div class="card p-2 border shadow-none bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="badge bg-dark" style="font-size: 0.65rem;">Talle ${talle}</span>
+                    <small class="text-muted" style="font-size: 0.65rem;">Stock</small>
+                </div>
+                <input type="number" min="0" value="${valorStock}" 
+                       class="form-control form-control-sm input-stock-talle text-center fw-bold" 
+                       data-talle="${talle}" placeholder="0" required>
+            </div>
+        `;
+        grid.appendChild(col);
+    });
+}
+
 // --- MODAL: CREAR PRODUCTO ---
 function abrirModalCrear() {
     document.getElementById('form-producto').reset();
@@ -334,6 +398,7 @@ function abrirModalCrear() {
     
     // Desmarcar todos los chips de talles
     document.querySelectorAll('#talles-chips-container .talle-chip').forEach(c => c.classList.remove('active'));
+    actualizarGridInputsVariantes({});
     document.getElementById('prod-stock').checked = true;
 
     // Resetear galería de imágenes
@@ -360,16 +425,32 @@ function abrirModalEditar(id) {
     document.getElementById('prod-etiqueta').value = p.etiqueta || '';
     document.getElementById('prod-stock').checked = p.stock !== false;
 
-    // Talles
-    const tallesProducto = p.talles || [];
+    // Talles y variantes
+    const mapaStock = {};
+    const tallesActivos = [];
+
+    if (Array.isArray(p.variantes) && p.variantes.length > 0) {
+        p.variantes.forEach(v => {
+            tallesActivos.push(v.talle);
+            mapaStock[v.talle] = v.stock;
+        });
+    } else if (Array.isArray(p.talles)) {
+        p.talles.forEach(t => {
+            tallesActivos.push(t);
+            mapaStock[t] = 5;
+        });
+    }
+
     document.querySelectorAll('#talles-chips-container .talle-chip').forEach(chip => {
         const talle = chip.getAttribute('data-talle');
-        if (tallesProducto.includes(talle)) {
+        if (tallesActivos.includes(talle)) {
             chip.classList.add('active');
         } else {
             chip.classList.remove('active');
         }
     });
+
+    actualizarGridInputsVariantes(mapaStock);
 
     // Imágenes
     imagenesProductoActual = Array.isArray(p.imagenes) ? [...p.imagenes] : [];
@@ -518,6 +599,26 @@ async function guardarProducto(event) {
         talles.push(chip.getAttribute('data-talle'));
     });
 
+    // Obtener variantes con stock numérico configurado
+    const variantes = [];
+    document.querySelectorAll('#variantes-stock-grid .input-stock-talle').forEach(input => {
+        const talle = input.getAttribute('data-talle');
+        const stockQty = parseInt(input.value, 10);
+        if (talle) {
+            variantes.push({
+                talle: talle,
+                stock: isNaN(stockQty) || stockQty < 0 ? 0 : stockQty
+            });
+        }
+    });
+
+    // Si hay talles activos pero por alguna razón no se generó input, asegurar variante con 0
+    talles.forEach(t => {
+        if (!variantes.some(v => v.talle === t)) {
+            variantes.push({ talle: t, stock: 0 });
+        }
+    });
+
     // Imágenes del arreglo interactivo
     const imagenes = imagenesProductoActual.length > 0
         ? imagenesProductoActual
@@ -532,6 +633,7 @@ async function guardarProducto(event) {
         etiqueta,
         stock,
         talles,
+        variantes,
         imagenes
     };
 

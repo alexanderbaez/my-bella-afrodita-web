@@ -39,8 +39,13 @@ public class ProductoController {
     @PostMapping
     public ResponseEntity<Producto> crearProducto(@Valid @RequestBody Producto producto) {
         producto.setId(null);
+        if (producto.getVariantes() != null) {
+            for (ProductoVariante v : producto.getVariantes()) {
+                v.setProducto(producto);
+            }
+        }
         if (producto.getStock() == null) {
-            producto.setStock(true);
+            producto.setStock(producto.tieneStockGeneral());
         }
         Producto guardado = productoRepository.save(producto);
         return ResponseEntity.status(HttpStatus.CREATED).body(guardado);
@@ -57,12 +62,24 @@ public class ProductoController {
                     producto.setCategoria(datos.getCategoria());
                     producto.setPrecioMinorista(datos.getPrecioMinorista());
                     producto.setPrecioMayorista(datos.getPrecioMayorista());
-                    producto.setTalles(datos.getTalles());
                     producto.setImagenes(datos.getImagenes());
                     producto.setEtiqueta(datos.getEtiqueta());
+
+                    // Actualizar variantes e inventario
+                    if (datos.getVariantes() != null && !datos.getVariantes().isEmpty()) {
+                        producto.getVariantes().clear();
+                        for (ProductoVariante v : datos.getVariantes()) {
+                            v.setId(null);
+                            producto.addVariante(v);
+                        }
+                    }
+
                     if (datos.getStock() != null) {
                         producto.setStock(datos.getStock());
+                    } else {
+                        producto.setStock(producto.tieneStockGeneral());
                     }
+
                     Producto actualizado = productoRepository.save(producto);
                     return ResponseEntity.ok(actualizado);
                 })

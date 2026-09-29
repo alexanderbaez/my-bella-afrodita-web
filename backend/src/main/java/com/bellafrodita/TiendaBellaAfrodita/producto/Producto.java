@@ -1,6 +1,7 @@
 package com.bellafrodita.TiendaBellaAfrodita.producto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -36,10 +37,8 @@ public class Producto {
     @Positive(message = "El precio mayorista debe ser mayor a cero")
     private Double precioMayorista;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "producto_talles", joinColumns = @JoinColumn(name = "producto_id"))
-    @Column(name = "talle")
-    private List<String> talles = new ArrayList<>();
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<ProductoVariante> variantes = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "producto_imagenes", joinColumns = @JoinColumn(name = "producto_id"))
@@ -55,17 +54,65 @@ public class Producto {
     }
 
     public Producto(Long id, String nombre, String descripcion, String categoria, Double precioMinorista,
-                    Double precioMayorista, List<String> talles, List<String> imagenes, String etiqueta, Boolean stock) {
+                    Double precioMayorista, List<ProductoVariante> variantes, List<String> imagenes, String etiqueta, Boolean stock) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.categoria = categoria;
         this.precioMinorista = precioMinorista;
         this.precioMayorista = precioMayorista;
-        this.talles = talles != null ? talles : new ArrayList<>();
+        this.variantes = variantes != null ? variantes : new ArrayList<>();
         this.imagenes = imagenes != null ? imagenes : new ArrayList<>();
         this.etiqueta = etiqueta;
         this.stock = stock != null ? stock : true;
+    }
+
+    public boolean tieneStockGeneral() {
+        if (variantes == null || variantes.isEmpty()) {
+            return Boolean.TRUE.equals(this.stock);
+        }
+        return variantes.stream().mapToInt(v -> v.getStock() != null ? v.getStock() : 0).sum() > 0;
+    }
+
+    @JsonProperty("stockTotal")
+    public Integer getStockTotal() {
+        if (variantes == null || variantes.isEmpty()) {
+            return Boolean.TRUE.equals(this.stock) ? 1 : 0;
+        }
+        return variantes.stream().mapToInt(v -> v.getStock() != null ? v.getStock() : 0).sum();
+    }
+
+    @JsonProperty("talles")
+    public List<String> getTalles() {
+        if (variantes == null || variantes.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return variantes.stream()
+                .map(ProductoVariante::getTalle)
+                .filter(t -> t != null && !t.isBlank())
+                .distinct()
+                .toList();
+    }
+
+    public void addVariante(ProductoVariante variante) {
+        if (this.variantes == null) {
+            this.variantes = new ArrayList<>();
+        }
+        this.variantes.add(variante);
+        variante.setProducto(this);
+    }
+
+    public void removeVariante(ProductoVariante variante) {
+        if (this.variantes != null) {
+            this.variantes.remove(variante);
+            variante.setProducto(null);
+        }
+    }
+
+    public void clearVariantes() {
+        if (this.variantes != null) {
+            this.variantes.clear();
+        }
     }
 
     public Long getId() {
@@ -116,12 +163,15 @@ public class Producto {
         this.precioMayorista = precioMayorista;
     }
 
-    public List<String> getTalles() {
-        return talles;
+    public List<ProductoVariante> getVariantes() {
+        return variantes;
     }
 
-    public void setTalles(List<String> talles) {
-        this.talles = talles;
+    public void setVariantes(List<ProductoVariante> variantes) {
+        this.variantes = variantes != null ? variantes : new ArrayList<>();
+        for (ProductoVariante v : this.variantes) {
+            v.setProducto(this);
+        }
     }
 
     public List<String> getImagenes() {

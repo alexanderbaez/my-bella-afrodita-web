@@ -20,6 +20,7 @@ window.PRODUCTOS = PRODUCTOS;
 let carrito = JSON.parse(localStorage.getItem('myBellaCarrito')) || [];
 let talleFiltroActivo = 'TODOS';
 let categoriaActiva = null;
+const talleSeleccionadoPorProducto = {};
 
 document.addEventListener('DOMContentLoaded', async () => {
     actualizarContadorUI();
@@ -216,7 +217,11 @@ function dibujarProductos(lista) {
     const fragmento = document.createDocumentFragment();
 
     lista.forEach(p => {
-        const tieneStock = p.stock !== false;
+        const variantes = Array.isArray(p.variantes) ? p.variantes : [];
+        const stockTotal = variantes.length > 0
+            ? variantes.reduce((acc, v) => acc + (v.stock || 0), 0)
+            : (p.stock !== false ? 1 : 0);
+        const tieneStock = p.stock !== false && (variantes.length === 0 || stockTotal > 0);
         const tallesProducto = Array.isArray(p.talles) ? p.talles : [];
         const divCol = document.createElement("div");
         divCol.className = "col-6 col-md-4 col-lg-3 d-flex align-items-stretch product-item-card";
@@ -239,13 +244,58 @@ function dibujarProductos(lista) {
             ? `<span class="badge-stock-out"><i class="fas fa-times me-0.5"></i> Agotado</span>` 
             : '';
 
-        // Talles pequeños sutiles sobre la base de la foto
-        const tallesHtml = tallesProducto.length > 0
+        // Talles sobre la base de la foto (con indicación de agotado si corresponde)
+        const tallesHtml = variantes.length > 0
             ? `<div class="product-sizes-overlay">
-                   ${tallesProducto.slice(0, 4).map(t => `<span class="size-pill-mini">T.${t}</span>`).join('')}
-                   ${tallesProducto.length > 4 ? `<span class="size-pill-mini">+${tallesProducto.length - 4}</span>` : ''}
+                   ${variantes.slice(0, 4).map(v => `<span class="size-pill-mini ${(v.stock || 0) <= 0 ? 'agotado' : ''}">T.${v.talle}</span>`).join('')}
+                   ${variantes.length > 4 ? `<span class="size-pill-mini">+${variantes.length - 4}</span>` : ''}
                </div>`
-            : '';
+            : (tallesProducto.length > 0
+                ? `<div class="product-sizes-overlay">
+                       ${tallesProducto.slice(0, 4).map(t => `<span class="size-pill-mini">T.${t}</span>`).join('')}
+                       ${tallesProducto.length > 4 ? `<span class="size-pill-mini">+${tallesProducto.length - 4}</span>` : ''}
+                   </div>`
+                : '');
+
+        // Selector Interactivo de Talles en Ficha
+        let selectorTallesHtml = '';
+        if (variantes.length > 0) {
+            if (!talleSeleccionadoPorProducto[p.id]) {
+                const primerDisponible = variantes.find(v => (v.stock || 0) > 0);
+                talleSeleccionadoPorProducto[p.id] = primerDisponible ? primerDisponible.talle : variantes[0].talle;
+            }
+            const talleActivo = talleSeleccionadoPorProducto[p.id];
+            const varianteActiva = variantes.find(v => v.talle === talleActivo);
+            const stockActivo = varianteActiva ? (varianteActiva.stock || 0) : 0;
+            const stockAlerta = stockActivo > 0 && stockActivo <= 2 
+                ? `<span class="badge bg-warning text-dark ms-1" style="font-size:0.55rem;">¡Últimas ${stockActivo}!</span>` 
+                : '';
+
+            selectorTallesHtml = `
+                <div class="product-size-selector-wrap">
+                    <div class="product-size-label">
+                        <span>Talle:</span>
+                        <span id="stock-indicador-${p.id}">${stockAlerta}</span>
+                    </div>
+                    <div class="product-size-chips" id="chips-talle-${p.id}">
+                        ${variantes.map(v => {
+                            const agotado = (v.stock || 0) <= 0;
+                            const esActivo = !agotado && v.talle === talleActivo;
+                            return `
+                                <button type="button" 
+                                        class="btn-talle-select ${agotado ? 'disabled out-of-stock' : ''} ${esActivo ? 'active' : ''}" 
+                                        data-prod-id="${p.id}" 
+                                        data-talle="${v.talle}" 
+                                        data-stock="${v.stock || 0}" 
+                                        ${agotado ? 'disabled title="Talle agotado"' : `title="${v.stock} disponibles"`} 
+                                        onclick="seleccionarTalleEnCard('${p.id}', '${v.talle}', ${v.stock || 0}, event)">
+                                    ${v.talle}
+                                </button>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>`;
+        }
 
         // Bloque de Precios (Minorista destacado + Mayorista sutil)
         const wholesaleHtml = p.precioMayorista 
@@ -274,6 +324,8 @@ function dibujarProductos(lista) {
                     </div>
 
                     <div>
+                        ${selectorTallesHtml}
+
                         <!-- Precios Unificados -->
                         <div class="product-pricing-box d-flex align-items-baseline">
                             <span class="price-retail-highlight">$${Number(p.precioMinorista).toLocaleString('es-AR')}</span>
@@ -301,6 +353,35 @@ function dibujarProductos(lista) {
 
     contenedor.appendChild(fragmento);
 }
+
+window.seleccionarTalleEnCard = function(prodId, talle, stock, event) {
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
+    if (stock <= 0) return;
+    talleSeleccionadoPorProducto[prodId] = talle;
+
+    const container = document.getElementById(`chips-talle-${prodId}`);
+    if (container) {
+        container.querySelectorAll('.btn-talle-select').forEach(btn => {
+            if (btn.getAttribute('data-talle') === talle) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+
+    const indicador = document.getElementById(`stock-indicador-${prodId}`);
+    if (indicador) {
+        if (stock <= 2 && stock > 0) {
+            indicador.innerHTML = `<span class="badge bg-warning text-dark" style="font-size:0.55rem;">¡Últimas ${stock}!</span>`;
+        } else {
+            indicador.innerHTML = '';
+        }
+    }
+};
 
 // --- ZOOM DE PRODUCTO ---
 window.abrirZoomPorProducto = function(id) {
@@ -489,6 +570,7 @@ window.renderizarListaCarrito = function () {
                 <div class="flex-grow-1 ps-1">
                     <div class="drawer-item-title">${item.nombre}</div>
                     <div class="small text-muted" style="font-size: 0.7rem;">
+                        ${item.talle ? `<span class="badge bg-light text-dark border me-1">Talle ${item.talle}</span>` : ''}
                         $${precioAplicado.toLocaleString('es-AR')} c/u
                         ${res.esMayorista && p?.precioMayorista ? '<span class="badge bg-success ms-1" style="font-size: 0.55rem;">MAYORISTA</span>' : ''}
                     </div>
@@ -572,12 +654,71 @@ window.agregarAlCarrito = function (event, id) {
     const p = PRODUCTOS.find(prod => String(prod.id) === String(id));
     if (!p) return;
 
-    const existe = carrito.find(item => String(item.id) === String(id));
+    const variantes = Array.isArray(p.variantes) ? p.variantes : [];
+    let talleElegido = 'Único';
+    let maxStock = 999;
+
+    if (variantes.length > 0) {
+        let talleSel = talleSeleccionadoPorProducto[p.id];
+        let variante = variantes.find(v => v.talle === talleSel);
+        
+        // Si no hay variante seleccionada o la seleccionada no tiene stock, buscar la primera con stock
+        if (!variante || (variante.stock || 0) <= 0) {
+            variante = variantes.find(v => (v.stock || 0) > 0);
+        }
+
+        if (!variante || (variante.stock || 0) <= 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Talle Agotado',
+                text: 'Lo sentimos, este modelo no cuenta con stock disponible en este momento.',
+                confirmButtonColor: '#1a1a1a'
+            });
+            return;
+        }
+
+        talleElegido = variante.talle;
+        maxStock = variante.stock;
+    } else {
+        if (p.stock === false) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Agotado',
+                text: 'Este producto se encuentra momentáneamente sin stock.',
+                confirmButtonColor: '#1a1a1a'
+            });
+            return;
+        }
+    }
+
+    // Verificar si ya existe este producto con el mismo talle en el carrito
+    const existe = carrito.find(item => String(item.id) === String(id) && item.talle === talleElegido);
+    const cantidadActual = existe ? existe.cantidad : 0;
+
+    if (cantidadActual + 1 > maxStock) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Stock Límite Alcanzado',
+            text: `Solo disponemos de ${maxStock} unidad${maxStock === 1 ? '' : 'es'} en talle ${talleElegido}.`,
+            confirmButtonColor: '#1a1a1a'
+        });
+        return;
+    }
+
     if (existe) {
         existe.cantidad++;
+        existe.stockMax = maxStock;
     } else {
         const foto = (p.imagenes && p.imagenes.length > 0) ? p.imagenes[0] : '';
-        carrito.push({ id: p.id, nombre: p.nombre, precio: p.precioMinorista, imagen: foto, cantidad: 1 });
+        carrito.push({
+            id: p.id,
+            nombre: p.nombre,
+            precio: p.precioMinorista,
+            imagen: foto,
+            talle: talleElegido,
+            stockMax: maxStock,
+            cantidad: 1
+        });
     }
 
     actualizarYGuardar();
@@ -588,7 +729,7 @@ window.agregarAlCarrito = function (event, id) {
         position: 'top-end',
         icon: 'success',
         title: '¡Añadido a tu bolsa!',
-        text: p.nombre,
+        text: `${p.nombre} (Talle ${talleElegido})`,
         showConfirmButton: false,
         timer: 1800,
         timerProgressBar: true,
@@ -601,8 +742,33 @@ window.agregarAlCarrito = function (event, id) {
 };
 
 window.cambiarCantidad = function (index, valor) {
-    if (carrito[index].cantidad + valor > 0) {
-        carrito[index].cantidad += valor;
+    if (!carrito[index]) return;
+    const item = carrito[index];
+
+    if (valor > 0) {
+        const p = PRODUCTOS.find(prod => String(prod.id) === String(item.id));
+        let maxDisponible = item.stockMax || 999;
+        if (p && Array.isArray(p.variantes)) {
+            const v = p.variantes.find(va => va.talle === item.talle);
+            if (v && v.stock !== undefined) {
+                maxDisponible = v.stock;
+                item.stockMax = maxDisponible;
+            }
+        }
+
+        if (item.cantidad + valor > maxDisponible) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Stock Límite',
+                text: `No es posible agregar más unidades. Solo quedan ${maxDisponible} unidad${maxDisponible === 1 ? '' : 'es'} en talle ${item.talle}.`,
+                confirmButtonColor: '#1a1a1a'
+            });
+            return;
+        }
+    }
+
+    if (item.cantidad + valor > 0) {
+        item.cantidad += valor;
     } else {
         carrito.splice(index, 1);
     }

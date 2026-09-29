@@ -519,6 +519,76 @@ h1, h2, h3, h4, h5 {
     color: #25d366;
 }
 
+/* Selector de Talle Interactivo en Tarjeta Boutique */
+.product-size-selector-wrap {
+    margin-bottom: 10px;
+}
+
+.product-size-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.product-size-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.btn-talle-select {
+    min-width: 32px;
+    height: 27px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    border: 1px solid #e0e0e0;
+    background: #ffffff;
+    color: #222;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-talle-select:hover:not(:disabled) {
+    border-color: #1a1a1a;
+    background: #f8f8f8;
+}
+
+.btn-talle-select.active {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    border-color: #1a1a1a;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.btn-talle-select:disabled,
+.btn-talle-select.out-of-stock {
+    background: #f5f5f5 !important;
+    color: #bbb !important;
+    border: 1px dashed #d5d5d5 !important;
+    text-decoration: line-through !important;
+    cursor: not-allowed !important;
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+.size-pill-mini.agotado {
+    text-decoration: line-through;
+    color: #aaa;
+    background: rgba(240, 240, 240, 0.85);
+    border-color: #ddd;
+}
+
 /* ==========================================================================
    SLIDE-OVER CART (DRAWER LATERAL DERECHO)
    ========================================================================== */

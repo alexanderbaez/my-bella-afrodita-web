@@ -8,6 +8,8 @@ import com.bellafrodita.TiendaBellaAfrodita.orden.model.OrdenItem;
 import com.bellafrodita.TiendaBellaAfrodita.orden.repository.OrdenRepository;
 import com.bellafrodita.TiendaBellaAfrodita.producto.Producto;
 import com.bellafrodita.TiendaBellaAfrodita.producto.ProductoRepository;
+import com.bellafrodita.TiendaBellaAfrodita.producto.ProductoVariante;
+import com.bellafrodita.TiendaBellaAfrodita.producto.ProductoVarianteRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,10 +32,14 @@ public class OrdenService {
 
     private final OrdenRepository ordenRepository;
     private final ProductoRepository productoRepository;
+    private final ProductoVarianteRepository productoVarianteRepository;
 
-    public OrdenService(OrdenRepository ordenRepository, ProductoRepository productoRepository) {
+    public OrdenService(OrdenRepository ordenRepository,
+                        ProductoRepository productoRepository,
+                        ProductoVarianteRepository productoVarianteRepository) {
         this.ordenRepository = ordenRepository;
         this.productoRepository = productoRepository;
+        this.productoVarianteRepository = productoVarianteRepository;
     }
 
     @Transactional
@@ -75,6 +81,40 @@ public class OrdenService {
             Producto producto = productoRepository.findById(itemReq.getProductoId())
                     .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con ID: " + itemReq.getProductoId()));
 
+            String talleSolicitado = itemReq.getTalle() != null && !itemReq.getTalle().isBlank()
+                    ? itemReq.getTalle().trim()
+                    : "Único";
+
+            // Validar stock físico disponible por variante
+            ProductoVariante variante = productoVarianteRepository
+                    .findByProductoIdAndTalleIgnoreCase(producto.getId(), talleSolicitado)
+                    .orElse(null);
+
+            if (variante == null && producto.getVariantes() != null && !producto.getVariantes().isEmpty()) {
+                variante = producto.getVariantes().stream()
+                        .filter(v -> v.getTalle() != null && v.getTalle().equalsIgnoreCase(talleSolicitado))
+                        .findFirst()
+                        .orElse(producto.getVariantes().get(0));
+            }
+
+            if (variante != null) {
+                if (variante.getStock() < cantidad) {
+                    throw new com.bellafrodita.TiendaBellaAfrodita.orden.exception.StockInsuficienteException(
+                            "Stock insuficiente para el producto '" + producto.getNombre() +
+                            "' en talle '" + talleSolicitado + "'. Disponibles: " + variante.getStock() +
+                            ", solicitados: " + cantidad + "."
+                    );
+                }
+
+                // Descuento atómico de stock
+                variante.setStock(variante.getStock() - cantidad);
+                productoVarianteRepository.save(variante);
+
+                // Actualizar bandera de stock del producto
+                producto.setStock(producto.tieneStockGeneral());
+                productoRepository.save(producto);
+            }
+
             BigDecimal precioMinorista = BigDecimal.valueOf(producto.getPrecioMinorista() != null ? producto.getPrecioMinorista() : 0.0);
             BigDecimal precioMayorista = producto.getPrecioMayorista() != null && producto.getPrecioMayorista() > 0
                     ? BigDecimal.valueOf(producto.getPrecioMayorista())
@@ -91,7 +131,7 @@ public class OrdenService {
             OrdenItem ordenItem = OrdenItem.builder()
                     .productoId(producto.getId())
                     .productoNombre(producto.getNombre())
-                    .talle(itemReq.getTalle() != null ? itemReq.getTalle().trim() : "Único")
+                    .talle(talleSolicitado)
                     .cantidad(cantidad)
                     .precioUnitario(precioAplicado.setScale(2, RoundingMode.HALF_UP))
                     .subtotal(itemSubtotalFinal.setScale(2, RoundingMode.HALF_UP))
