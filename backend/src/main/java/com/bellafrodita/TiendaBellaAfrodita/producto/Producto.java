@@ -1,4 +1,4 @@
-package com.bellafrodita.TiendaBellaAfrodita.model;
+package com.bellafrodita.TiendaBellaAfrodita.producto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;

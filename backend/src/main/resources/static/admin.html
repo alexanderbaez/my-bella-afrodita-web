@@ -170,6 +170,35 @@
             color: #fff;
             border-color: var(--color-pasión);
         }
+
+        /* Pestañas de Navegación */
+        .admin-tab-btn {
+            border: 1px solid #ddd;
+            background: #fff;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #555;
+            padding: 8px 20px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .admin-tab-btn.active {
+            background-color: #1a1a1a;
+            color: #fff;
+            border-color: #1a1a1a;
+        }
+        .admin-tab-btn:hover:not(.active) {
+            background-color: #f7f1f9;
+            color: var(--color-pasión);
+        }
+
+        .badge-estado-pendiente { background-color: #ffeaa7; color: #d63031; }
+        .badge-estado-pagado { background-color: #dff9fb; color: #0984e3; }
+        .badge-estado-en_preparacion { background-color: #e8daef; color: #8e44ad; }
+        .badge-estado-enviado { background-color: #d1f2eb; color: #16a085; }
+        .badge-estado-entregado { background-color: #d4edda; color: #155724; }
+        .badge-estado-cancelado { background-color: #f8d7da; color: #721c24; }
     </style>
 </head>
 
@@ -197,116 +226,228 @@
     </header>
 
     <main class="container-fluid px-lg-4 py-4">
-        <!-- Top Title & Quick Action -->
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
-            <div>
-                <h1 class="h3 fw-bold font-playfair mb-1 text-dark">Gestión de Catálogo</h1>
-                <p class="text-muted small mb-0">Crea, edita, actualiza stock y administra los productos en tiempo real.</p>
+        <!-- Navegación por Pestañas del Backoffice -->
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4 border-bottom pb-3">
+            <div class="d-flex gap-2">
+                <button class="admin-tab-btn active" id="tab-btn-productos" onclick="cambiarPestana('productos')">
+                    <i class="fas fa-tshirt me-1.5"></i> Catálogo de Productos
+                </button>
+                <button class="admin-tab-btn" id="tab-btn-pedidos" onclick="cambiarPestana('pedidos')">
+                    <i class="fas fa-shopping-bag me-1.5"></i> Gestión de Pedidos
+                    <span class="badge rounded-pill bg-danger ms-1" id="badge-pedidos-count">0</span>
+                </button>
             </div>
-            <div>
+            <div id="btn-top-action-container">
                 <button class="btn btn-boutique-add shadow-sm" onclick="abrirModalCrear()">
                     <i class="fas fa-plus me-1.5"></i> Nuevo Producto
                 </button>
             </div>
         </div>
 
-        <!-- Metric Stat Cards -->
-        <div class="row g-3 mb-4">
-            <div class="col-6 col-md-3">
-                <div class="stat-card d-flex align-items-center">
-                    <div class="stat-icon bg-light text-primary me-3" style="color: var(--color-pasión) !important; background-color: #f5eff8 !important;">
-                        <i class="fas fa-boxes"></i>
+        <!-- ==================== SECCIÓN 1: PRODUCTOS ==================== -->
+        <div id="seccion-productos">
+            <!-- Metric Stat Cards Productos -->
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-md-3">
+                    <div class="stat-card d-flex align-items-center">
+                        <div class="stat-icon bg-light text-primary me-3" style="color: var(--color-pasión) !important; background-color: #f5eff8 !important;">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small fw-semibold text-uppercase" style="font-size: 0.65rem;">Total Modelos</div>
+                            <div class="h4 fw-bold mb-0 text-dark" id="stat-total">0</div>
+                        </div>
                     </div>
-                    <div>
-                        <div class="text-muted small fw-semibold text-uppercase" style="font-size: 0.65rem;">Total Modelos</div>
-                        <div class="h4 fw-bold mb-0 text-dark" id="stat-total">0</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card d-flex align-items-center">
+                        <div class="stat-icon me-3 text-success" style="background-color: #eafaf1;">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small fw-semibold text-uppercase" style="font-size: 0.65rem;">En Stock</div>
+                            <div class="h4 fw-bold mb-0 text-success" id="stat-en-stock">0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card d-flex align-items-center">
+                        <div class="stat-icon me-3 text-danger" style="background-color: #fdf0f0;">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small fw-semibold text-uppercase" style="font-size: 0.65rem;">Sin Stock</div>
+                            <div class="h4 fw-bold mb-0 text-danger" id="stat-sin-stock">0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card d-flex align-items-center">
+                        <div class="stat-icon me-3 text-warning" style="background-color: #fef9ec;">
+                            <i class="fas fa-tags"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small fw-semibold text-uppercase" style="font-size: 0.65rem;">Categorías</div>
+                            <div class="h4 fw-bold mb-0 text-dark" id="stat-categorias">4</div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="stat-card d-flex align-items-center">
-                    <div class="stat-icon me-3 text-success" style="background-color: #eafaf1;">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div>
-                        <div class="text-muted small fw-semibold text-uppercase" style="font-size: 0.65rem;">En Stock</div>
-                        <div class="h4 fw-bold mb-0 text-success" id="stat-en-stock">0</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="stat-card d-flex align-items-center">
-                    <div class="stat-icon me-3 text-danger" style="background-color: #fdf0f0;">
-                        <i class="fas fa-times-circle"></i>
-                    </div>
-                    <div>
-                        <div class="text-muted small fw-semibold text-uppercase" style="font-size: 0.65rem;">Sin Stock</div>
-                        <div class="h4 fw-bold mb-0 text-danger" id="stat-sin-stock">0</div>
+
+            <!-- Search & Filter Controls Productos -->
+            <div class="row g-2 mb-3 align-items-center">
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-search"></i></span>
+                        <input type="text" id="filtro-busqueda" class="form-control border-start-0" placeholder="Buscar por nombre o descripción...">
                     </div>
                 </div>
+                <div class="col-md-3">
+                    <select id="filtro-categoria" class="form-select">
+                        <option value="">Todas las Categorías</option>
+                        <option value="conjuntos">Conjuntos</option>
+                        <option value="bombachas">Bombachas</option>
+                        <option value="hombres">Masculino / Hombre</option>
+                        <option value="medias">Medias</option>
+                    </select>
+                </div>
+                <div class="col-md-4 text-md-end text-muted small" id="contador-productos-mostrados">
+                    Cargando productos...
+                </div>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="stat-card d-flex align-items-center">
-                    <div class="stat-icon me-3 text-warning" style="background-color: #fef9ec;">
-                        <i class="fas fa-tags"></i>
-                    </div>
-                    <div>
-                        <div class="text-muted small fw-semibold text-uppercase" style="font-size: 0.65rem;">Categorías</div>
-                        <div class="h4 fw-bold mb-0 text-dark" id="stat-categorias">4</div>
-                    </div>
+
+            <!-- Products Table -->
+            <div class="table-container shadow-sm">
+                <div class="table-responsive">
+                    <table class="table mb-0 align-middle">
+                        <thead>
+                            <tr>
+                                <th style="width: 70px;">Foto</th>
+                                <th>Nombre & Descripción</th>
+                                <th style="width: 130px;">Categoría</th>
+                                <th style="width: 140px;">Precio Min.</th>
+                                <th style="width: 140px;">Precio May.</th>
+                                <th>Talles</th>
+                                <th style="width: 110px;" class="text-center">Stock</th>
+                                <th style="width: 120px;" class="text-end">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-productos-body">
+                            <tr>
+                                <td colspan="8" class="text-center py-5">
+                                    <div class="spinner-border text-secondary" role="status">
+                                        <span class="visually-hidden">Cargando...</span>
+                                    </div>
+                                    <div class="text-muted small mt-2">Cargando datos desde MySQL...</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
-        <!-- Search & Filter Controls -->
-        <div class="row g-2 mb-3 align-items-center">
-            <div class="col-md-5">
-                <div class="input-group">
-                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-search"></i></span>
-                    <input type="text" id="filtro-busqueda" class="form-control border-start-0" placeholder="Buscar por nombre o descripción...">
+        <!-- ==================== SECCIÓN 2: PEDIDOS ==================== -->
+        <div id="seccion-pedidos" class="d-none">
+            <!-- Metric Stat Cards Pedidos -->
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-md-3">
+                    <div class="stat-card d-flex align-items-center">
+                        <div class="stat-icon bg-light text-primary me-3" style="color: #0984e3 !important; background-color: #eaf4fb !important;">
+                            <i class="fas fa-receipt"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small fw-semibold text-uppercase" style="font-size: 0.65rem;">Total Órdenes</div>
+                            <div class="h4 fw-bold mb-0 text-dark" id="stat-pedidos-total">0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card d-flex align-items-center">
+                        <div class="stat-icon me-3 text-warning" style="background-color: #fef9ec;">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small fw-semibold text-uppercase" style="font-size: 0.65rem;">Pendientes</div>
+                            <div class="h4 fw-bold mb-0 text-warning" id="stat-pedidos-pendientes">0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card d-flex align-items-center">
+                        <div class="stat-icon me-3 text-info" style="background-color: #e8daef;">
+                            <i class="fas fa-truck-loading"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small fw-semibold text-uppercase" style="font-size: 0.65rem;">En Proceso / Envío</div>
+                            <div class="h4 fw-bold mb-0 text-dark" id="stat-pedidos-proceso">0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card d-flex align-items-center">
+                        <div class="stat-icon me-3 text-success" style="background-color: #eafaf1;">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small fw-semibold text-uppercase" style="font-size: 0.65rem;">Facturado Real</div>
+                            <div class="h4 fw-bold mb-0 text-success" id="stat-pedidos-facturado">$0</div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <select id="filtro-categoria" class="form-select">
-                    <option value="">Todas las Categorías</option>
-                    <option value="conjuntos">Conjuntos</option>
-                    <option value="bombachas">Bombachas</option>
-                    <option value="hombres">Masculino / Hombre</option>
-                    <option value="medias">Medias</option>
-                </select>
-            </div>
-            <div class="col-md-4 text-md-end text-muted small" id="contador-productos-mostrados">
-                Cargando productos...
-            </div>
-        </div>
 
-        <!-- Products Table -->
-        <div class="table-container shadow-sm">
-            <div class="table-responsive">
-                <table class="table mb-0 align-middle">
-                    <thead>
-                        <tr>
-                            <th style="width: 70px;">Foto</th>
-                            <th>Nombre & Descripción</th>
-                            <th style="width: 130px;">Categoría</th>
-                            <th style="width: 140px;">Precio Min.</th>
-                            <th style="width: 140px;">Precio May.</th>
-                            <th>Talles</th>
-                            <th style="width: 110px;" class="text-center">Stock</th>
-                            <th style="width: 120px;" class="text-end">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabla-productos-body">
-                        <tr>
-                            <td colspan="8" class="text-center py-5">
-                                <div class="spinner-border text-secondary" role="status">
-                                    <span class="visually-hidden">Cargando...</span>
-                                </div>
-                                <div class="text-muted small mt-2">Cargando datos desde MySQL...</div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <!-- Toolbar Pedidos -->
+            <div class="row g-2 mb-3 align-items-center">
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-search"></i></span>
+                        <input type="text" id="filtro-pedidos-busqueda" class="form-control border-start-0" placeholder="Buscar por cliente, teléfono o código #BA...">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select id="filtro-pedidos-estado" class="form-select">
+                        <option value="">Todos los Estados</option>
+                        <option value="PENDIENTE">PENDIENTE</option>
+                        <option value="PAGADO">PAGADO</option>
+                        <option value="EN_PREPARACION">EN PREPARACIÓN</option>
+                        <option value="ENVIADO">ENVIADO</option>
+                        <option value="ENTREGADO">ENTREGADO</option>
+                        <option value="CANCELADO">CANCELADO</option>
+                    </select>
+                </div>
+                <div class="col-md-4 text-md-end text-muted small" id="contador-pedidos-mostrados">
+                    Cargando pedidos...
+                </div>
+            </div>
+
+            <!-- Orders Table -->
+            <div class="table-container shadow-sm">
+                <div class="table-responsive">
+                    <table class="table mb-0 align-middle">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Fecha</th>
+                                <th>Cliente & Contacto</th>
+                                <th>Prendas</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th class="text-end">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-pedidos-body">
+                            <tr>
+                                <td colspan="7" class="text-center py-5">
+                                    <div class="spinner-border text-secondary" role="status">
+                                        <span class="visually-hidden">Cargando pedidos...</span>
+                                    </div>
+                                    <div class="text-muted small mt-2">Consultando órdenes desde MySQL...</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </main>
@@ -447,6 +588,29 @@
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Detalle de Pedido -->
+    <div class="modal fade" id="modalDetallePedido" tabindex="-1" aria-labelledby="modalDetallePedidoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-dark text-white py-3">
+                    <h5 class="modal-title font-playfair" id="modalDetallePedidoLabel">
+                        <i class="fas fa-receipt me-2"></i> Detalle de Pedido
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4" id="modal-detalle-pedido-body">
+                    <!-- Contenido dinámico inyectado por admin.js -->
+                </div>
+                <div class="modal-footer bg-light border-0 py-3">
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-1" data-bs-dismiss="modal">Cerrar</button>
+                    <a href="#" target="_blank" class="btn btn-success btn-sm px-3 rounded-1 fw-bold" id="btn-modal-whatsapp">
+                        <i class="fab fa-whatsapp me-1"></i> Abrir Chat WhatsApp
+                    </a>
+                </div>
             </div>
         </div>
     </div>

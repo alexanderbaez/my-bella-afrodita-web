@@ -3,21 +3,43 @@
    ========================================================================== */
 
 const API_BASE = '/api/productos';
-const AUTH_VERIFY = '/api/auth/verify';
+const API_ORDENES = '/api/ordenes';
+const AUTH_STATUS_URL = '/api/auth/status';
+const AUTH_LOGOUT_URL = '/api/auth/logout';
 const UPLOAD_API = '/api/upload';
 
-// Verificación de Sesión Administrativa
-let authHeader = sessionStorage.getItem('myBellaAdminAuth');
-if (!authHeader) {
-    window.location.href = './login.html';
-}
-
 let listaProductos = [];
+let listaOrdenes = [];
+let pestanaActiva = 'productos';
 let modalInstancia = null;
+let modalDetallePedidoInstancia = null;
 let imagenesProductoActual = [];
 
-document.addEventListener('DOMContentLoaded', () => {
+async function verificarSesionAdmin() {
+    try {
+        const res = await fetch(AUTH_STATUS_URL, { credentials: 'include' });
+        const data = await res.json();
+        if (!res.ok || !data.authenticated || data.rol !== 'ROLE_ADMIN') {
+            throw new Error('No autorizado');
+        }
+        sessionStorage.setItem('myBellaAdminUser', JSON.stringify(data));
+        return data;
+    } catch (e) {
+        sessionStorage.removeItem('myBellaAdminUser');
+        window.location.href = '/login.html';
+        return null;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const adminUser = await verificarSesionAdmin();
+    if (!adminUser) return;
+
     modalInstancia = new bootstrap.Modal(document.getElementById('modalProducto'));
+    const modalPedidoElem = document.getElementById('modalDetallePedido');
+    if (modalPedidoElem) {
+        modalDetallePedidoInstancia = new bootstrap.Modal(modalPedidoElem);
+    }
 
     // Configurar chips de talles interactivos
     document.querySelectorAll('#talles-chips-container .talle-chip').forEach(chip => {
@@ -54,20 +76,62 @@ document.addEventListener('DOMContentLoaded', () => {
         }, false);
     }
 
-    // Buscador y filtro de categorías en tiempo real
+    // Buscador y filtro de categorías de productos en tiempo real
     const inputBusqueda = document.getElementById('filtro-busqueda');
     const selectCategoria = document.getElementById('filtro-categoria');
     if (inputBusqueda) inputBusqueda.addEventListener('input', filtrarYRenderizar);
     if (selectCategoria) selectCategoria.addEventListener('change', filtrarYRenderizar);
 
-    // Cargar productos
+    // Buscador y filtro de estados de órdenes en tiempo real
+    const inputBusquedaPedidos = document.getElementById('filtro-pedidos-busqueda');
+    const selectEstadoPedidos = document.getElementById('filtro-pedidos-estado');
+    if (inputBusquedaPedidos) inputBusquedaPedidos.addEventListener('input', filtrarYRenderizarPedidos);
+    if (selectEstadoPedidos) selectEstadoPedidos.addEventListener('change', filtrarYRenderizarPedidos);
+
+    // Cargar productos y órdenes
     cargarProductos();
+    cargarOrdenes();
 });
 
-window.cerrarSesionAdmin = function () {
-    sessionStorage.removeItem('myBellaAdminAuth');
+// --- PESTAÑAS: PRODUCTOS VS PEDIDOS ---
+window.cambiarPestana = function (pestana) {
+    pestanaActiva = pestana;
+    const btnProd = document.getElementById('tab-btn-productos');
+    const btnPed = document.getElementById('tab-btn-pedidos');
+    const secProd = document.getElementById('seccion-productos');
+    const secPed = document.getElementById('seccion-pedidos');
+    const topAction = document.getElementById('btn-top-action-container');
+
+    if (pestana === 'productos') {
+        btnProd.classList.add('active');
+        btnPed.classList.remove('active');
+        secProd.classList.remove('d-none');
+        secPed.classList.add('d-none');
+        topAction.innerHTML = `
+            <button class="btn btn-boutique-add shadow-sm" onclick="abrirModalCrear()">
+                <i class="fas fa-plus me-1.5"></i> Nuevo Producto
+            </button>`;
+    } else {
+        btnPed.classList.add('active');
+        btnProd.classList.remove('active');
+        secPed.classList.remove('d-none');
+        secProd.classList.add('d-none');
+        topAction.innerHTML = `
+            <button class="btn btn-outline-dark btn-sm shadow-sm py-2 px-3 fw-bold" onclick="cargarOrdenes()">
+                <i class="fas fa-sync-alt me-1.5"></i> Actualizar Pedidos
+            </button>`;
+        cargarOrdenes();
+    }
+};
+
+window.cerrarSesionAdmin = async function () {
+    try {
+        await fetch(AUTH_LOGOUT_URL, { method: 'POST', credentials: 'include' });
+    } catch (e) {
+        console.error("Error al cerrar sesión:", e);
+    }
     sessionStorage.removeItem('myBellaAdminUser');
-    window.location.href = './login.html';
+    window.location.href = '/login.html';
 };
 
 // --- OBTENER PRODUCTOS DESDE LA API ---
@@ -216,14 +280,12 @@ async function toggleStock(id, switchElem) {
     try {
         const res = await fetch(`${API_BASE}/${id}/toggle-stock`, {
             method: 'PATCH',
-            headers: {
-                'Authorization': authHeader
-            }
+            credentials: 'include'
         });
 
-        if (res.status === 401) {
+        if (res.status === 401 || res.status === 403) {
             switchElem.checked = !switchElem.checked;
-            solicitarLogin('Credenciales inválidas o no autorizadas.');
+            manejarNoAutorizado('Sesión vencida o no autorizada para modificar stock.');
             return;
         }
 
@@ -354,14 +416,12 @@ async function subirArchivos(files) {
         try {
             const res = await fetch(UPLOAD_API, {
                 method: 'POST',
-                headers: {
-                    'Authorization': authHeader
-                },
+                credentials: 'include',
                 body: formData
             });
 
-            if (res.status === 401) {
-                solicitarLogin('Sesión vencida. Ingresa tus credenciales para subir fotos.');
+            if (res.status === 401 || res.status === 403) {
+                manejarNoAutorizado('Sesión vencida. Ingresa como administrador para subir fotos.');
                 return;
             }
 
@@ -483,14 +543,14 @@ async function guardarProducto(event) {
         const res = await fetch(url, {
             method: metodo,
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': authHeader
+                'Content-Type': 'application/json'
             },
+            credentials: 'include',
             body: JSON.stringify(payload)
         });
 
-        if (res.status === 401) {
-            solicitarLogin('Por favor autentícate como administrador para guardar cambios.');
+        if (res.status === 401 || res.status === 403) {
+            manejarNoAutorizado('Por favor autentícate como administrador para guardar cambios.');
             return;
         }
 
@@ -538,13 +598,11 @@ async function eliminarProducto(id, nombre) {
     try {
         const res = await fetch(`${API_BASE}/${id}`, {
             method: 'DELETE',
-            headers: {
-                'Authorization': authHeader
-            }
+            credentials: 'include'
         });
 
-        if (res.status === 401) {
-            solicitarLogin('Debes estar autenticado para eliminar productos.');
+        if (res.status === 401 || res.status === 403) {
+            manejarNoAutorizado('Debes tener permisos de administrador para eliminar productos.');
             return;
         }
 
@@ -569,77 +627,293 @@ async function eliminarProducto(id, nombre) {
     }
 }
 
-// --- AUTENTICACIÓN / CREDENCIALES ---
-function configurarCredenciales() {
-    Swal.fire({
-        title: 'Credenciales de Administrador',
-        html: `
-            <div class="text-start">
-                <label class="form-label small fw-bold">Usuario</label>
-                <input type="text" id="swal-user" class="form-control mb-2" value="admin">
-                <label class="form-label small fw-bold">Contraseña</label>
-                <input type="password" id="swal-pass" class="form-control" value="admin123">
-                <small class="text-muted mt-2 d-block">Por defecto: admin / admin123</small>
-            </div>
-        `,
-        confirmButtonText: 'Guardar Credenciales',
-        confirmButtonColor: '#1a1a1a',
-        showCancelButton: true,
-        cancelButtonText: 'Cancelar',
-        preConfirm: () => {
-            const u = document.getElementById('swal-user').value;
-            const p = document.getElementById('swal-pass').value;
-            if (!u || !p) {
-                Swal.showValidationMessage('Ingresa usuario y contraseña');
-                return false;
-            }
-            return { u, p };
-        }
-    }).then(async (result) => {
-        if (result.isConfirmed) {
-            const token = 'Basic ' + btoa(`${result.value.u}:${result.value.p}`);
-            
-            // Verificar contra endpoint de autenticación
-            try {
-                const res = await fetch(AUTH_VERIFY, {
-                    headers: { 'Authorization': token }
-                });
-                if (res.ok) {
-                    authHeader = token;
-                    sessionStorage.setItem('myBellaAdminAuth', token);
-                    Swal.fire({
-                        icon: 'success',
-                        title: '¡Autenticado!',
-                        text: `Sesión iniciada como "${result.value.u}".`,
-                        timer: 1500,
-                        showConfirmButton: false
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error de Autenticación',
-                        text: 'Usuario o contraseña incorrectos en el backend.'
-                    });
-                }
-            } catch (err) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Servidor no disponible',
-                    text: 'No se pudo contactar con el backend para verificar.'
-                });
-            }
-        }
-    });
-}
-
-function solicitarLogin(mensaje) {
+// --- MANEJO DE SESIÓN / NO AUTORIZADO ---
+function manejarNoAutorizado(mensaje = 'Tu sesión ha expirado o no tienes permisos de administrador.') {
+    sessionStorage.removeItem('myBellaAdminUser');
     Swal.fire({
         icon: 'warning',
         title: 'Acceso Restringido',
-        text: mensaje || 'Por favor autentícate con tus credenciales de administrador.',
-        confirmButtonText: 'Ingresar Credenciales',
+        text: mensaje,
+        confirmButtonText: 'Iniciar Sesión',
         confirmButtonColor: '#1a1a1a'
     }).then(() => {
-        configurarCredenciales();
+        window.location.href = '/login.html';
     });
 }
+
+// ==========================================================================
+// GESTIÓN DE PEDIDOS Y VENTAS (MY BELLA AFRODITA)
+// ==========================================================================
+
+async function cargarOrdenes() {
+    const tbody = document.getElementById('tabla-pedidos-body');
+    if (!tbody) return;
+
+    try {
+        const res = await fetch(API_ORDENES, { credentials: 'include' });
+        if (res.status === 401 || res.status === 403) {
+            manejarNoAutorizado('Sesión vencida para consultar órdenes.');
+            return;
+        }
+        if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
+
+        listaOrdenes = await res.json();
+        actualizarMetricasPedidos(listaOrdenes);
+        filtrarYRenderizarPedidos();
+    } catch (error) {
+        console.error("Error al cargar pedidos:", error);
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center py-5 text-danger">
+                    <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                    <p class="fw-bold mb-1">No se pudieron cargar las órdenes desde el servidor.</p>
+                </td>
+            </tr>`;
+    }
+}
+
+function actualizarMetricasPedidos(ordenes) {
+    const total = ordenes.length;
+    const pendientes = ordenes.filter(o => o.estado === 'PENDIENTE').length;
+    const enProceso = ordenes.filter(o => o.estado === 'EN_PREPARACION' || o.estado === 'ENVIADO').length;
+    const facturado = ordenes
+        .filter(o => o.estado !== 'CANCELADO')
+        .reduce((acc, o) => acc + (Number(o.total) || 0), 0);
+
+    const statTotal = document.getElementById('stat-pedidos-total');
+    const statPendientes = document.getElementById('stat-pedidos-pendientes');
+    const statProceso = document.getElementById('stat-pedidos-proceso');
+    const statFacturado = document.getElementById('stat-pedidos-facturado');
+    const badgeCount = document.getElementById('badge-pedidos-count');
+
+    if (statTotal) statTotal.innerText = total;
+    if (statPendientes) statPendientes.innerText = pendientes;
+    if (statProceso) statProceso.innerText = enProceso;
+    if (statFacturado) statFacturado.innerText = `$${Math.round(facturado).toLocaleString('es-AR')}`;
+    if (badgeCount) badgeCount.innerText = pendientes;
+}
+
+function filtrarYRenderizarPedidos() {
+    const texto = (document.getElementById('filtro-pedidos-busqueda')?.value || '').toLowerCase().trim();
+    const estado = document.getElementById('filtro-pedidos-estado')?.value || '';
+
+    const filtrados = listaOrdenes.filter(o => {
+        const coincideTexto = !texto ||
+            (o.codigoSeguimiento && o.codigoSeguimiento.toLowerCase().includes(texto)) ||
+            (o.clienteNombre && o.clienteNombre.toLowerCase().includes(texto)) ||
+            (o.clienteTelefono && o.clienteTelefono.toLowerCase().includes(texto));
+        const coincideEstado = !estado || (o.estado === estado);
+        return coincideTexto && coincideEstado;
+    });
+
+    renderizarTablaPedidos(filtrados);
+
+    const contador = document.getElementById('contador-pedidos-mostrados');
+    if (contador) {
+        contador.innerText = `Mostrando ${filtrados.length} de ${listaOrdenes.length} pedidos`;
+    }
+}
+
+function renderizarTablaPedidos(ordenes) {
+    const tbody = document.getElementById('tabla-pedidos-body');
+    if (!tbody) return;
+
+    if (ordenes.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center py-5 text-muted">
+                    No se encontraron órdenes registradas con los filtros aplicados.
+                </td>
+            </tr>`;
+        return;
+    }
+
+    tbody.innerHTML = ordenes.map(o => {
+        const fechaObj = new Date(o.fechaCreacion);
+        const fechaStr = isNaN(fechaObj) ? o.fechaCreacion : fechaObj.toLocaleString('es-AR', {
+            day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+
+        const totalPrendas = (o.items || []).reduce((acc, item) => acc + (item.cantidad || 0), 0);
+        const mayoristaBadge = o.esMayorista 
+            ? `<span class="badge bg-success ms-1" style="font-size: 0.65rem;">Mayorista</span>`
+            : '';
+
+        const telSanitizado = (o.clienteTelefono || '').replace(/[^0-9]/g, '');
+
+        return `
+            <tr>
+                <td>
+                    <span class="badge bg-dark font-monospace" style="letter-spacing: 0.5px;">#${o.codigoSeguimiento}</span>
+                </td>
+                <td class="small text-muted" style="white-space: nowrap;">
+                    ${fechaStr}
+                </td>
+                <td>
+                    <div class="fw-bold text-dark text-capitalize" style="font-size: 0.85rem;">
+                        ${o.clienteNombre}
+                    </div>
+                    <div class="small">
+                        <a href="https://wa.me/${telSanitizado}" target="_blank" class="text-success text-decoration-none">
+                            <i class="fab fa-whatsapp me-1"></i>${o.clienteTelefono}
+                        </a>
+                    </div>
+                </td>
+                <td>
+                    <span class="fw-semibold">${totalPrendas} prenda${totalPrendas === 1 ? '' : 's'}</span>
+                    ${mayoristaBadge}
+                </td>
+                <td class="fw-bold text-dark">
+                    $${Number(o.total).toLocaleString('es-AR')}
+                </td>
+                <td>
+                    <select class="form-select form-select-sm" 
+                            style="font-size: 0.75rem; font-weight: 600; width: 145px;"
+                            onchange="cambiarEstadoPedido(${o.id}, this.value)">
+                        <option value="PENDIENTE" ${o.estado === 'PENDIENTE' ? 'selected' : ''}>PENDIENTE</option>
+                        <option value="PAGADO" ${o.estado === 'PAGADO' ? 'selected' : ''}>PAGADO</option>
+                        <option value="EN_PREPARACION" ${o.estado === 'EN_PREPARACION' ? 'selected' : ''}>EN PREPARACIÓN</option>
+                        <option value="ENVIADO" ${o.estado === 'ENVIADO' ? 'selected' : ''}>ENVIADO</option>
+                        <option value="ENTREGADO" ${o.estado === 'ENTREGADO' ? 'selected' : ''}>ENTREGADO</option>
+                        <option value="CANCELADO" ${o.estado === 'CANCELADO' ? 'selected' : ''}>CANCELADO</option>
+                    </select>
+                </td>
+                <td class="text-end">
+                    <button class="btn btn-outline-dark btn-sm py-1 px-2 rounded-1" onclick="verDetallePedido(${o.id})" title="Ver Detalle">
+                        <i class="fas fa-eye me-1"></i> Detalle
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+window.cambiarEstadoPedido = async function (id, nuevoEstado) {
+    try {
+        const res = await fetch(`${API_ORDENES}/${id}/estado`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ estado: nuevoEstado })
+        });
+
+        if (res.status === 401 || res.status === 403) {
+            manejarNoAutorizado('Sesión vencida para actualizar el estado del pedido.');
+            return;
+        }
+
+        if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
+
+        const ordenActualizada = await res.json();
+        const index = listaOrdenes.findIndex(o => o.id === id);
+        if (index !== -1) {
+            listaOrdenes[index].estado = ordenActualizada.estado;
+            actualizarMetricasPedidos(listaOrdenes);
+        }
+
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: `Orden #${ordenActualizada.codigoSeguimiento}`,
+            text: `Nuevo estado: ${ordenActualizada.estado}`,
+            showConfirmButton: false,
+            timer: 2000
+        });
+    } catch (error) {
+        console.error("Error al actualizar estado:", error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error al cambiar estado',
+            text: 'No se pudo actualizar el estado de la orden en el servidor.'
+        });
+        cargarOrdenes();
+    }
+};
+
+window.verDetallePedido = function (id) {
+    const orden = listaOrdenes.find(o => o.id === id);
+    if (!orden) return;
+
+    const modalBody = document.getElementById('modal-detalle-pedido-body');
+    const btnWhatsapp = document.getElementById('btn-modal-whatsapp');
+    if (!modalBody) return;
+
+    const fechaObj = new Date(orden.fechaCreacion);
+    const fechaStr = isNaN(fechaObj) ? orden.fechaCreacion : fechaObj.toLocaleString('es-AR', {
+        day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
+
+    const itemsHtml = (orden.items || []).map(item => `
+        <tr>
+            <td class="fw-bold">${item.productoNombre}</td>
+            <td class="text-center"><span class="badge bg-light text-dark border">${item.talle || '-'}</span></td>
+            <td class="text-center">${item.cantidad}</td>
+            <td class="text-end">$${Number(item.precioUnitario).toLocaleString('es-AR')}</td>
+            <td class="text-end fw-bold">$${Number(item.subtotal).toLocaleString('es-AR')}</td>
+        </tr>
+    `).join('');
+
+    const telSanitizado = (orden.clienteTelefono || '').replace(/[^0-9]/g, '');
+    const mensajeWsp = `Hola ${orden.clienteNombre}, te contactamos desde My Bella Afrodita sobre tu pedido #${orden.codigoSeguimiento}.`;
+    if (btnWhatsapp) {
+        btnWhatsapp.href = `https://wa.me/${telSanitizado}?text=${encodeURIComponent(mensajeWsp)}`;
+    }
+
+    modalBody.innerHTML = `
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <div class="p-3 bg-light rounded">
+                    <div class="text-muted small text-uppercase fw-bold" style="font-size: 0.65rem;">Información del Cliente</div>
+                    <div class="fw-bold text-dark h6 mb-1">${orden.clienteNombre}</div>
+                    <div class="small text-muted"><i class="fas fa-phone-alt me-1"></i> ${orden.clienteTelefono}</div>
+                    <div class="small text-muted"><i class="fas fa-map-marker-alt me-1"></i> ${orden.clienteDireccion || 'Entrega a convenir'}</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-3 bg-light rounded">
+                    <div class="text-muted small text-uppercase fw-bold" style="font-size: 0.65rem;">Datos del Pedido</div>
+                    <div class="fw-bold font-monospace text-dark mb-1">#${orden.codigoSeguimiento}</div>
+                    <div class="small text-muted"><i class="fas fa-calendar-alt me-1"></i> ${fechaStr}</div>
+                    <div class="small text-muted"><i class="fas fa-credit-card me-1"></i> Método: <b>${orden.metodoPago || 'WHATSAPP_EFECTIVO'}</b></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive mb-3 border rounded">
+            <table class="table mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Prenda</th>
+                        <th class="text-center">Talle</th>
+                        <th class="text-center">Cant.</th>
+                        <th class="text-end">Precio Unit.</th>
+                        <th class="text-end">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${itemsHtml}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="p-3 bg-light rounded d-flex justify-content-between align-items-center">
+            <div>
+                ${orden.esMayorista 
+                    ? `<span class="badge bg-success me-1">Precio Mayorista Aplicado</span>`
+                    : ''}
+                ${orden.descuentoMayorista && Number(orden.descuentoMayorista) > 0 
+                    ? `<small class="text-success fw-bold d-block mt-1">Ahorro mayorista: -$${Number(orden.descuentoMayorista).toLocaleString('es-AR')}</small>`
+                    : ''}
+            </div>
+            <div class="text-end">
+                <div class="text-muted small">Total Final:</div>
+                <div class="h4 fw-bold text-dark mb-0">$${Number(orden.total).toLocaleString('es-AR')}</div>
+            </div>
+        </div>
+    `;
+
+    if (modalDetallePedidoInstancia) {
+        modalDetallePedidoInstancia.show();
+    }
+};

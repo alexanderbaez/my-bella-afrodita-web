@@ -105,10 +105,10 @@
         <!-- Formulario -->
         <form id="form-login" onsubmit="ejecutarLogin(event)" class="text-start">
             <div class="mb-3">
-                <label for="username" class="form-label small fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">Usuario</label>
+                <label for="email" class="form-label small fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">Email Corporativo</label>
                 <div class="input-group">
-                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-user-circle"></i></span>
-                    <input type="text" id="username" class="form-control border-start-0" required placeholder="admin" autocomplete="username">
+                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-envelope"></i></span>
+                    <input type="email" id="email" class="form-control border-start-0" required placeholder="admin@bellafrodita.com" autocomplete="email">
                 </div>
             </div>
 
@@ -128,54 +128,56 @@
         <hr class="my-4 opacity-10">
 
         <div>
-            <a href="./productos.html" class="back-link">
+            <a href="/productos.html" class="back-link">
                 <i class="fas fa-arrow-left me-1"></i> Volver a la Tienda Pública
             </a>
         </div>
     </div>
 
     <script>
-        const AUTH_VERIFY_URL = '/api/auth/verify';
+        const LOGIN_URL = '/api/auth/login';
 
         async function ejecutarLogin(event) {
             event.preventDefault();
             const btn = document.getElementById('btn-login');
-            const user = document.getElementById('username').value.trim();
-            const pass = document.getElementById('password').value;
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
 
-            if (!user || !pass) return;
+            if (!email || !password) return;
 
             btn.disabled = true;
             btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Verificando...';
 
-            const token = 'Basic ' + btoa(`${user}:${pass}`);
-
             try {
-                const res = await fetch(AUTH_VERIFY_URL, {
-                    headers: { 'Authorization': token }
+                const res = await fetch(LOGIN_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ email, password })
                 });
 
-                if (res.ok) {
-                    sessionStorage.setItem('myBellaAdminAuth', token);
-                    sessionStorage.setItem('myBellaAdminUser', user);
+                const data = await res.json();
+
+                if (res.ok && data.authenticated) {
+                    sessionStorage.setItem('myBellaAdminUser', JSON.stringify(data));
 
                     Swal.fire({
                         icon: 'success',
                         title: '¡Bienvenido!',
-                        text: `Acceso concedido para ${user}`,
+                        text: `Acceso concedido para ${data.nombre || data.email}`,
                         timer: 1200,
                         showConfirmButton: false
                     }).then(() => {
-                        window.location.href = './admin.html';
+                        window.location.href = '/admin.html';
                     });
                 } else {
-                    throw new Error('Credenciales incorrectas');
+                    throw new Error(data.error || 'Credenciales incorrectas');
                 }
             } catch (error) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Acceso Denegado',
-                    text: 'El usuario o la contraseña no coinciden con las credenciales registradas.',
+                    text: error.message || 'El email o la contraseña no coinciden con un usuario activo.',
                     confirmButtonColor: '#1a1a1a'
                 });
             } finally {

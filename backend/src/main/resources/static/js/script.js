@@ -660,9 +660,9 @@ function actualizarContadorUI() {
     }
 }
 
-// --- CHECKOUT DIRECTO POR WHATSAPP ---
-function enviarPedidoWhatsApp() {
-    if (carrito.length === 0) {
+// --- CHECKOUT DIRECTO A TRAVÉS DE LA API Y WHATSAPP ---
+async function enviarPedidoWhatsApp() {
+    if (!carrito || carrito.length === 0) {
         Swal.fire({
             title: "Bolsa vacía", 
             text: "Por favor selecciona al menos una prenda antes de finalizar.", 
@@ -674,63 +674,124 @@ function enviarPedidoWhatsApp() {
 
     cerrarCarritoDrawer();
 
-    Swal.fire({
-        title: '¿A nombre de quién dejamos el pedido?',
-        input: 'text',
-        inputPlaceholder: 'Escribí tu nombre y apellido...',
+    const { value: formValues } = await Swal.fire({
+        title: 'Finalizar Pedido',
+        html: `
+            <div class="text-start">
+                <p class="text-muted small mb-3">Ingresa tus datos para registrar la orden en el sistema y continuar la atención por WhatsApp.</p>
+                <div class="mb-2">
+                    <label class="form-label small fw-bold">Nombre y Apellido *</label>
+                    <input type="text" id="swal-cliente-nombre" class="form-control" placeholder="Ej: Valentina Gómez">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small fw-bold">Teléfono / WhatsApp *</label>
+                    <input type="tel" id="swal-cliente-telefono" class="form-control" placeholder="Ej: 264 555-1234">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small fw-bold">Dirección de Entrega (Opcional)</label>
+                    <input type="text" id="swal-cliente-direccion" class="form-control" placeholder="Ej: Rivadavia, San Juan">
+                </div>
+            </div>
+        `,
+        focusConfirm: false,
         showCancelButton: true,
-        confirmButtonText: 'Enviar por WhatsApp',
-        cancelButtonText: 'Volver',
+        confirmButtonText: '<i class="fab fa-whatsapp me-1"></i> Confirmar Pedido',
+        cancelButtonText: 'Volver a la bolsa',
         confirmButtonColor: '#28a745',
         cancelButtonColor: '#777',
-        borderRadius: '4px',
         didOpen: () => {
-            const input = Swal.getInput();
+            const input = document.getElementById('swal-cliente-nombre');
             if (input) input.focus();
         },
-        inputValidator: (value) => {
-            if (!value) {
-                return '¡Necesitamos tu nombre para coordinar la entrega!'
+        preConfirm: () => {
+            const nombre = document.getElementById('swal-cliente-nombre')?.value.trim();
+            const telefono = document.getElementById('swal-cliente-telefono')?.value.trim();
+            const direccion = document.getElementById('swal-cliente-direccion')?.value.trim();
+
+            if (!nombre) {
+                Swal.showValidationMessage('¡Por favor ingresa tu nombre completo!');
+                return false;
             }
-        }
-    }).then((result) => {
-        if (result.isDismissed || result.isDenied) {
-            abrirCarritoDrawer();
-            return;
-        }
-
-        if (result.isConfirmed) {
-            const nombreCliente = result.value;
-            const res = calcularTotalCarrito();
-            const cumpleCriterioGral = res.unidades >= 3;
-
-            let mensaje = "*PEDIDO: MY BELLA AFRODITA*\n";
-            mensaje += "------------------------------------------\n\n";
-            mensaje += `👤 *Cliente:* ${nombreCliente}\n\n`;
-
-            carrito.forEach((item) => {
-                const p = PRODUCTOS.find(prod => String(prod.id) === String(item.id));
-                let precioAplicado = (cumpleCriterioGral && p?.precioMayorista) ? p.precioMayorista : (p?.precioMinorista || item.precio);
-                let etiqueta = (cumpleCriterioGral && p?.precioMayorista) ? " (Mayorista)" : "";
-
-                mensaje += `*${item.nombre.toUpperCase()}*\n`;
-                mensaje += `   Cant: ${item.cantidad} x $${precioAplicado.toLocaleString('es-AR')}${etiqueta}\n`;
-                mensaje += `   Subtotal: $${(precioAplicado * item.cantidad).toLocaleString('es-AR')}\n\n`;
-            });
-
-            mensaje += `------------------------------------------\n`;
-            mensaje += ` *TOTAL ESTIMADO: $${res.total.toLocaleString('es-AR')}*\n`;
-            
-            if (res.esMayorista) {
-                mensaje += ` _Beneficio mayorista aplicado por llevar 3 o más prendas._\n`;
-                if (res.ahorro > 0) {
-                    mensaje += ` _¡Ahorro total de esta compra: $${res.ahorro.toLocaleString('es-AR')}!_\n`;
-                }
+            if (!telefono) {
+                Swal.showValidationMessage('¡Ingresa tu número de teléfono para contactarte!');
+                return false;
             }
-            
-            mensaje += `\n📍 _San Juan, Argentina_`;
 
-            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensaje)}`, "_blank");
+            return { nombre, telefono, direccion };
         }
     });
+
+    if (!formValues) {
+        abrirCarritoDrawer();
+        return;
+    }
+
+    Swal.fire({
+        title: 'Registrando tu orden...',
+        text: 'Generando código de seguimiento oficial',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    try {
+        const payload = {
+            clienteNombre: formValues.nombre,
+            clienteTelefono: formValues.telefono,
+            clienteDireccion: formValues.direccion || null,
+            items: carrito.map(item => ({
+                productoId: Number(item.id),
+                talle: item.talle || 'Único',
+                cantidad: Number(item.cantidad) || 1
+            }))
+        };
+
+        const res = await fetch('/api/ordenes/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+            const errorData = await res.json().catch(() => ({}));
+            throw new Error(errorData.error || errorData.message || `HTTP ${res.status}`);
+        }
+
+        const ordenResponse = await res.json();
+
+        // Vaciar la bolsa local una vez persistida la orden en MySQL
+        carrito = [];
+        actualizarYGuardar();
+        renderizarListaCarrito();
+
+        Swal.fire({
+            icon: 'success',
+            title: '¡Orden Creada con Éxito!',
+            html: `Número de seguimiento: <b class="text-dark">#${ordenResponse.codigoSeguimiento}</b><br><small class="text-muted">Total: $${Number(ordenResponse.total).toLocaleString('es-AR')}</small><br><br>Abriendo WhatsApp para coordinar el pago y envío...`,
+            showConfirmButton: true,
+            confirmButtonText: 'Abrir WhatsApp',
+            confirmButtonColor: '#28a745',
+            timer: 3000
+        }).then(() => {
+            if (ordenResponse.whatsappUrl) {
+                window.open(ordenResponse.whatsappUrl, '_blank');
+            }
+        });
+
+        if (ordenResponse.whatsappUrl) {
+            window.open(ordenResponse.whatsappUrl, '_blank');
+        }
+
+    } catch (error) {
+        console.error("Error en checkout de orden:", error);
+        Swal.fire({
+            icon: 'error',
+            title: 'No se pudo registrar la orden',
+            text: error.message || 'Ocurrió un error al conectar con el servidor. Intenta de nuevo.',
+            confirmButtonColor: '#1a1a1a'
+        }).then(() => {
+            abrirCarritoDrawer();
+        });
+    }
 }

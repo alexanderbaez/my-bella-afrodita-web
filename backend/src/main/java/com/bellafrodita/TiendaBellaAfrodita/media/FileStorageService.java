@@ -1,4 +1,4 @@
-package com.bellafrodita.TiendaBellaAfrodita.service;
+package com.bellafrodita.TiendaBellaAfrodita.media;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
