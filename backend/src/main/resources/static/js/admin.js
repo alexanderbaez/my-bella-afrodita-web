@@ -35,6 +35,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const adminUser = await verificarSesionAdmin();
     if (!adminUser) return;
 
+    const emailElem = document.getElementById('admin-user-email');
+    if (emailElem && adminUser.email) {
+        emailElem.innerText = adminUser.email;
+    }
+
     modalInstancia = new bootstrap.Modal(document.getElementById('modalProducto'));
     const modalPedidoElem = document.getElementById('modalDetallePedido');
     if (modalPedidoElem) {
@@ -139,6 +144,14 @@ async function cargarProductos() {
         listaProductos = await res.json();
         actualizarMetricas(listaProductos);
         filtrarYRenderizar();
+
+        // Si se abrió desde la tienda con ?editProduct=<id>, abrir modal automáticamente
+        const editId = new URLSearchParams(window.location.search).get('editProduct');
+        if (editId) {
+            setTimeout(() => {
+                abrirModalEditar(editId);
+            }, 300);
+        }
     } catch (error) {
         console.error("Error al cargar productos:", error);
         tbody.innerHTML = `

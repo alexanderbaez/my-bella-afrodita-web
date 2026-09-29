@@ -303,8 +303,72 @@
             align-items: center;
             transition: background-color 0.2s;
         }
-        .btn-quick-wa:hover {
-            background-color: #1ebe5d;
+        /* Botón Ver Tienda en Vivo y Admin Pill */
+        .btn-live-store {
+            background: linear-gradient(135deg, #2b1d30 0%, #1a1a1a 100%);
+            border: 1px solid rgba(183, 148, 201, 0.45);
+            color: #f7f1f9 !important;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 6px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.25s ease;
+        }
+        .btn-live-store:hover {
+            background: var(--color-pasión, #8e62a3);
+            border-color: var(--color-pasión, #8e62a3);
+            color: #fff !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(142, 98, 163, 0.35);
+        }
+
+        .admin-user-pill {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            padding: 4px 12px 4px 6px;
+            border-radius: 20px;
+        }
+        .admin-avatar-circle {
+            width: 28px;
+            height: 28px;
+            background: var(--color-pasión, #8e62a3);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+        }
+        .admin-role-title {
+            font-size: 0.58rem;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            color: #dda0c2;
+            line-height: 1;
+        }
+        .admin-email-text {
+            font-size: 0.72rem;
+            color: #eee;
+            font-weight: 500;
+            max-width: 170px;
+            line-height: 1.2;
+        }
+        .btn-admin-exit {
+            background: rgba(214, 48, 49, 0.15);
+            border: 1px solid rgba(214, 48, 49, 0.4);
+            color: #ff7675;
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .btn-admin-exit:hover {
+            background: #d63031;
             color: #fff;
         }
     </style>
@@ -315,17 +379,31 @@
     <header>
         <nav class="navbar navbar-expand-lg admin-navbar py-3 shadow-sm">
             <div class="container-fluid px-lg-4">
-                <a class="navbar-brand-admin d-flex align-items-center" href="#">
+                <a class="navbar-brand-admin d-flex align-items-center" href="/admin.html">
                     <img src="https://raw.githubusercontent.com/alexanderbaez/my-bella-afrodita-web/master/images/LOGO.png" alt="Logo" height="38" class="me-2">
                     <span>MY BELLA AFRODITA</span>
                     <span class="ms-2 admin-badge">BACKOFFICE</span>
                 </a>
 
-                <div class="d-flex align-items-center gap-2">
-                    <a href="./productos.html" target="_blank" class="btn btn-outline-light btn-sm px-3 rounded-1">
-                        <i class="fas fa-external-link-alt me-1"></i> Ver Catálogo Público
+                <div class="d-flex align-items-center gap-2.5">
+                    <!-- Botón Destacado: Ver Tienda en Vivo -->
+                    <a href="/productos.html" class="btn-live-store shadow-sm" title="Abrir Tienda Pública en Vivo">
+                        <i class="fas fa-eye me-1.5"></i> Ver Tienda en Vivo
                     </a>
-                    <button class="btn btn-outline-danger btn-sm px-3 rounded-1 text-white border-0" id="btn-logout" title="Cerrar Sesión" onclick="cerrarSesionAdmin()">
+
+                    <!-- Avatar y Email del Administrador -->
+                    <div class="admin-user-pill d-none d-md-flex align-items-center">
+                        <div class="admin-avatar-circle me-2">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div class="text-start">
+                            <div class="admin-role-title">ADMINISTRADOR</div>
+                            <div class="admin-email-text text-truncate" id="admin-user-email">admin@bellafrodita.com</div>
+                        </div>
+                    </div>
+
+                    <!-- Botón de Logout estilizado -->
+                    <button class="btn btn-admin-exit shadow-sm" id="btn-logout" title="Cerrar Sesión" onclick="cerrarSesionAdmin()">
                         <i class="fas fa-sign-out-alt me-1"></i> Salir
                     </button>
                 </div>

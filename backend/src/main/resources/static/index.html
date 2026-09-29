@@ -46,9 +46,30 @@
 </head>
 
 <body>
-    <!-- Navbar Header -->
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow-sm" id="mainNav">
+    <!-- Navbar & Top Announcement Header -->
+    <header class="fixed-top header-boutique-wrapper">
+        <!-- Contenedor dinámico de Admin Quick Bar (inyectado por script.js si es ROLE_ADMIN) -->
+        <div id="admin-quickbar-mount"></div>
+
+        <!-- Barra de Anuncios Promocionales Rotativa -->
+        <div class="promo-announcement-bar">
+            <div class="container text-center">
+                <span class="promo-text active" id="promo-msg-0">
+                    <i class="fas fa-sparkles me-1.5" style="color: #ecc94b;"></i>
+                    ¡Aprovecha! <strong>3 o más prendas</strong> activan Precio Mayorista en todo tu carrito
+                </span>
+                <span class="promo-text" id="promo-msg-1">
+                    <i class="fas fa-truck-fast me-1.5" style="color: #dda0c2;"></i>
+                    Envíos directos en <strong>San Juan</strong> y despachos seguros a todo el país
+                </span>
+                <span class="promo-text" id="promo-msg-2">
+                    <i class="fab fa-whatsapp me-1.5" style="color: #25d366;"></i>
+                    Atención personalizada y <strong>asesoramiento de talles</strong> por WhatsApp
+                </span>
+            </div>
+        </div>
+
+        <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" id="mainNav">
             <div class="container">
                 <a class="navbar-brand-custom d-flex align-items-center" href="./index.html">
                     <img src="./images/LOGO.png" alt="My Bella Afrodita" class="navbar-logo me-2">

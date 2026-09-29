@@ -1168,4 +1168,208 @@ h1, h2, h3, h4, h5 {
     border-color: var(--color-pasión, #8e62a3);
     box-shadow: 0 0 0 3px rgba(183, 148, 201, 0.25);
     outline: none;
+}
+
+/* ==========================================================================
+   BARRA DE HERRAMIENTAS ADMIN EN TIENDA (ADMIN QUICK BAR)
+   ========================================================================== */
+.admin-top-bar {
+    background: #111111;
+    color: #f8fafc;
+    font-size: 0.74rem;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    position: relative;
+    z-index: 1050;
+}
+
+.admin-top-bar .admin-badge-live {
+    background: linear-gradient(135deg, #d4af37, #f6e05e);
+    color: #1a1a1a;
+    font-size: 0.64rem;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.admin-top-bar .btn-admin-nav {
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.08);
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+}
+.admin-top-bar .btn-admin-nav:hover {
+    background: #fff;
+    color: #111;
+}
+
+.admin-top-bar .btn-admin-logout {
+    color: #ff7675;
+    background: transparent;
+    border: none;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+}
+.admin-top-bar .btn-admin-logout:hover {
+    color: #d63031;
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   BARRA DE ANUNCIOS PROMOCIONALES (TOP PROMO BAR ROTATIVA)
+   ========================================================================== */
+.promo-announcement-bar {
+    background: linear-gradient(90deg, #1f1424 0%, #151019 50%, #1f1424 100%);
+    color: #f7f1f9;
+    font-size: 0.73rem;
+    letter-spacing: 0.6px;
+    padding: 6px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    text-align: center;
+    position: relative;
+    z-index: 1040;
+    overflow: hidden;
+    min-height: 33px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.promo-announcement-bar .promo-text {
+    display: none;
+    animation: fadeInPromo 0.45s ease-in-out forwards;
+}
+
+.promo-announcement-bar .promo-text.active {
+    display: inline-block;
+}
+
+@keyframes fadeInPromo {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   BOTÓN FLOTANTE "EDITAR" EN TARJETAS DE PRODUCTO (SOLO ADMIN)
+   ========================================================================== */
+.btn-quick-admin-edit {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(26, 26, 26, 0.88);
+    color: #ffd700;
+    border: 1px solid rgba(255, 215, 0, 0.5);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 4px 9px;
+    border-radius: 4px;
+    text-decoration: none;
+    z-index: 10;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-quick-admin-edit:hover {
+    background: #ffd700;
+    color: #1a1a1a;
+    transform: scale(1.05);
+    box-shadow: 0 6px 14px rgba(255, 215, 0, 0.35);
+}
+
+/* ==========================================================================
+   MODAL EDITORIAL QUICK VIEW DE PRODUCTO & GUÍA DE MEDIDAS
+   ========================================================================== */
+.modal-quickview-dialog {
+    max-width: 900px;
+}
+
+.quickview-img-main {
+    width: 100%;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    background: #fdfdfd;
+}
+
+.quickview-thumbs-track {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 6px 0 2px;
+}
+
+.quickview-thumb-item {
+    width: 58px;
+    height: 77px;
+    object-fit: cover;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    opacity: 0.65;
+    transition: all 0.2s ease;
+}
+
+.quickview-thumb-item.active, .quickview-thumb-item:hover {
+    opacity: 1;
+    border-color: var(--color-pasión, #8e62a3);
+    transform: translateY(-2px);
+}
+
+.table-size-guide {
+    font-size: 0.78rem;
+}
+
+.table-size-guide th {
+    background-color: #f7f1f9 !important;
+    color: #4a3b53;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 8px 10px;
+}
+
+.table-size-guide td {
+    padding: 7px 10px;
+    vertical-align: middle;
+}
+
+.btn-tab-guide {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border: none;
+    background: none;
+    color: var(--color-pasión, #8e62a3);
+    padding: 2px 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.15s ease;
+}
+.btn-tab-guide:hover {
+    color: #553366;
 }
