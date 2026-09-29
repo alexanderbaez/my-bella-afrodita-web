@@ -167,14 +167,26 @@ function actualizarFiltrosTallesContextuales(categoria) {
         talleFiltroActivo = 'TODOS';
     }
 
-    let html = `<button class="btn btn-sm rounded-1 px-3 py-1 ${talleFiltroActivo === 'TODOS' ? 'btn-dark' : 'btn-outline-dark'}" onclick="filtrarPorTalle('TODOS')">TODOS</button>`;
+    let html = `<button class="filter-pill-luxury ${talleFiltroActivo === 'TODOS' ? 'active' : ''}" onclick="filtrarPorTalle('TODOS')">TODOS</button>`;
 
     tallesOrdenados.forEach(t => {
         const activo = talleFiltroActivo === t;
-        html += `<button class="btn btn-sm rounded-1 px-2.5 py-1 ${activo ? 'btn-dark' : 'btn-outline-dark'}" onclick="filtrarPorTalle('${t}')">${t}</button>`;
+        html += `<button class="filter-pill-luxury ${activo ? 'active' : ''}" onclick="filtrarPorTalle('${t}')">${t}</button>`;
     });
 
     contenedorFiltros.innerHTML = html;
+
+    // Sincronizar estilo activo de las píldoras de categoría en productos.html
+    ['todos', 'conjuntos', 'bombachas', 'hombres', 'medias'].forEach(catId => {
+        const chip = document.getElementById(`chip-cat-${catId}`);
+        if (chip) {
+            if ((!categoria && catId === 'todos') || (categoria && categoria.toLowerCase() === catId)) {
+                chip.classList.add('active');
+            } else {
+                chip.classList.remove('active');
+            }
+        }
+    });
 }
 
 // --- FILTRADO POR TALLE DESDE LA BARRA ---
@@ -182,14 +194,12 @@ window.filtrarPorTalle = function(talleSeleccionado) {
     talleFiltroActivo = talleSeleccionado;
 
     // Actualizar botones de talle en la UI
-    const botones = document.querySelectorAll('#filtro-talles-container .btn');
+    const botones = document.querySelectorAll('#filtro-talles-container .filter-pill-luxury, #filtro-talles-container .btn');
     botones.forEach(btn => {
         if (btn.innerText.trim() === talleSeleccionado) {
-            btn.classList.remove('btn-outline-dark');
-            btn.classList.add('btn-dark');
+            btn.classList.add('active');
         } else {
-            btn.classList.remove('btn-dark');
-            btn.classList.add('btn-outline-dark');
+            btn.classList.remove('active');
         }
     });
 
@@ -369,9 +379,9 @@ function dibujarProductos(lista) {
                 </div>`;
         }
 
-        // Bloque de Precios (Minorista destacado + Mayorista sutil)
+        // Bloque de Precios (Minorista destacado + Mayorista sutil en tono oro viejo)
         const wholesaleHtml = p.precioMayorista 
-            ? `<span class="price-wholesale-pill" title="Llevando 3 o más prendas de la tienda">May. x3: $${Number(p.precioMayorista).toLocaleString('es-AR')}</span>`
+            ? `<span class="price-wholesale-pill" title="Llevando 3 o más prendas de la tienda">Mayorista x3: $${Number(p.precioMayorista).toLocaleString('es-AR')}</span>`
             : '';
 
         // Botón flotante para edición directa en Admin (solo visible si es ROLE_ADMIN)
@@ -1054,18 +1064,18 @@ function actualizarBarrasProgresoUX(unidades, ahorro) {
 
     if (unidades >= 3) {
         progressBarFill.style.width = '100%';
-        progressBarFill.style.backgroundColor = '#28a745';
+        progressBarFill.style.background = 'linear-gradient(90deg, #C5A880, #D4AF37)';
         
-        if (progressText) progressText.innerHTML = '¡Felicitaciones! Activaste el precio Mayorista 🎁';
+        if (progressText) progressText.innerHTML = '¡Felicitaciones! Accediste al beneficio mayorista ✨';
         if (progressPercent) progressPercent.innerText = `${unidades} prendas`;
     } else {
         const faltantes = 3 - unidades;
         const porcentaje = (unidades / 3) * 100;
         
         progressBarFill.style.width = `${porcentaje}%`;
-        progressBarFill.style.backgroundColor = 'var(--color-pasión, #8e62a3)';
+        progressBarFill.style.background = 'linear-gradient(90deg, #C5A880, #D4AF37)';
         
-        if (progressText) progressText.innerHTML = `Agrega <b>${faltantes} ${faltantes === 1 ? 'prenda' : 'prendas'}</b> más para precio Mayorista 🔥`;
+        if (progressText) progressText.innerHTML = `Te ${faltantes === 1 ? 'falta' : 'faltan'} <b>${faltantes} ${faltantes === 1 ? 'prenda' : 'prendas'}</b> para acceder al beneficio mayorista`;
         if (progressPercent) progressPercent.innerText = `${unidades}/3`;
     }
 }

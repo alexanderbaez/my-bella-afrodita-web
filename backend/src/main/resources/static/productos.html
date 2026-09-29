@@ -4,55 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Productos - My Bella Afrodita</title>
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/alexanderbaez/my-bella-afrodita-web/master/images/LOGO.png">
+    <title>Catálogo Boutique | My Bella Afrodita</title>
+    
+    <link rel="icon" type="image/png" href="./images/LOGO.png">
+    <link rel="shortcut icon" href="./images/LOGO.png">
+    <link rel="apple-touch-icon" href="./images/LOGO.png">
+
+    <meta name="description" content="Catálogo exclusivo de lencería boutique y corsetería de alta gama. Filtra por categoría y talles. Precios minoristas y mayoristas.">
+
+    <!-- Framework & Fonts -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="css/index.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <style>
-        .navbar-logo {
-            height: 50px;
-            width: auto;
-            object-fit: contain;
-        }
-
-        .footer-logo {
-            height: 40px;
-            filter: brightness(0) invert(1);
-        }
-
-        /* Barra UX */
-        .progress-ux-bar {
-            height: 8px;
-            border-radius: 4px;
-            background-color: #e9ecef;
-        }
-        .progress-ux-bar .progress-bar {
-            background-color: var(--color-pasión, #1a1a1a);
-            transition: width 0.4s ease;
-        }
-
-        .breadcrumb-custom a {
-            color: #6c757d;
-            text-decoration: none;
-            font-size: 0.85rem;
-        }
-        .breadcrumb-custom a:hover {
-            color: var(--color-pasión, #1a1a1a);
-        }
-        .breadcrumb-custom .active {
-            font-size: 0.85rem;
-            color: var(--color-pasión, #1a1a1a);
-            font-weight: 600;
-        }
-    </style>
 </head>
 
 <body>
-    <!-- Navbar & Top Announcement Header -->
+    <!-- Header Fijo: Admin Bar, Promo Bar & Navbar -->
     <header class="fixed-top header-boutique-wrapper">
         <!-- Contenedor dinámico de Admin Quick Bar (inyectado por script.js si es ROLE_ADMIN) -->
         <div id="admin-quickbar-mount"></div>
@@ -61,40 +32,41 @@
         <div class="promo-announcement-bar">
             <div class="container text-center">
                 <span class="promo-text active" id="promo-msg-0">
-                    <i class="fas fa-sparkles me-1.5" style="color: #ecc94b;"></i>
-                    ¡Aprovecha! <strong>3 o más prendas</strong> activan Precio Mayorista en todo tu carrito
+                    <i class="fas fa-crown me-1.5" style="color: #D4AF37;"></i>
+                    Acceso Mayorista Exclusivo: <strong>3 o más prendas</strong> activan precio especial automáticamente
                 </span>
                 <span class="promo-text" id="promo-msg-1">
-                    <i class="fas fa-truck-fast me-1.5" style="color: #dda0c2;"></i>
-                    Envíos directos en <strong>San Juan</strong> y despachos seguros a todo el país
+                    <i class="fas fa-box-open me-1.5" style="color: #C5A880;"></i>
+                    Envíos discretos y coordinados en <strong>San Juan</strong> y a todo el país
                 </span>
                 <span class="promo-text" id="promo-msg-2">
-                    <i class="fab fa-whatsapp me-1.5" style="color: #25d366;"></i>
-                    Atención personalizada y <strong>asesoramiento de talles</strong> por WhatsApp
+                    <i class="fab fa-whatsapp me-1.5" style="color: #25D366;"></i>
+                    Atención privada y <strong>asesoramiento de calce</strong> vía WhatsApp
                 </span>
             </div>
         </div>
 
-        <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" id="mainNav">
+        <!-- Navbar Principal Haute Couture -->
+        <nav class="navbar navbar-expand-lg" id="mainNav">
             <div class="container">
-                <a class="navbar-brand-custom d-flex align-items-center" href="/">
-                    <img src="https://raw.githubusercontent.com/alexanderbaez/my-bella-afrodita-web/master/images/LOGO.png" alt="My Bella Afrodita" class="navbar-logo me-2">
-                    <span class="fw-bold d-none d-sm-inline" style="letter-spacing: 2px;">My Bella Afrodita</span>
+                <a class="navbar-brand-custom" href="./index.html">
+                    <img src="./images/LOGO.png" alt="My Bella Afrodita" class="navbar-logo">
+                    <span class="navbar-brand-text d-none d-sm-inline">My Bella Afrodita</span>
                 </a>
 
-                <div class="d-flex align-items-center order-lg-last">
-                    <a class="nav-link position-relative text-light me-3" href="#" id="cartIcon" onclick="abrirCarritoDrawer(); return false;" style="padding: 0.5rem;" title="Abrir Bolsa de Compras">
-                        <i class="fas fa-shopping-bag fa-lg"></i>
-                        <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">0</span>
+                <div class="d-flex align-items-center order-lg-last gap-2">
+                    <a class="nav-icon-link position-relative" href="#" id="cartIcon" onclick="abrirCarritoDrawer(); return false;" title="Bolsa de Compras">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span id="cart-count" class="position-absolute top-0 start-100 translate-middle">0</span>
                     </a>
-                    <button class="navbar-toggler p-2 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                        <i class="fas fa-bars text-light"></i>
+                    <button class="navbar-toggler p-2 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Navegación">
+                        <i class="fas fa-bars text-dark"></i>
                     </button>
                 </div>
 
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto align-items-center fw-bold">
-                        <li class="nav-item"><a class="nav-link" href="/">INICIO</a></li>
+                    <ul class="navbar-nav ms-auto align-items-center">
+                        <li class="nav-item"><a class="nav-link" href="./index.html">INICIO</a></li>
                         <li class="nav-item"><a class="nav-link active" href="./productos.html">CATÁLOGO</a></li>
                         <li class="nav-item"><a class="nav-link" href="./productos.html?cat=conjuntos">CONJUNTOS</a></li>
                         <li class="nav-item"><a class="nav-link" href="./productos.html?cat=bombachas">BOMBACHAS</a></li>
@@ -106,94 +78,104 @@
         </nav>
     </header>
 
-    <main class="catalogo-main-section pt-5 mt-4">
+    <main class="catalogo-main-section pt-5 mt-5">
         <section class="py-5">
             <div class="container pt-3">
                 
-                <!-- Breadcrumbs -->
+                <!-- Breadcrumbs de Alta Gama -->
                 <nav aria-label="breadcrumb" class="mb-4">
-                    <ol class="breadcrumb breadcrumb-custom">
-                        <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+                    <ol class="breadcrumb breadcrumb-boutique mb-0">
+                        <li class="breadcrumb-item"><a href="./index.html">Inicio</a></li>
                         <li class="breadcrumb-item"><a href="./productos.html">Catálogo</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Todos</li>
+                        <li class="breadcrumb-item active" aria-current="page">Colección Completa</li>
                     </ol>
                 </nav>
 
-                <!-- Cabecera de Categoría -->
-                <div class="text-center mb-4">
-                    <span class="text-uppercase small fw-bold" style="letter-spacing: 4px; color: var(--color-terracota-pasión);">Colección Exclusiva</span>
-                    <h1 class="display-5 fw-bold mt-2 font-playfair section-title" style="color: var(--color-pasión);">Nuestro Catálogo Completo</h1>
+                <!-- Cabecera Editorial del Catálogo -->
+                <div class="text-center mb-5">
+                    <span class="section-eyebrow">Haute Couture Atelier</span>
+                    <h1 class="section-heading-editorial section-title">Colección de Catálogo</h1>
+                    <p class="section-subtext">Piezas confeccionadas con encajes de origen selecto, microfibra suave y calce anatómico.</p>
                 </div>
 
-                <!-- Barra Interactiva de Búsqueda y Ordenamiento Boutique -->
-                <div class="catalogo-toolbar mb-4">
+                <!-- Selector de Categorías en Chips de Línea Sutil (Outline Pills) -->
+                <div class="d-flex flex-wrap gap-2 justify-content-center mb-4">
+                    <a href="./productos.html" class="filter-pill-luxury" id="chip-cat-todos">TODOS</a>
+                    <a href="./productos.html?cat=conjuntos" class="filter-pill-luxury" id="chip-cat-conjuntos">CONJUNTOS</a>
+                    <a href="./productos.html?cat=bombachas" class="filter-pill-luxury" id="chip-cat-bombachas">BOMBACHAS</a>
+                    <a href="./productos.html?cat=hombres" class="filter-pill-luxury" id="chip-cat-hombres">MASCULINO</a>
+                    <a href="./productos.html?cat=medias" class="filter-pill-luxury" id="chip-cat-medias">MEDIAS</a>
+                </div>
+
+                <!-- Barra de Búsqueda y Ordenamiento Boutique -->
+                <div class="catalogo-toolbar-luxury mb-4">
                     <div class="row g-3 align-items-center justify-content-between">
-                        <!-- Búsqueda en vivo por nombre o descripción -->
+                        <!-- Búsqueda en vivo minimalista -->
                         <div class="col-12 col-md-6 col-lg-5">
-                            <div class="search-input-wrap">
-                                <i class="fas fa-search search-icon"></i>
-                                <input type="text" id="buscador-catalogo" class="form-control search-control-boutique" 
-                                       placeholder="Buscar prendas por nombre o descripción..." 
+                            <div class="search-input-wrap-luxury">
+                                <i class="fas fa-search search-icon-luxury"></i>
+                                <input type="text" id="buscador-catalogo" class="form-control search-control-luxury" 
+                                       placeholder="Buscar prendas por nombre o estilo..." 
                                        oninput="manejarBusquedaCatalogo(this.value)" autocomplete="off">
-                                <button type="button" class="btn-clear-search d-none" id="btn-limpiar-busqueda" onclick="limpiarBusquedaCatalogo()" title="Limpiar búsqueda">&times;</button>
+                                <button type="button" class="btn-clear-search-luxury d-none" id="btn-limpiar-busqueda" onclick="limpiarBusquedaCatalogo()" title="Limpiar búsqueda">&times;</button>
                             </div>
                         </div>
 
-                        <!-- Selector de Orden Reactivo -->
+                        <!-- Selector de Orden Refinado -->
                         <div class="col-12 col-md-6 col-lg-4 text-md-end">
                             <div class="d-flex align-items-center justify-content-md-end gap-2">
-                                <label for="orden-catalogo" class="small text-muted text-uppercase fw-semibold text-nowrap mb-0" style="letter-spacing: 0.8px; font-size: 0.72rem;">Ordenar por:</label>
-                                <select id="orden-catalogo" class="form-select form-select-sm select-order-boutique" onchange="manejarOrdenamientoCatalogo(this.value)">
-                                    <option value="destacados" selected>Destacados</option>
-                                    <option value="precio-asc">Precio: menor a mayor</option>
-                                    <option value="precio-desc">Precio: mayor a menor</option>
-                                    <option value="alfabetico">A - Z</option>
+                                <label for="orden-catalogo" class="small text-uppercase fw-semibold text-nowrap mb-0" style="letter-spacing: 1px; font-size: 0.72rem; color: var(--text-taupe);">Ordenar:</label>
+                                <select id="orden-catalogo" class="form-select form-select-sm select-order-luxury" onchange="manejarOrdenamientoCatalogo(this.value)">
+                                    <option value="destacados" selected>Destacados Boutique</option>
+                                    <option value="precio-asc">Precio: Menor a Mayor</option>
+                                    <option value="precio-desc">Precio: Mayor a Menor</option>
+                                    <option value="alfabetico">Nombre: A &ndash; Z</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Filtro de Talles Dinámico y Contextual -->
+                <!-- Filtro Dinámico de Talles en Chips Sutiles -->
                 <div class="d-flex justify-content-center align-items-center flex-column mb-4">
-                    <span class="small text-muted text-uppercase mb-2 fw-semibold" style="letter-spacing: 1.2px; font-size: 0.68rem;">Filtrar por Talle:</span>
+                    <span class="small text-uppercase mb-2 fw-semibold" style="letter-spacing: 1.5px; font-size: 0.68rem; color: var(--text-taupe);">Talles Disponibles:</span>
                     <div id="filtro-talles-container" class="d-flex flex-wrap gap-1.5 justify-content-center">
-                        <!-- Generado dinámicamente según la categoría activa -->
+                        <!-- Generado reactivamente según la categoría activa en script.js -->
                     </div>
                 </div>
 
-                <!-- Grilla de Productos Dinámica -->
+                <!-- Grilla de Tarjetas Boutique (3:4, Dual Hover & Translucent Size Overlay) -->
                 <div id="contenedor-productos" class="row g-3 g-md-4">
-                    <!-- Se renderiza desde la API en script.js con Look & Feel Zara / Savage X Fenty -->
+                    <!-- Renderizado dinámico desde /api/productos en script.js -->
                 </div>
 
             </div>
         </section>
     </main>
 
-    <!-- Slide-Over Cart Drawer -->
+    <!-- Slide-Over Shopping Bag Drawer (Bolsa de Compras Exclusiva) -->
     <div id="cart-drawer-overlay" class="cart-drawer-overlay" onclick="cerrarCarritoDrawer()"></div>
-    <aside id="cart-drawer" class="cart-drawer" aria-label="Bolsa de Compras">
+    <aside id="cart-drawer" class="cart-drawer" aria-label="Bolsa de Compras Exclusiva">
         <!-- Header -->
         <div class="cart-drawer-header">
             <div class="d-flex align-items-center">
-                <i class="fas fa-shopping-bag me-2" style="color: var(--color-pasión, #8e62a3);"></i>
-                <h5 class="mb-0 font-playfair fw-bold">Tu Bolsa de Compras</h5>
-                <span id="drawer-cart-count" class="badge rounded-pill bg-dark ms-2" style="font-size: 0.65rem;">0</span>
+                <i class="fas fa-shopping-bag me-2" style="color: var(--gold-champagne);"></i>
+                <h5 class="mb-0">Bolsa de Compras</h5>
+                <span id="drawer-cart-count" class="badge rounded-pill ms-2" style="background-color: var(--bg-obsidian); color: var(--gold-champagne); font-size: 0.65rem;">0</span>
             </div>
             <button type="button" class="btn-close-drawer" onclick="cerrarCarritoDrawer()" aria-label="Cerrar">&times;</button>
         </div>
 
         <!-- Body -->
         <div class="cart-drawer-body">
-            <!-- Wholesale Progress Banner -->
+            <!-- Barra de Gamificación Mayorista -->
             <div id="ux-wholesale-progress-container" class="cart-wholesale-banner mb-3">
                 <div class="d-flex justify-content-between mb-1.5 small">
-                    <span id="ux-progress-text" class="fw-bold" style="color: #4a3b53; font-size: 0.75rem;">Agregando prendas...</span>
-                    <span id="ux-progress-percent" class="fw-bold text-dark" style="font-size: 0.75rem;">0/3</span>
+                    <span id="ux-progress-text" class="fw-semibold" style="font-size: 0.74rem; color: var(--text-charcoal);">Agregando prendas...</span>
+                    <span id="ux-progress-percent" class="fw-bold" style="font-size: 0.74rem; color: var(--gold-dark);">0/3</span>
                 </div>
-                <div class="progress" style="height: 6px; border-radius: 3px; background-color: #eee;">
-                    <div id="ux-progress-bar-fill" class="progress-bar" role="progressbar" style="width: 0%; background-color: var(--color-pasión, #8e62a3);"></div>
+                <div class="progress-wholesale-bar">
+                    <div id="ux-progress-bar-fill" class="progress-wholesale-fill" style="width: 0%;"></div>
                 </div>
             </div>
 
@@ -206,77 +188,74 @@
         <!-- Footer -->
         <div class="cart-drawer-footer">
             <div id="ux-savings-container" class="d-flex justify-content-between align-items-center mb-2 d-none">
-                <span class="text-success small fw-bold"><i class="fas fa-gift me-1"></i> Ahorro Mayorista:</span>
-                <span id="ux-savings-amount" class="text-success fw-bold small">-$0</span>
+                <span class="small fw-semibold" style="color: var(--gold-dark); font-size: 0.75rem;">
+                    <i class="fas fa-sparkles me-1"></i> Beneficio Mayorista Aplicado:
+                </span>
+                <span id="ux-savings-amount" class="fw-bold small" style="color: var(--gold-dark);">-$0</span>
             </div>
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="text-muted text-uppercase small fw-bold" style="letter-spacing: 1px; font-size: 0.72rem;">Subtotal Estimado:</span>
-                <div id="cart-total" class="fw-bold text-dark h4 mb-0 font-playfair">$0</div>
+            <div class="d-flex justify-content-between align-items-baseline mb-3">
+                <span class="text-uppercase small fw-semibold" style="letter-spacing: 1.5px; font-size: 0.72rem; color: var(--text-taupe);">Total Estimado:</span>
+                <div id="cart-total" class="fw-bold h4 mb-0 font-serif" style="color: var(--text-charcoal);">$0</div>
             </div>
             <button type="button" class="btn btn-whatsapp-checkout w-100 mb-2" onclick="enviarPedidoWhatsApp()">
-                <i class="fab fa-whatsapp me-2"></i> Finalizar Pedido por WhatsApp
+                <i class="fab fa-whatsapp me-2 fa-lg"></i> FINALIZAR COMPRA VÍA WHATSAPP
             </button>
-            <div class="text-center">
-                <button type="button" class="btn btn-link text-muted p-0 text-decoration-none" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.8px;" onclick="confirmarVaciarCarrito()">
+            <div class="text-center mt-2">
+                <button type="button" class="btn btn-link text-muted p-0 text-decoration-none" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;" onclick="confirmarVaciarCarrito()">
                     <i class="fas fa-trash-alt me-1"></i> Vaciar Bolsa
                 </button>
             </div>
         </div>
     </aside>
 
-    <!-- Alerta Flotante de Descuento Mayorista -->
-    <div id="mayorista-alert" class="position-fixed bottom-0 start-0 m-3 p-3 shadow-lg border-0 d-none" style="z-index: 1060; background-color: #28a745; color: white; min-width: 250px; border-radius: 4px;">
-        <div class="d-flex align-items-center">
-            <i class="fas fa-check-circle me-3 fa-lg"></i>
-            <div>
-                <strong class="d-block">¡Beneficio Activado!</strong>
-                <small>Ya aplicas para precios mayoristas.</small>
-            </div>
-        </div>
-    </div>
-
     <!-- Botón Flotante de WhatsApp -->
-    <a href="https://wa.me/5492646121771?text=Hola,%20quisiera%20hacer%20una%20consulta%20general%20sobre%20lencería." target="_blank" class="whatsapp-flotante shadow-lg">
+    <a href="https://wa.me/5492646121771?text=Hola,%20quisiera%20hacer%20una%20consulta%20personalizada%20sobre%20lencería%20boutique." target="_blank" class="whatsapp-flotante" title="Asesoramiento Privado por WhatsApp">
         <i class="fab fa-whatsapp"></i>
     </a>
 
-    <!-- Footer -->
-    <footer class="footer-custom text-white py-5" style="background-color: #1a1a1a;">
-        <div class="container py-4">
+    <!-- Footer Haute Couture -->
+    <footer class="footer-boutique">
+        <div class="container">
             <div class="row g-5">
                 <div class="col-md-4 text-center text-md-start">
-                    <img src="https://raw.githubusercontent.com/alexanderbaez/my-bella-afrodita-web/master/images/LOGO.png" alt="Logo" style="height: 60px;" class="mb-4">
-                    <p class="small opacity-50 pe-md-5">Tu lencería de confianza. Calidad premium y atención personalizada en cada compra.</p>
+                    <img src="./images/LOGO.png" alt="My Bella Afrodita" style="height: 52px;" class="mb-3">
+                    <p class="small text-muted pe-md-4" style="line-height: 1.8;">
+                        Boutique de lencería y corsetería de alta gama en San Juan, Argentina. Calce anatómico, texturas nobles y atención exclusiva.
+                    </p>
                 </div>
                 <div class="col-6 col-md-4 text-center">
-                    <h5 class="text-uppercase small fw-bold mb-4" style="letter-spacing: 2px;">Explorar</h5>
-                    <ul class="list-unstyled small opacity-75">
-                        <li class="mb-2"><a href="./productos.html?cat=conjuntos" class="text-white text-decoration-none">Conjuntos</a></li>
-                        <li class="mb-2"><a href="./productos.html?cat=bombachas" class="text-white text-decoration-none">Bombachas</a></li>
-                        <li class="mb-2"><a href="./productos.html?cat=hombres" class="text-white text-decoration-none">Colección Hombre</a></li>
-                        <li class="mb-2"><a href="./productos.html?cat=medias" class="text-white text-decoration-none">Medias</a></li>
+                    <h5>Colecciones</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="./productos.html">Catálogo Completo</a></li>
+                        <li><a href="./productos.html?cat=conjuntos">Conjuntos & Corsetería</a></li>
+                        <li><a href="./productos.html?cat=bombachas">Bombachas & Colaless</a></li>
+                        <li><a href="./productos.html?cat=hombres">Colección Masculina</a></li>
+                        <li><a href="./productos.html?cat=medias">Medias & Accesorios</a></li>
                     </ul>
                 </div>
                 <div class="col-6 col-md-4 text-center text-md-end">
-                    <h5 class="text-uppercase small fw-bold mb-4" style="letter-spacing: 2px;">Contacto</h5>
-                    <div class="d-flex justify-content-center justify-content-md-end gap-3 fs-4 mb-4">
-                        <a href="https://www.instagram.com/mybellaafrodita/" class="text-white" title="Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-white" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="text-white" title="TikTok"><i class="fab fa-tiktok"></i></a>
-                        <a href="https://wa.me/5492646121771" class="text-white" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    <h5>Conectar</h5>
+                    <div class="d-flex justify-content-center justify-content-md-end gap-2 mb-4">
+                        <a href="https://www.instagram.com/mybellaafrodita/" target="_blank" class="footer-social-icon" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="footer-social-icon" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="footer-social-icon" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                        <a href="https://wa.me/5492646121771" target="_blank" class="footer-social-icon" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
                     </div>
-                    <p class="small opacity-50">San Juan, Argentina</p>
+                    <p class="small text-muted mb-0">San Juan &bull; Despachos a todo el país</p>
                 </div>
             </div>
-            <hr class="my-5 opacity-10">
-            <p class="text-center mb-0 small opacity-25" style="letter-spacing: 2px;">&copy; 2026 MY BELLA AFRODITA. LENCERÍA.</p>
+            <hr class="my-5" style="border-color: rgba(197, 168, 128, 0.2);">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center small text-muted" style="letter-spacing: 1.5px; font-size: 0.72rem;">
+                <p class="mb-2 mb-md-0">&copy; 2026 MY BELLA AFRODITA. TODOS LOS DERECHOS RESERVADOS.</p>
+                <p class="mb-0 text-uppercase">Haute Lingerie & Boutique Atelier</p>
+            </div>
         </div>
     </footer>
 
     <!-- Modal Editorial: Quick View de Producto con Guía de Medidas -->
     <div class="modal fade" id="modalQuickView" tabindex="-1" aria-labelledby="modalQuickViewLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-quickview-dialog">
-            <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden; background: #fff;">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 4px; overflow: hidden; background: #FFFFFF; border: 1px solid rgba(197, 168, 128, 0.35) !important;">
                 <div class="modal-header border-0 pb-0 pt-3 pe-3 justify-content-end">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
@@ -288,7 +267,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/script.js"></script>
+    <script src="js/script.js"></script>
 </body>
 
 </html>

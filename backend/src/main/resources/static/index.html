@@ -4,49 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Bella Afrodita | Lencería Exclusiva & Boutique</title>
+    <title>My Bella Afrodita | Haute Couture & Lencería Boutique</title>
 
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/alexanderbaez/my-bella-afrodita-web/master/images/LOGO.png">
-    <link rel="shortcut icon" href="https://raw.githubusercontent.com/alexanderbaez/my-bella-afrodita-web/master/images/LOGO.png">
-    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/alexanderbaez/my-bella-afrodita-web/master/images/LOGO.png">
+    <link rel="icon" type="image/png" href="./images/LOGO.png">
+    <link rel="shortcut icon" href="./images/LOGO.png">
+    <link rel="apple-touch-icon" href="./images/LOGO.png">
 
-    <meta name="description" content="My Bella Afrodita: Lencería boutique exclusiva en San Juan. Descubrí nuestra colección pensada para abrazar cada curva con elegancia y confort.">
-    <meta name="keywords" content="lencería, San Juan, My Bella Afrodita, ropa interior, conjuntos, bombachas, boxers, medias">
+    <meta name="description" content="My Bella Afrodita: Lencería boutique de alta gama en San Juan. Confección cuidada, calce anatómico y encajes seleccionados. Venta minorista y mayorista.">
+    <meta name="keywords" content="lencería boutique, alta costura, My Bella Afrodita, San Juan, conjuntos, bombachas, boxers, medias">
     <meta name="author" content="Alexander Baez">
 
+    <!-- Framework & Fonts -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="css/index.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <style>
-        .navbar-logo {
-            height: 48px;
-            width: auto;
-            object-fit: contain;
-        }
-
-        .manifesto-box {
-            background-color: #ffffff;
-            border: 1px solid rgba(0, 0, 0, 0.06);
-            border-radius: 8px;
-            padding: 48px 36px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
-        }
-
-        .quote-phrase {
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-            font-size: 1.35rem;
-            line-height: 1.6;
-            color: #333333;
-        }
-    </style>
 </head>
 
 <body>
-    <!-- Navbar & Top Announcement Header -->
+    <!-- Header Fijo: Admin Bar, Promo Bar & Navbar -->
     <header class="fixed-top header-boutique-wrapper">
         <!-- Contenedor dinámico de Admin Quick Bar (inyectado por script.js si es ROLE_ADMIN) -->
         <div id="admin-quickbar-mount"></div>
@@ -55,39 +34,40 @@
         <div class="promo-announcement-bar">
             <div class="container text-center">
                 <span class="promo-text active" id="promo-msg-0">
-                    <i class="fas fa-sparkles me-1.5" style="color: #ecc94b;"></i>
-                    ¡Aprovecha! <strong>3 o más prendas</strong> activan Precio Mayorista en todo tu carrito
+                    <i class="fas fa-crown me-1.5" style="color: #D4AF37;"></i>
+                    Acceso Mayorista Exclusivo: <strong>3 o más prendas</strong> activan precio especial automáticamente
                 </span>
                 <span class="promo-text" id="promo-msg-1">
-                    <i class="fas fa-truck-fast me-1.5" style="color: #dda0c2;"></i>
-                    Envíos directos en <strong>San Juan</strong> y despachos seguros a todo el país
+                    <i class="fas fa-box-open me-1.5" style="color: #C5A880;"></i>
+                    Envíos discretos y coordinados en <strong>San Juan</strong> y a todo el país
                 </span>
                 <span class="promo-text" id="promo-msg-2">
-                    <i class="fab fa-whatsapp me-1.5" style="color: #25d366;"></i>
-                    Atención personalizada y <strong>asesoramiento de talles</strong> por WhatsApp
+                    <i class="fab fa-whatsapp me-1.5" style="color: #25D366;"></i>
+                    Atención privada y <strong>asesoramiento de calce</strong> vía WhatsApp
                 </span>
             </div>
         </div>
 
-        <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" id="mainNav">
+        <!-- Navbar Principal Haute Couture -->
+        <nav class="navbar navbar-expand-lg" id="mainNav">
             <div class="container">
-                <a class="navbar-brand-custom d-flex align-items-center" href="./index.html">
-                    <img src="./images/LOGO.png" alt="My Bella Afrodita" class="navbar-logo me-2">
-                    <span class="fw-bold d-none d-sm-inline" style="letter-spacing: 2px;">My Bella Afrodita</span>
+                <a class="navbar-brand-custom" href="./index.html">
+                    <img src="./images/LOGO.png" alt="My Bella Afrodita" class="navbar-logo">
+                    <span class="navbar-brand-text d-none d-sm-inline">My Bella Afrodita</span>
                 </a>
 
-                <div class="d-flex align-items-center order-lg-last">
-                    <a class="nav-link position-relative text-light me-3" href="#" id="cartIcon" onclick="abrirCarritoDrawer(); return false;" style="padding: 0.5rem;" title="Abrir Bolsa de Compras">
-                        <i class="fas fa-shopping-bag fa-lg"></i>
-                        <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">0</span>
+                <div class="d-flex align-items-center order-lg-last gap-2">
+                    <a class="nav-icon-link position-relative" href="#" id="cartIcon" onclick="abrirCarritoDrawer(); return false;" title="Bolsa de Compras">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span id="cart-count" class="position-absolute top-0 start-100 translate-middle">0</span>
                     </a>
-                    <button class="navbar-toggler p-2 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                        <i class="fas fa-bars text-light"></i>
+                    <button class="navbar-toggler p-2 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Navegación">
+                        <i class="fas fa-bars text-dark"></i>
                     </button>
                 </div>
 
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto align-items-center fw-bold">
+                    <ul class="navbar-nav ms-auto align-items-center">
                         <li class="nav-item"><a class="nav-link active" href="./index.html">INICIO</a></li>
                         <li class="nav-item"><a class="nav-link" href="./productos.html">CATÁLOGO</a></li>
                         <li class="nav-item"><a class="nav-link" href="./productos.html?cat=conjuntos">CONJUNTOS</a></li>
@@ -101,175 +81,162 @@
     </header>
 
     <main>
-        <!-- Hero Banner Principal -->
-        <section class="hero-banner-boutique">
+        <!-- 1. HERO SECTION DE IMPACTO EDITORIAL -->
+        <section class="hero-editorial-section">
             <div class="container">
-                <div class="hero-content-card">
-                    <span class="hero-badge-tag">Estilo & Sensualidad</span>
-                    <h1 class="hero-title">
-                        Tu belleza, <br>
-                        <span style="font-style: italic; font-weight: 400;">sin filtros.</span>
+                <div class="hero-editorial-box">
+                    <span class="hero-sub-tag">Haute Lingerie Collection</span>
+                    <h1 class="hero-title-editorial">
+                        Seducción, Calce & <em>Elegancia</em> en cada Detalle.
                     </h1>
-                    <p class="hero-desc">
-                        Descubrí una colección boutique pensada para celebrar cada curva, fusionando delicadeza, confort y distinción. Venta minorista y mayorista a todo el país.
+                    <p class="hero-description">
+                        Prendas diseñadas para enaltecer la anatomía con absoluta delicadeza y sofisticación. Encajes seleccionados, tacto de seda y confort sin concesiones.
                     </p>
-                    <div class="d-flex flex-wrap gap-2.5">
-                        <a href="./productos.html" class="btn-hero-primary shadow-sm">
-                            <i class="fas fa-shopping-bag me-2"></i> Ver Colección
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="./productos.html" class="btn-haute-couture">
+                            DESCUBRIR COLECCIÓN <i class="fas fa-arrow-right ms-1"></i>
                         </a>
-                        <a href="./productos.html?cat=conjuntos" class="btn-hero-secondary">
-                            Conjuntos Exclusivos
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Cuadrícula de Categorías (Look & Feel Zara Editorial) -->
-        <section class="py-5" style="background-color: #faf8fa;">
-            <div class="container py-4">
-                <div class="text-center mb-5">
-                    <span class="text-uppercase small fw-bold" style="letter-spacing: 4px; color: var(--color-pasión);">Colección Destacada</span>
-                    <h2 class="display-5 fw-bold mt-2 font-playfair" style="color: #1a1a1a;">Elige tu Pasión</h2>
-                    <p class="text-muted small mt-1">Explorá nuestras líneas exclusivas diseñadas para cada momento.</p>
-                </div>
-
-                <div class="row g-4">
-                    <!-- Categoría: Conjuntos -->
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <a href="./productos.html?cat=conjuntos" class="category-card-editorial">
-                            <img src="./images/session-Conjuntos.jpg" alt="Conjuntos Exclusivos">
-                            <div class="category-editorial-overlay">
-                                <span class="category-tag-pill">Línea Premium</span>
-                                <h3 class="category-title-editorial">Conjuntos</h3>
-                                <span class="category-btn-pill">Explorar <i class="fas fa-arrow-right ms-1"></i></span>
-                            </div>
-                        </a>
-                    </div>
-
-                    <!-- Categoría: Bombachas -->
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <a href="./productos.html?cat=bombachas" class="category-card-editorial">
-                            <img src="./images/session-bombis.jpg" alt="Bombachas y Colaless">
-                            <div class="category-editorial-overlay">
-                                <span class="category-tag-pill">Confort & Suavidad</span>
-                                <h3 class="category-title-editorial">Bombachas</h3>
-                                <span class="category-btn-pill">Explorar <i class="fas fa-arrow-right ms-1"></i></span>
-                            </div>
-                        </a>
-                    </div>
-
-                    <!-- Categoría: Masculino -->
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <a href="./productos.html?cat=hombres" class="category-card-editorial">
-                            <img src="./images/imagen-hombre.jpg" alt="Línea Hombre">
-                            <div class="category-editorial-overlay">
-                                <span class="category-tag-pill">Línea Hombre</span>
-                                <h3 class="category-title-editorial">Masculino</h3>
-                                <span class="category-btn-pill">Explorar <i class="fas fa-arrow-right ms-1"></i></span>
-                            </div>
-                        </a>
-                    </div>
-
-                    <!-- Categoría: Medias -->
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <a href="./productos.html?cat=medias" class="category-card-editorial">
-                            <img src="./images/medias-femenina2.png" alt="Medias y Accesorios">
-                            <div class="category-editorial-overlay">
-                                <span class="category-tag-pill">Esenciales</span>
-                                <h3 class="category-title-editorial">Medias</h3>
-                                <span class="category-btn-pill">Explorar <i class="fas fa-arrow-right ms-1"></i></span>
-                            </div>
+                        <a href="./productos.html?cat=conjuntos" class="btn-haute-couture-outline">
+                            CONJUNTOS EXCLUSIVOS
                         </a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Sección de Beneficios / Confianza Boutique (Trust Pillars) -->
-        <section class="py-5 bg-white border-top border-bottom">
-            <div class="container py-4">
-                <div class="text-center mb-5">
-                    <span class="text-uppercase small fw-bold" style="letter-spacing: 4px; color: var(--color-pasión);">Por Qué Elegirnos</span>
-                    <h2 class="display-6 fw-bold mt-2 font-playfair" style="color: #1a1a1a;">La Experiencia My Bella Afrodita</h2>
+        <!-- 2. MOSAICO EDITORIAL DE CATEGORÍAS (LOOKBOOK GRID ASIMÉTRICO) -->
+        <section class="mosaic-section">
+            <div class="container">
+                <div class="section-editorial-header">
+                    <span class="section-eyebrow">Curated Collections</span>
+                    <h2 class="section-heading-editorial">Elige tu Silueta</h2>
+                    <p class="section-subtext">Líneas exclusivas que combinan artesanía de alta costura y funcionalidad contemporánea.</p>
                 </div>
 
+                <div class="row g-4 align-items-stretch">
+                    <!-- Bloque Destacado Principal: Conjuntos -->
+                    <div class="col-12 col-lg-6">
+                        <a href="./productos.html?cat=conjuntos" class="mosaic-card tall-mosaic">
+                            <img src="./images/session-Conjuntos.jpg" alt="Conjuntos Exclusivos de Lencería">
+                            <div class="mosaic-overlay">
+                                <span class="mosaic-tag">Línea Alta Costura</span>
+                                <h3 class="mosaic-title">Conjuntos & Corsetería</h3>
+                                <span class="mosaic-link-text">Ver Selección <i class="fas fa-arrow-right"></i></span>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Bloques Laterales: Bombachas, Masculino y Medias -->
+                    <div class="col-12 col-lg-6">
+                        <div class="row g-4">
+                            <!-- Bombachas -->
+                            <div class="col-12">
+                                <a href="./productos.html?cat=bombachas" class="mosaic-card" style="height: 250px;">
+                                    <img src="./images/session-bombis.jpg" alt="Bombachas y Colaless de Encaje">
+                                    <div class="mosaic-overlay">
+                                        <span class="mosaic-tag">Segunda Piel</span>
+                                        <h3 class="mosaic-title" style="font-size: 1.6rem;">Bombachas & Colaless</h3>
+                                        <span class="mosaic-link-text">Explorar <i class="fas fa-arrow-right"></i></span>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Masculino -->
+                            <div class="col-12 col-sm-6">
+                                <a href="./productos.html?cat=hombres" class="mosaic-card" style="height: 210px;">
+                                    <img src="./images/imagen-hombre.jpg" alt="Colección Masculina">
+                                    <div class="mosaic-overlay" style="padding: 22px;">
+                                        <span class="mosaic-tag">Essential Comfort</span>
+                                        <h3 class="mosaic-title" style="font-size: 1.35rem;">Masculino</h3>
+                                        <span class="mosaic-link-text" style="font-size: 0.62rem;">Ver Línea <i class="fas fa-arrow-right"></i></span>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Medias -->
+                            <div class="col-12 col-sm-6">
+                                <a href="./productos.html?cat=medias" class="mosaic-card" style="height: 210px;">
+                                    <img src="./images/medias-femenina2.png" alt="Medias y Accesorios de Lujo">
+                                    <div class="mosaic-overlay" style="padding: 22px;">
+                                        <span class="mosaic-tag">Detalles Finos</span>
+                                        <h3 class="mosaic-title" style="font-size: 1.35rem;">Medias</h3>
+                                        <span class="mosaic-link-text" style="font-size: 0.62rem;">Ver Línea <i class="fas fa-arrow-right"></i></span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. MANIFIESTO DE MARCA ("THE CRAFT") -->
+        <section class="manifesto-section">
+            <div class="container">
+                <div class="manifesto-container">
+                    <img src="./images/LogoNEGROANDREA.png" alt="My Bella Afrodita Sello Editorial" class="manifesto-emblem">
+                    <span class="section-eyebrow">The Craft & Heritage</span>
+                    <h2 class="section-heading-editorial">El Arte del Calce Perfecto</h2>
+                    
+                    <div class="heading-gold-divider">
+                        <i class="fas fa-gem"></i>
+                    </div>
+
+                    <p class="manifesto-quote">
+                        "La verdadera sofisticación comienza en la intimidad de tu piel: donde el confort invisible se transforma en poder y belleza pura."
+                    </p>
+
+                    <p class="manifesto-body">
+                        Desde nuestro atelier en <strong>San Juan</strong>, concebimos cada pieza como una obra de sastrería íntima. Seleccionamos encajes nobles, puntillas elastizadas de tacto sedoso y patronajes anatómicos diseñados para abrazar la diversidad corporal con naturalidad. Una experiencia boutique creada para acompañar tu seguridad personal con la distinción que mereces.
+                    </p>
+
+                    <a href="./productos.html" class="btn-haute-couture">
+                        CONOCER TODAS LAS PRENDAS
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. PILARES DE CONFIANZA MINIMALISTAS (FINE LINE ICONS) -->
+        <section class="trust-pillars-section">
+            <div class="container">
                 <div class="row g-4">
-                    <!-- Beneficio 1: Mayorista x3 -->
-                    <div class="col-md-6 col-lg-3">
-                        <div class="trust-feature-card">
-                            <div class="trust-icon-box">
+                    <!-- Pilar 1: Mayorista x3 -->
+                    <div class="col-md-4">
+                        <div class="pillar-card">
+                            <div class="pillar-icon-box">
                                 <i class="fas fa-tags"></i>
                             </div>
-                            <h4 class="trust-title">Mayorista desde 3 Prendas</h4>
-                            <p class="trust-desc">
-                                Combiná cualquier artículo de la tienda y accedé automáticamente al beneficio de precios por mayor.
+                            <h3 class="pillar-title">Venta Mayorista desde 3 Prendas</h3>
+                            <p class="pillar-desc">
+                                Diseñado para revendedoras y amantes de la lencería: combina cualquier modelo y talle para acceder a tarifa preferencial de forma inmediata.
                             </p>
                         </div>
                     </div>
 
-                    <!-- Beneficio 2: Envíos -->
-                    <div class="col-md-6 col-lg-3">
-                        <div class="trust-feature-card">
-                            <div class="trust-icon-box">
-                                <i class="fas fa-shipping-fast"></i>
+                    <!-- Pilar 2: Envíos Seguros -->
+                    <div class="col-md-4">
+                        <div class="pillar-card">
+                            <div class="pillar-icon-box">
+                                <i class="fas fa-paper-plane"></i>
                             </div>
-                            <h4 class="trust-title">Envíos Cuidados</h4>
-                            <p class="trust-desc">
-                                Entregas ágiles y coordinadas en San Juan y despachos con empaque premium a todo el país.
+                            <h3 class="pillar-title">Envíos Seguros a Todo el País</h3>
+                            <p class="pillar-desc">
+                                Empaque confidencial de alta calidad, despacho prioritario a cualquier punto de Argentina y entregas ágiles en San Juan.
                             </p>
                         </div>
                     </div>
 
-                    <!-- Beneficio 3: Atención WhatsApp -->
-                    <div class="col-md-6 col-lg-3">
-                        <div class="trust-feature-card">
-                            <div class="trust-icon-box">
+                    <!-- Pilar 3: Asesoramiento Privado -->
+                    <div class="col-md-4">
+                        <div class="pillar-card">
+                            <div class="pillar-icon-box">
                                 <i class="fab fa-whatsapp"></i>
                             </div>
-                            <h4 class="trust-title">Asesoramiento Directo</h4>
-                            <p class="trust-desc">
-                                Consulta talles, medidas y combinaciones directamente con nuestras asesoras por WhatsApp.
+                            <h3 class="pillar-title">Asesoramiento Privado por WhatsApp</h3>
+                            <p class="pillar-desc">
+                                Consultas sobre curvas, medidas de contorno de busto y cadera con atención experta, discreta y personalizada en tiempo real.
                             </p>
-                        </div>
-                    </div>
-
-                    <!-- Beneficio 4: Calidad Boutique -->
-                    <div class="col-md-6 col-lg-3">
-                        <div class="trust-feature-card">
-                            <div class="trust-icon-box">
-                                <i class="fas fa-gem"></i>
-                            </div>
-                            <h4 class="trust-title">Confección Seleccionada</h4>
-                            <p class="trust-desc">
-                                Telas hipoalergénicas, encajes suaves al contacto y calce anatómico de alta durabilidad.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Manifiesto de Marca / Historia -->
-        <section class="py-5" style="background-color: #faf8fa;">
-            <div class="container py-4">
-                <div class="manifesto-box">
-                    <div class="row align-items-center g-5">
-                        <div class="col-lg-5 text-center">
-                            <img src="./images/LogoNEGROANDREA.png" alt="My Bella Afrodita Emblema" class="img-fluid" style="max-height: 240px; object-fit: contain;">
-                        </div>
-                        <div class="col-lg-7">
-                            <span class="text-uppercase small fw-bold" style="letter-spacing: 3px; color: var(--color-pasión);">Nuestra Misión</span>
-                            <h2 class="display-6 fw-bold mt-2 font-playfair mb-3" style="color: #1a1a1a;">La Magia detrás de cada pieza</h2>
-                            <p class="quote-phrase mb-4">
-                                "La belleza no es un estándar que el mercado impone, es una esencia que ya posees."
-                            </p>
-                            <p class="text-muted small mb-4" style="line-height: 1.7;">
-                                My Bella Afrodita nace de la pasión por acompañar la autenticidad de cada persona. Creemos que cada cuerpo merece sentirse seguro, cómodo y sensual. Seleccionamos y confeccionamos piezas pensadas para ser el reflejo de tu propia luz y el lienzo donde luzcas tu confianza única, libre y sin filtros.
-                            </p>
-                            <a href="./productos.html" class="btn btn-dark btn-sm px-4 py-2 text-uppercase fw-bold rounded-1" style="letter-spacing: 1.5px; font-size: 0.72rem;">
-                                Conocer la Colección
-                            </a>
                         </div>
                     </div>
                 </div>
@@ -277,27 +244,29 @@
         </section>
     </main>
 
-    <!-- Slide-Over Cart Drawer -->
+    <!-- Slide-Over Shopping Bag Drawer (Bolsa de Compras Exclusiva) -->
     <div id="cart-drawer-overlay" class="cart-drawer-overlay" onclick="cerrarCarritoDrawer()"></div>
-    <aside id="cart-drawer" class="cart-drawer" aria-label="Bolsa de Compras">
+    <aside id="cart-drawer" class="cart-drawer" aria-label="Bolsa de Compras Exclusiva">
+        <!-- Drawer Header -->
         <div class="cart-drawer-header">
             <div class="d-flex align-items-center">
-                <i class="fas fa-shopping-bag me-2" style="color: var(--color-pasión, #8e62a3);"></i>
-                <h5 class="mb-0 font-playfair fw-bold">Tu Bolsa de Compras</h5>
-                <span id="drawer-cart-count" class="badge rounded-pill bg-dark ms-2" style="font-size: 0.65rem;">0</span>
+                <i class="fas fa-shopping-bag me-2" style="color: var(--gold-champagne);"></i>
+                <h5 class="mb-0">Bolsa de Compras</h5>
+                <span id="drawer-cart-count" class="badge rounded-pill ms-2" style="background-color: var(--bg-obsidian); color: var(--gold-champagne); font-size: 0.65rem;">0</span>
             </div>
             <button type="button" class="btn-close-drawer" onclick="cerrarCarritoDrawer()" aria-label="Cerrar">&times;</button>
         </div>
 
+        <!-- Drawer Body -->
         <div class="cart-drawer-body">
-            <!-- Wholesale Progress Banner -->
+            <!-- Barra de Gamificación Mayorista -->
             <div id="ux-wholesale-progress-container" class="cart-wholesale-banner mb-3">
                 <div class="d-flex justify-content-between mb-1.5 small">
-                    <span id="ux-progress-text" class="fw-bold" style="color: #4a3b53; font-size: 0.75rem;">Agregando prendas...</span>
-                    <span id="ux-progress-percent" class="fw-bold text-dark" style="font-size: 0.75rem;">0/3</span>
+                    <span id="ux-progress-text" class="fw-semibold" style="font-size: 0.74rem; color: var(--text-charcoal);">Agregando prendas...</span>
+                    <span id="ux-progress-percent" class="fw-bold" style="font-size: 0.74rem; color: var(--gold-dark);">0/3</span>
                 </div>
-                <div class="progress" style="height: 6px; border-radius: 3px; background-color: #eee;">
-                    <div id="ux-progress-bar-fill" class="progress-bar" role="progressbar" style="width: 0%; background-color: var(--color-pasión, #8e62a3);"></div>
+                <div class="progress-wholesale-bar">
+                    <div id="ux-progress-bar-fill" class="progress-wholesale-fill" style="width: 0%;"></div>
                 </div>
             </div>
 
@@ -307,20 +276,23 @@
             </div>
         </div>
 
+        <!-- Drawer Footer -->
         <div class="cart-drawer-footer">
             <div id="ux-savings-container" class="d-flex justify-content-between align-items-center mb-2 d-none">
-                <span class="text-success small fw-bold"><i class="fas fa-gift me-1"></i> Ahorro Mayorista:</span>
-                <span id="ux-savings-amount" class="text-success fw-bold small">-$0</span>
+                <span class="small fw-semibold" style="color: var(--gold-dark); font-size: 0.75rem;">
+                    <i class="fas fa-sparkles me-1"></i> Beneficio Mayorista Aplicado:
+                </span>
+                <span id="ux-savings-amount" class="fw-bold small" style="color: var(--gold-dark);">-$0</span>
             </div>
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="text-muted text-uppercase small fw-bold" style="letter-spacing: 1px; font-size: 0.72rem;">Subtotal Estimado:</span>
-                <div id="cart-total" class="fw-bold text-dark h4 mb-0 font-playfair">$0</div>
+            <div class="d-flex justify-content-between align-items-baseline mb-3">
+                <span class="text-uppercase small fw-semibold" style="letter-spacing: 1.5px; font-size: 0.72rem; color: var(--text-taupe);">Total Estimado:</span>
+                <div id="cart-total" class="fw-bold h4 mb-0 font-serif" style="color: var(--text-charcoal);">$0</div>
             </div>
             <button type="button" class="btn btn-whatsapp-checkout w-100 mb-2" onclick="enviarPedidoWhatsApp()">
-                <i class="fab fa-whatsapp me-2"></i> Finalizar Pedido por WhatsApp
+                <i class="fab fa-whatsapp me-2 fa-lg"></i> FINALIZAR COMPRA VÍA WHATSAPP
             </button>
-            <div class="text-center">
-                <button type="button" class="btn btn-link text-muted p-0 text-decoration-none" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.8px;" onclick="confirmarVaciarCarrito()">
+            <div class="text-center mt-2">
+                <button type="button" class="btn btn-link text-muted p-0 text-decoration-none" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;" onclick="confirmarVaciarCarrito()">
                     <i class="fas fa-trash-alt me-1"></i> Vaciar Bolsa
                 </button>
             </div>
@@ -328,41 +300,46 @@
     </aside>
 
     <!-- Botón Flotante de WhatsApp -->
-    <a href="https://wa.me/5492646121771?text=Hola,%20quisiera%20hacer%20una%20consulta%20general%20sobre%20lencería." target="_blank" class="whatsapp-flotante shadow-lg" title="Contactar por WhatsApp">
+    <a href="https://wa.me/5492646121771?text=Hola,%20quisiera%20hacer%20una%20consulta%20personalizada%20sobre%20lencería%20boutique." target="_blank" class="whatsapp-flotante" title="Asesoramiento Privado por WhatsApp">
         <i class="fab fa-whatsapp"></i>
     </a>
 
-    <!-- Footer Boutique -->
-    <footer class="footer-custom text-white py-5" style="background-color: #1a1a1a;">
-        <div class="container py-4">
+    <!-- Footer Haute Couture -->
+    <footer class="footer-boutique">
+        <div class="container">
             <div class="row g-5">
                 <div class="col-md-4 text-center text-md-start">
-                    <img src="./images/LOGO.png" alt="Logo" style="height: 60px;" class="mb-4">
-                    <p class="small opacity-50 pe-md-5">Tu lencería de confianza en San Juan. Calidad boutique, sensualidad y atención personalizada en cada compra.</p>
+                    <img src="./images/LOGO.png" alt="My Bella Afrodita" style="height: 52px;" class="mb-3">
+                    <p class="small text-muted pe-md-4" style="line-height: 1.8;">
+                        Boutique de lencería y corsetería de alta gama en San Juan, Argentina. Calce anatómico, texturas nobles y atención exclusiva.
+                    </p>
                 </div>
                 <div class="col-6 col-md-4 text-center">
-                    <h5 class="text-uppercase small fw-bold mb-4" style="letter-spacing: 2px;">Explorar</h5>
-                    <ul class="list-unstyled small opacity-75">
-                        <li class="mb-2"><a href="./productos.html" class="text-white text-decoration-none">Catálogo Completo</a></li>
-                        <li class="mb-2"><a href="./productos.html?cat=conjuntos" class="text-white text-decoration-none">Conjuntos</a></li>
-                        <li class="mb-2"><a href="./productos.html?cat=bombachas" class="text-white text-decoration-none">Bombachas</a></li>
-                        <li class="mb-2"><a href="./productos.html?cat=hombres" class="text-white text-decoration-none">Colección Hombre</a></li>
-                        <li class="mb-2"><a href="./productos.html?cat=medias" class="text-white text-decoration-none">Medias</a></li>
+                    <h5>Colecciones</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="./productos.html">Catálogo Completo</a></li>
+                        <li><a href="./productos.html?cat=conjuntos">Conjuntos & Corsetería</a></li>
+                        <li><a href="./productos.html?cat=bombachas">Bombachas & Colaless</a></li>
+                        <li><a href="./productos.html?cat=hombres">Colección Masculina</a></li>
+                        <li><a href="./productos.html?cat=medias">Medias & Accesorios</a></li>
                     </ul>
                 </div>
                 <div class="col-6 col-md-4 text-center text-md-end">
-                    <h5 class="text-uppercase small fw-bold mb-4" style="letter-spacing: 2px;">Contacto</h5>
-                    <div class="d-flex justify-content-center justify-content-md-end gap-3 fs-4 mb-4">
-                        <a href="https://www.instagram.com/mybellaafrodita/" target="_blank" class="text-white" title="Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-white" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="text-white" title="TikTok"><i class="fab fa-tiktok"></i></a>
-                        <a href="https://wa.me/5492646121771" target="_blank" class="text-white" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    <h5>Conectar</h5>
+                    <div class="d-flex justify-content-center justify-content-md-end gap-2 mb-4">
+                        <a href="https://www.instagram.com/mybellaafrodita/" target="_blank" class="footer-social-icon" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="footer-social-icon" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="footer-social-icon" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                        <a href="https://wa.me/5492646121771" target="_blank" class="footer-social-icon" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
                     </div>
-                    <p class="small opacity-50">San Juan, Argentina</p>
+                    <p class="small text-muted mb-0">San Juan &bull; Despachos a todo el país</p>
                 </div>
             </div>
-            <hr class="my-5 opacity-10">
-            <p class="text-center mb-0 small opacity-25" style="letter-spacing: 2px;">&copy; 2026 MY BELLA AFRODITA. LENCERÍA BOUTIQUE.</p>
+            <hr class="my-5" style="border-color: rgba(197, 168, 128, 0.2);">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center small text-muted" style="letter-spacing: 1.5px; font-size: 0.72rem;">
+                <p class="mb-2 mb-md-0">&copy; 2026 MY BELLA AFRODITA. TODOS LOS DERECHOS RESERVADOS.</p>
+                <p class="mb-0 text-uppercase">Haute Lingerie & Boutique Atelier</p>
+            </div>
         </div>
     </footer>
 
