@@ -1,10 +1,10 @@
 package com.bellafrodita.TiendaBellaAfrodita.config;
 
-import com.bellafrodita.TiendaBellaAfrodita.producto.Producto;
-import com.bellafrodita.TiendaBellaAfrodita.producto.ProductoRepository;
-import com.bellafrodita.TiendaBellaAfrodita.producto.ProductoVariante;
-import com.bellafrodita.TiendaBellaAfrodita.usuario.Usuario;
-import com.bellafrodita.TiendaBellaAfrodita.usuario.UsuarioRepository;
+import com.bellafrodita.TiendaBellaAfrodita.producto.model.Producto;
+import com.bellafrodita.TiendaBellaAfrodita.producto.model.ProductoVariante;
+import com.bellafrodita.TiendaBellaAfrodita.producto.repository.ProductoRepository;
+import com.bellafrodita.TiendaBellaAfrodita.usuario.model.Usuario;
+import com.bellafrodita.TiendaBellaAfrodita.usuario.repository.UsuarioRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.CommandLineRunner;

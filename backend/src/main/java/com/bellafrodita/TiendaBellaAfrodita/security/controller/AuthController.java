@@ -1,7 +1,9 @@
-package com.bellafrodita.TiendaBellaAfrodita.security;
+package com.bellafrodita.TiendaBellaAfrodita.security.controller;
 
-import com.bellafrodita.TiendaBellaAfrodita.usuario.Usuario;
-import com.bellafrodita.TiendaBellaAfrodita.usuario.UsuarioRepository;
+import com.bellafrodita.TiendaBellaAfrodita.security.dto.LoginRequest;
+import com.bellafrodita.TiendaBellaAfrodita.security.dto.LoginResponse;
+import com.bellafrodita.TiendaBellaAfrodita.usuario.model.Usuario;
+import com.bellafrodita.TiendaBellaAfrodita.usuario.repository.UsuarioRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;

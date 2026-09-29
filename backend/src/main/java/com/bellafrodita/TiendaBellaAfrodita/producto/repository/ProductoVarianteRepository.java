@@ -1,5 +1,6 @@
-package com.bellafrodita.TiendaBellaAfrodita.producto;
+package com.bellafrodita.TiendaBellaAfrodita.producto.repository;
 
+import com.bellafrodita.TiendaBellaAfrodita.producto.model.ProductoVariante;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

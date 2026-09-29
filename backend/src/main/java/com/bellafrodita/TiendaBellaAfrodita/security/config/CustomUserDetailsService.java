@@ -1,7 +1,7 @@
-package com.bellafrodita.TiendaBellaAfrodita.security;
+package com.bellafrodita.TiendaBellaAfrodita.security.config;
 
-import com.bellafrodita.TiendaBellaAfrodita.usuario.Usuario;
-import com.bellafrodita.TiendaBellaAfrodita.usuario.UsuarioRepository;
+import com.bellafrodita.TiendaBellaAfrodita.usuario.model.Usuario;
+import com.bellafrodita.TiendaBellaAfrodita.usuario.repository.UsuarioRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;

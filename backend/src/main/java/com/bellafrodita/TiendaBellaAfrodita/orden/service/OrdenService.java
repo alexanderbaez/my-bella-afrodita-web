@@ -6,10 +6,10 @@ import com.bellafrodita.TiendaBellaAfrodita.orden.model.MetodoPago;
 import com.bellafrodita.TiendaBellaAfrodita.orden.model.Orden;
 import com.bellafrodita.TiendaBellaAfrodita.orden.model.OrdenItem;
 import com.bellafrodita.TiendaBellaAfrodita.orden.repository.OrdenRepository;
-import com.bellafrodita.TiendaBellaAfrodita.producto.Producto;
-import com.bellafrodita.TiendaBellaAfrodita.producto.ProductoRepository;
-import com.bellafrodita.TiendaBellaAfrodita.producto.ProductoVariante;
-import com.bellafrodita.TiendaBellaAfrodita.producto.ProductoVarianteRepository;
+import com.bellafrodita.TiendaBellaAfrodita.producto.model.Producto;
+import com.bellafrodita.TiendaBellaAfrodita.producto.model.ProductoVariante;
+import com.bellafrodita.TiendaBellaAfrodita.producto.repository.ProductoRepository;
+import com.bellafrodita.TiendaBellaAfrodita.producto.repository.ProductoVarianteRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

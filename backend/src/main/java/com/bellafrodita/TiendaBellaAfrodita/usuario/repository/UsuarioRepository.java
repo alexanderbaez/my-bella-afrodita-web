@@ -1,5 +1,6 @@
-package com.bellafrodita.TiendaBellaAfrodita.usuario;
+package com.bellafrodita.TiendaBellaAfrodita.usuario.repository;
 
+import com.bellafrodita.TiendaBellaAfrodita.usuario.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

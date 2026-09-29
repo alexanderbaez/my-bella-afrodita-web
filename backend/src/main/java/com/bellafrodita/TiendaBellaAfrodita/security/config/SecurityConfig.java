@@ -1,4 +1,4 @@
-package com.bellafrodita.TiendaBellaAfrodita.security;
+package com.bellafrodita.TiendaBellaAfrodita.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package com.bellafrodita.TiendaBellaAfrodita.usuario;
+package com.bellafrodita.TiendaBellaAfrodita.usuario.model;
 
 import jakarta.persistence.*;
 import lombok.*;

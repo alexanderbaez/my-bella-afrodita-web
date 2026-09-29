@@ -1,4 +1,4 @@
-package com.bellafrodita.TiendaBellaAfrodita.security;
+package com.bellafrodita.TiendaBellaAfrodita.security.dto;
 
 import lombok.*;
 
