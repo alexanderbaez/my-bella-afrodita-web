@@ -1,7 +1,7 @@
 package com.bellafrodita.TiendaBellaAfrodita.config;
 
+import com.bellafrodita.TiendaBellaAfrodita.producto.dto.ProductoVarianteDto;
 import com.bellafrodita.TiendaBellaAfrodita.producto.model.Producto;
-import com.bellafrodita.TiendaBellaAfrodita.producto.model.ProductoVariante;
 import com.bellafrodita.TiendaBellaAfrodita.producto.repository.ProductoRepository;
 import com.bellafrodita.TiendaBellaAfrodita.usuario.model.Usuario;
 import com.bellafrodita.TiendaBellaAfrodita.usuario.repository.UsuarioRepository;
@@ -98,10 +98,9 @@ public class DataInitializer {
 
                     for (String talle : tallesDb) {
                         if (talle != null && !talle.isBlank()) {
-                            ProductoVariante variante = ProductoVariante.builder()
+                            ProductoVarianteDto variante = ProductoVarianteDto.builder()
                                     .talle(talle.trim())
                                     .stock(5) // Stock inicial por defecto
-                                    .producto(p)
                                     .build();
                             p.addVariante(variante);
                             variantesCreadasTotal++;

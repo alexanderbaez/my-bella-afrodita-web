@@ -5,10 +5,9 @@ import com.bellafrodita.TiendaBellaAfrodita.orden.dto.CheckoutRequest;
 import com.bellafrodita.TiendaBellaAfrodita.orden.dto.OrdenResponse;
 import com.bellafrodita.TiendaBellaAfrodita.orden.exception.StockInsuficienteException;
 import com.bellafrodita.TiendaBellaAfrodita.orden.service.OrdenService;
+import com.bellafrodita.TiendaBellaAfrodita.producto.dto.ProductoVarianteDto;
 import com.bellafrodita.TiendaBellaAfrodita.producto.model.Producto;
-import com.bellafrodita.TiendaBellaAfrodita.producto.model.ProductoVariante;
 import com.bellafrodita.TiendaBellaAfrodita.producto.repository.ProductoRepository;
-import com.bellafrodita.TiendaBellaAfrodita.producto.repository.ProductoVarianteRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
@@ -25,30 +26,30 @@ public class InventarioYOrdenIntegrationTest {
     private ProductoRepository productoRepository;
 
     @Autowired
-    private ProductoVarianteRepository varianteRepository;
-
-    @Autowired
     private OrdenService ordenService;
 
     @Test
-    @DisplayName("Debe descontar stock de variante atómicamente al crear una orden")
+    @DisplayName("Debe descontar stock de variante atómicamente en la entidad Producto al crear una orden")
     @Transactional
     public void testDescuentoAtomicoDeStock() {
-        // Crear un producto de prueba con una variante de 10 unidades
-        Producto producto = new Producto();
-        producto.setNombre("Conjunto Test Stock");
-        producto.setDescripcion("Prueba de inventario real");
-        producto.setCategoria("conjuntos");
-        producto.setPrecioMinorista(15000.0);
-        producto.setPrecioMayorista(11000.0);
-        producto.setStock(true);
-
-        ProductoVariante variante = ProductoVariante.builder()
-                .talle("90")
-                .stock(10)
+        // Crear un producto de prueba con una variante embebida de 10 unidades
+        Producto producto = Producto.builder()
+                .nombre("Conjunto Test Stock Aplanado")
+                .descripcion("Prueba de inventario en JSON")
+                .categoria("conjuntos")
+                .precioMinorista(new BigDecimal("15000.00"))
+                .precioMayorista(new BigDecimal("11000.00"))
+                .stock(true)
+                .imagenes(List.of("/images/test1.jpg"))
+                .variantes(new ArrayList<>(List.of(
+                        ProductoVarianteDto.builder()
+                                .talle("90")
+                                .stock(10)
+                                .sku("TEST-90")
+                                .build()
+                )))
                 .build();
 
-        producto.addVariante(variante);
         Producto guardado = productoRepository.save(producto);
 
         Long prodId = guardado.getId();
@@ -75,12 +76,16 @@ public class InventarioYOrdenIntegrationTest {
         Assertions.assertNotNull(respuesta.getId());
         Assertions.assertNotNull(respuesta.getCodigoSeguimiento());
 
-        // Verificar que el stock remanente sea 7
-        ProductoVariante varianteActualizada = varianteRepository
-                .findByProductoIdAndTalleIgnoreCase(prodId, "90")
+        // Verificar que el stock remanente en la fila del producto sea 7
+        Producto productoActualizado = productoRepository.findById(prodId).orElseThrow();
+
+        ProductoVarianteDto varianteActualizada = productoActualizado.getVariantes().stream()
+                .filter(v -> v.getTalle() != null && v.getTalle().equalsIgnoreCase("90"))
+                .findFirst()
                 .orElseThrow();
 
         Assertions.assertEquals(7, varianteActualizada.getStock());
+        Assertions.assertEquals(7, productoActualizado.getStockTotal());
     }
 
     @Test
@@ -88,19 +93,21 @@ public class InventarioYOrdenIntegrationTest {
     @Transactional
     public void testStockInsuficienteLanzaExcepcion() {
         // Crear producto con variante de solo 2 unidades
-        Producto producto = new Producto();
-        producto.setNombre("Bombacha Test Stock Insuficiente");
-        producto.setDescripcion("Prueba rechazo stock");
-        producto.setCategoria("bombachas");
-        producto.setPrecioMinorista(8000.0);
-        producto.setStock(true);
-
-        ProductoVariante variante = ProductoVariante.builder()
-                .talle("1")
-                .stock(2)
+        Producto producto = Producto.builder()
+                .nombre("Bombacha Test Stock Insuficiente")
+                .descripcion("Prueba rechazo stock")
+                .categoria("bombachas")
+                .precioMinorista(new BigDecimal("8000.00"))
+                .stock(true)
+                .variantes(new ArrayList<>(List.of(
+                        ProductoVarianteDto.builder()
+                                .talle("1")
+                                .stock(2)
+                                .sku("TEST-1")
+                                .build()
+                )))
                 .build();
 
-        producto.addVariante(variante);
         Producto guardado = productoRepository.save(producto);
 
         Long prodId = guardado.getId();
@@ -124,9 +131,11 @@ public class InventarioYOrdenIntegrationTest {
 
         Assertions.assertTrue(ex.getMessage().contains("Stock insuficiente"));
 
-        // Asegurar que el stock se mantiene en 2 unidades intactas
-        ProductoVariante varianteSinModificar = varianteRepository
-                .findByProductoIdAndTalleIgnoreCase(prodId, "1")
+        // Asegurar que el stock se mantiene en 2 unidades intactas en la base de datos
+        Producto productoSinModificar = productoRepository.findById(prodId).orElseThrow();
+        ProductoVarianteDto varianteSinModificar = productoSinModificar.getVariantes().stream()
+                .filter(v -> v.getTalle() != null && v.getTalle().equalsIgnoreCase("1"))
+                .findFirst()
                 .orElseThrow();
 
         Assertions.assertEquals(2, varianteSinModificar.getStock());

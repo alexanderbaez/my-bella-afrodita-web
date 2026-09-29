@@ -1,15 +1,15 @@
 package com.bellafrodita.TiendaBellaAfrodita.orden.service;
 
 import com.bellafrodita.TiendaBellaAfrodita.orden.dto.*;
+import com.bellafrodita.TiendaBellaAfrodita.orden.exception.StockInsuficienteException;
 import com.bellafrodita.TiendaBellaAfrodita.orden.model.EstadoOrden;
 import com.bellafrodita.TiendaBellaAfrodita.orden.model.MetodoPago;
 import com.bellafrodita.TiendaBellaAfrodita.orden.model.Orden;
 import com.bellafrodita.TiendaBellaAfrodita.orden.model.OrdenItem;
 import com.bellafrodita.TiendaBellaAfrodita.orden.repository.OrdenRepository;
+import com.bellafrodita.TiendaBellaAfrodita.producto.dto.ProductoVarianteDto;
 import com.bellafrodita.TiendaBellaAfrodita.producto.model.Producto;
-import com.bellafrodita.TiendaBellaAfrodita.producto.model.ProductoVariante;
 import com.bellafrodita.TiendaBellaAfrodita.producto.repository.ProductoRepository;
-import com.bellafrodita.TiendaBellaAfrodita.producto.repository.ProductoVarianteRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,14 +32,11 @@ public class OrdenService {
 
     private final OrdenRepository ordenRepository;
     private final ProductoRepository productoRepository;
-    private final ProductoVarianteRepository productoVarianteRepository;
 
     public OrdenService(OrdenRepository ordenRepository,
-                        ProductoRepository productoRepository,
-                        ProductoVarianteRepository productoVarianteRepository) {
+                        ProductoRepository productoRepository) {
         this.ordenRepository = ordenRepository;
         this.productoRepository = productoRepository;
-        this.productoVarianteRepository = productoVarianteRepository;
     }
 
     @Transactional
@@ -85,39 +82,36 @@ public class OrdenService {
                     ? itemReq.getTalle().trim()
                     : "Único";
 
-            // Validar stock físico disponible por variante
-            ProductoVariante variante = productoVarianteRepository
-                    .findByProductoIdAndTalleIgnoreCase(producto.getId(), talleSolicitado)
-                    .orElse(null);
-
-            if (variante == null && producto.getVariantes() != null && !producto.getVariantes().isEmpty()) {
+            // Validar stock físico disponible por variante en el JSON de Producto
+            ProductoVarianteDto variante = null;
+            if (producto.getVariantes() != null && !producto.getVariantes().isEmpty()) {
                 variante = producto.getVariantes().stream()
                         .filter(v -> v.getTalle() != null && v.getTalle().equalsIgnoreCase(talleSolicitado))
                         .findFirst()
-                        .orElse(producto.getVariantes().get(0));
+                        .orElse(null);
             }
 
             if (variante != null) {
-                if (variante.getStock() < cantidad) {
-                    throw new com.bellafrodita.TiendaBellaAfrodita.orden.exception.StockInsuficienteException(
+                int stockDisponible = variante.getStock() != null ? variante.getStock() : 0;
+                if (stockDisponible < cantidad) {
+                    throw new StockInsuficienteException(
                             "Stock insuficiente para el producto '" + producto.getNombre() +
-                            "' en talle '" + talleSolicitado + "'. Disponibles: " + variante.getStock() +
+                            "' en talle '" + talleSolicitado + "'. Disponibles: " + stockDisponible +
                             ", solicitados: " + cantidad + "."
                     );
                 }
 
-                // Descuento atómico de stock
-                variante.setStock(variante.getStock() - cantidad);
-                productoVarianteRepository.save(variante);
+                // Descuento atómico de stock directamente en la fila del producto
+                variante.setStock(stockDisponible - cantidad);
 
-                // Actualizar bandera de stock del producto
+                // Actualizar bandera de stock general y persistir producto
                 producto.setStock(producto.tieneStockGeneral());
                 productoRepository.save(producto);
             }
 
-            BigDecimal precioMinorista = BigDecimal.valueOf(producto.getPrecioMinorista() != null ? producto.getPrecioMinorista() : 0.0);
-            BigDecimal precioMayorista = producto.getPrecioMayorista() != null && producto.getPrecioMayorista() > 0
-                    ? BigDecimal.valueOf(producto.getPrecioMayorista())
+            BigDecimal precioMinorista = producto.getPrecioMinorista() != null ? producto.getPrecioMinorista() : BigDecimal.ZERO;
+            BigDecimal precioMayorista = (producto.getPrecioMayorista() != null && producto.getPrecioMayorista().compareTo(BigDecimal.ZERO) > 0)
+                    ? producto.getPrecioMayorista()
                     : null;
 
             BigDecimal precioAplicado = (esMayorista && precioMayorista != null) ? precioMayorista : precioMinorista;

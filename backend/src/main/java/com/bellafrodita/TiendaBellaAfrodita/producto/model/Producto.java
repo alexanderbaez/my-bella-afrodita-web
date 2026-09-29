@@ -1,17 +1,27 @@
 package com.bellafrodita.TiendaBellaAfrodita.producto.model;
 
+import com.bellafrodita.TiendaBellaAfrodita.producto.dto.ProductoVarianteDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "productos")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Producto {
 
     @Id
@@ -32,41 +42,28 @@ public class Producto {
 
     @NotNull(message = "El precio minorista es obligatorio")
     @Positive(message = "El precio minorista debe ser mayor a cero")
-    @Column(nullable = false)
-    private Double precioMinorista;
+    @Column(name = "precio_minorista", nullable = false, precision = 12, scale = 2)
+    private BigDecimal precioMinorista;
 
     @Positive(message = "El precio mayorista debe ser mayor a cero")
-    private Double precioMayorista;
+    @Column(name = "precio_mayorista", precision = 12, scale = 2)
+    private BigDecimal precioMayorista;
 
-    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<ProductoVariante> variantes = new ArrayList<>();
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "producto_imagenes", joinColumns = @JoinColumn(name = "producto_id"))
-    @Column(name = "imagen_url", columnDefinition = "TEXT")
-    private List<String> imagenes = new ArrayList<>();
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean stock = true;
 
     private String etiqueta;
 
-    @Column(nullable = false)
-    private Boolean stock = true;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "imagenes", columnDefinition = "json")
+    @Builder.Default
+    private List<String> imagenes = new ArrayList<>();
 
-    public Producto() {
-    }
-
-    public Producto(Long id, String nombre, String descripcion, String categoria, Double precioMinorista,
-                    Double precioMayorista, List<ProductoVariante> variantes, List<String> imagenes, String etiqueta, Boolean stock) {
-        this.id = id;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.categoria = categoria;
-        this.precioMinorista = precioMinorista;
-        this.precioMayorista = precioMayorista;
-        this.variantes = variantes != null ? variantes : new ArrayList<>();
-        this.imagenes = imagenes != null ? imagenes : new ArrayList<>();
-        this.etiqueta = etiqueta;
-        this.stock = stock != null ? stock : true;
-    }
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "variantes", columnDefinition = "json")
+    @Builder.Default
+    private List<ProductoVarianteDto> variantes = new ArrayList<>();
 
     public boolean tieneStockGeneral() {
         if (variantes == null || variantes.isEmpty()) {
@@ -89,113 +86,23 @@ public class Producto {
             return new ArrayList<>();
         }
         return variantes.stream()
-                .map(ProductoVariante::getTalle)
+                .map(ProductoVarianteDto::getTalle)
                 .filter(t -> t != null && !t.isBlank())
                 .distinct()
                 .toList();
     }
 
-    public void addVariante(ProductoVariante variante) {
+    public void addVariante(ProductoVarianteDto variante) {
         if (this.variantes == null) {
             this.variantes = new ArrayList<>();
         }
-        this.variantes.add(variante);
-        variante.setProducto(this);
-    }
-
-    public void removeVariante(ProductoVariante variante) {
-        if (this.variantes != null) {
-            this.variantes.remove(variante);
-            variante.setProducto(null);
+        if (variante != null) {
+            if (variante.getSku() == null || variante.getSku().isBlank()) {
+                String idStr = this.id != null ? String.valueOf(this.id) : "PRD";
+                String talleNorm = variante.getTalle() != null ? variante.getTalle().trim().toUpperCase().replaceAll("\\s+", "") : "U";
+                variante.setSku(idStr + "-" + talleNorm);
+            }
+            this.variantes.add(variante);
         }
-    }
-
-    public void clearVariantes() {
-        if (this.variantes != null) {
-            this.variantes.clear();
-        }
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public String getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
-
-    public Double getPrecioMinorista() {
-        return precioMinorista;
-    }
-
-    public void setPrecioMinorista(Double precioMinorista) {
-        this.precioMinorista = precioMinorista;
-    }
-
-    public Double getPrecioMayorista() {
-        return precioMayorista;
-    }
-
-    public void setPrecioMayorista(Double precioMayorista) {
-        this.precioMayorista = precioMayorista;
-    }
-
-    public List<ProductoVariante> getVariantes() {
-        return variantes;
-    }
-
-    public void setVariantes(List<ProductoVariante> variantes) {
-        this.variantes = variantes != null ? variantes : new ArrayList<>();
-        for (ProductoVariante v : this.variantes) {
-            v.setProducto(this);
-        }
-    }
-
-    public List<String> getImagenes() {
-        return imagenes;
-    }
-
-    public void setImagenes(List<String> imagenes) {
-        this.imagenes = imagenes;
-    }
-
-    public String getEtiqueta() {
-        return etiqueta;
-    }
-
-    public void setEtiqueta(String etiqueta) {
-        this.etiqueta = etiqueta;
-    }
-
-    public Boolean getStock() {
-        return stock;
-    }
-
-    public void setStock(Boolean stock) {
-        this.stock = stock;
     }
 }

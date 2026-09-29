@@ -1,13 +1,12 @@
 package com.bellafrodita.TiendaBellaAfrodita.producto.service;
 
 import com.bellafrodita.TiendaBellaAfrodita.producto.model.Producto;
-import com.bellafrodita.TiendaBellaAfrodita.producto.model.ProductoVariante;
 import com.bellafrodita.TiendaBellaAfrodita.producto.repository.ProductoRepository;
-import com.bellafrodita.TiendaBellaAfrodita.producto.repository.ProductoVarianteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +15,6 @@ import java.util.Optional;
 public class ProductoService {
 
     private final ProductoRepository productoRepository;
-    private final ProductoVarianteRepository varianteRepository;
 
     @Transactional(readOnly = true)
     public List<Producto> listarTodos(String categoria) {
@@ -34,11 +32,6 @@ public class ProductoService {
     @Transactional
     public Producto crearProducto(Producto producto) {
         producto.setId(null);
-        if (producto.getVariantes() != null) {
-            for (ProductoVariante v : producto.getVariantes()) {
-                v.setProducto(producto);
-            }
-        }
         if (producto.getStock() == null) {
             producto.setStock(producto.tieneStockGeneral());
         }
@@ -53,17 +46,9 @@ public class ProductoService {
             producto.setCategoria(datos.getCategoria());
             producto.setPrecioMinorista(datos.getPrecioMinorista());
             producto.setPrecioMayorista(datos.getPrecioMayorista());
-            producto.setImagenes(datos.getImagenes());
+            producto.setImagenes(datos.getImagenes() != null ? datos.getImagenes() : new ArrayList<>());
             producto.setEtiqueta(datos.getEtiqueta());
-
-            // Actualizar variantes e inventario
-            if (datos.getVariantes() != null && !datos.getVariantes().isEmpty()) {
-                producto.getVariantes().clear();
-                for (ProductoVariante v : datos.getVariantes()) {
-                    v.setId(null);
-                    producto.addVariante(v);
-                }
-            }
+            producto.setVariantes(datos.getVariantes() != null ? datos.getVariantes() : new ArrayList<>());
 
             if (datos.getStock() != null) {
                 producto.setStock(datos.getStock());
