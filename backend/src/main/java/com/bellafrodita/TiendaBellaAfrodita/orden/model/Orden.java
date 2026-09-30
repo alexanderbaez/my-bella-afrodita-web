@@ -54,7 +54,7 @@ public class Orden {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     @Builder.Default
-    private EstadoOrden estado = EstadoOrden.PENDIENTE;
+    private EstadoOrden estado = EstadoOrden.PENDIENTE_COTIZACION;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "metodo_pago", nullable = false, length = 30)
@@ -80,7 +80,7 @@ public class Orden {
             this.fechaCreacion = LocalDateTime.now();
         }
         if (this.estado == null) {
-            this.estado = EstadoOrden.PENDIENTE;
+            this.estado = EstadoOrden.PENDIENTE_COTIZACION;
         }
         if (this.metodoPago == null) {
             this.metodoPago = MetodoPago.WHATSAPP_EFECTIVO;

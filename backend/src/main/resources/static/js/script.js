@@ -1649,14 +1649,40 @@ async function enviarPedidoWhatsApp() {
 
         Swal.fire({
             icon: 'success',
-            title: '¡Orden Creada con Éxito!',
-            html: `Número de seguimiento: <b class="text-dark">#${ordenResponse.codigoSeguimiento}</b><br><small class="text-muted">Subtotal Prendas: $${Number(ordenResponse.total).toLocaleString('es-AR')} + Envío a coordinar</small><br><br>Abriendo WhatsApp para coordinar el pago y envío...`,
+            title: '¡Gracias por tu compra en Lencería Mi Bella Afrodita! 💕',
+            html: `
+                <div class="text-center py-2">
+                    <div class="badge bg-dark px-3 py-1.5 my-2 font-monospace" style="font-size: 0.95rem; letter-spacing: 1px;">
+                        Pedido #${ordenResponse.codigoSeguimiento}
+                    </div>
+                    <p class="text-muted small mt-2 mb-3" style="line-height: 1.6; font-size: 0.88rem;">
+                        Tu pedido ha sido recibido con éxito en nuestro atelier online.<br>
+                        <b>En breve nos comunicaremos a tu WhatsApp</b> para informarte el costo exacto del cadete en moto y coordinar el horario de entrega.
+                    </p>
+                    <div class="p-2.5 rounded bg-light border text-start small mb-2" style="font-size: 0.78rem;">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Subtotal Prendas:</span>
+                            <strong class="text-dark">$${Number(ordenResponse.total).toLocaleString('es-AR')}</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Envío en Moto:</span>
+                            <span class="text-primary fw-semibold">A cotizar según tu zona</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Destino:</span>
+                            <span class="text-truncate ps-2" style="max-width: 230px;">${formValues.depto}, ${formValues.direccionExacta}</span>
+                        </div>
+                    </div>
+                </div>
+            `,
             showConfirmButton: true,
-            confirmButtonText: '<i class="fab fa-whatsapp me-1"></i> Abrir WhatsApp Ahora',
-            confirmButtonColor: '#28a745',
-            timer: 3500
-        }).then(() => {
-            if (waUrl) {
+            confirmButtonText: 'Entendido, muchas gracias',
+            confirmButtonColor: '#121212',
+            showCancelButton: true,
+            cancelButtonText: '<i class="fab fa-whatsapp me-1 text-success"></i> Abrir WhatsApp (Opcional)',
+            cancelButtonColor: '#706E6B'
+        }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.cancel && waUrl) {
                 window.open(waUrl, '_blank');
             }
         });

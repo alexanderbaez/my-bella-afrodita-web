@@ -75,7 +75,7 @@ public class OrdenService {
                 .metodoPago(request.getMetodoPago() != null ? request.getMetodoPago() : MetodoPago.WHATSAPP_EFECTIVO)
                 .tipoEntrega(tipoEntrega)
                 .costoEnvio(costoEnvio)
-                .estado(EstadoOrden.PENDIENTE)
+                .estado(EstadoOrden.PENDIENTE_COTIZACION)
                 .esMayorista(esMayorista)
                 .items(new ArrayList<>())
                 .build();
@@ -175,6 +175,36 @@ public class OrdenService {
         orden.setEstado(nuevoEstado);
         Orden actualizada = ordenRepository.save(orden);
         return mapearAResponse(actualizada, null);
+    }
+
+    @Transactional
+    public OrdenResponse cotizarEnvio(Long ordenId, BigDecimal costoEnvio) {
+        if (costoEnvio == null || costoEnvio.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("El costo de envío debe ser mayor o igual a cero.");
+        }
+
+        Orden orden = ordenRepository.findById(ordenId)
+                .orElseThrow(() -> new IllegalArgumentException("Orden no encontrada con ID: " + ordenId));
+
+        orden.setCostoEnvio(costoEnvio);
+
+        // Subtotal de prendas menos descuento mayorista
+        BigDecimal subtotal = orden.getSubtotal() != null ? orden.getSubtotal() : BigDecimal.ZERO;
+        BigDecimal descuento = orden.getDescuentoMayorista() != null ? orden.getDescuentoMayorista() : BigDecimal.ZERO;
+        BigDecimal subtotalPrendas = subtotal.subtract(descuento);
+        if (subtotalPrendas.compareTo(BigDecimal.ZERO) < 0) {
+            subtotalPrendas = BigDecimal.ZERO;
+        }
+
+        orden.setTotal(subtotalPrendas.add(costoEnvio));
+
+        // Si estaba pendiente de cotización, avanza a PENDIENTE
+        if (orden.getEstado() == EstadoOrden.PENDIENTE_COTIZACION) {
+            orden.setEstado(EstadoOrden.PENDIENTE);
+        }
+
+        Orden actualizada = ordenRepository.save(orden);
+        return mapearAResponse(actualizada, generarEnlaceWhatsApp(actualizada));
     }
 
     @Transactional(readOnly = true)

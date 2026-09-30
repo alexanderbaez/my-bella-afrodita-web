@@ -56,4 +56,14 @@ public class OrdenController {
             @Valid @RequestBody ActualizarEstadoRequest request) {
         return ResponseEntity.ok(ordenService.actualizarEstado(id, request.getEstado()));
     }
+
+    /**
+     * Endpoint PROTEGIDO (ROLE_ADMIN) para cotizar el costo del cadete en moto y actualizar el total.
+     */
+    @PatchMapping("/{id}/cotizar-envio")
+    public ResponseEntity<OrdenResponse> cotizarEnvio(
+            @PathVariable Long id,
+            @Valid @RequestBody com.bellafrodita.TiendaBellaAfrodita.orden.dto.CotizarEnvioRequest request) {
+        return ResponseEntity.ok(ordenService.cotizarEnvio(id, request.getCostoEnvio()));
+    }
 }

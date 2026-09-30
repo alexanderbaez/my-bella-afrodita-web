@@ -919,9 +919,48 @@ async function cargarOrdenes() {
     }
 }
 
+// Funciones auxiliares para San Juan y logística
+function parsearDireccionCompleta(dirTexto) {
+    if (!dirTexto) return { departamento: 'San Juan', direccion: 'A convenir', referencias: 'Sin referencias' };
+    
+    // Formato: "[Depto] - Dirección: [Calle, Nro], Entrecalles: [Referencias]"
+    const match = dirTexto.match(/^([^-]+)\s*-\s*Dirección:\s*(.+?)(?:,\s*Entrecalles:\s*(.+))?$/i);
+    if (match) {
+        return {
+            departamento: match[1].trim(),
+            direccion: match[2].trim(),
+            referencias: (match[3] || 'A convenir').trim()
+        };
+    }
+    // Formato: "[Calle, Nro] (Depto: [Depto]) - Ref: [Referencias]"
+    const match2 = dirTexto.match(/^(.+?)\s*\(Depto:\s*(.+?)\)\s*-\s*Ref:\s*(.+)$/i);
+    if (match2) {
+        return {
+            departamento: match2[2].trim(),
+            direccion: match2[1].trim(),
+            referencias: match2[3].trim()
+        };
+    }
+    return {
+        departamento: 'San Juan',
+        direccion: dirTexto,
+        referencias: 'A convenir'
+    };
+}
+
+function sanitizarTelefonoWhatsApp(tel) {
+    if (!tel) return '';
+    let digits = tel.replace(/[^0-9]/g, '');
+    if (digits.startsWith('549')) return digits;
+    if (digits.startsWith('54')) return '549' + digits.substring(2);
+    if (digits.length === 10) return '549' + digits; // ej: 2645551234
+    if (digits.length === 11 && digits.startsWith('0')) return '549' + digits.substring(1); // ej: 02645551234
+    return '549' + digits;
+}
+
 function actualizarMetricasPedidos(ordenes) {
     const total = ordenes.length;
-    const pendientes = ordenes.filter(o => o.estado === 'PENDIENTE').length;
+    const pendientes = ordenes.filter(o => o.estado === 'PENDIENTE' || o.estado === 'PENDIENTE_COTIZACION').length;
     const enProceso = ordenes.filter(o => o.estado === 'EN_PREPARACION' || o.estado === 'ENVIADO').length;
     const facturado = ordenes
         .filter(o => o.estado !== 'CANCELADO')
@@ -945,10 +984,13 @@ function filtrarYRenderizarPedidos() {
     const estado = document.getElementById('filtro-pedidos-estado')?.value || '';
 
     const filtrados = listaOrdenes.filter(o => {
+        const dirParsed = parsearDireccionCompleta(o.clienteDireccion);
         const coincideTexto = !texto ||
             (o.codigoSeguimiento && o.codigoSeguimiento.toLowerCase().includes(texto)) ||
             (o.clienteNombre && o.clienteNombre.toLowerCase().includes(texto)) ||
-            (o.clienteTelefono && o.clienteTelefono.toLowerCase().includes(texto));
+            (o.clienteTelefono && o.clienteTelefono.toLowerCase().includes(texto)) ||
+            (dirParsed.departamento && dirParsed.departamento.toLowerCase().includes(texto)) ||
+            (dirParsed.direccion && dirParsed.direccion.toLowerCase().includes(texto));
         const coincideEstado = !estado || (o.estado === estado);
         return coincideTexto && coincideEstado;
     });
@@ -968,7 +1010,7 @@ function renderizarTablaPedidos(ordenes) {
     if (ordenes.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="7" class="text-center py-5 text-muted">
+                <td colspan="8" class="text-center py-5 text-muted">
                     No se encontraron órdenes registradas con los filtros aplicados.
                 </td>
             </tr>`;
@@ -986,49 +1028,21 @@ function renderizarTablaPedidos(ordenes) {
             ? `<span class="badge bg-success ms-1" style="font-size: 0.65rem;">Mayorista</span>`
             : '';
 
-        let telSanitizado = (o.clienteTelefono || '').replace(/[^0-9]/g, '');
-        if (telSanitizado.length === 10) {
-            telSanitizado = '549' + telSanitizado;
-        }
+        const telWa = sanitizarTelefonoWhatsApp(o.clienteTelefono);
+        const { departamento, direccion, referencias } = parsearDireccionCompleta(o.clienteDireccion);
 
-        // Botón de acción rápida según estado
-        let botonAccionRapida = '';
-        if (o.estado === 'PENDIENTE') {
-            botonAccionRapida = `
-                <button type="button" class="btn btn-outline-primary btn-quick-status" 
-                        onclick="cambiarEstadoPedido(${o.id}, 'PAGADO')" 
-                        title="Marcar pedido como pagado">
-                    <i class="fas fa-check-circle me-1"></i>Marcar Pagado
-                </button>`;
-        } else if (o.estado === 'PAGADO' || o.estado === 'EN_PREPARACION') {
-            botonAccionRapida = `
-                <button type="button" class="btn btn-outline-info btn-quick-status" 
-                        onclick="cambiarEstadoPedido(${o.id}, 'ENVIADO')" 
-                        title="Marcar pedido como despachado">
-                    <i class="fas fa-shipping-fast me-1"></i>Marcar Despachado
-                </button>`;
-        } else if (o.estado === 'ENVIADO') {
-            botonAccionRapida = `
-                <button type="button" class="btn btn-outline-success btn-quick-status" 
-                        onclick="cambiarEstadoPedido(${o.id}, 'ENTREGADO')" 
-                        title="Marcar pedido como entregado">
-                    <i class="fas fa-box-check me-1"></i>Marcar Entregado
-                </button>`;
-        }
+        // Subtotal Prendas (sin costo de envío)
+        const subtotalPrendas = (o.subtotal != null && o.descuentoMayorista != null)
+            ? (Number(o.subtotal) - Number(o.descuentoMayorista))
+            : (Number(o.subtotal) || (Number(o.total) - Number(o.costoEnvio || 0)));
 
-        // Botón de notificación por WhatsApp con mensaje predeterminado exacto
-        const mensajeNotif = `¡Hola ${o.clienteNombre}! Te avisamos de My Bella Afrodita que tu pedido #${o.codigoSeguimiento} se encuentra ${o.estado}. ¡Muchas gracias por tu compra!`;
-        const waUrl = `https://wa.me/${telSanitizado}?text=${encodeURIComponent(mensajeNotif)}`;
-        const botonWhatsApp = `
-            <a href="${waUrl}" target="_blank" class="btn-quick-wa" title="Avisar por WhatsApp a ${o.clienteNombre}">
-                <i class="fab fa-whatsapp me-1"></i>Avisar por WhatsApp
-            </a>
-        `;
+        const costoCadeteVal = Number(o.costoEnvio) || 0;
 
         return `
             <tr>
                 <td>
                     <span class="badge bg-dark font-monospace" style="letter-spacing: 0.5px;">#${o.codigoSeguimiento}</span>
+                    ${o.estado === 'PENDIENTE_COTIZACION' ? '<span class="badge badge-estado-pendiente_cotizacion d-block mt-1" style="font-size: 0.6rem;">POR COTIZAR</span>' : ''}
                 </td>
                 <td class="small text-muted" style="white-space: nowrap;">
                     ${fechaStr}
@@ -1038,37 +1052,73 @@ function renderizarTablaPedidos(ordenes) {
                         ${o.clienteNombre}
                     </div>
                     <div class="small">
-                        <a href="https://wa.me/${telSanitizado}" target="_blank" class="text-success text-decoration-none">
+                        <a href="https://wa.me/${telWa}" target="_blank" class="text-success text-decoration-none fw-semibold">
                             <i class="fab fa-whatsapp me-1"></i>${o.clienteTelefono}
                         </a>
                     </div>
                 </td>
                 <td>
-                    <span class="fw-semibold">${totalPrendas} prenda${totalPrendas === 1 ? '' : 's'}</span>
-                    ${mayoristaBadge}
-                </td>
-                <td class="fw-bold text-dark">
-                    $${Number(o.total).toLocaleString('es-AR')}
-                </td>
-                <td>
-                    <div class="d-flex flex-column gap-1">
-                        <select class="form-select form-select-sm" 
-                                style="font-size: 0.75rem; font-weight: 600; width: 145px;"
-                                onchange="cambiarEstadoPedido(${o.id}, this.value)">
-                            <option value="PENDIENTE" ${o.estado === 'PENDIENTE' ? 'selected' : ''}>PENDIENTE</option>
-                            <option value="PAGADO" ${o.estado === 'PAGADO' ? 'selected' : ''}>PAGADO</option>
-                            <option value="EN_PREPARACION" ${o.estado === 'EN_PREPARACION' ? 'selected' : ''}>EN PREPARACIÓN</option>
-                            <option value="ENVIADO" ${o.estado === 'ENVIADO' ? 'selected' : ''}>ENVIADO</option>
-                            <option value="ENTREGADO" ${o.estado === 'ENTREGADO' ? 'selected' : ''}>ENTREGADO</option>
-                            <option value="CANCELADO" ${o.estado === 'CANCELADO' ? 'selected' : ''}>CANCELADO</option>
-                        </select>
-                        <div>${botonAccionRapida}</div>
+                    <div class="d-flex align-items-center gap-1 mb-0.5">
+                        <span class="badge bg-secondary text-white" style="font-size: 0.68rem; letter-spacing: 0.5px;">${departamento}</span>
+                    </div>
+                    <div class="small text-dark fw-semibold" style="line-height: 1.25; max-width: 220px;">
+                        ${direccion}
+                    </div>
+                    <div class="text-muted small" style="font-size: 0.69rem; line-height: 1.2; max-width: 220px;">
+                        <i class="fas fa-map-marker-alt me-1 text-danger"></i>${referencias}
                     </div>
                 </td>
+                <td>
+                    <span class="fw-semibold small">${totalPrendas} prenda${totalPrendas === 1 ? '' : 's'}</span>
+                    ${mayoristaBadge}
+                    <div class="fw-bold text-dark mt-0.5" style="font-size: 0.92rem;">
+                        $${Math.round(subtotalPrendas).toLocaleString('es-AR')}
+                    </div>
+                </td>
+                <td>
+                    <div class="input-group input-group-sm" style="width: 140px;">
+                        <span class="input-group-text bg-light fw-bold text-muted" style="font-size: 0.72rem;">$</span>
+                        <input type="number" 
+                               id="costo-cadete-${o.id}" 
+                               class="form-control form-control-sm fw-bold text-dark text-end" 
+                               value="${costoCadeteVal > 0 ? costoCadeteVal : ''}" 
+                               placeholder="0" 
+                               min="0" 
+                               step="100"
+                               style="font-size: 0.82rem;"
+                               onchange="actualizarCostoEnvioBackend(${o.id}, this.value)"
+                               title="Ingresa el costo del cadete en moto para esta zona">
+                    </div>
+                    <small class="text-muted d-block mt-0.5" style="font-size: 0.68rem;" id="total-preview-${o.id}">
+                        Total: <b class="text-dark">$${Number(o.total).toLocaleString('es-AR')}</b>
+                    </small>
+                </td>
+                <td>
+                    <select class="form-select form-select-sm" 
+                            style="font-size: 0.75rem; font-weight: 600; width: 155px;"
+                            onchange="cambiarEstadoPedido(${o.id}, this.value)">
+                        <option value="PENDIENTE_COTIZACION" ${o.estado === 'PENDIENTE_COTIZACION' ? 'selected' : ''}>PENDIENTE COTIZACIÓN</option>
+                        <option value="PENDIENTE" ${o.estado === 'PENDIENTE' ? 'selected' : ''}>PENDIENTE</option>
+                        <option value="PAGADO" ${o.estado === 'PAGADO' ? 'selected' : ''}>PAGADO</option>
+                        <option value="EN_PREPARACION" ${o.estado === 'EN_PREPARACION' ? 'selected' : ''}>EN PREPARACIÓN</option>
+                        <option value="ENVIADO" ${o.estado === 'ENVIADO' ? 'selected' : ''}>ENVIADO</option>
+                        <option value="ENTREGADO" ${o.estado === 'ENTREGADO' ? 'selected' : ''}>ENTREGADO</option>
+                        <option value="CANCELADO" ${o.estado === 'CANCELADO' ? 'selected' : ''}>CANCELADO</option>
+                    </select>
+                </td>
                 <td class="text-end">
-                    <div class="d-flex flex-column align-items-end gap-1.5">
-                        ${botonWhatsApp}
-                        <button class="btn btn-outline-dark btn-sm py-1 px-2 rounded-1" onclick="verDetallePedido(${o.id})" title="Ver Detalle">
+                    <div class="d-flex flex-column align-items-end gap-1">
+                        <button type="button" 
+                                class="btn btn-success btn-sm d-flex align-items-center gap-1.5 shadow-sm py-1.5 px-2.5 rounded-2 fw-bold text-nowrap"
+                                onclick="enviarCotizacionWhatsApp(${o.id})" 
+                                title="Enviar cotización con cadetería por WhatsApp a ${o.clienteNombre}"
+                                style="background-color: #25D366; border-color: #25D366; font-size: 0.73rem;">
+                            <i class="fab fa-whatsapp fa-lg"></i> Enviar Cotización al Cliente
+                        </button>
+                        <button class="btn btn-outline-dark btn-sm py-0.5 px-2 rounded-1 text-nowrap" 
+                                onclick="verDetallePedido(${o.id})" 
+                                title="Ver Detalle" 
+                                style="font-size: 0.7rem;">
                             <i class="fas fa-eye me-1"></i> Detalle
                         </button>
                     </div>
@@ -1077,6 +1127,134 @@ function renderizarTablaPedidos(ordenes) {
         `;
     }).join('');
 }
+
+window.enviarCotizacionWhatsApp = async function (ordenId) {
+    const orden = listaOrdenes.find(o => o.id === ordenId);
+    if (!orden) return;
+
+    const inputCosto = document.getElementById(`costo-cadete-${ordenId}`);
+    let costoEnvioVal = inputCosto && inputCosto.value !== '' ? parseFloat(inputCosto.value) : (Number(orden.costoEnvio) || 0);
+
+    // Si aún no ingresó un valor o es 0, consultar con modal amigable
+    if (isNaN(costoEnvioVal) || costoEnvioVal <= 0) {
+        const { departamento, direccion } = parsearDireccionCompleta(orden.clienteDireccion);
+        const { value: nuevoCosto, isDismissed } = await Swal.fire({
+            title: 'Cotizar Cadete en Moto',
+            html: `
+                <p class="small text-muted mb-2">Ingresa el costo del envío para <b>${orden.clienteNombre}</b>:</p>
+                <div class="text-start p-2.5 rounded bg-light border small mb-2" style="font-size: 0.78rem;">
+                    <div><b>Departamento:</b> ${departamento}</div>
+                    <div><b>Dirección:</b> ${direccion}</div>
+                </div>
+            `,
+            input: 'number',
+            inputLabel: 'Costo del cadete ($)',
+            inputPlaceholder: 'Ej: 2500',
+            inputValue: orden.costoEnvio > 0 ? orden.costoEnvio : '',
+            showCancelButton: true,
+            confirmButtonText: 'Guardar y Abrir WhatsApp',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#25D366',
+            inputValidator: (val) => {
+                if (!val || parseFloat(val) <= 0) return 'Por favor ingresa un costo mayor a 0.';
+            }
+        });
+
+        if (isDismissed || nuevoCosto === undefined) return;
+        costoEnvioVal = parseFloat(nuevoCosto) || 0;
+        if (inputCosto) inputCosto.value = costoEnvioVal;
+    }
+
+    try {
+        Swal.fire({
+            title: 'Actualizando orden...',
+            text: 'Guardando costo de envío y preparando mensaje',
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
+
+        const res = await fetch(`${API_ORDENES}/${ordenId}/cotizar-envio`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ costoEnvio: costoEnvioVal })
+        });
+
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.message || `HTTP ${res.status}`);
+        }
+
+        const ordenActualizada = await res.json();
+        const idx = listaOrdenes.findIndex(o => o.id === ordenId);
+        if (idx !== -1) listaOrdenes[idx] = ordenActualizada;
+        actualizarMetricasPedidos(listaOrdenes);
+        filtrarYRenderizarPedidos();
+
+        const { departamento, direccion, referencias } = parsearDireccionCompleta(ordenActualizada.clienteDireccion);
+
+        const subtotalPrendas = (ordenActualizada.subtotal != null && ordenActualizada.descuentoMayorista != null)
+            ? (Number(ordenActualizada.subtotal) - Number(ordenActualizada.descuentoMayorista))
+            : (Number(ordenActualizada.subtotal) || (Number(ordenActualizada.total) - Number(costoEnvioVal)));
+
+        const subtotalFormat = Math.round(subtotalPrendas).toLocaleString('es-AR');
+        const costoEnvioFormat = Math.round(costoEnvioVal).toLocaleString('es-AR');
+        const totalConEnvioFormat = Math.round(Number(ordenActualizada.total)).toLocaleString('es-AR');
+
+        const listaPrendas = (ordenActualizada.items || []).map(it => 
+            `• ${it.productoNombre} (Talle: ${it.talle || '-'}) x${it.cantidad} - $${Number(it.subtotal || (it.precioUnitario * it.cantidad)).toLocaleString('es-AR')}`
+        ).join('\n');
+
+        let mensaje = `¡Hola ${ordenActualizada.clienteNombre}! Nos comunicamos de *Lencería Mi Bella Afrodita* 💕\n\n`;
+        mensaje += `Recibimos tu pedido *#${ordenActualizada.codigoSeguimiento}*:\n`;
+        mensaje += `${listaPrendas}\n`;
+        mensaje += `💵 Subtotal Prendas: $${subtotalFormat}\n\n`;
+        mensaje += `🛵 *Envío en Cadete en Moto:* $${costoEnvioFormat}\n`;
+        mensaje += `📍 Destino: ${departamento}, ${direccion} (Ref: ${referencias})\n\n`;
+        mensaje += `👉 *TOTAL FINAL:* $${totalConEnvioFormat}\n\n`;
+        mensaje += `¿Nos confirmas si te parece bien para comenzar a prepararlo y coordinar el turno de entrega (mañana o tarde)?`;
+
+        const telSanitizado = sanitizarTelefonoWhatsApp(ordenActualizada.clienteTelefono);
+        const waUrl = `https://wa.me/${telSanitizado}?text=${encodeURIComponent(mensaje)}`;
+
+        Swal.close();
+        window.open(waUrl, '_blank');
+
+    } catch (err) {
+        console.error("Error al cotizar envío:", err);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error al cotizar envío',
+            text: err.message || 'No se pudo actualizar el costo de envío.',
+            confirmButtonColor: '#1a1a1a'
+        });
+    }
+};
+
+window.actualizarCostoEnvioBackend = async function (ordenId, valor) {
+    const costo = parseFloat(valor);
+    if (isNaN(costo) || costo < 0) return;
+    try {
+        const res = await fetch(`${API_ORDENES}/${ordenId}/cotizar-envio`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ costoEnvio: costo })
+        });
+        if (res.ok) {
+            const ordenActualizada = await res.json();
+            const idx = listaOrdenes.findIndex(o => o.id === ordenId);
+            if (idx !== -1) listaOrdenes[idx] = ordenActualizada;
+            actualizarMetricasPedidos(listaOrdenes);
+            const previewEl = document.getElementById(`total-preview-${ordenId}`);
+            if (previewEl) {
+                previewEl.innerHTML = `Total: <b class="text-dark">$${Number(ordenActualizada.total).toLocaleString('es-AR')}</b>`;
+            }
+        }
+    } catch (e) {
+        console.error("Error al actualizar costo de cadete:", e);
+    }
+};
 
 window.cambiarEstadoPedido = async function (id, nuevoEstado) {
     try {
@@ -1145,11 +1323,19 @@ window.verDetallePedido = function (id) {
         </tr>
     `).join('');
 
-    const telSanitizado = (orden.clienteTelefono || '').replace(/[^0-9]/g, '');
-    const mensajeWsp = `Hola ${orden.clienteNombre}, te contactamos desde My Bella Afrodita sobre tu pedido #${orden.codigoSeguimiento}.`;
+    const telSanitizado = sanitizarTelefonoWhatsApp(orden.clienteTelefono);
     if (btnWhatsapp) {
-        btnWhatsapp.href = `https://wa.me/${telSanitizado}?text=${encodeURIComponent(mensajeWsp)}`;
+        btnWhatsapp.onclick = (e) => {
+            e.preventDefault();
+            enviarCotizacionWhatsApp(orden.id);
+        };
+        btnWhatsapp.innerHTML = `<i class="fab fa-whatsapp me-1"></i> Enviar Cotización por WhatsApp`;
     }
+
+    const { departamento, direccion, referencias } = parsearDireccionCompleta(orden.clienteDireccion);
+    const subtotalPrendas = (orden.subtotal != null && orden.descuentoMayorista != null)
+        ? (Number(orden.subtotal) - Number(orden.descuentoMayorista))
+        : (Number(orden.subtotal) || (Number(orden.total) - Number(orden.costoEnvio || 0)));
 
     modalBody.innerHTML = `
         <div class="row g-3 mb-3">
@@ -1157,8 +1343,9 @@ window.verDetallePedido = function (id) {
                 <div class="p-3 bg-light rounded">
                     <div class="text-muted small text-uppercase fw-bold" style="font-size: 0.65rem;">Información del Cliente</div>
                     <div class="fw-bold text-dark h6 mb-1">${orden.clienteNombre}</div>
-                    <div class="small text-muted"><i class="fas fa-phone-alt me-1"></i> ${orden.clienteTelefono}</div>
-                    <div class="small text-muted"><i class="fas fa-map-marker-alt me-1"></i> ${orden.clienteDireccion || 'Entrega a convenir'}</div>
+                    <div class="small text-muted"><i class="fab fa-whatsapp text-success me-1"></i> ${orden.clienteTelefono}</div>
+                    <div class="small text-dark mt-1"><b>${departamento}</b>: ${direccion}</div>
+                    <div class="small text-muted"><i class="fas fa-map-marker-alt text-danger me-1"></i> ${referencias}</div>
                 </div>
             </div>
             <div class="col-md-6">
@@ -1166,7 +1353,7 @@ window.verDetallePedido = function (id) {
                     <div class="text-muted small text-uppercase fw-bold" style="font-size: 0.65rem;">Datos del Pedido</div>
                     <div class="fw-bold font-monospace text-dark mb-1">#${orden.codigoSeguimiento}</div>
                     <div class="small text-muted"><i class="fas fa-calendar-alt me-1"></i> ${fechaStr}</div>
-                    <div class="small text-muted"><i class="fas fa-credit-card me-1"></i> Método: <b>${orden.metodoPago || 'WHATSAPP_EFECTIVO'}</b></div>
+                    <div class="small text-muted"><i class="fas fa-info-circle me-1"></i> Estado: <b>${orden.estado}</b></div>
                 </div>
             </div>
         </div>
@@ -1188,18 +1375,24 @@ window.verDetallePedido = function (id) {
             </table>
         </div>
 
-        <div class="p-3 bg-light rounded d-flex justify-content-between align-items-center">
-            <div>
-                ${orden.esMayorista 
-                    ? `<span class="badge bg-success me-1">Precio Mayorista Aplicado</span>`
-                    : ''}
-                ${orden.descuentoMayorista && Number(orden.descuentoMayorista) > 0 
-                    ? `<small class="text-success fw-bold d-block mt-1">Ahorro mayorista: -$${Number(orden.descuentoMayorista).toLocaleString('es-AR')}</small>`
-                    : ''}
+        <div class="p-3 bg-light rounded">
+            <div class="d-flex justify-content-between mb-1">
+                <span class="text-muted small">Subtotal Prendas:</span>
+                <span class="fw-semibold text-dark">$${Math.round(subtotalPrendas).toLocaleString('es-AR')}</span>
             </div>
-            <div class="text-end">
-                <div class="text-muted small">Total Final:</div>
-                <div class="h4 fw-bold text-dark mb-0">$${Number(orden.total).toLocaleString('es-AR')}</div>
+            <div class="d-flex justify-content-between mb-1">
+                <span class="text-muted small">Envío en Moto (Cadete):</span>
+                <span class="fw-bold text-primary">$${Number(orden.costoEnvio || 0).toLocaleString('es-AR')}</span>
+            </div>
+            ${orden.descuentoMayorista && Number(orden.descuentoMayorista) > 0 
+                ? `<div class="d-flex justify-content-between mb-1 text-success small">
+                     <span>Ahorro Mayorista:</span>
+                     <b>-$${Number(orden.descuentoMayorista).toLocaleString('es-AR')}</b>
+                   </div>` 
+                : ''}
+            <div class="d-flex justify-content-between align-items-baseline pt-2 border-top">
+                <div class="h6 fw-bold text-dark mb-0">TOTAL FINAL:</div>
+                <div class="h4 fw-bold text-dark mb-0 font-monospace">$${Number(orden.total).toLocaleString('es-AR')}</div>
             </div>
         </div>
     `;
