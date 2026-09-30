@@ -157,10 +157,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     iniciarRotadorAnuncios();
     verificarAdminEnTienda();
 
-    // 1. CARGA ASÍNCRONA DE PRODUCTOS DESDE LA API SPRING BOOT / MYSQL
-    const contenedor = document.getElementById("contenedor-productos");
-    try {
-        if (contenedor) {
+    // 1. CARGA DE PRENDAS DESTACADAS EN PORTADA (SI EXISTE EL CONTENEDOR EN INDEX.HTML)
+    cargarDestacadosInicio();
+
+    // 2. CARGA ASÍNCRONA DE PRODUCTOS DESDE LA API SPRING BOOT / MYSQL PARA CATÁLOGO
+    const contenedor = document.getElementById("contenedor-productos") || document.getElementById("productos-grid");
+    if (contenedor) {
+        try {
             contenedor.innerHTML = `
                 <div class="col-12 text-center py-5">
                     <div class="spinner-border text-dark" role="status" style="width: 2.2rem; height: 2.2rem; border-width: 0.18em;">
@@ -168,47 +171,40 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </div>
                     <p class="text-muted small mt-2 text-uppercase fw-semibold" style="letter-spacing: 1.5px; font-size: 0.72rem;">Cargando colección boutique...</p>
                 </div>`;
-        }
 
-        const response = await fetch(API_URL);
-        if (!response.ok) {
-            throw new Error(`Error HTTP: ${response.status}`);
-        }
-        PRODUCTOS = await response.json();
-        window.PRODUCTOS = PRODUCTOS;
-        console.log('%c[CATÁLOGO] Prendas recibidas desde API:', 'color: #D4AF37; font-weight: bold;', PRODUCTOS.length);
-    } catch (error) {
-        console.error("Error al obtener los productos desde la API:", error);
-        if (contenedor) {
+            const response = await fetch(API_URL);
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            PRODUCTOS = await response.json();
+            window.PRODUCTOS = PRODUCTOS;
+            console.log('%c[CATÁLOGO] Prendas recibidas desde API:', 'color: #D4AF37; font-weight: bold;', PRODUCTOS.length);
+        } catch (error) {
+            console.error("Error al obtener los productos desde la API:", error);
             contenedor.innerHTML = `
                 <div class="col-12 text-center py-5">
                     <i class="fas fa-exclamation-circle text-danger fa-2x mb-3"></i>
                     <h5 class="fw-bold text-dark font-playfair">No pudimos conectar con el catálogo</h5>
                     <p class="text-muted small">Por favor, confirma que el servidor de Tienda Bella Afrodita esté activo en el puerto 8080.</p>
                 </div>`;
+            return;
         }
-        return;
-    }
 
-    if (contenedor) {
         // Asegurarse de que el contenedor no tenga estilos que oculten las tarjetas
         contenedor.style.display = 'flex';
         contenedor.style.visibility = 'visible';
         contenedor.style.minHeight = '400px';
 
-        // 2. CAPTURAMOS LA COLECCIÓN DESDE LA URL (ej: productos.html?categoria=CONJUNTOS)
+        // 3. CAPTURAMOS LA COLECCIÓN DESDE LA URL (ej: productos.html?categoria=CONJUNTOS)
         // Si no hay categoría especificada o no coincide ninguna, muestra la lista disponible por defecto
         const urlParams = new URLSearchParams(window.location.search);
         let catParam = urlParams.get('categoria') || urlParams.get('cat') || '';
         categoriaActiva = catParam;
 
-        // 3. INICIALIZAMOS TALLES CONTEXTUALES Y FILTROS SEGÚN LA COLECCIÓN
+        // 4. INICIALIZAMOS TALLES CONTEXTUALES Y FILTROS SEGÚN LA COLECCIÓN
         actualizarFiltrosTallesContextuales(categoriaActiva);
         aplicarFiltrosYOrdenCatalogo();
     }
-
-    // Renderizar prendas seleccionadas en la portada si existe el contenedor
-    cargarDestacadosHome();
 
     // Cerrar el Drawer con la tecla Escape
     document.addEventListener('keydown', (e) => {
@@ -278,15 +274,6 @@ window.cambiarCategoriaDesdeDrawer = function(cat) {
         } else {
             nuevaUrl.searchParams.delete('categoria');
         }
-        window.history.replaceState({}, '', nuevaUrl);
-    } catch(e) {}
-};
-    talleFiltroActivo = 'TODOS';
-    actualizarFiltrosTallesContextuales(categoriaActiva);
-    aplicarFiltrosYOrdenCatalogo();
-    try {
-        const nuevaUrl = new URL(window.location);
-        nuevaUrl.searchParams.set('categoria', categoriaActiva.toUpperCase());
         window.history.replaceState({}, '', nuevaUrl);
     } catch(e) {}
 };
@@ -853,341 +840,140 @@ window.abrirQuickView = function (id) {
 };
 
 // --- CARGA DE DESTACADOS EN PORTADA DESDE /api/productos/destacados ---
-async function cargarDestacadosHome() {
+async function cargarDestacadosInicio() {
     const contenedor = document.getElementById('featured-products-home');
     if (!contenedor) return;
 
-    try {
-        const res = await fetch('/api/productos/destacados');
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        let destacados = await res.json();
+    // Asegurar que el contenedor sea visible
+    contenedor.style.display = 'flex';
+    contenedor.style.visibility = 'visible';
 
-        // Si no hay ninguno marcado explícitamente en BD, tomar los primeros 4 del catálogo general
+    try {
+        let destacados = [];
+        try {
+            const res = await fetch('/api/productos/destacados');
+            if (res.ok) {
+                const data = await res.json();
+                console.log('[INICIO] Destacados recibidos:', Array.isArray(data) ? data.length : 0);
+                if (Array.isArray(data) && data.length > 0) {
+                    destacados = data;
+                }
+            } else {
+                console.warn('[INICIO] /api/productos/destacados devolvió código HTTP:', res.status);
+            }
+        } catch (fetchError) {
+            console.warn('[INICIO] Fallo al consultar /api/productos/destacados:', fetchError);
+        }
+
+        // FALLBACK: Si no hay destacados marcados con estrella o la API devolvió [],
+        // tomar de 4 a 6 productos activos desde /api/productos
         if (!destacados || destacados.length === 0) {
-            const resTodos = await fetch('/api/productos');
-            if (resTodos.ok) {
-                const todos = await resTodos.json();
-                destacados = todos.slice(0, 4);
+            console.log('[INICIO] Lista de destacados vacía. Aplicando fallback automático desde /api/productos...');
+            try {
+                let catalogoGeneral = Array.isArray(PRODUCTOS) && PRODUCTOS.length > 0 ? PRODUCTOS : null;
+                if (!catalogoGeneral) {
+                    const resCatalogo = await fetch(API_URL);
+                    if (resCatalogo.ok) {
+                        catalogoGeneral = await resCatalogo.json();
+                        PRODUCTOS = catalogoGeneral;
+                        window.PRODUCTOS = catalogoGeneral;
+                    }
+                }
+                if (Array.isArray(catalogoGeneral) && catalogoGeneral.length > 0) {
+                    // Tomar las primeras 4 a 6 prendas
+                    destacados = catalogoGeneral.slice(0, 6);
+                    console.log('[INICIO] Destacados obtenidos vía fallback:', destacados.length);
+                }
+            } catch (errFallback) {
+                console.error('[INICIO] Error en fallback de productos:', errFallback);
             }
         }
 
-        if (!destacados || destacados.length === 0) {
+        // Renderizar prendas
+        if (destacados && destacados.length > 0) {
+            contenedor.innerHTML = '';
+            destacados.forEach(p => {
+                const fotos = Array.isArray(p.imagenes) && p.imagenes.length > 0 
+                    ? p.imagenes.map(normalizarUrlImagen) 
+                    : ['https://via.placeholder.com/300x400?text=My+Bella+Afrodita'];
+                const fotoPrincipal = fotos[0];
+                const fotoSecundaria = fotos.length > 1 ? fotos[1] : null;
+
+                const divCol = document.createElement('div');
+                divCol.className = 'col-6 col-md-4 col-lg-3 d-flex align-items-stretch';
+                divCol.innerHTML = `
+                    <div class="product-card-boutique w-100">
+                        <div class="product-media-container position-relative" style="cursor: pointer;" onclick="navegarAProducto('${p.id}')">
+                            <span class="badge-luxury-tag">⭐ Destacado</span>
+                            <img src="${fotoPrincipal}" alt="${p.nombre}" class="img-primary" onerror="this.src='https://via.placeholder.com/300x400?text=My+Bella+Afrodita'">
+                            ${fotoSecundaria ? `<img src="${fotoSecundaria}" alt="${p.nombre} dorsal" class="img-secondary">` : ''}
+                        </div>
+                        <div class="product-info-wrap">
+                            <div>
+                                <div class="product-category-label">${p.categoria || 'Colección'}</div>
+                                <h3 class="product-title-luxury" style="cursor: pointer;" onclick="navegarAProducto('${p.id}')">${p.nombre}</h3>
+                                <p class="product-desc-clamped">${p.descripcion || 'Confección boutique de alta calidad.'}</p>
+                            </div>
+                            <div class="mt-2">
+                                <div class="product-pricing-box d-flex align-items-baseline" style="cursor: pointer;" onclick="navegarAProducto('${p.id}')">
+                                    <span class="price-retail-highlight">$${Number(p.precioMinorista).toLocaleString('es-AR')}</span>
+                                </div>
+                                <div class="product-card-actions mt-2">
+                                    <button class="btn btn-add-boutique flex-grow-1" onclick="agregarAlCarrito(event, '${p.id}')">
+                                        <i class="fas fa-shopping-bag me-1.5"></i> Añadir a la Bolsa
+                                    </button>
+                                    <button class="btn-share-card" onclick="compartirProducto(event, '${p.id}', '${p.nombre.replace(/'/g, "\\'")}', '${p.precioMinorista}')" title="Compartir">
+                                        <i class="fas fa-share-nodes"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                contenedor.appendChild(divCol);
+            });
+        } else {
+            // Si no hay productos disponibles
             contenedor.innerHTML = `
                 <div class="col-12 text-center py-5">
-                    <p class="text-muted small">Próximamente nuevas prendas seleccionadas de alta costura.</p>
+                    <div class="p-4 rounded-3 border mx-auto" style="max-width: 500px; background: #FAF9F6; border-color: rgba(212, 175, 55, 0.3);">
+                        <i class="fas fa-gem text-muted fa-2x mb-3" style="color: #D4AF37 !important;"></i>
+                        <h5 class="fw-bold text-dark font-serif mb-2">Colección en Preparación</h5>
+                        <p class="text-muted small mb-3">Estamos preparando las nuevas piezas de alta costura para esta temporada.</p>
+                        <a href="./productos.html?categoria=CONJUNTOS" class="btn btn-dark btn-sm px-4 py-2 text-uppercase fw-semibold" style="letter-spacing: 1px; font-size: 0.75rem;">
+                            Explorar Colecciones
+                        </a>
+                    </div>
                 </div>`;
-            return;
         }
-
-        contenedor.innerHTML = '';
-        destacados.forEach(p => {
-            const fotos = Array.isArray(p.imagenes) && p.imagenes.length > 0 
-                ? p.imagenes.map(normalizarUrlImagen) 
-                : ['https://via.placeholder.com/300x400?text=My+Bella+Afrodita'];
-            const fotoPrincipal = fotos[0];
-            const fotoSecundaria = fotos.length > 1 ? fotos[1] : null;
-
-            const divCol = document.createElement('div');
-            divCol.className = 'col-6 col-md-3 d-flex align-items-stretch';
-            divCol.innerHTML = `
-                <div class="product-card-boutique w-100">
-                    <div class="product-media-container position-relative" style="cursor: pointer;" onclick="navegarAProducto('${p.id}')">
-                        <span class="badge-luxury-tag">⭐ Destacado</span>
-                        <img src="${fotoPrincipal}" alt="${p.nombre}" class="img-primary" onerror="this.src='https://via.placeholder.com/300x400?text=My+Bella+Afrodita'">
-                        ${fotoSecundaria ? `<img src="${fotoSecundaria}" alt="${p.nombre} dorsal" class="img-secondary">` : ''}
-                    </div>
-                    <div class="product-info-wrap">
-                        <div>
-                            <div class="product-category-label">${p.categoria || 'Colección'}</div>
-                            <h3 class="product-title-luxury" style="cursor: pointer;" onclick="navegarAProducto('${p.id}')">${p.nombre}</h3>
-                            <p class="product-desc-clamped">${p.descripcion || 'Confección boutique de alta calidad.'}</p>
-                        </div>
-                        <div class="mt-2">
-                            <div class="product-pricing-box d-flex align-items-baseline" style="cursor: pointer;" onclick="navegarAProducto('${p.id}')">
-                                <span class="price-retail-highlight">$${Number(p.precioMinorista).toLocaleString('es-AR')}</span>
-                            </div>
-                            <div class="product-card-actions mt-2">
-                                <button class="btn btn-add-boutique flex-grow-1" onclick="agregarAlCarrito(event, '${p.id}')">
-                                    <i class="fas fa-shopping-bag me-1.5"></i> Añadir a la Bolsa
-                                </button>
-                                <button class="btn-share-card" onclick="compartirProducto(event, '${p.id}', '${p.nombre.replace(/'/g, "\\'")}', '${p.precioMinorista}')" title="Compartir">
-                                    <i class="fas fa-share-nodes"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
-            contenedor.appendChild(divCol);
-        });
     } catch (err) {
-        console.error("Error al cargar destacados en inicio:", err);
+        console.error('[INICIO] Error fatal al cargar destacados en portada:', err);
         contenedor.innerHTML = `
-            <div class="col-12 text-center py-4">
-                <p class="text-muted small">No se pudieron cargar las prendas destacadas.</p>
-            </div>`;
-    }
-}
-    const p = PRODUCTOS.find(prod => String(prod.id) === String(id));
-    if (!p) return;
-
-    let modalElem = document.getElementById('modalQuickView');
-    if (!modalElem) {
-        modalElem = document.createElement('div');
-        modalElem.className = 'modal fade';
-        modalElem.id = 'modalQuickView';
-        modalElem.tabIndex = -1;
-        modalElem.innerHTML = `
-            <div class="modal-dialog modal-dialog-centered modal-quickview-dialog">
-                <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden; background: #fff;">
-                    <div class="modal-header border-0 pb-0 pt-3 pe-3 justify-content-end">
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            <div class="col-12 text-center py-5">
+                <div class="p-4 rounded-3 border mx-auto" style="max-width: 500px; background: #FAF9F6; border-color: rgba(212, 175, 55, 0.3);">
+                    <p class="text-muted small mb-3">Descubre nuestras colecciones exclusivas en el catálogo atelier.</p>
+                    <div class="d-flex flex-wrap justify-content-center gap-2">
+                        <a href="./productos.html?categoria=CONJUNTOS" class="btn btn-outline-dark btn-sm">Conjuntos</a>
+                        <a href="./productos.html?categoria=BOMBACHAS" class="btn btn-outline-dark btn-sm">Bombachas</a>
+                        <a href="./productos.html?categoria=MASCULINO" class="btn btn-outline-dark btn-sm">Masculino</a>
+                        <a href="./productos.html?categoria=MEDIAS" class="btn btn-outline-dark btn-sm">Medias</a>
                     </div>
-                    <div class="modal-body p-4 pt-1" id="modal-quickview-content"></div>
                 </div>
             </div>`;
-        document.body.appendChild(modalElem);
-    }
-
-    if (!modalQuickViewInstancia) {
-        modalQuickViewInstancia = new bootstrap.Modal(modalElem);
-    }
-
-    const modalContent = document.getElementById('modal-quickview-content');
-    if (!modalContent) return;
-
-    const fotos = Array.isArray(p.imagenes) && p.imagenes.length > 0 
-        ? p.imagenes.map(normalizarUrlImagen) 
-        : ['https://via.placeholder.com/300x400?text=My+Bella+Afrodita'];
-    const fotoPrincipal = fotos[0];
-
-    const variantes = Array.isArray(p.variantes) ? p.variantes : [];
-    const stockTotal = variantes.length > 0
-        ? variantes.reduce((acc, v) => acc + (v.stock || 0), 0)
-        : (p.stock !== false ? 1 : 0);
-    const tieneStock = p.stock !== false && (variantes.length === 0 || stockTotal > 0);
-
-    if (variantes.length > 0) {
-        const primeroDisponible = variantes.find(v => (v.stock || 0) > 0);
-        talleSeleccionadoQuickView = primeroDisponible ? primeroDisponible.talle : variantes[0].talle;
-    } else if (Array.isArray(p.talles) && p.talles.length > 0) {
-        talleSeleccionadoQuickView = p.talles[0];
-    } else {
-        talleSeleccionadoQuickView = null;
-    }
-
-    cantidadQuickView = 1;
-
-    const thumbsHtml = fotos.length > 1 ? `
-        <div class="quickview-thumbs-track mt-2">
-            ${fotos.map((src, idx) => `
-                <img src="${src}" class="quickview-thumb-item ${idx === 0 ? 'active' : ''}" 
-                     alt="Foto ${idx + 1}" 
-                     onclick="cambiarFotoQuickView('${src}', this)">
-            `).join('')}
-        </div>
-    ` : '';
-
-    const tallesChipsHtml = variantes.length > 0 ? `
-        <div class="mb-3">
-            <div class="d-flex justify-content-between align-items-center mb-1.5">
-                <span class="small fw-bold text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.5px;">Seleccionar Talle:</span>
-                <button type="button" class="btn-tab-guide" onclick="toggleGuiaTallesModal()">
-                    <i class="fas fa-ruler-combined me-1"></i>Guía de Talles (cm)
-                </button>
-            </div>
-            <div class="d-flex flex-wrap gap-2" id="quickview-talles-chips">
-                ${variantes.map(v => {
-                    const agotado = (v.stock || 0) <= 0;
-                    const esActivo = !agotado && v.talle === talleSeleccionadoQuickView;
-                    return `
-                        <button type="button" 
-                                class="btn-talle-select ${agotado ? 'disabled out-of-stock' : ''} ${esActivo ? 'active' : ''}" 
-                                ${agotado ? 'disabled title="Agotado"' : `title="${v.stock} disponibles"`} 
-                                onclick="seleccionarTalleQuickView('${v.talle}', ${v.stock || 0}, this)">
-                            ${v.talle}
-                        </button>
-                    `;
-                }).join('')}
-            </div>
-            <div id="quickview-stock-feedback" class="mt-1 small text-muted" style="font-size: 0.72rem;"></div>
-        </div>
-    ` : (Array.isArray(p.talles) && p.talles.length > 0 ? `
-        <div class="mb-3">
-            <div class="d-flex justify-content-between align-items-center mb-1.5">
-                <span class="small fw-bold text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.5px;">Talles Disponibles:</span>
-                <button type="button" class="btn-tab-guide" onclick="toggleGuiaTallesModal()">
-                    <i class="fas fa-ruler-combined me-1"></i>Guía de Talles (cm)
-                </button>
-            </div>
-            <div class="d-flex flex-wrap gap-2">
-                ${p.talles.map(t => `<span class="badge bg-light text-dark border px-2.5 py-1.5">${t}</span>`).join('')}
-            </div>
-        </div>
-    ` : '');
-
-    const badgePromoHtml = p.etiqueta ? `<span class="badge bg-dark text-white px-2 py-1 mb-2" style="font-size: 0.65rem; letter-spacing: 1px;">${p.etiqueta}</span>` : '';
-
-    const wholesaleHtml = p.precioMayorista ? `
-        <div class="p-2.5 rounded bg-light border mb-3">
-            <div class="d-flex justify-content-between align-items-center">
-                <span class="small fw-bold text-success" style="font-size: 0.75rem;">
-                    <i class="fas fa-tag me-1"></i>Precio Mayorista (3+ prendas):
-                </span>
-                <span class="fw-bold text-dark h6 mb-0">$${Number(p.precioMayorista).toLocaleString('es-AR')}</span>
-            </div>
-            <small class="text-muted d-block" style="font-size: 0.68rem;">Combina libremente prendas de cualquier categoría en tu carrito.</small>
-        </div>
-    ` : '';
-
-    modalContent.innerHTML = `
-        <div class="row g-4 align-items-start">
-            <!-- Galería de Fotos -->
-            <div class="col-md-6 text-center">
-                <img id="quickview-img-display" src="${fotoPrincipal}" alt="${p.nombre}" class="quickview-img-main">
-                ${thumbsHtml}
-            </div>
-
-            <!-- Ficha Técnica & Compra Rápida -->
-            <div class="col-md-6">
-                <div class="text-uppercase small fw-bold text-muted mb-1" style="font-size: 0.7rem; letter-spacing: 1.5px;">${p.categoria || 'Lencería Boutique'}</div>
-                <h2 class="font-playfair fw-bold text-dark mb-2" style="font-size: 1.45rem;">${p.nombre}</h2>
-                ${badgePromoHtml}
-
-                <div class="d-flex align-items-baseline gap-2 mb-3">
-                    <span class="h3 fw-bold mb-0" style="color: var(--color-pasión, #8e62a3);">$${Number(p.precioMinorista).toLocaleString('es-AR')}</span>
-                    <span class="text-muted small">Minorista</span>
-                </div>
-
-                ${wholesaleHtml}
-
-                <p class="text-muted small mb-3" style="line-height: 1.5; font-size: 0.8rem;">
-                    ${p.descripcion || 'Confección boutique de alta calidad y diseño pensado para realzar tu belleza con el máximo confort.'}
-                </p>
-
-                ${tallesChipsHtml}
-
-                <!-- Tabla Colapsable de Guía de Medidas (cm) -->
-                <div id="quickview-guia-talles-collapse" class="d-none mb-3 p-3 bg-light rounded border">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="small fw-bold text-dark" style="font-size: 0.75rem;">
-                            <i class="fas fa-ruler me-1" style="color: var(--color-pasión, #8e62a3);"></i> Tabla de Medidas Corporales (cm)
-                        </span>
-                        <button type="button" class="btn-close btn-sm" style="font-size: 0.6rem;" onclick="toggleGuiaTallesModal()"></button>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-sm table-bordered text-center table-size-guide mb-1 bg-white">
-                            <thead>
-                                <tr>
-                                    <th>Talle</th>
-                                    <th>Busto</th>
-                                    <th>Bajo Busto</th>
-                                    <th>Cadera</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td><strong>85 / 1 / S</strong></td><td>83 - 87 cm</td><td>68 - 72 cm</td><td>88 - 92 cm</td></tr>
-                                <tr><td><strong>90 / 2 / M</strong></td><td>88 - 92 cm</td><td>73 - 77 cm</td><td>93 - 97 cm</td></tr>
-                                <tr><td><strong>95 / 3 / L</strong></td><td>93 - 97 cm</td><td>78 - 82 cm</td><td>98 - 102 cm</td></tr>
-                                <tr><td><strong>100 / 4 / XL</strong></td><td>98 - 102 cm</td><td>83 - 87 cm</td><td>103 - 108 cm</td></tr>
-                                <tr><td><strong>105 / XXL</strong></td><td>103 - 108 cm</td><td>88 - 93 cm</td><td>109 - 114 cm</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="text-muted" style="font-size: 0.68rem;">* Medidas de referencia para calce exacto. Si dudas entre dos talles, te sugerimos elegir el mayor.</div>
-                </div>
-
-                <!-- Selector de Cantidad y Botón Añadir a la Bolsa -->
-                <div class="d-flex gap-2 align-items-center pt-2">
-                    <div class="d-flex align-items-center border rounded" style="background: #fff; height: 42px;">
-                        <button type="button" class="btn btn-sm btn-link text-dark px-2.5 text-decoration-none fw-bold" onclick="modificarCantidadQuickView(-1)">−</button>
-                        <span id="quickview-cant-display" class="px-2 fw-bold" style="font-size: 0.85rem; min-width: 28px; text-align: center;">1</span>
-                        <button type="button" class="btn btn-sm btn-link text-dark px-2.5 text-decoration-none fw-bold" onclick="modificarCantidadQuickView(1)">+</button>
-                    </div>
-
-                    <button class="btn btn-dark w-100 fw-bold shadow-sm" style="height: 42px; font-size: 0.85rem; border-radius: 6px;" 
-                            ${!tieneStock ? 'disabled' : ''} 
-                            onclick="agregarAlCarritoDesdeQuickView('${p.id}')">
-                        <i class="fas ${tieneStock ? 'fa-shopping-bag' : 'fa-times'} me-1.5"></i>
-                        ${tieneStock ? 'Añadir a la Bolsa' : 'Agotado'}
-                    </button>
-                </div>
-
-                <!-- Enlace de consulta directa por WhatsApp -->
-                <div class="mt-3 text-center">
-                    <a href="https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Hola! Quisiera consultar sobre el modelo ' + p.nombre + (talleSeleccionadoQuickView ? ' en talle ' + talleSeleccionadoQuickView : ''))}" 
-                       target="_blank" class="small text-success text-decoration-none fw-semibold" style="font-size: 0.75rem;">
-                        <i class="fab fa-whatsapp me-1"></i>¿Dudas con tu talle? Te asesoramos en vivo por WhatsApp
-                    </a>
-                </div>
-            </div>
-        </div>
-    `;
-
-    actualizarFeedbackStockQuickView(p);
-    modalQuickViewInstancia.show();
-};
-
-window.cambiarFotoQuickView = function (src, thumbElem) {
-    const mainImg = document.getElementById('quickview-img-display');
-    if (mainImg) mainImg.src = src;
-
-    document.querySelectorAll('.quickview-thumb-item').forEach(el => el.classList.remove('active'));
-    if (thumbElem) thumbElem.classList.add('active');
-};
-
-window.seleccionarTalleQuickView = function (talle, stock, btnElem) {
-    if (stock <= 0) return;
-    talleSeleccionadoQuickView = talle;
-
-    const container = document.getElementById('quickview-talles-chips');
-    if (container) {
-        container.querySelectorAll('.btn-talle-select').forEach(el => el.classList.remove('active'));
-    }
-    if (btnElem) btnElem.classList.add('active');
-
-    const feedback = document.getElementById('quickview-stock-feedback');
-    if (feedback) {
-        if (stock <= 2) {
-            feedback.innerHTML = `<span class="badge bg-warning text-dark"><i class="fas fa-exclamation-triangle me-1"></i>¡Últimas ${stock} unidades disponibles en talle ${talle}!</span>`;
-        } else {
-            feedback.innerHTML = `<span class="text-success"><i class="fas fa-check-circle me-1"></i>Stock disponible (${stock} unidades).</span>`;
-        }
-    }
-};
-
-function actualizarFeedbackStockQuickView(p) {
-    const feedback = document.getElementById('quickview-stock-feedback');
-    if (!feedback) return;
-    if (Array.isArray(p.variantes) && p.variantes.length > 0 && talleSeleccionadoQuickView) {
-        const v = p.variantes.find(item => item.talle === talleSeleccionadoQuickView);
-        const stock = v ? (v.stock || 0) : 0;
-        if (stock <= 2 && stock > 0) {
-            feedback.innerHTML = `<span class="badge bg-warning text-dark"><i class="fas fa-exclamation-triangle me-1"></i>¡Últimas ${stock} unidades disponibles en talle ${talleSeleccionadoQuickView}!</span>`;
-        } else if (stock > 2) {
-            feedback.innerHTML = `<span class="text-success"><i class="fas fa-check-circle me-1"></i>Stock disponible (${stock} unidades).</span>`;
+    } finally {
+        // SIEMPRE oculta o remueve el spinner de carga para evitar que quede girando
+        const spinner = contenedor.querySelector('.spinner-border, #spinner-destacados');
+        if (spinner) {
+            const parentCol = spinner.closest('.col-12');
+            if (parentCol) {
+                parentCol.remove();
+            } else {
+                spinner.remove();
+            }
         }
     }
 }
-
-window.toggleGuiaTallesModal = function () {
-    const guia = document.getElementById('quickview-guia-talles-collapse');
-    if (guia) {
-        guia.classList.toggle('d-none');
-    }
-};
-
-window.modificarCantidadQuickView = function (delta) {
-    cantidadQuickView = Math.max(1, cantidadQuickView + delta);
-    const display = document.getElementById('quickview-cant-display');
-    if (display) display.innerText = cantidadQuickView;
-};
-
-window.agregarAlCarritoDesdeQuickView = function (id) {
-    agregarAlCarrito(null, id, talleSeleccionadoQuickView, cantidadQuickView);
-    if (modalQuickViewInstancia) {
-        modalQuickViewInstancia.hide();
-    }
-};
+window.cargarDestacadosInicio = cargarDestacadosInicio;
+window.cargarDestacadosHome = cargarDestacadosInicio;
 
 // --- ZOOM DE PRODUCTO (COMPATIBILIDAD) ---
 window.abrirZoomPorProducto = function(id) {
