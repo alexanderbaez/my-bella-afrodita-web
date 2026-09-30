@@ -29,12 +29,11 @@ let talleSeleccionadoQuickView = null;
 let cantidadQuickView = 1;
 const talleSeleccionadoPorProducto = {};
 
-// --- MÓDULO DE LOGÍSTICA & SELECCIÓN DE ENTREGA ---
+// --- MÓDULO DE LOGÍSTICA & SELECCIÓN DE ENTREGA (EXCLUSIVO SAN JUAN) ---
 let TIPO_ENTREGA_SELECCIONADO = 'RETIRO_SHOWROOM';
 const COSTOS_ENVIO = {
     RETIRO_SHOWROOM: 0,
-    ENVIO_SAN_JUAN: 2500,
-    ENVIO_NACIONAL: 6500
+    ENVIO_MOTO_SAN_JUAN: 2500
 };
 
 window.navegarAProducto = function (id) {
@@ -75,8 +74,7 @@ window.cambiarMetodoEntrega = function (tipo) {
 
     const cards = [
         { id: 'card-ship-showroom', tipo: 'RETIRO_SHOWROOM' },
-        { id: 'card-ship-sanjuan', tipo: 'ENVIO_SAN_JUAN' },
-        { id: 'card-ship-nacional', tipo: 'ENVIO_NACIONAL' }
+        { id: 'card-ship-moto', tipo: 'ENVIO_MOTO_SAN_JUAN' }
     ];
     cards.forEach(c => {
         const el = document.getElementById(c.id);
@@ -88,6 +86,71 @@ window.cambiarMetodoEntrega = function (tipo) {
 
     renderizarListaCarrito();
 };
+
+// --- COMPARTIR PRODUCTO (ESTILO MERCADO LIBRE: NATIVE SHARE O PORTAPAPELES + TOAST CHAMPÁN) ---
+window.compartirProducto = async function (e, id, nombre, precio) {
+    if (e) {
+        e.stopPropagation();
+        e.preventDefault();
+    }
+    const permalink = `${window.location.origin}/producto.html?id=${id}`;
+    const precioFormat = Number(precio || 0).toLocaleString('es-AR');
+    const texto = `${nombre} - My Bella Afrodita ($${precioFormat})`;
+
+    if (navigator.share) {
+        try {
+            await navigator.share({
+                title: `${nombre} | My Bella Afrodita`,
+                text: texto,
+                url: permalink
+            });
+            return;
+        } catch (err) {
+            if (err.name === 'AbortError') return;
+        }
+    }
+
+    copiarEnlaceToast(permalink);
+};
+
+window.copiarEnlaceToast = function (url) {
+    const dispararToast = () => {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: '¡Enlace copiado al portapapeles!',
+            showConfirmButton: false,
+            timer: 2500,
+            background: '#1F1E1D',
+            color: '#FAF9F6',
+            iconColor: '#C5A880'
+        });
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(dispararToast).catch(() => fallbackCopyScript(url, dispararToast));
+    } else {
+        fallbackCopyScript(url, dispararToast);
+    }
+};
+
+function fallbackCopyScript(url, callback) {
+    const el = document.createElement('textarea');
+    el.value = url;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    try {
+        document.execCommand('copy');
+        callback();
+    } catch (e) {
+        console.error("Fallback copy failed", e);
+    }
+    document.body.removeChild(el);
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
     actualizarContadorUI();
@@ -127,19 +190,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     if (contenedor) {
-        // 2. CAPTURAMOS LA CATEGORÍA DESDE LA URL (ej: productos.html?cat=conjuntos)
+        // 2. CAPTURAMOS LA COLECCIÓN DESDE LA URL (ej: productos.html?categoria=CONJUNTOS)
+        // Eliminación de catálogo genérico: Si no hay categoría especificada, default a 'conjuntos'
         const urlParams = new URLSearchParams(window.location.search);
-        categoriaBuscada = urlParams.get('cat');
-        categoriaActiva = categoriaBuscada;
-
-        // 3. INICIALIZAMOS TALLES CONTEXTUALES Y FILTROS SEGÚN LA URL
-        if (categoriaBuscada) {
-            actualizarFiltrosTallesContextuales(categoriaBuscada.toLowerCase());
-        } else {
-            actualizarFiltrosTallesContextuales(null);
+        let catParam = urlParams.get('categoria') || urlParams.get('cat');
+        if (!catParam) {
+            catParam = 'CONJUNTOS';
         }
+        categoriaActiva = catParam;
+
+        // 3. INICIALIZAMOS TALLES CONTEXTUALES Y FILTROS SEGÚN LA COLECCIÓN
+        actualizarFiltrosTallesContextuales(categoriaActiva);
         aplicarFiltrosYOrdenCatalogo();
     }
+
+    // Renderizar prendas seleccionadas en la portada si existe el contenedor
+    cargarDestacadosHome();
 
     // Cerrar el Drawer con la tecla Escape
     document.addEventListener('keydown', (e) => {
@@ -148,25 +214,32 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // Detectar si vienen desde un link compartido con id directo
+    // Detectar si vienen desde un link con id directo en otra página
     const urlParamsShared = new URLSearchParams(window.location.search);
     const productoId = urlParamsShared.get('id');
-    if (productoId) {
-        setTimeout(() => {
-            const p = PRODUCTOS.find(prod => String(prod.id) === String(productoId));
-            if (p && p.imagenes && p.imagenes.length > 0) {
-                abrirZoomLenceria(p.imagenes, 0);
-            }
-        }, 500);
+    if (productoId && !window.location.pathname.endsWith('producto.html')) {
+        window.location.href = `./producto.html?id=${productoId}`;
     }
 });
 
+function normalizarCategoria(cat) {
+    if (!cat) return 'conjuntos';
+    const c = cat.toLowerCase();
+    if (c === 'masculino' || c === 'hombres' || c === 'hombre') return 'hombres';
+    return c;
+}
+
 // --- FILTROS DE CATÁLOGO Y TALLES CONTEXTUALES (DRAWER OFFCANVAS) ---
 window.cambiarCategoriaDesdeDrawer = function(cat) {
-    categoriaActiva = cat ? cat.toLowerCase() : null;
-    talleFiltroActivo = 'TODOS'; // Al cambiar categoría, reiniciamos el talle seleccionado
+    categoriaActiva = normalizarCategoria(cat);
+    talleFiltroActivo = 'TODOS';
     actualizarFiltrosTallesContextuales(categoriaActiva);
     aplicarFiltrosYOrdenCatalogo();
+    try {
+        const nuevaUrl = new URL(window.location);
+        nuevaUrl.searchParams.set('categoria', categoriaActiva.toUpperCase());
+        window.history.replaceState({}, '', nuevaUrl);
+    } catch(e) {}
 };
 
 window.seleccionarTalleDrawer = function(talle) {
@@ -193,7 +266,6 @@ window.aplicarFiltrosDesdeDrawer = function() {
 };
 
 window.limpiarTodosLosFiltros = function() {
-    categoriaActiva = null;
     talleFiltroActivo = 'TODOS';
     busquedaCatalogo = '';
 
@@ -203,13 +275,7 @@ window.limpiarTodosLosFiltros = function() {
     const btnLimpiar = document.getElementById('btn-limpiar-busqueda');
     if (btnLimpiar) btnLimpiar.classList.add('d-none');
 
-    // Desmarcar radios y seleccionar "Todas"
-    const radios = document.querySelectorAll('input[name="drawerCatFilter"]');
-    radios.forEach(r => {
-        r.checked = (r.value === '');
-    });
-
-    actualizarFiltrosTallesContextuales(null);
+    actualizarFiltrosTallesContextuales(categoriaActiva);
     aplicarFiltrosYOrdenCatalogo();
 };
 
@@ -219,7 +285,7 @@ function actualizarFiltrosTallesContextuales(categoria) {
     if (!contenedorFiltros) return;
 
     let tallesDisponibles = [];
-    const catNorm = (categoria || '').toLowerCase();
+    const catNorm = normalizarCategoria(categoria);
 
     if (catNorm === 'conjuntos') {
         tallesDisponibles = ['85', '90', '95', '100', '105'];
@@ -234,9 +300,8 @@ function actualizarFiltrosTallesContextuales(categoria) {
         tallesDisponibles = ['ÚNICO'];
         if (hint) hint.innerText = 'Talle Único';
     } else {
-        // Todas las colecciones
-        tallesDisponibles = ['85', '90', '95', '100', '1', '2', '3', 'M', 'L', 'XL'];
-        if (hint) hint.innerText = 'Talles Principales';
+        tallesDisponibles = ['85', '90', '95', '100', '105'];
+        if (hint) hint.innerText = 'Corpiños / Busto';
     }
 
     let html = `<button type="button" class="talle-pill-clean ${talleFiltroActivo === 'TODOS' ? 'active' : ''}" onclick="seleccionarTalleDrawer('TODOS')">Todos</button>`;
@@ -252,9 +317,6 @@ function actualizarFiltrosTallesContextuales(categoria) {
     const radioChecked = document.querySelector(`input[name="drawerCatFilter"][value="${catNorm}"]`);
     if (radioChecked) {
         radioChecked.checked = true;
-    } else {
-        const radioTodos = document.querySelector('input[name="drawerCatFilter"][value=""]');
-        if (radioTodos) radioTodos.checked = true;
     }
 }
 
@@ -282,38 +344,48 @@ function actualizarBadgeFiltros() {
 function actualizarTituloYContadorCatalogo(cantidadVisible) {
     const tituloSeccion = document.getElementById('catalogo-titulo-editorial');
     const contadorPrendas = document.getElementById('catalogo-contador-prendas');
-    const breadcrumbActive = document.querySelector('.breadcrumb-item.active');
+    const breadcrumbActive = document.getElementById('breadcrumb-categoria-activa');
 
-    let tituloTexto = "Colección Atelier";
-    if (categoriaActiva) {
-        const catNorm = categoriaActiva.toLowerCase();
-        if (catNorm === 'bombachas') {
-            tituloTexto = "Bombachas & Colaless";
-            if (breadcrumbActive) breadcrumbActive.innerText = "Bombachas";
-            document.title = "Bombachas - My Bella Afrodita";
-        } else if (catNorm === 'conjuntos') {
-            tituloTexto = "Conjuntos & Corsetería";
-            if (breadcrumbActive) breadcrumbActive.innerText = "Conjuntos";
-            document.title = "Conjuntos - My Bella Afrodita";
-        } else if (catNorm === 'hombres') {
-            tituloTexto = "Línea Masculina";
-            if (breadcrumbActive) breadcrumbActive.innerText = "Para Ellos";
-            document.title = "Hombres - My Bella Afrodita";
-        } else if (catNorm === 'medias') {
-            tituloTexto = "Medias & Esenciales";
-            if (breadcrumbActive) breadcrumbActive.innerText = "Medias";
-            document.title = "Medias - My Bella Afrodita";
-        }
-    } else {
-        if (breadcrumbActive) breadcrumbActive.innerText = "Colección Completa";
-        document.title = "Catálogo - My Bella Afrodita";
+    const catNorm = normalizarCategoria(categoriaActiva);
+    let tituloTexto = "Colección Conjuntos";
+    let breadcrumbTexto = "Colección Conjuntos";
+    let docTitle = "Colección Conjuntos - My Bella Afrodita";
+
+    if (catNorm === 'conjuntos') {
+        tituloTexto = "Colección Conjuntos";
+        breadcrumbTexto = "Colección Conjuntos";
+        docTitle = "Colección Conjuntos - My Bella Afrodita";
+    } else if (catNorm === 'bombachas') {
+        tituloTexto = "Colección Bombachas";
+        breadcrumbTexto = "Colección Bombachas";
+        docTitle = "Colección Bombachas - My Bella Afrodita";
+    } else if (catNorm === 'hombres') {
+        tituloTexto = "Colección Masculino";
+        breadcrumbTexto = "Colección Masculino";
+        docTitle = "Colección Masculino - My Bella Afrodita";
+    } else if (catNorm === 'medias') {
+        tituloTexto = "Colección Medias";
+        breadcrumbTexto = "Colección Medias";
+        docTitle = "Colección Medias - My Bella Afrodita";
     }
+
+    if (breadcrumbActive) breadcrumbActive.innerText = breadcrumbTexto;
+    document.title = docTitle;
 
     if (tituloSeccion) tituloSeccion.innerText = tituloTexto;
 
     if (contadorPrendas && cantidadVisible !== undefined) {
         contadorPrendas.innerText = `${cantidadVisible} ${cantidadVisible === 1 ? 'Modelo Exclusivo' : 'Modelos Exclusivos'}`;
     }
+
+    // Actualizar estado 'active' en el navbar
+    document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
+        link.classList.remove('active');
+        const href = (link.getAttribute('href') || '').toLowerCase();
+        if (href.includes(`categoria=${catNorm}`) || (catNorm === 'hombres' && href.includes('categoria=masculino'))) {
+            link.classList.add('active');
+        }
+    });
 }
 
 // --- CONTROL DE BÚSQUEDA Y ORDENAMIENTO EN VIVO ---
@@ -345,10 +417,15 @@ window.manejarOrdenamientoCatalogo = function (criterio) {
 };
 
 function aplicarFiltrosYOrdenCatalogo() {
-    // 1. Filtrar por categoría activa (si existe en URL)
-    let resultado = categoriaActiva 
-        ? PRODUCTOS.filter(p => p.categoria && p.categoria.toLowerCase() === categoriaActiva.toLowerCase())
-        : [...PRODUCTOS];
+    // 1. Filtrar de forma estricta por la colección activa (no existe vista mezclada)
+    const catNorm = normalizarCategoria(categoriaActiva);
+    let resultado = PRODUCTOS.filter(p => {
+        const prodCat = (p.categoria || '').toLowerCase();
+        if (catNorm === 'hombres') {
+            return prodCat === 'hombres' || prodCat === 'masculino';
+        }
+        return prodCat === catNorm;
+    });
 
     // 2. Filtrar por talle activo
     if (talleFiltroActivo && talleFiltroActivo !== 'TODOS') {
@@ -505,7 +582,7 @@ function dibujarProductos(lista) {
 
         divCol.innerHTML = `
             <div class="product-card-boutique w-100">
-                <!-- Contenedor Imagen 3:4 con Cross-Fade y Navegación limpia al detalle -->
+                <!-- Contenedor Imagen 3:4 con Cross-Fade y Redirección Directa a Ficha -->
                 <div class="product-media-container position-relative" style="cursor: pointer;" onclick="navegarAProducto('${p.id}')">
                     ${adminBtnHtml}
                     ${badgeHtml}
@@ -528,22 +605,24 @@ function dibujarProductos(lista) {
                     <div>
                         ${selectorTallesHtml}
 
-                        <!-- Precios Unificados -->
-                        <div class="product-pricing-box d-flex align-items-baseline">
+                        <!-- Precios con Redirección Directa -->
+                        <div class="product-pricing-box d-flex align-items-baseline" style="cursor: pointer;" onclick="navegarAProducto('${p.id}')" title="Ver prenda">
                             <span class="price-retail-highlight">$${Number(p.precioMinorista).toLocaleString('es-AR')}</span>
                             ${wholesaleHtml}
                         </div>
 
-                        <!-- Botones de Acción -->
+                        <!-- Botones de Acción: Añadir y Compartir Estilo Mercado Libre -->
                         <div class="product-card-actions">
-                            <button class="btn btn-add-boutique" 
+                            <button class="btn btn-add-boutique flex-grow-1" 
                                     ${!tieneStock ? 'disabled' : ''} 
                                     onclick="agregarAlCarrito(event, '${p.id}')">
                                 <i class="fas ${tieneStock ? 'fa-shopping-bag' : 'fa-times'} me-1.5"></i>
                                 ${tieneStock ? 'Añadir a la Bolsa' : 'Agotado'}
                             </button>
-                            <button class="btn btn-share-boutique" onclick="compartirWhatsApp(event, '${p.id}')" title="Compartir modelo por WhatsApp">
-                                <i class="fab fa-whatsapp"></i>
+                            <button class="btn-share-card" 
+                                    onclick="compartirProducto(event, '${p.id}', '${p.nombre.replace(/'/g, "\\'")}', '${p.precioMinorista}')" 
+                                    title="Compartir enlace de la prenda">
+                                <i class="fas fa-share-nodes"></i>
                             </button>
                         </div>
                     </div>
@@ -666,9 +745,87 @@ window.cerrarSesionAdminDesdeTienda = async function () {
 };
 
 // ==========================================================================
-// MODAL QUICK VIEW EDITORIAL CON GUÍA DE MEDIDAS (LOOK & FEEL BOUTIQUE)
+// REDIRECCIÓN DIRECTA A FICHA DE PRODUCTO (Eliminación de quick views/lightboxes)
 // ==========================================================================
 window.abrirQuickView = function (id) {
+    navegarAProducto(id);
+};
+
+// --- CARGA DE DESTACADOS EN PORTADA DESDE /api/productos/destacados ---
+async function cargarDestacadosHome() {
+    const contenedor = document.getElementById('featured-products-home');
+    if (!contenedor) return;
+
+    try {
+        const res = await fetch('/api/productos/destacados');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        let destacados = await res.json();
+
+        // Si no hay ninguno marcado explícitamente en BD, tomar los primeros 4 del catálogo general
+        if (!destacados || destacados.length === 0) {
+            const resTodos = await fetch('/api/productos');
+            if (resTodos.ok) {
+                const todos = await resTodos.json();
+                destacados = todos.slice(0, 4);
+            }
+        }
+
+        if (!destacados || destacados.length === 0) {
+            contenedor.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted small">Próximamente nuevas prendas seleccionadas de alta costura.</p>
+                </div>`;
+            return;
+        }
+
+        contenedor.innerHTML = '';
+        destacados.forEach(p => {
+            const fotos = Array.isArray(p.imagenes) && p.imagenes.length > 0 
+                ? p.imagenes.map(normalizarUrlImagen) 
+                : ['https://via.placeholder.com/300x400?text=My+Bella+Afrodita'];
+            const fotoPrincipal = fotos[0];
+            const fotoSecundaria = fotos.length > 1 ? fotos[1] : null;
+
+            const divCol = document.createElement('div');
+            divCol.className = 'col-6 col-md-3 d-flex align-items-stretch';
+            divCol.innerHTML = `
+                <div class="product-card-boutique w-100">
+                    <div class="product-media-container position-relative" style="cursor: pointer;" onclick="navegarAProducto('${p.id}')">
+                        <span class="badge-luxury-tag">⭐ Destacado</span>
+                        <img src="${fotoPrincipal}" alt="${p.nombre}" class="img-primary" onerror="this.src='https://via.placeholder.com/300x400?text=My+Bella+Afrodita'">
+                        ${fotoSecundaria ? `<img src="${fotoSecundaria}" alt="${p.nombre} dorsal" class="img-secondary">` : ''}
+                    </div>
+                    <div class="product-info-wrap">
+                        <div>
+                            <div class="product-category-label">${p.categoria || 'Colección'}</div>
+                            <h3 class="product-title-luxury" style="cursor: pointer;" onclick="navegarAProducto('${p.id}')">${p.nombre}</h3>
+                            <p class="product-desc-clamped">${p.descripcion || 'Confección boutique de alta calidad.'}</p>
+                        </div>
+                        <div class="mt-2">
+                            <div class="product-pricing-box d-flex align-items-baseline" style="cursor: pointer;" onclick="navegarAProducto('${p.id}')">
+                                <span class="price-retail-highlight">$${Number(p.precioMinorista).toLocaleString('es-AR')}</span>
+                            </div>
+                            <div class="product-card-actions mt-2">
+                                <button class="btn btn-add-boutique flex-grow-1" onclick="agregarAlCarrito(event, '${p.id}')">
+                                    <i class="fas fa-shopping-bag me-1.5"></i> Añadir a la Bolsa
+                                </button>
+                                <button class="btn-share-card" onclick="compartirProducto(event, '${p.id}', '${p.nombre.replace(/'/g, "\\'")}', '${p.precioMinorista}')" title="Compartir">
+                                    <i class="fas fa-share-nodes"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            contenedor.appendChild(divCol);
+        });
+    } catch (err) {
+        console.error("Error al cargar destacados en inicio:", err);
+        contenedor.innerHTML = `
+            <div class="col-12 text-center py-4">
+                <p class="text-muted small">No se pudieron cargar las prendas destacadas.</p>
+            </div>`;
+    }
+}
     const p = PRODUCTOS.find(prod => String(prod.id) === String(id));
     if (!p) return;
 
@@ -1430,12 +1587,19 @@ async function enviarPedidoWhatsApp() {
 
     cerrarCarritoDrawer();
 
+    const departamentosSanJuan = [
+        "Capital", "Rawson", "Rivadavia", "Santa Lucía", "Chimbas",
+        "Pocito", "Caucete", "Albardón", "Sarmiento", "25 de Mayo",
+        "San Martín", "Angaco", "Zonda", "Ullum", "9 de Julio",
+        "Jáchal", "Valle Fértil", "Iglesia", "Calingasta"
+    ];
+
     const { value: formValues } = await Swal.fire({
-        title: 'Checkout Directo · Atelier Guest',
+        title: 'Checkout · San Juan Boutique',
         html: `
             <div class="text-start">
                 <p class="text-muted small mb-3" style="letter-spacing: 0.2px; font-size: 0.77rem;">
-                    <i class="fas fa-lock me-1 text-success"></i> Compra protegida sin contraseñas ni registros obligatorios. Completa tus datos para coordinar el pago y envío.
+                    <i class="fas fa-lock me-1 text-success"></i> Compra directa sin registros. Entregas exclusivas en la Provincia de San Juan.
                 </p>
                 <div class="mb-2.5">
                     <label class="form-label small fw-bold text-uppercase" style="font-size: 0.69rem; letter-spacing: 0.6px;">1. Nombre y Apellido *</label>
@@ -1446,23 +1610,33 @@ async function enviarPedidoWhatsApp() {
                     <input type="tel" id="swal-cliente-telefono" class="form-control form-control-sm" placeholder="Ej: 264 555-1234" autocomplete="tel">
                 </div>
                 <div class="mb-2.5">
-                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.69rem; letter-spacing: 0.6px;">3. Email <span class="text-muted fw-normal">(Opcional, para comprobante formal)</span></label>
+                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.69rem; letter-spacing: 0.6px;">3. Email <span class="text-muted fw-normal">(Opcional)</span></label>
                     <input type="email" id="swal-cliente-email" class="form-control form-control-sm" placeholder="Ej: valentina@email.com" autocomplete="email">
                 </div>
                 <div class="mb-2.5">
-                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.69rem; letter-spacing: 0.6px;">4. Método de Entrega *</label>
+                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.69rem; letter-spacing: 0.6px;">4. Método de Entrega (San Juan) *</label>
                     <select id="swal-tipo-entrega" class="form-select form-select-sm mb-1.5" onchange="window.actualizarModalEnvio(this.value)">
-                        <option value="RETIRO_SHOWROOM" ${TIPO_ENTREGA_SELECCIONADO === 'RETIRO_SHOWROOM' ? 'selected' : ''}>Retiro en Showroom (San Juan - ¡Gratis!)</option>
-                        <option value="ENVIO_SAN_JUAN" ${TIPO_ENTREGA_SELECCIONADO === 'ENVIO_SAN_JUAN' ? 'selected' : ''}>Envío a Domicilio en San Juan (+$2.500)</option>
-                        <option value="ENVIO_NACIONAL" ${TIPO_ENTREGA_SELECCIONADO === 'ENVIO_NACIONAL' ? 'selected' : ''}>Envío Nacional por Correo (+$6.500)</option>
+                        <option value="RETIRO_SHOWROOM" ${TIPO_ENTREGA_SELECCIONADO === 'RETIRO_SHOWROOM' ? 'selected' : ''}>1) Retiro en Showroom / Punto Físico (Gratis)</option>
+                        <option value="ENVIO_MOTO_SAN_JUAN" ${TIPO_ENTREGA_SELECCIONADO === 'ENVIO_MOTO_SAN_JUAN' ? 'selected' : ''}>2) Envío en Moto / Cadetería (San Juan - $2.500)</option>
                     </select>
                 </div>
-                <div class="mb-1" id="swal-direccion-container">
-                    <label class="form-label small fw-bold text-uppercase" id="swal-label-direccion" style="font-size: 0.69rem; letter-spacing: 0.6px;">
-                        Dirección y Localidad ${TIPO_ENTREGA_SELECCIONADO === 'RETIRO_SHOWROOM' ? '(Opcional)' : '*'}
-                    </label>
-                    <input type="text" id="swal-cliente-direccion" class="form-control form-control-sm" placeholder="Calle, Altura, Barrio, Localidad y Código Postal">
-                    <small class="text-muted" style="font-size:0.67rem;">Requerida para despachos a domicilio o correo postal.</small>
+                <div id="swal-cadeteria-fields" class="${TIPO_ENTREGA_SELECCIONADO === 'RETIRO_SHOWROOM' ? 'd-none' : ''}">
+                    <div class="mb-2.5">
+                        <label class="form-label small fw-bold text-uppercase" style="font-size: 0.69rem; letter-spacing: 0.6px;">5. Departamento (San Juan) *</label>
+                        <select id="swal-cliente-departamento" class="form-select form-select-sm">
+                            <option value="">Selecciona tu departamento...</option>
+                            ${departamentosSanJuan.map(d => `<option value="${d}">${d}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="mb-2.5">
+                        <label class="form-label small fw-bold text-uppercase" style="font-size: 0.69rem; letter-spacing: 0.6px;">6. Dirección Exacta (Calle y Altura / Barrio / Mza) *</label>
+                        <input type="text" id="swal-cliente-direccion" class="form-control form-control-sm" placeholder="Ej: Av. Libertador 1250 Oeste, Piso 2 B">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small fw-bold text-uppercase" style="font-size: 0.69rem; letter-spacing: 0.6px;">7. Entrecalles y Referencias para la Cadetería *</label>
+                        <input type="text" id="swal-cliente-referencias" class="form-control form-control-sm" placeholder="Ej: Entre Urquiza y Paula A. de Sarmiento. Portón negro">
+                        <small class="text-muted" style="font-size:0.67rem;">Indispensable para que la moto de cadetería ubique tu domicilio sin demoras.</small>
+                    </div>
                 </div>
             </div>
         `,
@@ -1477,11 +1651,13 @@ async function enviarPedidoWhatsApp() {
             if (input) input.focus();
 
             window.actualizarModalEnvio = function(tipo) {
-                const label = document.getElementById('swal-label-direccion');
-                if (label) {
-                    label.innerText = tipo === 'RETIRO_SHOWROOM' 
-                        ? 'Dirección y Localidad (Opcional)' 
-                        : 'Dirección y Localidad * (Requerida)';
+                const cadeteriaContainer = document.getElementById('swal-cadeteria-fields');
+                if (cadeteriaContainer) {
+                    if (tipo === 'ENVIO_MOTO_SAN_JUAN') {
+                        cadeteriaContainer.classList.remove('d-none');
+                    } else {
+                        cadeteriaContainer.classList.add('d-none');
+                    }
                 }
             };
         },
@@ -1489,7 +1665,6 @@ async function enviarPedidoWhatsApp() {
             const nombre = document.getElementById('swal-cliente-nombre')?.value.trim();
             const telefono = document.getElementById('swal-cliente-telefono')?.value.trim();
             const email = document.getElementById('swal-cliente-email')?.value.trim();
-            const direccion = document.getElementById('swal-cliente-direccion')?.value.trim();
             const tipoEntrega = document.getElementById('swal-tipo-entrega')?.value || TIPO_ENTREGA_SELECCIONADO;
 
             if (!nombre) {
@@ -1500,12 +1675,30 @@ async function enviarPedidoWhatsApp() {
                 Swal.showValidationMessage('¡Ingresa tu número de WhatsApp para contactarte!');
                 return false;
             }
-            if (tipoEntrega !== 'RETIRO_SHOWROOM' && (!direccion || direccion.length < 5)) {
-                Swal.showValidationMessage('¡Para envíos a domicilio o correo nacional, ingresa tu dirección completa y localidad!');
-                return false;
+
+            let direccionCompleta = 'Retiro en Showroom / Punto Físico';
+            if (tipoEntrega === 'ENVIO_MOTO_SAN_JUAN') {
+                const depto = document.getElementById('swal-cliente-departamento')?.value.trim();
+                const direccion = document.getElementById('swal-cliente-direccion')?.value.trim();
+                const referencias = document.getElementById('swal-cliente-referencias')?.value.trim();
+
+                if (!depto) {
+                    Swal.showValidationMessage('¡Selecciona el departamento de San Juan para el envío en moto!');
+                    return false;
+                }
+                if (!direccion || direccion.length < 5) {
+                    Swal.showValidationMessage('¡Ingresa la calle y número o barrio para la cadetería!');
+                    return false;
+                }
+                if (!referencias || referencias.length < 4) {
+                    Swal.showValidationMessage('¡Indica entrecalles o referencias visuales para la moto de cadetería!');
+                    return false;
+                }
+
+                direccionCompleta = `${direccion} (Depto: ${depto}) - Ref: ${referencias}`;
             }
 
-            return { nombre, telefono, email, direccion, tipoEntrega };
+            return { nombre, telefono, email, direccion: direccionCompleta, tipoEntrega };
         }
     });
 

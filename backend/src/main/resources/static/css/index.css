@@ -2531,3 +2531,54 @@ img {
     color: var(--text-taupe);
     margin-top: 16px;
 }
+
+/* ==========================================================================
+   BOTÓN COMPARTIR ESTILO MERCADO LIBRE
+   ========================================================================== */
+.btn-share-ml {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #FFFFFF;
+    border: 1px solid rgba(197, 168, 128, 0.4);
+    color: var(--text-charcoal);
+    font-size: 0.76rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 9px 18px;
+    border-radius: 2px;
+    transition: all 0.25s ease;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn-share-ml:hover {
+    background: var(--bg-silk);
+    border-color: var(--gold-champagne);
+    color: var(--gold-dark);
+    box-shadow: 0 4px 12px rgba(197, 168, 128, 0.18);
+}
+
+.btn-share-card {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 2px;
+    border: 1px solid rgba(197, 168, 128, 0.35);
+    background: #FFFFFF;
+    color: var(--text-charcoal);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+.btn-share-card:hover {
+    background: var(--bg-silk);
+    border-color: var(--gold-champagne);
+    color: var(--gold-dark);
+    transform: scale(1.04);
+}

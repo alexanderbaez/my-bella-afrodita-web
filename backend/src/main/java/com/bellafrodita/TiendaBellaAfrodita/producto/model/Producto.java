@@ -53,6 +53,10 @@ public class Producto {
     @Builder.Default
     private Boolean stock = true;
 
+    @Column(name = "destacado_inicio", nullable = false)
+    @Builder.Default
+    private boolean destacadoInicio = false;
+
     private String etiqueta;
 
     @JdbcTypeCode(SqlTypes.JSON)

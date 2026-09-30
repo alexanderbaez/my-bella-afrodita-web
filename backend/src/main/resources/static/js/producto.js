@@ -61,8 +61,9 @@ function renderizarPaginaProducto(p) {
     const bcCat = document.getElementById('bc-categoria');
     const bcProd = document.getElementById('bc-producto');
     if (bcCat) {
-        bcCat.href = `./productos.html?cat=${encodeURIComponent(p.categoria || 'todos')}`;
-        bcCat.innerText = (p.categoria || 'Catálogo').toUpperCase();
+        const catUpper = (p.categoria || 'conjuntos').toUpperCase();
+        bcCat.href = `./productos.html?categoria=${encodeURIComponent(catUpper)}`;
+        bcCat.innerText = `COLECCIÓN ${catUpper}`;
     }
     if (bcProd) {
         bcProd.innerText = p.nombre;
@@ -218,10 +219,15 @@ function renderizarPaginaProducto(p) {
                             </button>
                         </div>
 
-                        <!-- Botón Directo WhatsApp -->
-                        <a href="#" id="btn-consultar-wa" target="_blank" class="btn-ask-whatsapp-luxury">
-                            <i class="fab fa-whatsapp fa-lg"></i> Consultar por WhatsApp este modelo
-                        </a>
+                        <!-- Botones de Conversión: WhatsApp & Compartir -->
+                        <div class="d-flex gap-2 flex-wrap mb-3">
+                            <a href="#" id="btn-consultar-wa" target="_blank" class="btn-ask-whatsapp-luxury flex-grow-1">
+                                <i class="fab fa-whatsapp fa-lg"></i> Consultar por WhatsApp este modelo
+                            </a>
+                            <button type="button" class="btn-share-ml" onclick="compartirFichaProducto()" title="Compartir prenda">
+                                <i class="fas fa-share-nodes"></i> Compartir
+                            </button>
+                        </div>
 
                         <!-- Micro-Trust Badges -->
                         <div class="product-micro-trust">
@@ -234,8 +240,8 @@ function renderizarPaginaProducto(p) {
                                 <span>Empaque Discreto de Lujo</span>
                             </div>
                             <div class="micro-trust-item">
-                                <i class="fas fa-paper-plane"></i>
-                                <span>Envíos San Juan & Todo el País</span>
+                                <i class="fas fa-motorcycle"></i>
+                                <span>Envíos en Moto San Juan & Showroom</span>
                             </div>
                         </div>
 
@@ -512,4 +518,67 @@ function normalizarUrl(url) {
     if (url.startsWith('http://') || url.startsWith('https://')) return url;
     if (url.startsWith('/')) return url;
     return '/' + url;
+}
+
+// --- BOTÓN COMPARTIR ESTILO MERCADO LIBRE ---
+window.compartirFichaProducto = async function() {
+    if (!PRODUCTO_ACTUAL) return;
+    const url = window.location.href;
+    const precio = Number(PRODUCTO_ACTUAL.precioMinorista || 0).toLocaleString('es-AR');
+    const texto = `${PRODUCTO_ACTUAL.nombre} - My Bella Afrodita ($${precio})`;
+
+    if (navigator.share) {
+        try {
+            await navigator.share({
+                title: `${PRODUCTO_ACTUAL.nombre} | My Bella Afrodita`,
+                text: texto,
+                url: url
+            });
+            return;
+        } catch (err) {
+            if (err.name === 'AbortError') return;
+        }
+    }
+
+    // Fallback: Portapapeles + Toast oro champán
+    copiarAlPortapapelesConToast(url);
+};
+
+function copiarAlPortapapelesConToast(url) {
+    const dispararToast = () => {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: '¡Enlace copiado al portapapeles!',
+            showConfirmButton: false,
+            timer: 2500,
+            background: '#1F1E1D',
+            color: '#FAF9F6',
+            iconColor: '#C5A880'
+        });
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(dispararToast).catch(() => fallbackCopy(url, dispararToast));
+    } else {
+        fallbackCopy(url, dispararToast);
+    }
+}
+
+function fallbackCopy(url, callback) {
+    const el = document.createElement('textarea');
+    el.value = url;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    try {
+        document.execCommand('copy');
+        callback();
+    } catch (e) {
+        console.error("Fallback copy failed", e);
+    }
+    document.body.removeChild(el);
 }

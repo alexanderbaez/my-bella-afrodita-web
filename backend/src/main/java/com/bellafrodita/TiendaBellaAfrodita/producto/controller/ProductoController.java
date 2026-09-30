@@ -26,9 +26,21 @@ public class ProductoController {
         return ResponseEntity.ok(productoService.listarTodos(categoria));
     }
 
+    @GetMapping("/destacados")
+    public ResponseEntity<List<Producto>> obtenerDestacados() {
+        return ResponseEntity.ok(productoService.listarDestacados());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Producto> obtenerPorId(@PathVariable Long id) {
         return productoService.buscarPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PatchMapping("/{id}/toggle-destacado")
+    public ResponseEntity<Producto> alternarDestacado(@PathVariable Long id) {
+        return productoService.alternarDestacadoInicio(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

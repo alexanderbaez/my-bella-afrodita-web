@@ -28,6 +28,13 @@ public class DataInitializer {
                                           PasswordEncoder passwordEncoder,
                                           JdbcTemplate jdbcTemplate) {
         return args -> {
+            // 0. ACTUALIZAR ESQUEMA tipo_entrega EN MYSQL (Soporte ENVIO_MOTO_SAN_JUAN)
+            try {
+                jdbcTemplate.execute("ALTER TABLE ordenes MODIFY COLUMN tipo_entrega VARCHAR(50) NOT NULL");
+            } catch (Exception e) {
+                System.out.println(">>> [DataInitializer] Nota esquema tipo_entrega: " + e.getMessage());
+            }
+
             // 1. SEEDER DE USUARIO ADMINISTRADOR MAESTRO EN MYSQL
             String previousAdminEmail = "admin@bellafrodita.com";
             usuarioRepository.findByEmail(previousAdminEmail).ifPresent(oldAdmin -> {
@@ -68,6 +75,18 @@ public class DataInitializer {
                 }
             } else {
                 System.out.println(">>> [DataInitializer] MySQL contiene " + productoRepository.count() + " productos. Fuente de verdad activa.");
+            }
+
+            // 2.1 INICIALIZAR DESTACADOS DE PORTADA SI NINGUNO ESTÁ MARCADO
+            if (productoRepository.findByDestacadoInicioTrue().isEmpty() && productoRepository.count() > 0) {
+                List<Producto> prods = productoRepository.findAll();
+                int destacadosCount = 0;
+                for (int i = 0; i < Math.min(8, prods.size()); i++) {
+                    prods.get(i).setDestacadoInicio(true);
+                    destacadosCount++;
+                }
+                productoRepository.saveAll(prods);
+                System.out.println(">>> [DataInitializer] " + destacadosCount + " productos configurados como destacados de portada.");
             }
 
             // 3. MIGRACIÓN TRANSPARENTE: CONTROL DE STOCK NUMÉRICO POR VARIANTE (TALLE + CANTIDAD)

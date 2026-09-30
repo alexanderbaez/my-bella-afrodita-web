@@ -49,6 +49,7 @@ public class ProductoService {
             producto.setImagenes(datos.getImagenes() != null ? datos.getImagenes() : new ArrayList<>());
             producto.setEtiqueta(datos.getEtiqueta());
             producto.setVariantes(datos.getVariantes() != null ? datos.getVariantes() : new ArrayList<>());
+            producto.setDestacadoInicio(datos.isDestacadoInicio());
 
             if (datos.getStock() != null) {
                 producto.setStock(datos.getStock());
@@ -56,6 +57,19 @@ public class ProductoService {
                 producto.setStock(producto.tieneStockGeneral());
             }
 
+            return productoRepository.save(producto);
+        });
+    }
+
+    @Transactional(readOnly = true)
+    public List<Producto> listarDestacados() {
+        return productoRepository.findByDestacadoInicioTrue();
+    }
+
+    @Transactional
+    public Optional<Producto> alternarDestacadoInicio(Long id) {
+        return productoRepository.findById(id).map(producto -> {
+            producto.setDestacadoInicio(!producto.isDestacadoInicio());
             return productoRepository.save(producto);
         });
     }

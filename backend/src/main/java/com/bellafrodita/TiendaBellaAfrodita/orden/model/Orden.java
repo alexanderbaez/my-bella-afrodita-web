@@ -62,7 +62,7 @@ public class Orden {
     private MetodoPago metodoPago = MetodoPago.WHATSAPP_EFECTIVO;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "tipo_entrega", nullable = false, length = 30)
+    @Column(name = "tipo_entrega", nullable = false, length = 50)
     @Builder.Default
     private TipoEntrega tipoEntrega = TipoEntrega.RETIRO_SHOWROOM;
 

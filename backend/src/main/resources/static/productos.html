@@ -45,8 +45,8 @@
                     Acceso Mayorista Exclusivo: <strong>3 o más prendas</strong> activan precio especial automáticamente
                 </span>
                 <span class="promo-text" id="promo-msg-1">
-                    <i class="fas fa-box-open me-1.5" style="color: #C5A880;"></i>
-                    Envíos discretos y coordinados en <strong>San Juan</strong> y a todo el país
+                    <i class="fas fa-motorcycle me-1.5" style="color: #C5A880;"></i>
+                    Envíos en el día por moto cadetería en <strong>San Juan</strong> o retiro gratis en Showroom
                 </span>
                 <span class="promo-text" id="promo-msg-2">
                     <i class="fab fa-whatsapp me-1.5" style="color: #25D366;"></i>
@@ -76,11 +76,10 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto align-items-center">
                         <li class="nav-item"><a class="nav-link" href="./index.html">INICIO</a></li>
-                        <li class="nav-item"><a class="nav-link active" href="./productos.html">CATÁLOGO</a></li>
-                        <li class="nav-item"><a class="nav-link" href="./productos.html?cat=conjuntos">CONJUNTOS</a></li>
-                        <li class="nav-item"><a class="nav-link" href="./productos.html?cat=bombachas">BOMBACHAS</a></li>
-                        <li class="nav-item"><a class="nav-link" href="./productos.html?cat=hombres">MASCULINO</a></li>
-                        <li class="nav-item"><a class="nav-link" href="./productos.html?cat=medias">MEDIAS</a></li>
+                        <li class="nav-item"><a class="nav-link" href="./productos.html?categoria=CONJUNTOS" id="nav-link-conjuntos">CONJUNTOS</a></li>
+                        <li class="nav-item"><a class="nav-link" href="./productos.html?categoria=BOMBACHAS" id="nav-link-bombachas">BOMBACHAS</a></li>
+                        <li class="nav-item"><a class="nav-link" href="./productos.html?categoria=MASCULINO" id="nav-link-masculino">MASCULINO</a></li>
+                        <li class="nav-item"><a class="nav-link" href="./productos.html?categoria=MEDIAS" id="nav-link-medias">MEDIAS</a></li>
                     </ul>
                 </div>
             </div>
@@ -95,8 +94,7 @@
                 <nav aria-label="breadcrumb" class="mb-3">
                     <ol class="breadcrumb breadcrumb-boutique mb-0">
                         <li class="breadcrumb-item"><a href="./index.html">Inicio</a></li>
-                        <li class="breadcrumb-item"><a href="./productos.html">Catálogo</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Colección Completa</li>
+                        <li class="breadcrumb-item active" id="breadcrumb-categoria-activa" aria-current="page">Colección Conjuntos</li>
                     </ol>
                 </nav>
 
@@ -160,14 +158,10 @@
         <div class="offcanvas-body p-4">
             <!-- Filtro por Categoría -->
             <div class="filter-section mb-4">
-                <label class="filter-section-title">Categoría</label>
+                <label class="filter-section-title">Colección</label>
                 <div class="filter-category-options d-flex flex-column gap-2" id="drawer-cat-options">
                     <label class="category-radio-label">
-                        <input type="radio" name="drawerCatFilter" value="" checked onchange="cambiarCategoriaDesdeDrawer('')">
-                        <span>Todas las colecciones</span>
-                    </label>
-                    <label class="category-radio-label">
-                        <input type="radio" name="drawerCatFilter" value="conjuntos" onchange="cambiarCategoriaDesdeDrawer('conjuntos')">
+                        <input type="radio" name="drawerCatFilter" value="conjuntos" checked onchange="cambiarCategoriaDesdeDrawer('conjuntos')">
                         <span>Conjuntos & Corsetería</span>
                     </label>
                     <label class="category-radio-label">
@@ -251,29 +245,19 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <label class="d-flex align-items-center mb-0 cursor-pointer small fw-semibold">
                             <input type="radio" name="radioEntrega" value="RETIRO_SHOWROOM" checked onchange="cambiarMetodoEntrega('RETIRO_SHOWROOM')">
-                            Retiro en Showroom (San Juan)
+                            Retiro en Showroom / Punto Físico
                         </label>
                         <span class="text-success small fw-bold">Gratis</span>
                     </div>
                 </div>
 
-                <div class="shipping-option-card" id="card-ship-sanjuan" onclick="cambiarMetodoEntrega('ENVIO_SAN_JUAN')">
+                <div class="shipping-option-card" id="card-ship-moto" onclick="cambiarMetodoEntrega('ENVIO_MOTO_SAN_JUAN')">
                     <div class="d-flex justify-content-between align-items-center">
                         <label class="d-flex align-items-center mb-0 cursor-pointer small fw-semibold">
-                            <input type="radio" name="radioEntrega" value="ENVIO_SAN_JUAN" onchange="cambiarMetodoEntrega('ENVIO_SAN_JUAN')">
-                            Envío Domicilio San Juan
+                            <input type="radio" name="radioEntrega" value="ENVIO_MOTO_SAN_JUAN" onchange="cambiarMetodoEntrega('ENVIO_MOTO_SAN_JUAN')">
+                            Envío en Moto / Cadetería (San Juan)
                         </label>
                         <span class="shipping-price-tag">+$2.500</span>
-                    </div>
-                </div>
-
-                <div class="shipping-option-card" id="card-ship-nacional" onclick="cambiarMetodoEntrega('ENVIO_NACIONAL')">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <label class="d-flex align-items-center mb-0 cursor-pointer small fw-semibold">
-                            <input type="radio" name="radioEntrega" value="ENVIO_NACIONAL" onchange="cambiarMetodoEntrega('ENVIO_NACIONAL')">
-                            Envío Nacional (Correo)
-                        </label>
-                        <span class="shipping-price-tag">+$6.500</span>
                     </div>
                 </div>
             </div>

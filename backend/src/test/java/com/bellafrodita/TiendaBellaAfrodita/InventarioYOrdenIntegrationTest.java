@@ -28,6 +28,16 @@ public class InventarioYOrdenIntegrationTest {
     @Autowired
     private OrdenService ordenService;
 
+    @Autowired
+    private org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
+
+    @org.junit.jupiter.api.BeforeEach
+    public void setupSchema() {
+        try {
+            jdbcTemplate.execute("ALTER TABLE ordenes MODIFY COLUMN tipo_entrega VARCHAR(50) NOT NULL");
+        } catch (Exception ignored) {}
+    }
+
     @Test
     @DisplayName("Debe descontar stock de variante atómicamente en la entidad Producto al crear una orden")
     @Transactional
@@ -162,12 +172,12 @@ public class InventarioYOrdenIntegrationTest {
 
         Producto guardado = productoRepository.save(producto);
 
-        // Envío a San Juan ($2.500)
+        // Envío en Moto a San Juan ($2.500)
         CheckoutRequest request = CheckoutRequest.builder()
                 .clienteNombre("Lucía Sanjuanina")
                 .clienteTelefono("2645551122")
                 .clienteDireccion("Av. Libertador 450, San Juan")
-                .tipoEntrega(com.bellafrodita.TiendaBellaAfrodita.orden.model.TipoEntrega.ENVIO_SAN_JUAN)
+                .tipoEntrega(com.bellafrodita.TiendaBellaAfrodita.orden.model.TipoEntrega.ENVIO_MOTO_SAN_JUAN)
                 .items(List.of(
                         CheckoutItemRequest.builder()
                                 .productoId(guardado.getId())
@@ -180,11 +190,30 @@ public class InventarioYOrdenIntegrationTest {
         OrdenResponse respuesta = ordenService.crearOrden(request);
 
         Assertions.assertNotNull(respuesta);
-        Assertions.assertEquals(com.bellafrodita.TiendaBellaAfrodita.orden.model.TipoEntrega.ENVIO_SAN_JUAN, respuesta.getTipoEntrega());
+        Assertions.assertEquals(com.bellafrodita.TiendaBellaAfrodita.orden.model.TipoEntrega.ENVIO_MOTO_SAN_JUAN, respuesta.getTipoEntrega());
         Assertions.assertEquals(new BigDecimal("2500.00"), respuesta.getCostoEnvio());
         Assertions.assertEquals(new BigDecimal("20000.00"), respuesta.getSubtotal());
         Assertions.assertEquals(new BigDecimal("22500.00"), respuesta.getTotal());
         Assertions.assertTrue(respuesta.getWhatsappUrl().contains("TOTAL"));
         Assertions.assertTrue(respuesta.getWhatsappUrl().contains("San+Juan"));
+    }
+
+    @Test
+    @DisplayName("Debe consultar y alternar productos destacados para la portada de inicio")
+    @Transactional
+    public void testProductosDestacadosInicio() {
+        Producto prod = Producto.builder()
+                .nombre("Conjunto Destacado Especial")
+                .descripcion("Para home page")
+                .categoria("conjuntos")
+                .precioMinorista(new BigDecimal("18000.00"))
+                .destacadoInicio(true)
+                .stock(true)
+                .build();
+        Producto guardado = productoRepository.save(prod);
+
+        List<Producto> destacados = productoRepository.findByDestacadoInicioTrue();
+        Assertions.assertFalse(destacados.isEmpty(), "Debe existir al menos un producto destacado");
+        Assertions.assertTrue(destacados.stream().anyMatch(p -> p.getId().equals(guardado.getId())));
     }
 }

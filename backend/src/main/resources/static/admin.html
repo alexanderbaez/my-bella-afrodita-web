@@ -514,13 +514,14 @@
                                 <th style="width: 140px;">Precio Min.</th>
                                 <th style="width: 140px;">Precio May.</th>
                                 <th>Talles</th>
+                                <th style="width: 95px;" class="text-center">⭐ Inicio</th>
                                 <th style="width: 110px;" class="text-center">Stock</th>
                                 <th style="width: 120px;" class="text-end">Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="tabla-productos-body">
                             <tr>
-                                <td colspan="8" class="text-center py-5">
+                                <td colspan="9" class="text-center py-5">
                                     <div class="spinner-border text-secondary" role="status">
                                         <span class="visually-hidden">Cargando...</span>
                                     </div>
@@ -774,10 +775,20 @@
                             </div>
 
                             <!-- Stock Inicial -->
-                            <div class="col-12">
+                            <div class="col-md-6">
                                 <div class="form-check form-switch pt-2">
                                     <input class="form-check-input" type="checkbox" id="prod-stock" checked>
                                     <label class="form-check-label fw-bold text-dark small" for="prod-stock">Prenda con Stock Activo para Venta</label>
+                                </div>
+                            </div>
+
+                            <!-- Destacado en Inicio -->
+                            <div class="col-md-6">
+                                <div class="form-check form-switch pt-2">
+                                    <input class="form-check-input" type="checkbox" id="prod-destacadoInicio">
+                                    <label class="form-check-label fw-bold text-dark small" for="prod-destacadoInicio">
+                                        ⭐ Mostrar como Destacado en Inicio
+                                    </label>
                                 </div>
                             </div>
                         </div>

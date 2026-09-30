@@ -209,7 +209,7 @@ function renderizarTabla(productos) {
     if (productos.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="8" class="text-center py-5 text-muted">
+                <td colspan="9" class="text-center py-5 text-muted">
                     No se encontraron productos con los filtros aplicados.
                 </td>
             </tr>`;
@@ -277,6 +277,15 @@ function renderizarTabla(productos) {
                     <div class="d-flex flex-wrap gap-1" style="max-width: 220px;">
                         ${tallesHtml}
                     </div>
+                </td>
+                <td class="text-center">
+                    <button type="button" 
+                            class="btn btn-sm ${p.destacadoInicio ? 'btn-warning text-dark fw-bold' : 'btn-outline-secondary text-muted'}" 
+                            style="border-radius: 20px; font-size: 0.72rem; padding: 2px 10px;"
+                            onclick="alternarDestacadoProducto('${p.id}')"
+                            title="${p.destacadoInicio ? 'Destacado en Inicio (clic para quitar)' : 'No destacado (clic para destacar en inicio)'}">
+                        <i class="fas fa-star ${p.destacadoInicio ? '' : 'text-secondary'}"></i> ${p.destacadoInicio ? 'Sí' : 'No'}
+                    </button>
                 </td>
                 <td class="text-center">
                     <div class="fw-bold ${stockTotal === 0 ? 'text-danger' : (hayCritico ? 'text-warning' : 'text-success')}" style="font-size: 0.85rem;">
@@ -352,6 +361,53 @@ async function toggleStock(id, switchElem) {
         });
     }
 }
+
+// --- ALTERNAR DESTACADO EN INICIO ---
+window.alternarDestacadoProducto = async function (id) {
+    try {
+        const res = await fetch(`${API_BASE}/${id}/toggle-destacado`, {
+            method: 'PATCH',
+            credentials: 'include'
+        });
+
+        if (res.status === 401 || res.status === 403) {
+            manejarNoAutorizado('Sesión vencida. Ingresa como administrador para modificar destacados.');
+            return;
+        }
+
+        if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
+
+        const productoActualizado = await res.json();
+        
+        // Actualizar en el arreglo local
+        const index = listaProductos.findIndex(p => String(p.id) === String(id));
+        if (index !== -1) {
+            listaProductos[index].destacadoInicio = productoActualizado.destacadoInicio;
+        }
+
+        filtrarYRenderizar();
+
+        const estadoTxt = productoActualizado.destacadoInicio ? '⭐ Visible en Inicio' : 'No destacado';
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: `${productoActualizado.nombre}`,
+            text: `Destacado en Inicio: ${estadoTxt}`,
+            showConfirmButton: false,
+            timer: 2000,
+            iconColor: '#b38b4d',
+            width: '320px'
+        });
+    } catch (error) {
+        console.error("Error al alternar destacado:", error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error de Servidor',
+            text: 'No se pudo actualizar el estado de destacado en el servidor.'
+        });
+    }
+};
 
 // --- PRESETS DE TALLES POR CATEGORÍA ---
 const TALLES_PRESETS = {
@@ -486,6 +542,8 @@ function abrirModalCrear() {
     renderizarChipsTalles(catInicial, presetsIniciales, {});
 
     document.getElementById('prod-stock').checked = true;
+    const destCheck = document.getElementById('prod-destacadoInicio');
+    if (destCheck) destCheck.checked = false;
 
     // Resetear galería de imágenes
     imagenesProductoActual = [];
@@ -511,6 +569,8 @@ function abrirModalEditar(id) {
     document.getElementById('prod-precioMayorista').value = p.precioMayorista || '';
     document.getElementById('prod-etiqueta').value = p.etiqueta || '';
     document.getElementById('prod-stock').checked = p.stock !== false;
+    const destCheck = document.getElementById('prod-destacadoInicio');
+    if (destCheck) destCheck.checked = Boolean(p.destacadoInicio);
 
     // Talles y variantes
     const mapaStock = {};
@@ -674,6 +734,7 @@ async function guardarProducto(event) {
     const precioMayorista = precioMayoristaVal ? parseFloat(precioMayoristaVal) : null;
     const etiqueta = document.getElementById('prod-etiqueta').value.trim() || null;
     const stock = document.getElementById('prod-stock').checked;
+    const destacadoInicio = document.getElementById('prod-destacadoInicio')?.checked || false;
 
     // Obtener talles activos
     const talles = [];
@@ -714,6 +775,7 @@ async function guardarProducto(event) {
         precioMayorista,
         etiqueta,
         stock,
+        destacadoInicio,
         talles,
         variantes,
         imagenes

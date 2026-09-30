@@ -58,14 +58,10 @@ public class OrdenService {
         // 2. Determinar tipo de entrega y costo logístico
         TipoEntrega tipoEntrega = request.getTipoEntrega() != null ? request.getTipoEntrega() : TipoEntrega.RETIRO_SHOWROOM;
         BigDecimal costoEnvio = BigDecimal.ZERO;
-        if (tipoEntrega == TipoEntrega.ENVIO_SAN_JUAN) {
+        if (tipoEntrega == TipoEntrega.ENVIO_MOTO_SAN_JUAN) {
             costoEnvio = (request.getCostoEnvio() != null && request.getCostoEnvio().compareTo(BigDecimal.ZERO) >= 0)
                     ? request.getCostoEnvio()
                     : COSTO_SAN_JUAN;
-        } else if (tipoEntrega == TipoEntrega.ENVIO_NACIONAL) {
-            costoEnvio = (request.getCostoEnvio() != null && request.getCostoEnvio().compareTo(BigDecimal.ZERO) >= 0)
-                    ? request.getCostoEnvio()
-                    : COSTO_NACIONAL;
         }
 
         // 3. Generar código de seguimiento único
@@ -207,11 +203,9 @@ public class OrdenService {
 
         String metodoEntregaTexto;
         if (orden.getTipoEntrega() == TipoEntrega.RETIRO_SHOWROOM) {
-            metodoEntregaTexto = "Retiro en Showroom / Punto de Entrega (San Juan - Gratis)";
-        } else if (orden.getTipoEntrega() == TipoEntrega.ENVIO_SAN_JUAN) {
-            metodoEntregaTexto = "Envío a Domicilio en San Juan (+$" + df.format(orden.getCostoEnvio()) + ")";
-        } else if (orden.getTipoEntrega() == TipoEntrega.ENVIO_NACIONAL) {
-            metodoEntregaTexto = "Envío Nacional Correo (+$" + df.format(orden.getCostoEnvio()) + ")";
+            metodoEntregaTexto = "Retiro en Showroom / Punto Físico (San Juan - Gratis)";
+        } else if (orden.getTipoEntrega() == TipoEntrega.ENVIO_MOTO_SAN_JUAN) {
+            metodoEntregaTexto = "Envío en Moto / Cadetería San Juan (+$" + df.format(orden.getCostoEnvio()) + ")";
         } else {
             metodoEntregaTexto = orden.getTipoEntrega() != null ? orden.getTipoEntrega().name() : "A coordinar";
         }
