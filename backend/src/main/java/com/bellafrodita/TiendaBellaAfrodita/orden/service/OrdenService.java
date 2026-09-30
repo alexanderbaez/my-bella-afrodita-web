@@ -55,14 +55,11 @@ public class OrdenService {
 
         boolean esMayorista = totalUnidades >= 3;
 
-        // 2. Determinar tipo de entrega y costo logístico
-        TipoEntrega tipoEntrega = request.getTipoEntrega() != null ? request.getTipoEntrega() : TipoEntrega.RETIRO_SHOWROOM;
-        BigDecimal costoEnvio = BigDecimal.ZERO;
-        if (tipoEntrega == TipoEntrega.ENVIO_MOTO_SAN_JUAN) {
-            costoEnvio = (request.getCostoEnvio() != null && request.getCostoEnvio().compareTo(BigDecimal.ZERO) >= 0)
-                    ? request.getCostoEnvio()
-                    : COSTO_SAN_JUAN;
-        }
+        // 2. Determinar tipo de entrega y costo logístico (100% Online San Juan)
+        TipoEntrega tipoEntrega = request.getTipoEntrega() != null ? request.getTipoEntrega() : TipoEntrega.ENVIO_MOTO_SAN_JUAN;
+        BigDecimal costoEnvio = (request.getCostoEnvio() != null && request.getCostoEnvio().compareTo(BigDecimal.ZERO) >= 0)
+                ? request.getCostoEnvio()
+                : BigDecimal.ZERO;
 
         // 3. Generar código de seguimiento único
         String timestampPart = String.valueOf(System.currentTimeMillis()).substring(7);
@@ -201,15 +198,6 @@ public class OrdenService {
         symbols.setDecimalSeparator(',');
         DecimalFormat df = new DecimalFormat("#,##0", symbols);
 
-        String metodoEntregaTexto;
-        if (orden.getTipoEntrega() == TipoEntrega.RETIRO_SHOWROOM) {
-            metodoEntregaTexto = "Retiro en Showroom / Punto Físico (San Juan - Gratis)";
-        } else if (orden.getTipoEntrega() == TipoEntrega.ENVIO_MOTO_SAN_JUAN) {
-            metodoEntregaTexto = "Envío en Moto / Cadetería San Juan (+$" + df.format(orden.getCostoEnvio()) + ")";
-        } else {
-            metodoEntregaTexto = orden.getTipoEntrega() != null ? orden.getTipoEntrega().name() : "A coordinar";
-        }
-
         StringBuilder sb = new StringBuilder();
         sb.append("🛍️ *NUEVO PEDIDO: MY BELLA AFRODITA*\n");
         sb.append("🔖 *Código:* #").append(orden.getCodigoSeguimiento()).append("\n");
@@ -219,10 +207,17 @@ public class OrdenService {
         if (orden.getClienteEmail() != null && !orden.getClienteEmail().isBlank()) {
             sb.append("✉️ *Email:* ").append(orden.getClienteEmail()).append("\n");
         }
-        sb.append("🚚 *Entrega:* ").append(metodoEntregaTexto).append("\n");
-        if (orden.getClienteDireccion() != null && !orden.getClienteDireccion().isBlank()) {
-            sb.append("📍 *Dirección/Localidad:* ").append(orden.getClienteDireccion()).append("\n");
+
+        // Requerimiento exacto: 🛵 Entrega: Envío en Moto a [Departamento] - Dirección: [Calle, Nro, Entrecalles] (Costo de envío a coordinar)
+        String dirCliente = (orden.getClienteDireccion() != null && !orden.getClienteDireccion().isBlank())
+                ? orden.getClienteDireccion()
+                : "San Juan";
+        if (dirCliente.toLowerCase().startsWith("envío en moto a ") || dirCliente.toLowerCase().startsWith("envio en moto a ")) {
+            sb.append("🛵 *Entrega:* ").append(dirCliente).append(" (Costo de envío a coordinar)\n");
+        } else {
+            sb.append("🛵 *Entrega:* Envío en Moto a ").append(dirCliente).append(" (Costo de envío a coordinar)\n");
         }
+
         sb.append("💳 *Método de Pago:* ").append(orden.getMetodoPago()).append("\n");
         sb.append("------------------------------------------\n\n");
 
@@ -239,10 +234,8 @@ public class OrdenService {
         }
 
         sb.append("------------------------------------------\n");
-        if (orden.getCostoEnvio() != null && orden.getCostoEnvio().compareTo(BigDecimal.ZERO) > 0) {
-            sb.append("📦 *Costo de Envío:* $").append(df.format(orden.getCostoEnvio())).append("\n");
-        }
-        sb.append("💰 *TOTAL FINAL: $").append(df.format(orden.getTotal())).append("*\n");
+        sb.append("📦 *Envío:* A cotizar por zona (se abona al recibir o con el pago)\n");
+        sb.append("💰 *TOTAL PRENDAS: $").append(df.format(orden.getTotal())).append("*\n");
 
         if (orden.isEsMayorista() && orden.getDescuentoMayorista().compareTo(BigDecimal.ZERO) > 0) {
             sb.append("✨ _Beneficio mayorista aplicado por llevar 3 o más prendas._\n");
@@ -250,7 +243,7 @@ public class OrdenService {
                     .append(df.format(orden.getDescuentoMayorista())).append("!_\n");
         }
 
-        sb.append("\n📍 _San Juan, Argentina_");
+        sb.append("\n📍 _San Juan, Argentina • Operación 100% Online_");
 
         String textoCodificado = URLEncoder.encode(sb.toString(), StandardCharsets.UTF_8);
         return "https://wa.me/" + WHATSAPP_PHONE + "?text=" + textoCodificado;

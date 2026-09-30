@@ -2114,7 +2114,8 @@ img {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
-.btn-talle-detail.active {
+.btn-talle-detail.active,
+.btn-talle-detail.selected {
     background-color: var(--bg-obsidian);
     color: var(--gold-champagne);
     border-color: var(--bg-obsidian);

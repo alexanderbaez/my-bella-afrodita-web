@@ -46,7 +46,7 @@
                 </span>
                 <span class="promo-text" id="promo-msg-1">
                     <i class="fas fa-motorcycle me-1.5" style="color: #C5A880;"></i>
-                    Envíos en el día por moto cadetería en <strong>San Juan</strong> o retiro gratis en Showroom
+                    Envíos en el día por moto cadetería en <strong>San Juan</strong> &bull; Tienda 100% Online
                 </span>
                 <span class="promo-text" id="promo-msg-2">
                     <i class="fab fa-whatsapp me-1.5" style="color: #25D366;"></i>
@@ -232,32 +232,24 @@
 
         <!-- Drawer Footer -->
         <div class="cart-drawer-footer">
-            <!-- Selector de Método de Entrega en el Carrito -->
+            <!-- Selector de Método de Entrega en el Carrito (Exclusivo Moto San Juan) -->
             <div class="shipping-selector-group">
-                <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="d-flex justify-content-between align-items-center mb-1">
                     <span class="small text-uppercase fw-bold" style="font-size: 0.68rem; letter-spacing: 1px; color: var(--text-charcoal);">
-                        <i class="fas fa-truck-fast me-1" style="color: var(--gold-dark);"></i> Método de Entrega:
+                        <i class="fas fa-motorcycle me-1" style="color: var(--gold-dark);"></i> Logística Exclusiva San Juan:
                     </span>
-                    <span id="drawer-shipping-badge" class="badge-free-shipping">¡Gratis!</span>
+                    <span id="drawer-shipping-badge" class="badge-free-shipping" style="background: rgba(18,18,18,0.06); color: #121212; border: 1px solid rgba(18,18,18,0.15);">A coordinar</span>
                 </div>
                 
-                <div class="shipping-option-card active" id="card-ship-showroom" onclick="cambiarMetodoEntrega('RETIRO_SHOWROOM')">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <label class="d-flex align-items-center mb-0 cursor-pointer small fw-semibold">
-                            <input type="radio" name="radioEntrega" value="RETIRO_SHOWROOM" checked onchange="cambiarMetodoEntrega('RETIRO_SHOWROOM')">
-                            Retiro en Showroom / Punto Físico
-                        </label>
-                        <span class="text-success small fw-bold">Gratis</span>
-                    </div>
-                </div>
-
-                <div class="shipping-option-card" id="card-ship-moto" onclick="cambiarMetodoEntrega('ENVIO_MOTO_SAN_JUAN')">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <label class="d-flex align-items-center mb-0 cursor-pointer small fw-semibold">
-                            <input type="radio" name="radioEntrega" value="ENVIO_MOTO_SAN_JUAN" onchange="cambiarMetodoEntrega('ENVIO_MOTO_SAN_JUAN')">
-                            Envío en Moto / Cadetería (San Juan)
-                        </label>
-                        <span class="shipping-price-tag">+$2.500</span>
+                <div class="shipping-option-card active" id="card-ship-moto">
+                    <div class="d-flex align-items-start gap-2">
+                        <i class="fas fa-motorcycle text-dark mt-1" style="font-size: 1.05rem;"></i>
+                        <div>
+                            <div class="small fw-semibold text-dark">Envío a Domicilio en Moto (San Juan)</div>
+                            <small class="text-muted d-block" style="font-size: 0.68rem; line-height: 1.25;">
+                                Costo de envío a coordinar según zona exacta (se abona al recibir o junto con el pago).
+                            </small>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -276,12 +268,12 @@
             </div>
 
             <div class="d-flex justify-content-between align-items-center mb-2 text-muted" style="font-size: 0.76rem;">
-                <span>Costo de Envío:</span>
-                <span id="drawer-shipping-cost" class="fw-semibold text-success">Gratis</span>
+                <span>Envío en Moto:</span>
+                <span id="drawer-shipping-cost" class="fw-semibold text-dark" style="font-size: 0.73rem;">A cotizar por zona</span>
             </div>
 
             <div class="d-flex justify-content-between align-items-baseline mb-3 pt-2 border-top">
-                <span class="text-uppercase small fw-semibold" style="letter-spacing: 1.5px; font-size: 0.72rem; color: var(--text-taupe);">Total Final:</span>
+                <span class="text-uppercase small fw-semibold" style="letter-spacing: 1.5px; font-size: 0.72rem; color: var(--text-taupe);">Total Prendas:</span>
                 <div id="cart-total" class="fw-bold h4 mb-0 font-serif" style="color: var(--text-charcoal);">$0</div>
             </div>
 
@@ -600,7 +592,7 @@
                                     </h2>
                                     <div id="faq-cat-2" class="accordion-collapse collapse" data-bs-parent="#faqAccordionCat">
                                         <div class="accordion-body small text-muted">
-                                            Aceptamos transferencia bancaria directa, efectivo contra entrega y Mercado Pago. Entregamos mediante Retiro en Showroom San Juan (Gratis), Envíos a Domicilio en San Juan ($2.500) y Envíos Nacionales a todo el país ($6.500).
+                                            Aceptamos transferencia bancaria directa, efectivo contra entrega y Mercado Pago. Entregamos mediante Envíos a Domicilio en Moto en San Juan (costo a coordinar según zona) y Envíos Nacionales a todo el país.
                                         </div>
                                     </div>
                                 </div>

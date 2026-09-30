@@ -29,11 +29,10 @@ let talleSeleccionadoQuickView = null;
 let cantidadQuickView = 1;
 const talleSeleccionadoPorProducto = {};
 
-// --- MÓDULO DE LOGÍSTICA & SELECCIÓN DE ENTREGA (EXCLUSIVO SAN JUAN) ---
-let TIPO_ENTREGA_SELECCIONADO = 'RETIRO_SHOWROOM';
+// --- MÓDULO DE LOGÍSTICA & SELECCIÓN DE ENTREGA (EXCLUSIVO SAN JUAN - 100% ONLINE) ---
+let TIPO_ENTREGA_SELECCIONADO = 'ENVIO_MOTO_SAN_JUAN';
 const COSTOS_ENVIO = {
-    RETIRO_SHOWROOM: 0,
-    ENVIO_MOTO_SAN_JUAN: 2500
+    ENVIO_MOTO_SAN_JUAN: 0
 };
 
 window.navegarAProducto = function (id) {
@@ -64,26 +63,9 @@ window.abrirGuiaMedidas = function () {
 };
 
 window.cambiarMetodoEntrega = function (tipo) {
-    if (!COSTOS_ENVIO.hasOwnProperty(tipo)) return;
-    TIPO_ENTREGA_SELECCIONADO = tipo;
-
-    const radios = document.querySelectorAll('input[name="radioEntrega"]');
-    radios.forEach(r => {
-        r.checked = (r.value === tipo);
-    });
-
-    const cards = [
-        { id: 'card-ship-showroom', tipo: 'RETIRO_SHOWROOM' },
-        { id: 'card-ship-moto', tipo: 'ENVIO_MOTO_SAN_JUAN' }
-    ];
-    cards.forEach(c => {
-        const el = document.getElementById(c.id);
-        if (el) {
-            if (c.tipo === tipo) el.classList.add('active');
-            else el.classList.remove('active');
-        }
-    });
-
+    TIPO_ENTREGA_SELECCIONADO = 'ENVIO_MOTO_SAN_JUAN';
+    const cardMoto = document.getElementById('card-ship-moto');
+    if (cardMoto) cardMoto.classList.add('active');
     renderizarListaCarrito();
 };
 
@@ -703,9 +685,9 @@ function dibujarProductos(lista) {
                         <div class="product-card-actions">
                             <button class="btn btn-add-boutique flex-grow-1" 
                                     ${!tieneStock ? 'disabled' : ''} 
-                                    onclick="agregarAlCarrito(event, '${p.id}')">
-                                <i class="fas ${tieneStock ? 'fa-shopping-bag' : 'fa-times'} me-1.5"></i>
-                                ${tieneStock ? 'Añadir a la Bolsa' : 'Agotado'}
+                                    onclick="navegarAProducto('${p.id}')">
+                                <i class="fas ${tieneStock ? 'fa-tag' : 'fa-times'} me-1.5"></i>
+                                ${tieneStock ? 'Elegir Talle / Comprar' : 'Agotado'}
                             </button>
                             <button class="btn-share-card" 
                                     onclick="compartirProducto(event, '${p.id}', '${p.nombre.replace(/'/g, "\\'")}', '${p.precioMinorista}')" 
@@ -919,8 +901,8 @@ async function cargarDestacadosInicio() {
                                     <span class="price-retail-highlight">$${Number(p.precioMinorista).toLocaleString('es-AR')}</span>
                                 </div>
                                 <div class="product-card-actions mt-2">
-                                    <button class="btn btn-add-boutique flex-grow-1" onclick="agregarAlCarrito(event, '${p.id}')">
-                                        <i class="fas fa-shopping-bag me-1.5"></i> Añadir a la Bolsa
+                                    <button class="btn btn-add-boutique flex-grow-1" onclick="navegarAProducto('${p.id}')">
+                                        <i class="fas fa-tag me-1.5"></i> Elegir Talle / Comprar
                                     </button>
                                     <button class="btn-share-card" onclick="compartirProducto(event, '${p.id}', '${p.nombre.replace(/'/g, "\\'")}', '${p.precioMinorista}')" title="Compartir">
                                         <i class="fas fa-share-nodes"></i>
@@ -1077,20 +1059,20 @@ function calcularTotalCarrito() {
     let aplicoAlgunaPromocion = false;
 
     carrito.forEach(item => {
-        const p = PRODUCTOS.find(prod => String(prod.id) === String(item.id));
-        const precioMinoristaEfectivo = p ? (p.precioMinorista || p.precio) : item.precio;
+        const p = (Array.isArray(PRODUCTOS) && PRODUCTOS.length > 0)
+            ? PRODUCTOS.find(prod => String(prod.id) === String(item.id))
+            : (typeof PRODUCTO_ACTUAL !== 'undefined' && String(PRODUCTO_ACTUAL?.id) === String(item.id) ? PRODUCTO_ACTUAL : null);
+
+        const precioMinoristaEfectivo = p ? (p.precioMinorista || p.precio) : (item.precioMinorista || item.precio || 0);
+        const precioMayoristaEfectivo = p ? p.precioMayorista : (item.precioMayorista || 0);
         
         totalBaseMinorista += precioMinoristaEfectivo * item.cantidad;
 
-        if (p) {
-            if (cumpleCriterioCantidad && p.precioMayorista && p.precioMayorista > 0) {
-                totalGeneral += p.precioMayorista * item.cantidad;
-                aplicoAlgunaPromocion = true;
-            } else {
-                totalGeneral += precioMinoristaEfectivo * item.cantidad;
-            }
+        if (cumpleCriterioCantidad && precioMayoristaEfectivo && precioMayoristaEfectivo > 0) {
+            totalGeneral += precioMayoristaEfectivo * item.cantidad;
+            aplicoAlgunaPromocion = true;
         } else {
-            totalGeneral += item.precio * item.cantidad;
+            totalGeneral += precioMinoristaEfectivo * item.cantidad;
         }
     });
 
@@ -1144,8 +1126,13 @@ window.renderizarListaCarrito = function () {
     let cartHtml = '';
 
     carrito.forEach((item, index) => {
-        const p = PRODUCTOS.find(prod => String(prod.id) === String(item.id));
-        const precioAplicado = (res.esMayorista && p?.precioMayorista) ? p.precioMayorista : (p?.precioMinorista || item.precio);
+        const p = (Array.isArray(PRODUCTOS) && PRODUCTOS.length > 0)
+            ? PRODUCTOS.find(prod => String(prod.id) === String(item.id))
+            : (typeof PRODUCTO_ACTUAL !== 'undefined' && String(PRODUCTO_ACTUAL?.id) === String(item.id) ? PRODUCTO_ACTUAL : null);
+
+        const precioUnitarioItem = item.precioMinorista || item.precio || 0;
+        const precioMayoristaItem = item.precioMayorista || p?.precioMayorista || precioUnitarioItem;
+        const precioAplicado = (res.esMayorista && precioMayoristaItem) ? precioMayoristaItem : (p?.precioMinorista || precioUnitarioItem);
         const subtotalItem = precioAplicado * item.cantidad;
         const fotoCruda = item.imagen || (p?.imagenes && p.imagenes[0]) || '';
         const fotoItem = normalizarUrlImagen(fotoCruda);
@@ -1190,10 +1177,7 @@ window.renderizarListaCarrito = function () {
 
     container.innerHTML = cartHtml;
 
-    // Cálculo del Costo de Envío y Total Final
-    const costoEnvio = COSTOS_ENVIO[TIPO_ENTREGA_SELECCIONADO] || 0;
-    const totalConEnvio = res.total + costoEnvio;
-
+    // Totales y Logística San Juan (100% Online - Cadetería a coordinar)
     const subtotalEl = document.getElementById('drawer-subtotal');
     if (subtotalEl) {
         subtotalEl.innerText = `$${res.total.toLocaleString('es-AR')}`;
@@ -1202,29 +1186,17 @@ window.renderizarListaCarrito = function () {
     const shippingCostEl = document.getElementById('drawer-shipping-cost');
     const shippingBadgeEl = document.getElementById('drawer-shipping-badge');
     if (shippingCostEl) {
-        if (costoEnvio === 0) {
-            shippingCostEl.innerText = 'Gratis';
-            shippingCostEl.className = 'fw-semibold text-success';
-        } else {
-            shippingCostEl.innerText = `+$${costoEnvio.toLocaleString('es-AR')}`;
-            shippingCostEl.className = 'fw-bold text-dark';
-        }
+        shippingCostEl.innerText = 'A cotizar por zona';
+        shippingCostEl.className = 'fw-semibold text-muted';
     }
     if (shippingBadgeEl) {
-        if (TIPO_ENTREGA_SELECCIONADO === 'RETIRO_SHOWROOM') {
-            shippingBadgeEl.innerText = '¡Gratis!';
-            shippingBadgeEl.className = 'badge-free-shipping';
-        } else if (TIPO_ENTREGA_SELECCIONADO === 'ENVIO_SAN_JUAN') {
-            shippingBadgeEl.innerText = 'San Juan';
-            shippingBadgeEl.className = 'badge bg-warning text-dark';
-        } else {
-            shippingBadgeEl.innerText = 'Nacional';
-            shippingBadgeEl.className = 'badge bg-dark text-white';
-        }
+        shippingBadgeEl.innerText = 'A coordinar';
+        shippingBadgeEl.className = 'badge bg-warning text-dark';
     }
 
     if (totalElement) {
-        totalElement.innerText = `$${totalConEnvio.toLocaleString('es-AR')}`;
+        // En el total del pedido figura el subtotal de prendas
+        totalElement.innerText = `$${res.total.toLocaleString('es-AR')}`;
     }
 
     if (savingsContainer && savingsAmount) {
@@ -1276,9 +1248,15 @@ function actualizarBarrasProgresoUX(unidades, ahorro) {
 
 // --- AGREGAR AL CARRITO (DISPARA EL DRAWER SLIDE-OVER INMEDIATO) ---
 window.agregarAlCarrito = function (event, id, talleForzado = null, cantidadToAdd = 1) {
-    if (event) event.stopPropagation();
-    const p = PRODUCTOS.find(prod => String(prod.id) === String(id));
-    if (!p) return;
+    if (event && typeof event.stopPropagation === 'function') event.stopPropagation();
+    const p = (Array.isArray(PRODUCTOS) && PRODUCTOS.length > 0)
+        ? PRODUCTOS.find(prod => String(prod.id) === String(id))
+        : (typeof PRODUCTO_ACTUAL !== 'undefined' && String(PRODUCTO_ACTUAL?.id) === String(id) ? PRODUCTO_ACTUAL : null);
+
+    if (!p) {
+        console.warn(`[CARRITO] Prenda no localizada con ID ${id}`);
+        return;
+    }
 
     const variantes = Array.isArray(p.variantes) ? p.variantes : [];
     let talleElegido = 'Único';
@@ -1339,15 +1317,23 @@ window.agregarAlCarrito = function (event, id, talleForzado = null, cantidadToAd
         return;
     }
 
+    const precioMinoristaNum = Number(p.precioMinorista) || Number(p.precio) || 0;
+    const precioMayoristaNum = Number(p.precioMayorista) || precioMinoristaNum;
+
     if (existe) {
         existe.cantidad += cantNum;
         existe.stockMax = maxStock;
+        existe.precioMinorista = precioMinoristaNum;
+        existe.precioMayorista = precioMayoristaNum;
+        existe.precio = precioMinoristaNum;
     } else {
         const foto = (p.imagenes && p.imagenes.length > 0) ? p.imagenes[0] : '';
         carrito.push({
-            id: p.id,
+            id: Number(p.id),
             nombre: p.nombre,
-            precio: p.precioMinorista,
+            precio: precioMinoristaNum,
+            precioMinorista: precioMinoristaNum,
+            precioMayorista: precioMayoristaNum,
             imagen: foto,
             talle: talleElegido,
             stockMax: maxStock,
@@ -1356,6 +1342,7 @@ window.agregarAlCarrito = function (event, id, talleForzado = null, cantidadToAd
     }
 
     actualizarYGuardar();
+    renderizarListaCarrito();
 
     // Notificación toast boutique
     Swal.fire({
@@ -1416,6 +1403,10 @@ window.eliminarDelCarrito = function (index) {
     renderizarListaCarrito();
 };
 
+// Alias globales para consistencia y reactividad en componentes externos
+window.modificarCantidadItem = window.cambiarCantidad;
+window.eliminarItemCarrito = window.eliminarDelCarrito;
+
 window.confirmarVaciarCarrito = function () {
     if (carrito.length === 0) return;
 
@@ -1474,55 +1465,64 @@ async function enviarPedidoWhatsApp() {
 
     cerrarCarritoDrawer();
 
+    const resTotales = calcularTotalCarrito();
     const departamentosSanJuan = [
-        "Capital", "Rawson", "Rivadavia", "Santa Lucía", "Chimbas",
-        "Pocito", "Caucete", "Albardón", "Sarmiento", "25 de Mayo",
-        "San Martín", "Angaco", "Zonda", "Ullum", "9 de Julio",
-        "Jáchal", "Valle Fértil", "Iglesia", "Calingasta"
+        "Capital", "Rivadavia", "Santa Lucía", "Rawson", "Chimbas",
+        "Pocito", "Albardón", "Caucete", "Otros"
     ];
 
     const { value: formValues } = await Swal.fire({
-        title: 'Checkout · San Juan Boutique',
+        title: 'Checkout · Envío a Domicilio (San Juan)',
         html: `
             <div class="text-start">
-                <p class="text-muted small mb-3" style="letter-spacing: 0.2px; font-size: 0.77rem;">
-                    <i class="fas fa-lock me-1 text-success"></i> Compra directa sin registros. Entregas exclusivas en la Provincia de San Juan.
-                </p>
-                <div class="mb-2.5">
-                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.69rem; letter-spacing: 0.6px;">1. Nombre y Apellido *</label>
+                <!-- Banner Método Logístico Transparente -->
+                <div class="p-2.5 mb-3 rounded border" style="background: #FAF9F6; border-color: #E8E4D9 !important;">
+                    <div class="d-flex align-items-center mb-1">
+                        <span class="badge bg-dark text-white me-2" style="letter-spacing: 0.5px; font-size: 0.65rem;">OPERACIÓN 100% ONLINE</span>
+                        <strong style="font-size: 0.8rem; color: #1a1a1a;">🛵 Envío a Domicilio en Moto (San Juan)</strong>
+                    </div>
+                    <p class="text-muted small mb-0" style="font-size: 0.72rem; line-height: 1.4;">
+                        <i class="fas fa-info-circle text-warning me-1"></i> Costo de envío a coordinar según zona exacta (se abona al recibir o junto con el pago).
+                    </p>
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">1. Nombre y Apellido *</label>
                     <input type="text" id="swal-cliente-nombre" class="form-control form-control-sm" placeholder="Ej: Valentina Gómez" autocomplete="name">
                 </div>
-                <div class="mb-2.5">
-                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.69rem; letter-spacing: 0.6px;">2. WhatsApp / Teléfono de contacto *</label>
+                <div class="mb-2">
+                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">2. WhatsApp de Contacto *</label>
                     <input type="tel" id="swal-cliente-telefono" class="form-control form-control-sm" placeholder="Ej: 264 555-1234" autocomplete="tel">
                 </div>
-                <div class="mb-2.5">
-                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.69rem; letter-spacing: 0.6px;">3. Email <span class="text-muted fw-normal">(Opcional)</span></label>
+                <div class="mb-2">
+                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">3. Email <span class="text-muted fw-normal">(Opcional)</span></label>
                     <input type="email" id="swal-cliente-email" class="form-control form-control-sm" placeholder="Ej: valentina@email.com" autocomplete="email">
                 </div>
-                <div class="mb-2.5">
-                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.69rem; letter-spacing: 0.6px;">4. Método de Entrega (San Juan) *</label>
-                    <select id="swal-tipo-entrega" class="form-select form-select-sm mb-1.5" onchange="window.actualizarModalEnvio(this.value)">
-                        <option value="RETIRO_SHOWROOM" ${TIPO_ENTREGA_SELECCIONADO === 'RETIRO_SHOWROOM' ? 'selected' : ''}>1) Retiro en Showroom / Punto Físico (Gratis)</option>
-                        <option value="ENVIO_MOTO_SAN_JUAN" ${TIPO_ENTREGA_SELECCIONADO === 'ENVIO_MOTO_SAN_JUAN' ? 'selected' : ''}>2) Envío en Moto / Cadetería (San Juan - $2.500)</option>
+                <div class="mb-2">
+                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">4. Departamento (San Juan) *</label>
+                    <select id="swal-cliente-departamento" class="form-select form-select-sm">
+                        <option value="">Selecciona tu departamento...</option>
+                        ${departamentosSanJuan.map(d => `<option value="${d}">${d}</option>`).join('')}
                     </select>
                 </div>
-                <div id="swal-cadeteria-fields" class="${TIPO_ENTREGA_SELECCIONADO === 'RETIRO_SHOWROOM' ? 'd-none' : ''}">
-                    <div class="mb-2.5">
-                        <label class="form-label small fw-bold text-uppercase" style="font-size: 0.69rem; letter-spacing: 0.6px;">5. Departamento (San Juan) *</label>
-                        <select id="swal-cliente-departamento" class="form-select form-select-sm">
-                            <option value="">Selecciona tu departamento...</option>
-                            ${departamentosSanJuan.map(d => `<option value="${d}">${d}</option>`).join('')}
-                        </select>
+                <div class="mb-2">
+                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">5. Dirección Exacta (Calle, Nro, Barrio) *</label>
+                    <input type="text" id="swal-cliente-direccion" class="form-control form-control-sm" placeholder="Ej: Av. Libertador 1250 Oeste, Barrio Rivadavia">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">6. Entrecalles y Referencias para el Cadete *</label>
+                    <input type="text" id="swal-cliente-referencias" class="form-control form-control-sm" placeholder="Ej: Entre Urquiza y Paula. Portón negro">
+                    <small class="text-muted" style="font-size:0.67rem;">Requerido para que el cadete ubique tu domicilio sin demoras.</small>
+                </div>
+
+                <!-- Resumen de Pedido Transparente -->
+                <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="small text-muted" style="font-size: 0.72rem;">Subtotal Prendas:</span>
+                        <div class="fw-bold text-dark font-serif" style="font-size: 1.05rem;">$${resTotales.total.toLocaleString('es-AR')}</div>
                     </div>
-                    <div class="mb-2.5">
-                        <label class="form-label small fw-bold text-uppercase" style="font-size: 0.69rem; letter-spacing: 0.6px;">6. Dirección Exacta (Calle y Altura / Barrio / Mza) *</label>
-                        <input type="text" id="swal-cliente-direccion" class="form-control form-control-sm" placeholder="Ej: Av. Libertador 1250 Oeste, Piso 2 B">
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label small fw-bold text-uppercase" style="font-size: 0.69rem; letter-spacing: 0.6px;">7. Entrecalles y Referencias para la Cadetería *</label>
-                        <input type="text" id="swal-cliente-referencias" class="form-control form-control-sm" placeholder="Ej: Entre Urquiza y Paula A. de Sarmiento. Portón negro">
-                        <small class="text-muted" style="font-size:0.67rem;">Indispensable para que la moto de cadetería ubique tu domicilio sin demoras.</small>
+                    <div class="text-end">
+                        <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 0.7rem;">Envío: A cotizar por zona</span>
                     </div>
                 </div>
             </div>
@@ -1536,56 +1536,48 @@ async function enviarPedidoWhatsApp() {
         didOpen: () => {
             const input = document.getElementById('swal-cliente-nombre');
             if (input) input.focus();
-
-            window.actualizarModalEnvio = function(tipo) {
-                const cadeteriaContainer = document.getElementById('swal-cadeteria-fields');
-                if (cadeteriaContainer) {
-                    if (tipo === 'ENVIO_MOTO_SAN_JUAN') {
-                        cadeteriaContainer.classList.remove('d-none');
-                    } else {
-                        cadeteriaContainer.classList.add('d-none');
-                    }
-                }
-            };
         },
         preConfirm: () => {
             const nombre = document.getElementById('swal-cliente-nombre')?.value.trim();
             const telefono = document.getElementById('swal-cliente-telefono')?.value.trim();
             const email = document.getElementById('swal-cliente-email')?.value.trim();
-            const tipoEntrega = document.getElementById('swal-tipo-entrega')?.value || TIPO_ENTREGA_SELECCIONADO;
+            const depto = document.getElementById('swal-cliente-departamento')?.value.trim();
+            const direccion = document.getElementById('swal-cliente-direccion')?.value.trim();
+            const referencias = document.getElementById('swal-cliente-referencias')?.value.trim();
 
             if (!nombre) {
-                Swal.showValidationMessage('¡Por favor ingresa tu nombre completo!');
+                Swal.showValidationMessage('¡Por favor ingresa tu nombre y apellido!');
                 return false;
             }
             if (!telefono) {
                 Swal.showValidationMessage('¡Ingresa tu número de WhatsApp para contactarte!');
                 return false;
             }
-
-            let direccionCompleta = 'Retiro en Showroom / Punto Físico';
-            if (tipoEntrega === 'ENVIO_MOTO_SAN_JUAN') {
-                const depto = document.getElementById('swal-cliente-departamento')?.value.trim();
-                const direccion = document.getElementById('swal-cliente-direccion')?.value.trim();
-                const referencias = document.getElementById('swal-cliente-referencias')?.value.trim();
-
-                if (!depto) {
-                    Swal.showValidationMessage('¡Selecciona el departamento de San Juan para el envío en moto!');
-                    return false;
-                }
-                if (!direccion || direccion.length < 5) {
-                    Swal.showValidationMessage('¡Ingresa la calle y número o barrio para la cadetería!');
-                    return false;
-                }
-                if (!referencias || referencias.length < 4) {
-                    Swal.showValidationMessage('¡Indica entrecalles o referencias visuales para la moto de cadetería!');
-                    return false;
-                }
-
-                direccionCompleta = `${direccion} (Depto: ${depto}) - Ref: ${referencias}`;
+            if (!depto) {
+                Swal.showValidationMessage('¡Selecciona tu Departamento de San Juan!');
+                return false;
+            }
+            if (!direccion || direccion.length < 4) {
+                Swal.showValidationMessage('¡Ingresa tu calle y número o barrio exacto!');
+                return false;
+            }
+            if (!referencias || referencias.length < 3) {
+                Swal.showValidationMessage('¡Indica entrecalles o referencias para el cadete en moto!');
+                return false;
             }
 
-            return { nombre, telefono, email, direccion: direccionCompleta, tipoEntrega };
+            // Formato estructurado: [Departamento] - Dirección: [Calle, Nro, Entrecalles]
+            const direccionCompleta = `${depto} - Dirección: ${direccion}, Entrecalles: ${referencias}`;
+            return {
+                nombre,
+                telefono,
+                email,
+                depto,
+                direccionExacta: direccion,
+                referencias,
+                direccion: direccionCompleta,
+                tipoEntrega: 'ENVIO_MOTO_SAN_JUAN'
+            };
         }
     });
 
@@ -1594,8 +1586,8 @@ async function enviarPedidoWhatsApp() {
         return;
     }
 
-    TIPO_ENTREGA_SELECCIONADO = formValues.tipoEntrega;
-    const costoEnvio = COSTOS_ENVIO[TIPO_ENTREGA_SELECCIONADO] || 0;
+    TIPO_ENTREGA_SELECCIONADO = 'ENVIO_MOTO_SAN_JUAN';
+    const costoEnvio = 0;
 
     Swal.fire({
         title: 'Registrando tu orden...',
@@ -1611,8 +1603,8 @@ async function enviarPedidoWhatsApp() {
             clienteNombre: formValues.nombre,
             clienteTelefono: formValues.telefono,
             clienteEmail: formValues.email || null,
-            clienteDireccion: formValues.direccion || null,
-            tipoEntrega: formValues.tipoEntrega,
+            clienteDireccion: formValues.direccion,
+            tipoEntrega: 'ENVIO_MOTO_SAN_JUAN',
             costoEnvio: costoEnvio,
             items: carrito.map(item => ({
                 productoId: Number(item.id),
@@ -1639,23 +1631,35 @@ async function enviarPedidoWhatsApp() {
         actualizarYGuardar();
         renderizarListaCarrito();
 
+        // Construir URL WhatsApp en caso de fallback si la API no la devolviera
+        let waUrl = ordenResponse.whatsappUrl;
+        if (!waUrl) {
+            const tel = "5492646121771";
+            let msg = `🛍️ *NUEVO PEDIDO: MY BELLA AFRODITA*\n`;
+            msg += `🔖 *Código:* #${ordenResponse.codigoSeguimiento}\n`;
+            msg += `------------------------------------------\n`;
+            msg += `👤 *Cliente:* ${formValues.nombre}\n`;
+            msg += `📱 *Teléfono:* ${formValues.telefono}\n`;
+            msg += `🛵 *Entrega:* Envío en Moto a ${formValues.depto} - Dirección: ${formValues.direccionExacta}, ${formValues.referencias} (Costo de envío a coordinar)\n`;
+            msg += `------------------------------------------\n`;
+            msg += `📦 *Envío:* A cotizar por zona\n`;
+            msg += `💰 *TOTAL PRENDAS: $${Number(ordenResponse.total).toLocaleString('es-AR')}*\n`;
+            waUrl = `https://wa.me/${tel}?text=${encodeURIComponent(msg)}`;
+        }
+
         Swal.fire({
             icon: 'success',
             title: '¡Orden Creada con Éxito!',
-            html: `Número de seguimiento: <b class="text-dark">#${ordenResponse.codigoSeguimiento}</b><br><small class="text-muted">Total: $${Number(ordenResponse.total).toLocaleString('es-AR')}</small><br><br>Abriendo WhatsApp para coordinar el pago y envío...`,
+            html: `Número de seguimiento: <b class="text-dark">#${ordenResponse.codigoSeguimiento}</b><br><small class="text-muted">Subtotal Prendas: $${Number(ordenResponse.total).toLocaleString('es-AR')} + Envío a coordinar</small><br><br>Abriendo WhatsApp para coordinar el pago y envío...`,
             showConfirmButton: true,
-            confirmButtonText: 'Abrir WhatsApp',
+            confirmButtonText: '<i class="fab fa-whatsapp me-1"></i> Abrir WhatsApp Ahora',
             confirmButtonColor: '#28a745',
-            timer: 3000
+            timer: 3500
         }).then(() => {
-            if (ordenResponse.whatsappUrl) {
-                window.open(ordenResponse.whatsappUrl, '_blank');
+            if (waUrl) {
+                window.open(waUrl, '_blank');
             }
         });
-
-        if (ordenResponse.whatsappUrl) {
-            window.open(ordenResponse.whatsappUrl, '_blank');
-        }
 
     } catch (error) {
         console.error("Error en checkout de orden:", error);

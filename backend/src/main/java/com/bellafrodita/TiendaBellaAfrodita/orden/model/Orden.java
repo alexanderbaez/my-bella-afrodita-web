@@ -64,7 +64,7 @@ public class Orden {
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_entrega", nullable = false, length = 50)
     @Builder.Default
-    private TipoEntrega tipoEntrega = TipoEntrega.RETIRO_SHOWROOM;
+    private TipoEntrega tipoEntrega = TipoEntrega.ENVIO_MOTO_SAN_JUAN;
 
     @Column(name = "costo_envio", precision = 12, scale = 2, nullable = false)
     @Builder.Default
@@ -86,7 +86,7 @@ public class Orden {
             this.metodoPago = MetodoPago.WHATSAPP_EFECTIVO;
         }
         if (this.tipoEntrega == null) {
-            this.tipoEntrega = TipoEntrega.RETIRO_SHOWROOM;
+            this.tipoEntrega = TipoEntrega.ENVIO_MOTO_SAN_JUAN;
         }
         if (this.costoEnvio == null) {
             this.costoEnvio = BigDecimal.ZERO;

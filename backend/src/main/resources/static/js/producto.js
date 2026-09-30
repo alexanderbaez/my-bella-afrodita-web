@@ -74,15 +74,10 @@ function renderizarPaginaProducto(p) {
         ? p.imagenes.map(normalizarUrl)
         : ['https://via.placeholder.com/600x800?text=My+Bella+Afrodita'];
 
-    // Variantes y Stock
+    // Variantes y Stock (Sin preselección para obligar a elegir talle con precisión)
     const variantes = Array.isArray(p.variantes) ? p.variantes : [];
-    let primeraConStock = variantes.find(v => (v.stock || 0) > 0);
-    if (!primeraConStock && variantes.length > 0) {
-        primeraConStock = variantes[0];
-    }
-
-    TALLE_SELECCIONADO = primeraConStock ? primeraConStock.talle : (p.talles && p.talles[0] ? p.talles[0] : 'Único');
-    STOCK_DISPONIBLE_TALLE = primeraConStock ? (primeraConStock.stock || 0) : (p.stock !== false ? 5 : 0);
+    TALLE_SELECCIONADO = null;
+    STOCK_DISPONIBLE_TALLE = 0;
     CANTIDAD_SELECCIONADA = 1;
 
     // Cálculo precios
@@ -107,7 +102,7 @@ function renderizarPaginaProducto(p) {
                     <div class="d-flex align-items-center gap-2">
                         <span class="size-header-title">Seleccionar Talle:</span>
                         <div id="indicador-stock-live">
-                            ${generarBadgeStock(STOCK_DISPONIBLE_TALLE)}
+                            <span class="text-muted small" style="font-size:0.72rem;"><i class="fas fa-hand-pointer me-1"></i> Elige tu talle para ver disponibilidad</span>
                         </div>
                     </div>
                     <button type="button" class="btn-measure-guide" onclick="abrirGuiaMedidas()">
@@ -117,14 +112,14 @@ function renderizarPaginaProducto(p) {
                 <div class="product-size-grid" id="detalle-size-chips">
                     ${variantes.map(v => {
                         const agotado = (v.stock || 0) <= 0;
-                        const esActivo = v.talle === TALLE_SELECCIONADO;
+                        const esActivo = TALLE_SELECCIONADO && v.talle === TALLE_SELECCIONADO;
                         return `
                             <button type="button" 
-                                    class="btn-talle-detail ${agotado ? 'out-of-stock' : ''} ${esActivo ? 'active' : ''}" 
+                                    class="btn-talle-detail ${agotado ? 'out-of-stock' : ''} ${esActivo ? 'selected active' : ''}" 
                                     data-talle="${v.talle}" 
                                     data-stock="${v.stock || 0}"
                                     ${agotado ? 'disabled title="Agotado"' : `title="${v.stock} disponibles"`}
-                                    onclick="cambiarTalleDetalle('${v.talle}', ${v.stock || 0})">
+                                    onclick="window.cambiarTalleDetalle('${v.talle}', ${v.stock || 0})">
                                 ${v.talle}
                             </button>
                         `;
@@ -241,7 +236,7 @@ function renderizarPaginaProducto(p) {
                             </div>
                             <div class="micro-trust-item">
                                 <i class="fas fa-motorcycle"></i>
-                                <span>Envíos en Moto San Juan & Showroom</span>
+                                <span>Envíos en Moto a Todo San Juan</span>
                             </div>
                         </div>
 
@@ -326,7 +321,8 @@ function cambiarFotoPrincipal(url, thumbElement) {
 }
 
 // --- SELECTOR DE TALLE INTERACTIVO ---
-function cambiarTalleDetalle(talle, stock) {
+window.cambiarTalleDetalle = function (talle, stock) {
+    if (stock <= 0) return;
     TALLE_SELECCIONADO = talle;
     STOCK_DISPONIBLE_TALLE = stock;
     CANTIDAD_SELECCIONADA = 1;
@@ -334,17 +330,19 @@ function cambiarTalleDetalle(talle, stock) {
     const qtyVal = document.getElementById('detalle-qty-val');
     if (qtyVal) qtyVal.innerText = '1';
 
-    // Actualizar chips activos
+    // Actualizar chips activos marcando visualmente con .selected y .active
     const chips = document.querySelectorAll('.btn-talle-detail');
     chips.forEach(c => {
         if (c.getAttribute('data-talle') === talle) {
+            c.classList.add('selected');
             c.classList.add('active');
         } else {
+            c.classList.remove('selected');
             c.classList.remove('active');
         }
     });
 
-    // Actualizar indicador de stock
+    // Actualizar indicador de stock live
     const ind = document.getElementById('indicador-stock-live');
     if (ind) {
         ind.innerHTML = generarBadgeStock(stock);
@@ -352,7 +350,7 @@ function cambiarTalleDetalle(talle, stock) {
 
     // Actualizar enlace WhatsApp
     actualizarEnlaceWhatsApp();
-}
+};
 
 function generarBadgeStock(stock) {
     if (stock <= 0) {
@@ -382,9 +380,33 @@ function ajustarCantidadDetalle(delta) {
     if (qtyVal) qtyVal.innerText = CANTIDAD_SELECCIONADA;
 }
 
-function agregarAlCarritoDesdeDetalle(e) {
+window.agregarAlCarritoDesdeDetalle = function (e) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
     if (!PRODUCTO_ACTUAL) return;
-    if (STOCK_DISPONIBLE_TALLE <= 0) {
+
+    const variantes = Array.isArray(PRODUCTO_ACTUAL.variantes) ? PRODUCTO_ACTUAL.variantes : [];
+    const tieneTalles = variantes.length > 0;
+
+    // Si no ha elegido talle, muestra una alerta elegante
+    if (tieneTalles && !TALLE_SELECCIONADO) {
+        Swal.fire({
+            icon: 'info',
+            title: 'Selecciona tu talle',
+            text: 'Por favor, selecciona tu talle antes de continuar.',
+            confirmButtonColor: '#121212',
+            confirmButtonText: 'Entendido'
+        });
+        const chipsContainer = document.getElementById('detalle-size-chips');
+        if (chipsContainer) {
+            chipsContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return;
+    }
+
+    if (TALLE_SELECCIONADO && STOCK_DISPONIBLE_TALLE <= 0) {
         Swal.fire({
             icon: 'warning',
             title: 'Talle Agotado',
@@ -394,10 +416,37 @@ function agregarAlCarritoDesdeDetalle(e) {
         return;
     }
 
+    const talleFinal = TALLE_SELECCIONADO || (PRODUCTO_ACTUAL.talles && PRODUCTO_ACTUAL.talles[0] ? PRODUCTO_ACTUAL.talles[0] : 'Único');
+    const cantidad = CANTIDAD_SELECCIONADA || 1;
+
     if (typeof window.agregarAlCarrito === 'function') {
-        window.agregarAlCarrito(e, PRODUCTO_ACTUAL.id, TALLE_SELECCIONADO, CANTIDAD_SELECCIONADA);
+        window.agregarAlCarrito(e, PRODUCTO_ACTUAL.id, talleFinal, cantidad);
+    } else {
+        // Fallback directo persistente
+        let carritoLocal = JSON.parse(localStorage.getItem('myBellaCarrito')) || [];
+        const itemExistente = carritoLocal.find(it => String(it.id) === String(PRODUCTO_ACTUAL.id) && it.talle === talleFinal);
+        const foto = (PRODUCTO_ACTUAL.imagenes && PRODUCTO_ACTUAL.imagenes.length > 0) ? PRODUCTO_ACTUAL.imagenes[0] : '';
+        
+        if (itemExistente) {
+            itemExistente.cantidad += cantidad;
+        } else {
+            carritoLocal.push({
+                id: Number(PRODUCTO_ACTUAL.id),
+                nombre: PRODUCTO_ACTUAL.nombre,
+                precio: Number(PRODUCTO_ACTUAL.precioMinorista) || 0,
+                precioMinorista: Number(PRODUCTO_ACTUAL.precioMinorista) || 0,
+                precioMayorista: Number(PRODUCTO_ACTUAL.precioMayorista) || Number(PRODUCTO_ACTUAL.precioMinorista) || 0,
+                imagen: foto,
+                talle: talleFinal,
+                cantidad: cantidad
+            });
+        }
+        localStorage.setItem('myBellaCarrito', JSON.stringify(carritoLocal));
+        if (typeof window.actualizarContadorUI === 'function') window.actualizarContadorUI();
+        if (typeof window.renderizarListaCarrito === 'function') window.renderizarListaCarrito();
+        if (typeof window.abrirCarritoDrawer === 'function') window.abrirCarritoDrawer();
     }
-}
+};
 
 function actualizarEnlaceWhatsApp() {
     const btn = document.getElementById('btn-consultar-wa');
@@ -412,7 +461,7 @@ function actualizarEnlaceWhatsApp() {
     msg += `📏 *Talle seleccionado:* ${TALLE_SELECCIONADO || 'A definir'}\n`;
     msg += `💰 *Precio Minorista:* $${precio}\n`;
     msg += `🔗 *Enlace:* ${urlPrenda}\n\n`;
-    msg += `¿Tienen stock para coordinar retiro en Showroom San Juan o envío a domicilio? ¡Muchas gracias!`;
+    msg += `¿Tienen stock para coordinar envío a domicilio en San Juan? ¡Muchas gracias!`;
 
     btn.href = `https://wa.me/${telefono}?text=${encodeURIComponent(msg)}`;
 }
