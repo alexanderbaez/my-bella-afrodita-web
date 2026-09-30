@@ -580,7 +580,7 @@ function renderizarAdminQuickBar(data) {
                         <i class="fas fa-user-shield me-1"></i>MODO ADMINISTRADOR ACTIVO
                     </span>
                     <span class="small text-white-50 d-none d-md-inline" style="font-size: 0.72rem;">
-                        ${data.email || 'admin@bellafrodita.com'}
+                        ${data.email || 'lopezandre26@gmail.com'}
                     </span>
                 </div>
                 <div class="d-flex align-items-center gap-2">
@@ -609,6 +609,7 @@ window.cerrarSesionAdminDesdeTienda = async function () {
         await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
     } catch (e) {}
     sessionStorage.removeItem('myBellaAdminUser');
+    localStorage.removeItem('myBellaAdminUser');
     window.location.reload();
 };
 

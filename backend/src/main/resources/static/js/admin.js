@@ -26,6 +26,7 @@ async function verificarSesionAdmin() {
         return data;
     } catch (e) {
         sessionStorage.removeItem('myBellaAdminUser');
+        localStorage.removeItem('myBellaAdminUser');
         window.location.href = '/login.html';
         return null;
     }
@@ -129,6 +130,7 @@ window.cerrarSesionAdmin = async function () {
         console.error("Error al cerrar sesión:", e);
     }
     sessionStorage.removeItem('myBellaAdminUser');
+    localStorage.removeItem('myBellaAdminUser');
     window.location.href = '/login.html';
 };
 
@@ -812,6 +814,7 @@ async function eliminarProducto(id, nombre) {
 // --- MANEJO DE SESIÓN / NO AUTORIZADO ---
 function manejarNoAutorizado(mensaje = 'Tu sesión ha expirado o no tienes permisos de administrador.') {
     sessionStorage.removeItem('myBellaAdminUser');
+    localStorage.removeItem('myBellaAdminUser');
     Swal.fire({
         icon: 'warning',
         title: 'Acceso Restringido',
