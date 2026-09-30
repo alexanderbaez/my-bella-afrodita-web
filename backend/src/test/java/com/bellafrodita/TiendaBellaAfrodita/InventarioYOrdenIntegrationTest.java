@@ -216,4 +216,12 @@ public class InventarioYOrdenIntegrationTest {
         Assertions.assertFalse(destacados.isEmpty(), "Debe existir al menos un producto destacado");
         Assertions.assertTrue(destacados.stream().anyMatch(p -> p.getId().equals(guardado.getId())));
     }
+
+    @Test
+    @DisplayName("Debe listar ordenes existentes sin error")
+    public void testListarOrdenesRealDb() {
+        List<OrdenResponse> ordenes = ordenService.listarOrdenes();
+        Assertions.assertNotNull(ordenes);
+    }
 }
+

@@ -897,23 +897,56 @@ async function cargarOrdenes() {
     if (!tbody) return;
 
     try {
-        const res = await fetch(API_ORDENES, { credentials: 'include' });
+        const res = await fetch(API_ORDENES, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+
         if (res.status === 401 || res.status === 403) {
+            console.error('[ADMIN] Error HTTP al cargar órdenes:', res.status, await res.text());
             manejarNoAutorizado('Sesión vencida para consultar órdenes.');
             return;
         }
-        if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
+
+        if (!res.ok) {
+            console.error('[ADMIN] Error HTTP al cargar órdenes:', res.status, await res.text());
+            throw new Error(`HTTP Error: ${res.status}`);
+        }
 
         listaOrdenes = await res.json();
         actualizarMetricasPedidos(listaOrdenes);
+
+        if (!Array.isArray(listaOrdenes) || listaOrdenes.length === 0) {
+            listaOrdenes = [];
+            actualizarMetricasPedidos([]);
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8" class="text-center py-5 text-muted">
+                        <i class="fas fa-inbox fa-3x mb-3 text-secondary opacity-50 d-block"></i>
+                        <h6 class="fw-bold mb-1 text-dark">Aún no se han recibido órdenes de compra</h6>
+                        <p class="small text-muted mb-0">Cuando un cliente confirme un pedido desde el catálogo o checkout, aparecerá reflejado aquí en tiempo real.</p>
+                    </td>
+                </tr>`;
+            const contador = document.getElementById('contador-pedidos-mostrados');
+            if (contador) contador.innerText = 'Mostrando 0 de 0 pedidos';
+            return;
+        }
+
         filtrarYRenderizarPedidos();
     } catch (error) {
         console.error("Error al cargar pedidos:", error);
         tbody.innerHTML = `
             <tr>
-                <td colspan="7" class="text-center py-5 text-danger">
+                <td colspan="8" class="text-center py-5 text-danger">
                     <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
                     <p class="fw-bold mb-1">No se pudieron cargar las órdenes desde el servidor.</p>
+                    <p class="small text-muted mb-3">${error.message || 'Verifique la consola del navegador y el estado del backend.'}</p>
+                    <button class="btn btn-sm btn-outline-dark px-3 fw-bold" onclick="cargarOrdenes()">
+                        <i class="fas fa-sync-alt me-1"></i> Reintentar
+                    </button>
                 </td>
             </tr>`;
     }
@@ -1008,10 +1041,14 @@ function renderizarTablaPedidos(ordenes) {
     if (!tbody) return;
 
     if (ordenes.length === 0) {
+        const mensajeVacio = (listaOrdenes.length === 0)
+            ? 'Aún no se han recibido órdenes de compra.'
+            : 'No se encontraron órdenes con los filtros seleccionados.';
         tbody.innerHTML = `
             <tr>
                 <td colspan="8" class="text-center py-5 text-muted">
-                    No se encontraron órdenes registradas con los filtros aplicados.
+                    <i class="fas fa-inbox fa-3x mb-3 text-secondary opacity-50 d-block"></i>
+                    <p class="mb-0 fw-semibold">${mensajeVacio}</p>
                 </td>
             </tr>`;
         return;

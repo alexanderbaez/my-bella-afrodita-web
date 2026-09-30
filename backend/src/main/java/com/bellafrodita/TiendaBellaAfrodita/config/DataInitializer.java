@@ -31,6 +31,7 @@ public class DataInitializer {
             // 0. ACTUALIZAR ESQUEMA tipo_entrega EN MYSQL (Soporte ENVIO_MOTO_SAN_JUAN)
             try {
                 jdbcTemplate.execute("ALTER TABLE ordenes MODIFY COLUMN tipo_entrega VARCHAR(50) NOT NULL");
+                jdbcTemplate.execute("UPDATE ordenes SET tipo_entrega = 'ENVIO_MOTO_SAN_JUAN' WHERE tipo_entrega = 'ENVIO_SAN_JUAN'");
             } catch (Exception e) {
                 System.out.println(">>> [DataInitializer] Nota esquema tipo_entrega: " + e.getMessage());
             }
