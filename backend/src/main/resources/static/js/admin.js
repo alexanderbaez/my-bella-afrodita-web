@@ -1068,6 +1068,16 @@ function renderizarTablaPedidos(ordenes) {
         const telWa = sanitizarTelefonoWhatsApp(o.clienteTelefono);
         const { departamento, direccion, referencias } = parsearDireccionCompleta(o.clienteDireccion);
 
+        // Generar enlace dinámico para Google Maps (Requerimiento 2)
+        const queryMaps = encodeURIComponent(`${direccion}, ${departamento}, San Juan, Argentina`);
+        let mapsUrl = `https://www.google.com/maps/search/?api=1&query=${queryMaps}`;
+        if (referencias && referencias.includes('maps.google.com')) {
+            const matchLink = referencias.match(/https?:\/\/maps\.google\.com\/[^\s|]+/);
+            if (matchLink) {
+                mapsUrl = matchLink[0];
+            }
+        }
+
         // Subtotal Prendas (sin costo de envío)
         const subtotalPrendas = (o.subtotal != null && o.descuentoMayorista != null)
             ? (Number(o.subtotal) - Number(o.descuentoMayorista))
@@ -1103,6 +1113,16 @@ function renderizarTablaPedidos(ordenes) {
                     </div>
                     <div class="text-muted small" style="font-size: 0.69rem; line-height: 1.2; max-width: 220px;">
                         <i class="fas fa-map-marker-alt me-1 text-danger"></i>${referencias}
+                    </div>
+                    <div class="mt-1">
+                        <a href="${mapsUrl}" 
+                           target="_blank" 
+                           rel="noopener noreferrer" 
+                           class="btn btn-outline-danger btn-xs py-0.5 px-2 d-inline-flex align-items-center gap-1 text-decoration-none shadow-sm fw-semibold" 
+                           style="font-size: 0.68rem; border-radius: 4px;"
+                           title="Abrir ubicación en Google Maps">
+                            <span>🗺️</span> Abrir en Google Maps
+                        </a>
                     </div>
                 </td>
                 <td>
@@ -1249,7 +1269,8 @@ window.enviarCotizacionWhatsApp = async function (ordenId) {
         mensaje += `🛵 *Envío en Cadete en Moto:* $${costoEnvioFormat}\n`;
         mensaje += `📍 Destino: ${departamento}, ${direccion} (Ref: ${referencias})\n\n`;
         mensaje += `👉 *TOTAL FINAL:* $${totalConEnvioFormat}\n\n`;
-        mensaje += `¿Nos confirmas si te parece bien para comenzar a prepararlo y coordinar el turno de entrega (mañana o tarde)?`;
+        mensaje += `¿Nos confirmas si te parece bien para comenzar a prepararlo?\n`;
+        mensaje += `📌 *Por favor, compartinos tu ubicación por este chat (clip 📎 -> Ubicación) o el enlace de Google Maps para que el cadete llegue directo a tu puerta.*`;
 
         const telSanitizado = sanitizarTelefonoWhatsApp(ordenActualizada.clienteTelefono);
         const waUrl = `https://wa.me/${telSanitizado}?text=${encodeURIComponent(mensaje)}`;
@@ -1370,6 +1391,13 @@ window.verDetallePedido = function (id) {
     }
 
     const { departamento, direccion, referencias } = parsearDireccionCompleta(orden.clienteDireccion);
+    const queryMapsModal = encodeURIComponent(`${direccion}, ${departamento}, San Juan, Argentina`);
+    let mapsUrlModal = `https://www.google.com/maps/search/?api=1&query=${queryMapsModal}`;
+    if (referencias && referencias.includes('maps.google.com')) {
+        const matchLinkModal = referencias.match(/https?:\/\/maps\.google\.com\/[^\s|]+/);
+        if (matchLinkModal) mapsUrlModal = matchLinkModal[0];
+    }
+
     const subtotalPrendas = (orden.subtotal != null && orden.descuentoMayorista != null)
         ? (Number(orden.subtotal) - Number(orden.descuentoMayorista))
         : (Number(orden.subtotal) || (Number(orden.total) - Number(orden.costoEnvio || 0)));
@@ -1383,6 +1411,11 @@ window.verDetallePedido = function (id) {
                     <div class="small text-muted"><i class="fab fa-whatsapp text-success me-1"></i> ${orden.clienteTelefono}</div>
                     <div class="small text-dark mt-1"><b>${departamento}</b>: ${direccion}</div>
                     <div class="small text-muted"><i class="fas fa-map-marker-alt text-danger me-1"></i> ${referencias}</div>
+                    <div class="mt-2">
+                        <a href="${mapsUrlModal}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-danger btn-sm py-1 px-2.5 d-inline-flex align-items-center gap-1 shadow-sm fw-semibold" style="font-size: 0.72rem; border-radius: 4px;">
+                            <span>🗺️</span> Abrir en Google Maps
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="col-md-6">

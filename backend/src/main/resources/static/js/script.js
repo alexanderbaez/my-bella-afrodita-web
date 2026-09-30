@@ -1506,8 +1506,14 @@ async function enviarPedidoWhatsApp() {
                     </select>
                 </div>
                 <div class="mb-2">
-                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">5. Dirección Exacta (Calle, Nro, Barrio) *</label>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="form-label small fw-bold text-uppercase mb-0" style="font-size: 0.68rem; letter-spacing: 0.5px;">5. Dirección Exacta (Calle, Nro, Barrio) *</label>
+                        <button type="button" id="btn-gps-ubicacion" class="btn btn-outline-dark btn-xs py-0 px-2 fw-normal" style="font-size: 0.68rem; border-radius: 12px;" title="Obtener mi posición GPS exacta para el cadete">
+                            <i class="fas fa-crosshairs text-danger me-1"></i> 📍 Compartir mi ubicación GPS actual
+                        </button>
+                    </div>
                     <input type="text" id="swal-cliente-direccion" class="form-control form-control-sm" placeholder="Ej: Av. Libertador 1250 Oeste, Barrio Rivadavia">
+                    <div id="gps-status-feedback" class="small mt-1 text-success fw-semibold d-none" style="font-size: 0.72rem;"></div>
                 </div>
                 <div class="mb-2">
                     <label class="form-label small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">6. Entrecalles y Referencias para el Cadete *</label>
@@ -1536,6 +1542,62 @@ async function enviarPedidoWhatsApp() {
         didOpen: () => {
             const input = document.getElementById('swal-cliente-nombre');
             if (input) input.focus();
+
+            const btnGps = document.getElementById('btn-gps-ubicacion');
+            const feedbackGps = document.getElementById('gps-status-feedback');
+            const inputRef = document.getElementById('swal-cliente-referencias');
+
+            if (btnGps) {
+                btnGps.addEventListener('click', () => {
+                    if (!navigator.geolocation) {
+                        if (feedbackGps) {
+                            feedbackGps.className = 'small mt-1 text-muted fw-normal';
+                            feedbackGps.classList.remove('d-none');
+                            feedbackGps.innerText = 'Tu navegador o dispositivo no soporta geolocalización. Puedes escribir tu dirección normalmente.';
+                        }
+                        return;
+                    }
+
+                    btnGps.disabled = true;
+                    btnGps.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true" style="width: 0.65rem; height: 0.65rem;"></span> Obteniendo GPS...';
+
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const lat = position.coords.latitude.toFixed(6);
+                            const lng = position.coords.longitude.toFixed(6);
+                            const mapsLink = `https://maps.google.com/?q=${lat},${lng}`;
+
+                            btnGps.disabled = false;
+                            btnGps.className = 'btn btn-success btn-xs py-0 px-2 fw-normal text-white';
+                            btnGps.style.borderRadius = '12px';
+                            btnGps.innerHTML = '✅ GPS adjuntado';
+
+                            if (feedbackGps) {
+                                feedbackGps.className = 'small mt-1 text-success fw-semibold';
+                                feedbackGps.classList.remove('d-none');
+                                feedbackGps.innerHTML = `<i class="fas fa-check-circle me-1"></i> Ubicación GPS obtenida correctamente.`;
+                            }
+
+                            if (inputRef) {
+                                const actual = inputRef.value.trim();
+                                if (!actual.includes('maps.google.com')) {
+                                    inputRef.value = actual ? `${actual} | GPS: ${mapsLink}` : `GPS: ${mapsLink}`;
+                                }
+                            }
+                        },
+                        (error) => {
+                            btnGps.disabled = false;
+                            btnGps.innerHTML = '<i class="fas fa-crosshairs text-danger me-1"></i> 📍 Compartir mi ubicación GPS actual';
+                            if (feedbackGps) {
+                                feedbackGps.className = 'small mt-1 text-muted fw-normal';
+                                feedbackGps.classList.remove('d-none');
+                                feedbackGps.innerText = 'No se pudo acceder al GPS. Puedes escribir tu dirección y entrecalles normalmente.';
+                            }
+                        },
+                        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                    );
+                });
+            }
         },
         preConfirm: () => {
             const nombre = document.getElementById('swal-cliente-nombre')?.value.trim();

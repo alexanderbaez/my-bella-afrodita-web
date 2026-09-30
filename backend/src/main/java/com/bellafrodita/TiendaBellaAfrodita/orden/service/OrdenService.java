@@ -229,51 +229,41 @@ public class OrdenService {
         DecimalFormat df = new DecimalFormat("#,##0", symbols);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("🛍️ *NUEVO PEDIDO: MY BELLA AFRODITA*\n");
-        sb.append("🔖 *Código:* #").append(orden.getCodigoSeguimiento()).append("\n");
-        sb.append("------------------------------------------\n");
-        sb.append("👤 *Cliente:* ").append(orden.getClienteNombre()).append("\n");
-        sb.append("📱 *Teléfono:* ").append(orden.getClienteTelefono()).append("\n");
-        if (orden.getClienteEmail() != null && !orden.getClienteEmail().isBlank()) {
-            sb.append("✉️ *Email:* ").append(orden.getClienteEmail()).append("\n");
+        sb.append("¡Hola ").append(orden.getClienteNombre()).append("! Nos comunicamos de *Lencería Mi Bella Afrodita* 💕\n\n");
+        sb.append("Recibimos tu pedido *#").append(orden.getCodigoSeguimiento()).append("*:\n");
+
+        for (OrdenItem item : orden.getItems()) {
+            sb.append("• ").append(item.getProductoNombre())
+                    .append(" (Talle: ").append(item.getTalle() != null ? item.getTalle() : "-").append(")")
+                    .append(" x").append(item.getCantidad())
+                    .append(" - $").append(df.format(item.getSubtotal()))
+                    .append("\n");
         }
 
-        // Requerimiento exacto: 🛵 Entrega: Envío en Moto a [Departamento] - Dirección: [Calle, Nro, Entrecalles] (Costo de envío a coordinar)
+        BigDecimal subtotal = orden.getSubtotal() != null ? orden.getSubtotal() : BigDecimal.ZERO;
+        BigDecimal descuento = orden.getDescuentoMayorista() != null ? orden.getDescuentoMayorista() : BigDecimal.ZERO;
+        BigDecimal subtotalPrendas = subtotal.subtract(descuento);
+        if (subtotalPrendas.compareTo(BigDecimal.ZERO) < 0) {
+            subtotalPrendas = BigDecimal.ZERO;
+        }
+
+        sb.append("💵 Subtotal Prendas: $").append(df.format(subtotalPrendas)).append("\n\n");
+
+        BigDecimal costoEnvio = orden.getCostoEnvio() != null ? orden.getCostoEnvio() : BigDecimal.ZERO;
+        if (costoEnvio.compareTo(BigDecimal.ZERO) > 0) {
+            sb.append("🛵 *Envío en Cadete en Moto:* $").append(df.format(costoEnvio)).append("\n");
+        } else {
+            sb.append("🛵 *Envío en Cadete en Moto:* A cotizar por zona\n");
+        }
+
         String dirCliente = (orden.getClienteDireccion() != null && !orden.getClienteDireccion().isBlank())
                 ? orden.getClienteDireccion()
                 : "San Juan";
-        if (dirCliente.toLowerCase().startsWith("envío en moto a ") || dirCliente.toLowerCase().startsWith("envio en moto a ")) {
-            sb.append("🛵 *Entrega:* ").append(dirCliente).append(" (Costo de envío a coordinar)\n");
-        } else {
-            sb.append("🛵 *Entrega:* Envío en Moto a ").append(dirCliente).append(" (Costo de envío a coordinar)\n");
-        }
+        sb.append("📍 Destino: ").append(dirCliente).append("\n\n");
 
-        sb.append("💳 *Método de Pago:* ").append(orden.getMetodoPago()).append("\n");
-        sb.append("------------------------------------------\n\n");
-
-        for (OrdenItem item : orden.getItems()) {
-            sb.append("• *").append(item.getProductoNombre().toUpperCase()).append("*\n");
-            sb.append("   Talle: ").append(item.getTalle() != null ? item.getTalle() : "-").append("\n");
-            sb.append("   Cant: ").append(item.getCantidad())
-                    .append(" x $").append(df.format(item.getPrecioUnitario()));
-            if (orden.isEsMayorista()) {
-                sb.append(" (Mayorista)");
-            }
-            sb.append("\n");
-            sb.append("   Subtotal: $").append(df.format(item.getSubtotal())).append("\n\n");
-        }
-
-        sb.append("------------------------------------------\n");
-        sb.append("📦 *Envío:* A cotizar por zona (se abona al recibir o con el pago)\n");
-        sb.append("💰 *TOTAL PRENDAS: $").append(df.format(orden.getTotal())).append("*\n");
-
-        if (orden.isEsMayorista() && orden.getDescuentoMayorista().compareTo(BigDecimal.ZERO) > 0) {
-            sb.append("✨ _Beneficio mayorista aplicado por llevar 3 o más prendas._\n");
-            sb.append("🎉 _¡Ahorro total de esta compra: $")
-                    .append(df.format(orden.getDescuentoMayorista())).append("!_\n");
-        }
-
-        sb.append("\n📍 _San Juan, Argentina • Operación 100% Online_");
+        sb.append("👉 *TOTAL FINAL:* $").append(df.format(orden.getTotal())).append("\n\n");
+        sb.append("¿Nos confirmas si te parece bien para comenzar a prepararlo?\n");
+        sb.append("📌 *Por favor, compartinos tu ubicación por este chat (clip 📎 -> Ubicación) o el enlace de Google Maps para que el cadete llegue directo a tu puerta.*");
 
         String textoCodificado = URLEncoder.encode(sb.toString(), StandardCharsets.UTF_8);
         return "https://wa.me/" + WHATSAPP_PHONE + "?text=" + textoCodificado;
