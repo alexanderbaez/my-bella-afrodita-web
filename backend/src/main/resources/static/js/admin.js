@@ -5,6 +5,7 @@
 const API_BASE = '/api/productos';
 const API_ORDENES = '/api/ordenes';
 const AUTH_STATUS_URL = '/api/auth/status';
+const AUTH_ME_URL = '/api/auth/me';
 const AUTH_LOGOUT_URL = '/api/auth/logout';
 const UPLOAD_API = '/api/upload';
 
@@ -15,19 +16,64 @@ let modalInstancia = null;
 let modalDetallePedidoInstancia = null;
 let imagenesProductoActual = [];
 
+/**
+ * Sanitiza texto contra ataques XSS convirtiendo caracteres especiales en entidades HTML seguras.
+ */
+function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+/**
+ * Sanitiza URLs externas para enlaces de mapas permitiendo solo dominios de Google Maps legítimos.
+ */
+function sanitizarUrlMapas(url) {
+    if (!url) return '#';
+    const trimmed = String(url).trim();
+    if (trimmed.startsWith('https://www.google.com/maps') || trimmed.startsWith('https://maps.google.com')) {
+        return encodeURI(trimmed);
+    }
+    return '#';
+}
+
 async function verificarSesionAdmin() {
     try {
-        const res = await fetch(AUTH_STATUS_URL, { credentials: 'include' });
+        const res = await fetch(AUTH_ME_URL, {
+            method: 'GET',
+            credentials: 'include',
+            headers: { 'Accept': 'application/json' }
+        });
+
+        if (res.status === 401 || res.status === 403) {
+            manejarNoAutorizado('Sesión vencida o no autorizada.');
+            return null;
+        }
+
         const data = await res.json();
         if (!res.ok || !data.authenticated || data.rol !== 'ROLE_ADMIN') {
-            throw new Error('No autorizado');
+            manejarNoAutorizado('Acceso restringido: requiere rol de Administrador.');
+            return null;
         }
+
         sessionStorage.setItem('myBellaAdminUser', JSON.stringify(data));
         return data;
     } catch (e) {
-        sessionStorage.removeItem('myBellaAdminUser');
-        localStorage.removeItem('myBellaAdminUser');
-        window.location.href = '/login.html';
+        // En caso de error de red o fallback
+        try {
+            const resFallback = await fetch(AUTH_STATUS_URL, { credentials: 'include' });
+            const dataFallback = await resFallback.json();
+            if (resFallback.ok && dataFallback.authenticated && dataFallback.rol === 'ROLE_ADMIN') {
+                sessionStorage.setItem('myBellaAdminUser', JSON.stringify(dataFallback));
+                return dataFallback;
+            }
+        } catch (_) {}
+
+        manejarNoAutorizado('No se pudo verificar la sesión con el atelier.');
         return null;
     }
 }
@@ -877,12 +923,18 @@ async function eliminarProducto(id, nombre) {
 function manejarNoAutorizado(mensaje = 'Tu sesión ha expirado o no tienes permisos de administrador.') {
     sessionStorage.removeItem('myBellaAdminUser');
     localStorage.removeItem('myBellaAdminUser');
+    localStorage.removeItem('myBellaRememberMe');
+
+    if (window.location.pathname.endsWith('login.html')) return;
+
     Swal.fire({
         icon: 'warning',
         title: 'Acceso Restringido',
         text: mensaje,
         confirmButtonText: 'Iniciar Sesión',
-        confirmButtonColor: '#1a1a1a'
+        confirmButtonColor: '#1a1a1a',
+        timer: 3000,
+        timerProgressBar: true
     }).then(() => {
         window.location.href = '/login.html';
     });
@@ -1068,15 +1120,24 @@ function renderizarTablaPedidos(ordenes) {
         const telWa = sanitizarTelefonoWhatsApp(o.clienteTelefono);
         const { departamento, direccion, referencias } = parsearDireccionCompleta(o.clienteDireccion);
 
-        // Generar enlace dinámico para Google Maps (Requerimiento 2)
+        // Sanitización contra XSS en datos ingresados por clientes
+        const codSegEscapado = escapeHtml(o.codigoSeguimiento);
+        const nombreEscapado = escapeHtml(o.clienteNombre);
+        const telMostrarEscapado = escapeHtml(o.clienteTelefono);
+        const deptoEscapado = escapeHtml(departamento);
+        const dirEscapada = escapeHtml(direccion);
+        const refEscapada = escapeHtml(referencias);
+
+        // Generar enlace dinámico para Google Maps sanitizado
         const queryMaps = encodeURIComponent(`${direccion}, ${departamento}, San Juan, Argentina`);
         let mapsUrl = `https://www.google.com/maps/search/?api=1&query=${queryMaps}`;
         if (referencias && referencias.includes('maps.google.com')) {
-            const matchLink = referencias.match(/https?:\/\/maps\.google\.com\/[^\s|]+/);
+            const matchLink = referencias.match(/https?:\/\/maps\.google\.com\/[^\s|"'<>]+/);
             if (matchLink) {
                 mapsUrl = matchLink[0];
             }
         }
+        const mapsUrlSanitizada = sanitizarUrlMapas(mapsUrl);
 
         // Subtotal Prendas (sin costo de envío)
         const subtotalPrendas = (o.subtotal != null && o.descuentoMayorista != null)
@@ -1088,7 +1149,7 @@ function renderizarTablaPedidos(ordenes) {
         return `
             <tr>
                 <td>
-                    <span class="badge bg-dark font-monospace" style="letter-spacing: 0.5px;">#${o.codigoSeguimiento}</span>
+                    <span class="badge bg-dark font-monospace" style="letter-spacing: 0.5px;">#${codSegEscapado}</span>
                     ${o.estado === 'PENDIENTE_COTIZACION' ? '<span class="badge badge-estado-pendiente_cotizacion d-block mt-1" style="font-size: 0.6rem;">POR COTIZAR</span>' : ''}
                 </td>
                 <td class="small text-muted" style="white-space: nowrap;">
@@ -1096,26 +1157,26 @@ function renderizarTablaPedidos(ordenes) {
                 </td>
                 <td>
                     <div class="fw-bold text-dark text-capitalize" style="font-size: 0.85rem;">
-                        ${o.clienteNombre}
+                        ${nombreEscapado}
                     </div>
                     <div class="small">
-                        <a href="https://wa.me/${telWa}" target="_blank" class="text-success text-decoration-none fw-semibold">
-                            <i class="fab fa-whatsapp me-1"></i>${o.clienteTelefono}
+                        <a href="https://wa.me/${encodeURIComponent(telWa)}" target="_blank" class="text-success text-decoration-none fw-semibold">
+                            <i class="fab fa-whatsapp me-1"></i>${telMostrarEscapado}
                         </a>
                     </div>
                 </td>
                 <td>
                     <div class="d-flex align-items-center gap-1 mb-0.5">
-                        <span class="badge bg-secondary text-white" style="font-size: 0.68rem; letter-spacing: 0.5px;">${departamento}</span>
+                        <span class="badge bg-secondary text-white" style="font-size: 0.68rem; letter-spacing: 0.5px;">${deptoEscapado}</span>
                     </div>
                     <div class="small text-dark fw-semibold" style="line-height: 1.25; max-width: 220px;">
-                        ${direccion}
+                        ${dirEscapada}
                     </div>
                     <div class="text-muted small" style="font-size: 0.69rem; line-height: 1.2; max-width: 220px;">
-                        <i class="fas fa-map-marker-alt me-1 text-danger"></i>${referencias}
+                        <i class="fas fa-map-marker-alt me-1 text-danger"></i>${refEscapada}
                     </div>
                     <div class="mt-1">
-                        <a href="${mapsUrl}" 
+                        <a href="${mapsUrlSanitizada}" 
                            target="_blank" 
                            rel="noopener noreferrer" 
                            class="btn btn-outline-danger btn-xs py-0.5 px-2 d-inline-flex align-items-center gap-1 text-decoration-none shadow-sm fw-semibold" 
@@ -1373,9 +1434,9 @@ window.verDetallePedido = function (id) {
 
     const itemsHtml = (orden.items || []).map(item => `
         <tr>
-            <td class="fw-bold">${item.productoNombre}</td>
-            <td class="text-center"><span class="badge bg-light text-dark border">${item.talle || '-'}</span></td>
-            <td class="text-center">${item.cantidad}</td>
+            <td class="fw-bold">${escapeHtml(item.productoNombre)}</td>
+            <td class="text-center"><span class="badge bg-light text-dark border">${escapeHtml(item.talle || '-')}</span></td>
+            <td class="text-center">${Number(item.cantidad) || 1}</td>
             <td class="text-end">$${Number(item.precioUnitario).toLocaleString('es-AR')}</td>
             <td class="text-end fw-bold">$${Number(item.subtotal).toLocaleString('es-AR')}</td>
         </tr>
@@ -1394,9 +1455,10 @@ window.verDetallePedido = function (id) {
     const queryMapsModal = encodeURIComponent(`${direccion}, ${departamento}, San Juan, Argentina`);
     let mapsUrlModal = `https://www.google.com/maps/search/?api=1&query=${queryMapsModal}`;
     if (referencias && referencias.includes('maps.google.com')) {
-        const matchLinkModal = referencias.match(/https?:\/\/maps\.google\.com\/[^\s|]+/);
+        const matchLinkModal = referencias.match(/https?:\/\/maps\.google\.com\/[^\s|"'<>]+/);
         if (matchLinkModal) mapsUrlModal = matchLinkModal[0];
     }
+    const mapsUrlModalSanitizada = sanitizarUrlMapas(mapsUrlModal);
 
     const subtotalPrendas = (orden.subtotal != null && orden.descuentoMayorista != null)
         ? (Number(orden.subtotal) - Number(orden.descuentoMayorista))
@@ -1407,12 +1469,12 @@ window.verDetallePedido = function (id) {
             <div class="col-md-6">
                 <div class="p-3 bg-light rounded">
                     <div class="text-muted small text-uppercase fw-bold" style="font-size: 0.65rem;">Información del Cliente</div>
-                    <div class="fw-bold text-dark h6 mb-1">${orden.clienteNombre}</div>
-                    <div class="small text-muted"><i class="fab fa-whatsapp text-success me-1"></i> ${orden.clienteTelefono}</div>
-                    <div class="small text-dark mt-1"><b>${departamento}</b>: ${direccion}</div>
-                    <div class="small text-muted"><i class="fas fa-map-marker-alt text-danger me-1"></i> ${referencias}</div>
+                    <div class="fw-bold text-dark h6 mb-1">${escapeHtml(orden.clienteNombre)}</div>
+                    <div class="small text-muted"><i class="fab fa-whatsapp text-success me-1"></i> ${escapeHtml(orden.clienteTelefono)}</div>
+                    <div class="small text-dark mt-1"><b>${escapeHtml(departamento)}</b>: ${escapeHtml(direccion)}</div>
+                    <div class="small text-muted"><i class="fas fa-map-marker-alt text-danger me-1"></i> ${escapeHtml(referencias)}</div>
                     <div class="mt-2">
-                        <a href="${mapsUrlModal}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-danger btn-sm py-1 px-2.5 d-inline-flex align-items-center gap-1 shadow-sm fw-semibold" style="font-size: 0.72rem; border-radius: 4px;">
+                        <a href="${mapsUrlModalSanitizada}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-danger btn-sm py-1 px-2.5 d-inline-flex align-items-center gap-1 shadow-sm fw-semibold" style="font-size: 0.72rem; border-radius: 4px;">
                             <span>🗺️</span> Abrir en Google Maps
                         </a>
                     </div>
@@ -1421,9 +1483,9 @@ window.verDetallePedido = function (id) {
             <div class="col-md-6">
                 <div class="p-3 bg-light rounded">
                     <div class="text-muted small text-uppercase fw-bold" style="font-size: 0.65rem;">Datos del Pedido</div>
-                    <div class="fw-bold font-monospace text-dark mb-1">#${orden.codigoSeguimiento}</div>
+                    <div class="fw-bold font-monospace text-dark mb-1">#${escapeHtml(orden.codigoSeguimiento)}</div>
                     <div class="small text-muted"><i class="fas fa-calendar-alt me-1"></i> ${fechaStr}</div>
-                    <div class="small text-muted"><i class="fas fa-info-circle me-1"></i> Estado: <b>${orden.estado}</b></div>
+                    <div class="small text-muted"><i class="fas fa-info-circle me-1"></i> Estado: <b>${escapeHtml(orden.estado)}</b></div>
                 </div>
             </div>
         </div>

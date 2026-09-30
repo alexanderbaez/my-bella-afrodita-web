@@ -1,5 +1,6 @@
 package com.bellafrodita.TiendaBellaAfrodita.security.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -58,31 +59,54 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                // 1. Recursos estáticos y páginas web públicas
-                .requestMatchers("/", "/index.html", "/*.html", "/html/**", "/css/**", "/js/**", "/images/**", "/static/**", "/uploads/**", "/favicon.ico").permitAll()
-
-                // 2. Endpoints de autenticación públicos
-                .requestMatchers("/api/auth/login", "/api/auth/status", "/api/auth/logout").permitAll()
-
-                // 3. Catálogo público (Lectura GET)
-                .requestMatchers(HttpMethod.GET, "/api/productos/**").permitAll()
-                
-                // 4. Checkout de órdenes público
-                .requestMatchers(HttpMethod.POST, "/api/ordenes/checkout").permitAll()
-                
-                .requestMatchers("/error").permitAll()
-
-                // 5. Endpoints protegidos exclusivamente para ROLE_ADMIN
-                .requestMatchers(HttpMethod.POST, "/api/upload/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/api/productos/**").hasRole("ADMIN")
+                // 1. Vistas y recursos de administración protegidos estrictamente para ROLE_ADMIN
+                .requestMatchers("/admin.html", "/js/admin.js").hasRole("ADMIN")
+                .requestMatchers("/api/admin", "/api/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/ordenes", "/api/ordenes/**").hasRole("ADMIN")
+                .requestMatchers("/api/productos/admin", "/api/productos/admin/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/upload", "/api/upload/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/api/productos", "/api/productos/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/productos/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PATCH, "/api/productos/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/productos/**").hasRole("ADMIN")
-                .requestMatchers("/api/ordenes", "/api/ordenes/**").hasRole("ADMIN")
-                .requestMatchers("/api/admin", "/api/admin/**").hasRole("ADMIN")
+
+                // 2. Endpoints de autenticación públicos
+                .requestMatchers("/api/auth/login", "/api/auth/status", "/api/auth/logout", "/api/auth/me", "/api/auth/verify").permitAll()
+
+                // 3. Catálogo público (Lectura GET)
+                .requestMatchers(HttpMethod.GET, "/api/productos", "/api/productos/**").permitAll()
+
+                // 4. Checkout de órdenes público
+                .requestMatchers(HttpMethod.POST, "/api/ordenes/checkout").permitAll()
+
+                // 5. Recursos estáticos y páginas web públicas (excluyendo admin.html y js/admin.js)
+                .requestMatchers("/", "/index.html", "/login.html", "/productos.html", "/producto.html", "/favicon.ico", "/error").permitAll()
+                .requestMatchers("/css/**", "/images/**", "/static/**", "/uploads/**").permitAll()
+                .requestMatchers("/js/login.js", "/js/script.js", "/js/producto.js").permitAll()
 
                 // Todo lo demás requiere autenticación
                 .anyRequest().authenticated()
+            )
+            .exceptionHandling(ex -> ex
+                // Si intenta acceder a /admin.html sin autenticación, redirige inmediatamente a /login.html
+                // Para llamadas API o recursos protegidos, devuelve 401 Unauthorized
+                .authenticationEntryPoint((request, response, authException) -> {
+                    String uri = request.getRequestURI();
+                    if ("/admin.html".equalsIgnoreCase(uri) || uri.endsWith("/admin.html")) {
+                        response.sendRedirect("/login.html");
+                    } else {
+                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No autorizado");
+                    }
+                })
+                // Si no tiene el rol ADMIN para /admin.html, redirige a login con aviso de acceso denegado
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    String uri = request.getRequestURI();
+                    if ("/admin.html".equalsIgnoreCase(uri) || uri.endsWith("/admin.html")) {
+                        response.sendRedirect("/login.html?error=forbidden");
+                    } else {
+                        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Acceso denegado: se requiere rol de administrador");
+                    }
+                })
             )
             .httpBasic(Customizer.withDefaults());
 

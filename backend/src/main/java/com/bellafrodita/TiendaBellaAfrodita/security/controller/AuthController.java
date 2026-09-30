@@ -99,6 +99,28 @@ public class AuthController {
     }
 
     /**
+     * Endpoint /api/auth/me para obtener los datos de sesión activa o 401 si no está autenticado.
+     */
+    @GetMapping("/me")
+    public ResponseEntity<?> me(Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser")) {
+            Usuario usuario = usuarioRepository.findByEmail(authentication.getName()).orElse(null);
+            String nombre = usuario != null ? usuario.getNombre() : authentication.getName();
+            String rol = usuario != null ? usuario.getRol() : "ROLE_CLIENTE";
+
+            return ResponseEntity.ok(LoginResponse.builder()
+                    .authenticated(true)
+                    .email(authentication.getName())
+                    .nombre(nombre)
+                    .rol(rol)
+                    .build());
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("authenticated", false, "error", "No autorizado"));
+    }
+
+    /**
      * Endpoint para compatibilidad previa.
      */
     @GetMapping("/verify")
