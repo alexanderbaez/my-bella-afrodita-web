@@ -87,12 +87,12 @@
         </nav>
     </header>
 
-    <main class="catalogo-main-section pt-5 mt-5">
-        <section class="py-5">
-            <div class="container pt-3">
+    <main class="catalogo-main-section pt-4 mt-5">
+        <section class="py-4">
+            <div class="container">
                 
                 <!-- Breadcrumbs de Alta Gama -->
-                <nav aria-label="breadcrumb" class="mb-4">
+                <nav aria-label="breadcrumb" class="mb-3">
                     <ol class="breadcrumb breadcrumb-boutique mb-0">
                         <li class="breadcrumb-item"><a href="./index.html">Inicio</a></li>
                         <li class="breadcrumb-item"><a href="./productos.html">Catálogo</a></li>
@@ -100,56 +100,42 @@
                     </ol>
                 </nav>
 
-                <!-- Cabecera Editorial del Catálogo -->
-                <div class="text-center mb-5">
-                    <span class="section-eyebrow">Haute Couture Atelier</span>
-                    <h1 class="section-heading-editorial section-title">Colección de Catálogo</h1>
-                    <p class="section-subtext">Piezas confeccionadas con encajes de origen selecto, microfibra suave y calce anatómico.</p>
-                </div>
-
-                <!-- Selector de Categorías en Chips de Línea Sutil (Outline Pills) -->
-                <div class="d-flex flex-wrap gap-2 justify-content-center mb-4">
-                    <a href="./productos.html" class="filter-pill-luxury" id="chip-cat-todos">TODOS</a>
-                    <a href="./productos.html?cat=conjuntos" class="filter-pill-luxury" id="chip-cat-conjuntos">CONJUNTOS</a>
-                    <a href="./productos.html?cat=bombachas" class="filter-pill-luxury" id="chip-cat-bombachas">BOMBACHAS</a>
-                    <a href="./productos.html?cat=hombres" class="filter-pill-luxury" id="chip-cat-hombres">MASCULINO</a>
-                    <a href="./productos.html?cat=medias" class="filter-pill-luxury" id="chip-cat-medias">MEDIAS</a>
-                </div>
-
-                <!-- Barra de Búsqueda y Ordenamiento Boutique -->
-                <div class="catalogo-toolbar-luxury mb-4">
-                    <div class="row g-3 align-items-center justify-content-between">
-                        <!-- Búsqueda en vivo minimalista -->
-                        <div class="col-12 col-md-6 col-lg-5">
-                            <div class="search-input-wrap-luxury">
-                                <i class="fas fa-search search-icon-luxury"></i>
-                                <input type="text" id="buscador-catalogo" class="form-control search-control-luxury" 
-                                       placeholder="Buscar prendas por nombre o estilo..." 
-                                       oninput="manejarBusquedaCatalogo(this.value)" autocomplete="off">
-                                <button type="button" class="btn-clear-search-luxury d-none" id="btn-limpiar-busqueda" onclick="limpiarBusquedaCatalogo()" title="Limpiar búsqueda">&times;</button>
-                            </div>
+                <!-- Barra de Control Minimalista de Catálogo (Estilo Zara / Intimissimi) -->
+                <div class="catalog-control-bar">
+                    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                        <!-- Izquierda: Botón sutil de Filtros -->
+                        <div class="catalog-control-left">
+                            <button type="button" class="btn-clean-filter" data-bs-toggle="offcanvas" data-bs-target="#offcanvasFiltros" aria-controls="offcanvasFiltros" title="Filtrar por categoría y talle">
+                                <i class="fas fa-sliders-h me-2"></i>
+                                <span>Filtros</span>
+                                <span class="badge-filter-count d-none" id="badge-filtros-activos">0</span>
+                            </button>
                         </div>
 
-                        <!-- Selector de Orden Refinado -->
-                        <div class="col-12 col-md-6 col-lg-4 text-md-end">
-                            <div class="d-flex align-items-center justify-content-md-end gap-2">
-                                <label for="orden-catalogo" class="small text-uppercase fw-semibold text-nowrap mb-0" style="letter-spacing: 1px; font-size: 0.72rem; color: var(--text-taupe);">Ordenar:</label>
-                                <select id="orden-catalogo" class="form-select form-select-sm select-order-luxury" onchange="manejarOrdenamientoCatalogo(this.value)">
-                                    <option value="destacados" selected>Destacados Boutique</option>
+                        <!-- Centro: Título editorial y contador de prendas -->
+                        <div class="catalog-header-minimal text-center">
+                            <h1 class="catalog-editorial-title font-serif mb-0" id="catalogo-titulo-editorial">Colección Atelier</h1>
+                            <span class="catalog-item-count" id="catalogo-contador-prendas">49 Modelos Exclusivos</span>
+                        </div>
+
+                        <!-- Derecha: Buscador píldora y selector Ordenar por -->
+                        <div class="catalog-controls-right d-flex align-items-center justify-content-between justify-content-md-end gap-2">
+                            <div class="search-pill-clean">
+                                <i class="fas fa-search search-icon-clean"></i>
+                                <input type="text" id="buscador-catalogo" class="form-control-clean-search" 
+                                       placeholder="Buscar..." 
+                                       oninput="manejarBusquedaCatalogo(this.value)" autocomplete="off">
+                                <button type="button" class="btn-clear-clean d-none" id="btn-limpiar-busqueda" onclick="limpiarBusquedaCatalogo()" title="Limpiar">&times;</button>
+                            </div>
+                            <div class="sort-wrap-clean">
+                                <select id="orden-catalogo" class="form-select-clean-sort" onchange="manejarOrdenamientoCatalogo(this.value)">
+                                    <option value="destacados" selected>Destacados</option>
                                     <option value="precio-asc">Precio: Menor a Mayor</option>
                                     <option value="precio-desc">Precio: Mayor a Menor</option>
                                     <option value="alfabetico">Nombre: A &ndash; Z</option>
                                 </select>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Filtro Dinámico de Talles en Chips Sutiles -->
-                <div class="d-flex justify-content-center align-items-center flex-column mb-4">
-                    <span class="small text-uppercase mb-2 fw-semibold" style="letter-spacing: 1.5px; font-size: 0.68rem; color: var(--text-taupe);">Talles Disponibles:</span>
-                    <div id="filtro-talles-container" class="d-flex flex-wrap gap-1.5 justify-content-center">
-                        <!-- Generado reactivamente según la categoría activa en script.js -->
                     </div>
                 </div>
 
@@ -161,6 +147,62 @@
             </div>
         </section>
     </main>
+
+    <!-- Drawer / Offcanvas Lateral de Filtros (Estilo Seda & Alta Gama) -->
+    <div class="offcanvas offcanvas-start offcanvas-filters-luxury" tabindex="-1" id="offcanvasFiltros" aria-labelledby="offcanvasFiltrosLabel">
+        <div class="offcanvas-header border-bottom">
+            <div>
+                <span class="section-eyebrow mb-1">Personalizar Catálogo</span>
+                <h5 class="offcanvas-title font-serif mb-0" id="offcanvasFiltrosLabel">Filtros del Atelier</h5>
+            </div>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+        </div>
+        <div class="offcanvas-body p-4">
+            <!-- Filtro por Categoría -->
+            <div class="filter-section mb-4">
+                <label class="filter-section-title">Categoría</label>
+                <div class="filter-category-options d-flex flex-column gap-2" id="drawer-cat-options">
+                    <label class="category-radio-label">
+                        <input type="radio" name="drawerCatFilter" value="" checked onchange="cambiarCategoriaDesdeDrawer('')">
+                        <span>Todas las colecciones</span>
+                    </label>
+                    <label class="category-radio-label">
+                        <input type="radio" name="drawerCatFilter" value="conjuntos" onchange="cambiarCategoriaDesdeDrawer('conjuntos')">
+                        <span>Conjuntos & Corsetería</span>
+                    </label>
+                    <label class="category-radio-label">
+                        <input type="radio" name="drawerCatFilter" value="bombachas" onchange="cambiarCategoriaDesdeDrawer('bombachas')">
+                        <span>Bombachas, Colaless & Vedetinas</span>
+                    </label>
+                    <label class="category-radio-label">
+                        <input type="radio" name="drawerCatFilter" value="hombres" onchange="cambiarCategoriaDesdeDrawer('hombres')">
+                        <span>Línea Masculina / Boxers</span>
+                    </label>
+                    <label class="category-radio-label">
+                        <input type="radio" name="drawerCatFilter" value="medias" onchange="cambiarCategoriaDesdeDrawer('medias')">
+                        <span>Medias & Esenciales</span>
+                    </label>
+                </div>
+            </div>
+
+            <hr class="opacity-15 my-4">
+
+            <!-- Filtro por Talle Contextual -->
+            <div class="filter-section mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label class="filter-section-title mb-0">Talles Disponibles</label>
+                    <span class="text-muted small" style="font-size: 0.7rem;" id="drawer-talle-context-hint">Según categoría</span>
+                </div>
+                <div id="drawer-filtro-talles-container" class="d-flex flex-wrap gap-2">
+                    <!-- Se generan reactivamente según la categoría elegida -->
+                </div>
+            </div>
+        </div>
+        <div class="offcanvas-footer p-3 border-top bg-white d-flex gap-2">
+            <button type="button" class="btn btn-outline-dark flex-grow-1 btn-clean-sm" onclick="limpiarTodosLosFiltros()">Limpiar</button>
+            <button type="button" class="btn btn-dark flex-grow-1 btn-clean-sm" data-bs-dismiss="offcanvas" onclick="aplicarFiltrosDesdeDrawer()">Aplicar Filtros</button>
+        </div>
+    </div>
 
     <!-- Slide-Over Shopping Bag Drawer (Bolsa de Compras Exclusiva) -->
     <div id="cart-drawer-overlay" class="cart-drawer-overlay" onclick="cerrarCarritoDrawer()"></div>
@@ -260,7 +302,7 @@
             </div>
 
             <button type="button" class="btn btn-whatsapp-checkout w-100 mb-2" onclick="enviarPedidoWhatsApp()">
-                <i class="fab fa-whatsapp me-2 fa-lg"></i> FINALIZAR COMPRA VÍA WHATSAPP
+                <i class="fab fa-whatsapp me-2 fa-lg"></i> CONFIRMAR PEDIDO Y COORDINAR PAGO
             </button>
             <div class="text-center mt-2">
                 <button type="button" class="btn btn-link text-muted p-0 text-decoration-none" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;" onclick="confirmarVaciarCarrito()">

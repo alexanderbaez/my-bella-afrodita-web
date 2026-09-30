@@ -21,6 +21,7 @@ public class OrdenResponse {
     private LocalDateTime fechaCreacion;
     private String clienteNombre;
     private String clienteTelefono;
+    private String clienteEmail;
     private String clienteDireccion;
     private BigDecimal total;
     private BigDecimal subtotal;

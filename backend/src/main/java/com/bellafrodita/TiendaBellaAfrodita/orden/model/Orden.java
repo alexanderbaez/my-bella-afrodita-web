@@ -33,6 +33,9 @@ public class Orden {
     @Column(name = "cliente_telefono", nullable = false, length = 50)
     private String clienteTelefono;
 
+    @Column(name = "cliente_email", length = 150)
+    private String clienteEmail;
+
     @Column(name = "cliente_direccion", length = 255)
     private String clienteDireccion;
 

@@ -23,6 +23,8 @@ public class CheckoutRequest {
     @NotBlank(message = "El teléfono del cliente es obligatorio")
     private String clienteTelefono;
 
+    private String clienteEmail;
+
     private String clienteDireccion;
 
     private MetodoPago metodoPago;

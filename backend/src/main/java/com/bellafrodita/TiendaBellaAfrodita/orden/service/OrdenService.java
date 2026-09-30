@@ -77,6 +77,7 @@ public class OrdenService {
                 .codigoSeguimiento(codigoSeguimiento)
                 .clienteNombre(request.getClienteNombre().trim())
                 .clienteTelefono(request.getClienteTelefono().trim())
+                .clienteEmail(request.getClienteEmail() != null && !request.getClienteEmail().isBlank() ? request.getClienteEmail().trim() : null)
                 .clienteDireccion(request.getClienteDireccion() != null ? request.getClienteDireccion().trim() : null)
                 .metodoPago(request.getMetodoPago() != null ? request.getMetodoPago() : MetodoPago.WHATSAPP_EFECTIVO)
                 .tipoEntrega(tipoEntrega)
@@ -221,6 +222,9 @@ public class OrdenService {
         sb.append("------------------------------------------\n");
         sb.append("👤 *Cliente:* ").append(orden.getClienteNombre()).append("\n");
         sb.append("📱 *Teléfono:* ").append(orden.getClienteTelefono()).append("\n");
+        if (orden.getClienteEmail() != null && !orden.getClienteEmail().isBlank()) {
+            sb.append("✉️ *Email:* ").append(orden.getClienteEmail()).append("\n");
+        }
         sb.append("🚚 *Entrega:* ").append(metodoEntregaTexto).append("\n");
         if (orden.getClienteDireccion() != null && !orden.getClienteDireccion().isBlank()) {
             sb.append("📍 *Dirección/Localidad:* ").append(orden.getClienteDireccion()).append("\n");
@@ -277,6 +281,7 @@ public class OrdenService {
                 .fechaCreacion(orden.getFechaCreacion())
                 .clienteNombre(orden.getClienteNombre())
                 .clienteTelefono(orden.getClienteTelefono())
+                .clienteEmail(orden.getClienteEmail())
                 .clienteDireccion(orden.getClienteDireccion())
                 .total(orden.getTotal())
                 .subtotal(orden.getSubtotal())

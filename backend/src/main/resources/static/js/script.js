@@ -132,43 +132,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         categoriaBuscada = urlParams.get('cat');
         categoriaActiva = categoriaBuscada;
 
-        // 3. CAMBIAMOS EL TÍTULO Y SUBTÍTULO VISUAL SEGÚN LA CATEGORÍA
-        const tituloSeccion = document.querySelector('.section-title');
-        const txtSubtitulo = document.querySelector('.text-uppercase.small.fw-bold');
-        const breadcrumbActive = document.querySelector('.breadcrumb-item.active');
-
+        // 3. INICIALIZAMOS TALLES CONTEXTUALES Y FILTROS SEGÚN LA URL
         if (categoriaBuscada) {
-            const catNorm = categoriaBuscada.toLowerCase();
-            if (catNorm === 'bombachas') {
-                if (tituloSeccion) tituloSeccion.innerText = "Bombachas, Colaless y Vedetinas";
-                if (txtSubtitulo) txtSubtitulo.innerText = "Colección Íntima";
-                if (breadcrumbActive) breadcrumbActive.innerText = "Bombachas";
-                document.title = "Bombachas - My Bella Afrodita";
-            } else if (catNorm === 'conjuntos') {
-                if (tituloSeccion) tituloSeccion.innerText = "Conjuntos Exclusivos";
-                if (txtSubtitulo) txtSubtitulo.innerText = "Colección Premium";
-                if (breadcrumbActive) breadcrumbActive.innerText = "Conjuntos";
-                document.title = "Conjuntos - My Bella Afrodita";
-            } else if (catNorm === 'hombres') {
-                if (tituloSeccion) tituloSeccion.innerText = "Boxers y Slips";
-                if (txtSubtitulo) txtSubtitulo.innerText = "Colección Essential";
-                if (breadcrumbActive) breadcrumbActive.innerText = "Para Ellos";
-                document.title = "Hombres - My Bella Afrodita";
-            } else if (catNorm === 'medias') {
-                if (tituloSeccion) tituloSeccion.innerText = "Medias para Él y Ella";
-                if (txtSubtitulo) txtSubtitulo.innerText = "Esenciales";
-                if (breadcrumbActive) breadcrumbActive.innerText = "Medias";
-                document.title = "Medias - My Bella Afrodita";
-            }
-
-            // 4. FILTRAMOS PRODUCTOS Y TALLES CONTEXTUALES
-            actualizarFiltrosTallesContextuales(catNorm);
-            aplicarFiltrosYOrdenCatalogo();
+            actualizarFiltrosTallesContextuales(categoriaBuscada.toLowerCase());
         } else {
-            if (tituloSeccion) tituloSeccion.innerText = "Nuestro Catálogo Completo";
             actualizarFiltrosTallesContextuales(null);
-            aplicarFiltrosYOrdenCatalogo();
         }
+        aplicarFiltrosYOrdenCatalogo();
     }
 
     // Cerrar el Drawer con la tecla Escape
@@ -191,80 +161,160 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// --- FILTROS DE TALLES CONTEXTUALES E INTELIGENTES ---
-function actualizarFiltrosTallesContextuales(categoria) {
-    const contenedorFiltros = document.getElementById('filtro-talles-container');
-    if (!contenedorFiltros) return;
+// --- FILTROS DE CATÁLOGO Y TALLES CONTEXTUALES (DRAWER OFFCANVAS) ---
+window.cambiarCategoriaDesdeDrawer = function(cat) {
+    categoriaActiva = cat ? cat.toLowerCase() : null;
+    talleFiltroActivo = 'TODOS'; // Al cambiar categoría, reiniciamos el talle seleccionado
+    actualizarFiltrosTallesContextuales(categoriaActiva);
+    aplicarFiltrosYOrdenCatalogo();
+};
 
-    // Obtener productos de la categoría activa (o todos si es general)
-    const productosContexto = categoria 
-        ? PRODUCTOS.filter(p => p.categoria && p.categoria.toLowerCase() === categoria.toLowerCase())
-        : PRODUCTOS;
-
-    // Extraer talles únicos existentes en estos productos
-    const tallesSet = new Set();
-    productosContexto.forEach(p => {
-        if (Array.isArray(p.talles)) {
-            p.talles.forEach(t => {
-                if (t && String(t).trim().length > 0) {
-                    tallesSet.add(String(t).trim());
-                }
-            });
-        }
-    });
-
-    // Ordenamiento natural (números primero, luego letras S, M, L, XL, etc.)
-    const tallesOrdenados = Array.from(tallesSet).sort((a, b) => {
-        const numA = parseFloat(a);
-        const numB = parseFloat(b);
-        if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
-        if (!isNaN(numA)) return -1;
-        if (!isNaN(numB)) return 1;
-        return a.localeCompare(b);
-    });
-
-    if (talleFiltroActivo !== 'TODOS' && !tallesSet.has(talleFiltroActivo)) {
-        talleFiltroActivo = 'TODOS';
-    }
-
-    let html = `<button class="filter-pill-luxury ${talleFiltroActivo === 'TODOS' ? 'active' : ''}" onclick="filtrarPorTalle('TODOS')">TODOS</button>`;
-
-    tallesOrdenados.forEach(t => {
-        const activo = talleFiltroActivo === t;
-        html += `<button class="filter-pill-luxury ${activo ? 'active' : ''}" onclick="filtrarPorTalle('${t}')">${t}</button>`;
-    });
-
-    contenedorFiltros.innerHTML = html;
-
-    // Sincronizar estilo activo de las píldoras de categoría en productos.html
-    ['todos', 'conjuntos', 'bombachas', 'hombres', 'medias'].forEach(catId => {
-        const chip = document.getElementById(`chip-cat-${catId}`);
-        if (chip) {
-            if ((!categoria && catId === 'todos') || (categoria && categoria.toLowerCase() === catId)) {
-                chip.classList.add('active');
-            } else {
-                chip.classList.remove('active');
-            }
-        }
-    });
-}
-
-// --- FILTRADO POR TALLE DESDE LA BARRA ---
-window.filtrarPorTalle = function(talleSeleccionado) {
-    talleFiltroActivo = talleSeleccionado;
-
-    // Actualizar botones de talle en la UI
-    const botones = document.querySelectorAll('#filtro-talles-container .filter-pill-luxury, #filtro-talles-container .btn');
+window.seleccionarTalleDrawer = function(talle) {
+    talleFiltroActivo = talle;
+    const botones = document.querySelectorAll('#drawer-filtro-talles-container .talle-pill-clean');
     botones.forEach(btn => {
-        if (btn.innerText.trim() === talleSeleccionado) {
+        const val = btn.innerText.trim();
+        if (val.toUpperCase() === talle.toUpperCase() || (talle === 'TODOS' && val.toLowerCase() === 'todos')) {
             btn.classList.add('active');
         } else {
             btn.classList.remove('active');
         }
     });
-
     aplicarFiltrosYOrdenCatalogo();
 };
+
+window.aplicarFiltrosDesdeDrawer = function() {
+    aplicarFiltrosYOrdenCatalogo();
+    const offcanvasEl = document.getElementById('offcanvasFiltros');
+    if (offcanvasEl && typeof bootstrap !== 'undefined' && bootstrap.Offcanvas) {
+        const bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl) || new bootstrap.Offcanvas(offcanvasEl);
+        bsOffcanvas.hide();
+    }
+};
+
+window.limpiarTodosLosFiltros = function() {
+    categoriaActiva = null;
+    talleFiltroActivo = 'TODOS';
+    busquedaCatalogo = '';
+
+    const inputBusqueda = document.getElementById('buscador-catalogo');
+    if (inputBusqueda) inputBusqueda.value = '';
+
+    const btnLimpiar = document.getElementById('btn-limpiar-busqueda');
+    if (btnLimpiar) btnLimpiar.classList.add('d-none');
+
+    // Desmarcar radios y seleccionar "Todas"
+    const radios = document.querySelectorAll('input[name="drawerCatFilter"]');
+    radios.forEach(r => {
+        r.checked = (r.value === '');
+    });
+
+    actualizarFiltrosTallesContextuales(null);
+    aplicarFiltrosYOrdenCatalogo();
+};
+
+function actualizarFiltrosTallesContextuales(categoria) {
+    const contenedorFiltros = document.getElementById('drawer-filtro-talles-container');
+    const hint = document.getElementById('drawer-talle-context-hint');
+    if (!contenedorFiltros) return;
+
+    let tallesDisponibles = [];
+    const catNorm = (categoria || '').toLowerCase();
+
+    if (catNorm === 'conjuntos') {
+        tallesDisponibles = ['85', '90', '95', '100', '105'];
+        if (hint) hint.innerText = 'Corpiños / Busto';
+    } else if (catNorm === 'bombachas') {
+        tallesDisponibles = ['1', '2', '3', '4'];
+        if (hint) hint.innerText = 'Colaless / Cadera';
+    } else if (catNorm === 'hombres') {
+        tallesDisponibles = ['S', 'M', 'L', 'XL'];
+        if (hint) hint.innerText = 'Boxers Masculinos';
+    } else if (catNorm === 'medias') {
+        tallesDisponibles = ['ÚNICO'];
+        if (hint) hint.innerText = 'Talle Único';
+    } else {
+        // Todas las colecciones
+        tallesDisponibles = ['85', '90', '95', '100', '1', '2', '3', 'M', 'L', 'XL'];
+        if (hint) hint.innerText = 'Talles Principales';
+    }
+
+    let html = `<button type="button" class="talle-pill-clean ${talleFiltroActivo === 'TODOS' ? 'active' : ''}" onclick="seleccionarTalleDrawer('TODOS')">Todos</button>`;
+
+    tallesDisponibles.forEach(t => {
+        const activo = talleFiltroActivo.toUpperCase() === t.toUpperCase();
+        html += `<button type="button" class="talle-pill-clean ${activo ? 'active' : ''}" onclick="seleccionarTalleDrawer('${t}')">${t}</button>`;
+    });
+
+    contenedorFiltros.innerHTML = html;
+
+    // Sincronizar radio del drawer
+    const radioChecked = document.querySelector(`input[name="drawerCatFilter"][value="${catNorm}"]`);
+    if (radioChecked) {
+        radioChecked.checked = true;
+    } else {
+        const radioTodos = document.querySelector('input[name="drawerCatFilter"][value=""]');
+        if (radioTodos) radioTodos.checked = true;
+    }
+}
+
+// Compatibilidad previa
+window.filtrarPorTalle = function(talleSeleccionado) {
+    seleccionarTalleDrawer(talleSeleccionado);
+};
+
+function actualizarBadgeFiltros() {
+    let activos = 0;
+    if (categoriaActiva && categoriaActiva !== 'todos') activos++;
+    if (talleFiltroActivo && talleFiltroActivo !== 'TODOS') activos++;
+
+    const badge = document.getElementById('badge-filtros-activos');
+    if (badge) {
+        if (activos > 0) {
+            badge.innerText = activos;
+            badge.classList.remove('d-none');
+        } else {
+            badge.classList.add('d-none');
+        }
+    }
+}
+
+function actualizarTituloYContadorCatalogo(cantidadVisible) {
+    const tituloSeccion = document.getElementById('catalogo-titulo-editorial');
+    const contadorPrendas = document.getElementById('catalogo-contador-prendas');
+    const breadcrumbActive = document.querySelector('.breadcrumb-item.active');
+
+    let tituloTexto = "Colección Atelier";
+    if (categoriaActiva) {
+        const catNorm = categoriaActiva.toLowerCase();
+        if (catNorm === 'bombachas') {
+            tituloTexto = "Bombachas & Colaless";
+            if (breadcrumbActive) breadcrumbActive.innerText = "Bombachas";
+            document.title = "Bombachas - My Bella Afrodita";
+        } else if (catNorm === 'conjuntos') {
+            tituloTexto = "Conjuntos & Corsetería";
+            if (breadcrumbActive) breadcrumbActive.innerText = "Conjuntos";
+            document.title = "Conjuntos - My Bella Afrodita";
+        } else if (catNorm === 'hombres') {
+            tituloTexto = "Línea Masculina";
+            if (breadcrumbActive) breadcrumbActive.innerText = "Para Ellos";
+            document.title = "Hombres - My Bella Afrodita";
+        } else if (catNorm === 'medias') {
+            tituloTexto = "Medias & Esenciales";
+            if (breadcrumbActive) breadcrumbActive.innerText = "Medias";
+            document.title = "Medias - My Bella Afrodita";
+        }
+    } else {
+        if (breadcrumbActive) breadcrumbActive.innerText = "Colección Completa";
+        document.title = "Catálogo - My Bella Afrodita";
+    }
+
+    if (tituloSeccion) tituloSeccion.innerText = tituloTexto;
+
+    if (contadorPrendas && cantidadVisible !== undefined) {
+        contadorPrendas.innerText = `${cantidadVisible} ${cantidadVisible === 1 ? 'Modelo Exclusivo' : 'Modelos Exclusivos'}`;
+    }
+}
 
 // --- CONTROL DE BÚSQUEDA Y ORDENAMIENTO EN VIVO ---
 window.manejarBusquedaCatalogo = function (valor) {
@@ -336,6 +386,8 @@ function aplicarFiltrosYOrdenCatalogo() {
         });
     }
 
+    actualizarBadgeFiltros();
+    actualizarTituloYContadorCatalogo(resultado.length);
     dibujarProductos(resultado);
 }
 
@@ -1379,39 +1431,47 @@ async function enviarPedidoWhatsApp() {
     cerrarCarritoDrawer();
 
     const { value: formValues } = await Swal.fire({
-        title: 'Finalizar Pedido',
+        title: 'Checkout Directo · Atelier Guest',
         html: `
             <div class="text-start">
-                <p class="text-muted small mb-3">Ingresa tus datos y confirma el método de entrega para registrar tu orden oficial.</p>
-                <div class="mb-2">
-                    <label class="form-label small fw-bold">Nombre y Apellido *</label>
-                    <input type="text" id="swal-cliente-nombre" class="form-control" placeholder="Ej: Valentina Gómez">
+                <p class="text-muted small mb-3" style="letter-spacing: 0.2px; font-size: 0.77rem;">
+                    <i class="fas fa-lock me-1 text-success"></i> Compra protegida sin contraseñas ni registros obligatorios. Completa tus datos para coordinar el pago y envío.
+                </p>
+                <div class="mb-2.5">
+                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.69rem; letter-spacing: 0.6px;">1. Nombre y Apellido *</label>
+                    <input type="text" id="swal-cliente-nombre" class="form-control form-control-sm" placeholder="Ej: Valentina Gómez" autocomplete="name">
                 </div>
-                <div class="mb-2">
-                    <label class="form-label small fw-bold">Teléfono / WhatsApp *</label>
-                    <input type="tel" id="swal-cliente-telefono" class="form-control" placeholder="Ej: 264 555-1234">
+                <div class="mb-2.5">
+                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.69rem; letter-spacing: 0.6px;">2. WhatsApp / Teléfono de contacto *</label>
+                    <input type="tel" id="swal-cliente-telefono" class="form-control form-control-sm" placeholder="Ej: 264 555-1234" autocomplete="tel">
                 </div>
-                <div class="mb-2">
-                    <label class="form-label small fw-bold">Método de Despacho / Entrega *</label>
-                    <select id="swal-tipo-entrega" class="form-select form-select-sm mb-1" onchange="window.actualizarModalEnvio(this.value)">
-                        <option value="RETIRO_SHOWROOM" ${TIPO_ENTREGA_SELECCIONADO === 'RETIRO_SHOWROOM' ? 'selected' : ''}>1) Retiro en Showroom (San Juan - ¡Gratis!)</option>
-                        <option value="ENVIO_SAN_JUAN" ${TIPO_ENTREGA_SELECCIONADO === 'ENVIO_SAN_JUAN' ? 'selected' : ''}>2) Envío a Domicilio en San Juan (+$2.500)</option>
-                        <option value="ENVIO_NACIONAL" ${TIPO_ENTREGA_SELECCIONADO === 'ENVIO_NACIONAL' ? 'selected' : ''}>3) Envío Nacional por Correo (+$6.500)</option>
+                <div class="mb-2.5">
+                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.69rem; letter-spacing: 0.6px;">3. Email <span class="text-muted fw-normal">(Opcional, para comprobante formal)</span></label>
+                    <input type="email" id="swal-cliente-email" class="form-control form-control-sm" placeholder="Ej: valentina@email.com" autocomplete="email">
+                </div>
+                <div class="mb-2.5">
+                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.69rem; letter-spacing: 0.6px;">4. Método de Entrega *</label>
+                    <select id="swal-tipo-entrega" class="form-select form-select-sm mb-1.5" onchange="window.actualizarModalEnvio(this.value)">
+                        <option value="RETIRO_SHOWROOM" ${TIPO_ENTREGA_SELECCIONADO === 'RETIRO_SHOWROOM' ? 'selected' : ''}>Retiro en Showroom (San Juan - ¡Gratis!)</option>
+                        <option value="ENVIO_SAN_JUAN" ${TIPO_ENTREGA_SELECCIONADO === 'ENVIO_SAN_JUAN' ? 'selected' : ''}>Envío a Domicilio en San Juan (+$2.500)</option>
+                        <option value="ENVIO_NACIONAL" ${TIPO_ENTREGA_SELECCIONADO === 'ENVIO_NACIONAL' ? 'selected' : ''}>Envío Nacional por Correo (+$6.500)</option>
                     </select>
                 </div>
-                <div class="mb-2">
-                    <label class="form-label small fw-bold" id="swal-label-direccion">Dirección y Localidad ${TIPO_ENTREGA_SELECCIONADO === 'RETIRO_SHOWROOM' ? '(Opcional)' : '*'}</label>
-                    <input type="text" id="swal-cliente-direccion" class="form-control" placeholder="Calle, Altura, Barrio, Localidad y Código Postal">
-                    <small class="text-muted" style="font-size:0.68rem;">Requerida para envíos a domicilio o despacho nacional.</small>
+                <div class="mb-1" id="swal-direccion-container">
+                    <label class="form-label small fw-bold text-uppercase" id="swal-label-direccion" style="font-size: 0.69rem; letter-spacing: 0.6px;">
+                        Dirección y Localidad ${TIPO_ENTREGA_SELECCIONADO === 'RETIRO_SHOWROOM' ? '(Opcional)' : '*'}
+                    </label>
+                    <input type="text" id="swal-cliente-direccion" class="form-control form-control-sm" placeholder="Calle, Altura, Barrio, Localidad y Código Postal">
+                    <small class="text-muted" style="font-size:0.67rem;">Requerida para despachos a domicilio o correo postal.</small>
                 </div>
             </div>
         `,
         focusConfirm: false,
         showCancelButton: true,
-        confirmButtonText: '<i class="fab fa-whatsapp me-1"></i> Confirmar Pedido',
+        confirmButtonText: '<i class="fab fa-whatsapp me-1.5"></i> CONFIRMAR PEDIDO Y COORDINAR PAGO',
         cancelButtonText: 'Volver a la bolsa',
-        confirmButtonColor: '#28a745',
-        cancelButtonColor: '#777',
+        confirmButtonColor: '#121212',
+        cancelButtonColor: '#706E6B',
         didOpen: () => {
             const input = document.getElementById('swal-cliente-nombre');
             if (input) input.focus();
@@ -1428,6 +1488,7 @@ async function enviarPedidoWhatsApp() {
         preConfirm: () => {
             const nombre = document.getElementById('swal-cliente-nombre')?.value.trim();
             const telefono = document.getElementById('swal-cliente-telefono')?.value.trim();
+            const email = document.getElementById('swal-cliente-email')?.value.trim();
             const direccion = document.getElementById('swal-cliente-direccion')?.value.trim();
             const tipoEntrega = document.getElementById('swal-tipo-entrega')?.value || TIPO_ENTREGA_SELECCIONADO;
 
@@ -1436,7 +1497,7 @@ async function enviarPedidoWhatsApp() {
                 return false;
             }
             if (!telefono) {
-                Swal.showValidationMessage('¡Ingresa tu número de teléfono para contactarte!');
+                Swal.showValidationMessage('¡Ingresa tu número de WhatsApp para contactarte!');
                 return false;
             }
             if (tipoEntrega !== 'RETIRO_SHOWROOM' && (!direccion || direccion.length < 5)) {
@@ -1444,7 +1505,7 @@ async function enviarPedidoWhatsApp() {
                 return false;
             }
 
-            return { nombre, telefono, direccion, tipoEntrega };
+            return { nombre, telefono, email, direccion, tipoEntrega };
         }
     });
 
@@ -1469,6 +1530,7 @@ async function enviarPedidoWhatsApp() {
         const payload = {
             clienteNombre: formValues.nombre,
             clienteTelefono: formValues.telefono,
+            clienteEmail: formValues.email || null,
             clienteDireccion: formValues.direccion || null,
             tipoEntrega: formValues.tipoEntrega,
             costoEnvio: costoEnvio,
