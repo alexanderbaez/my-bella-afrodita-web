@@ -176,6 +176,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         PRODUCTOS = await response.json();
         window.PRODUCTOS = PRODUCTOS;
+        console.log('%c[CATÁLOGO] Prendas recibidas desde API:', 'color: #D4AF37; font-weight: bold;', PRODUCTOS.length);
     } catch (error) {
         console.error("Error al obtener los productos desde la API:", error);
         if (contenedor) {
@@ -190,13 +191,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     if (contenedor) {
+        // Asegurarse de que el contenedor no tenga estilos que oculten las tarjetas
+        contenedor.style.display = 'flex';
+        contenedor.style.visibility = 'visible';
+        contenedor.style.minHeight = '400px';
+
         // 2. CAPTURAMOS LA COLECCIÓN DESDE LA URL (ej: productos.html?categoria=CONJUNTOS)
-        // Eliminación de catálogo genérico: Si no hay categoría especificada, default a 'conjuntos'
+        // Si no hay categoría especificada o no coincide ninguna, muestra la lista disponible por defecto
         const urlParams = new URLSearchParams(window.location.search);
-        let catParam = urlParams.get('categoria') || urlParams.get('cat');
-        if (!catParam) {
-            catParam = 'CONJUNTOS';
-        }
+        let catParam = urlParams.get('categoria') || urlParams.get('cat') || '';
         categoriaActiva = catParam;
 
         // 3. INICIALIZAMOS TALLES CONTEXTUALES Y FILTROS SEGÚN LA COLECCIÓN
@@ -222,16 +225,62 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
+// Normalización flexible para filtros y categorías (insensible a acentos, mayúsculas y espacios)
+const normalizar = (str) => (str || '').toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+function coincideCategoria(prodCat, catFiltro) {
+    if (!catFiltro || catFiltro === 'TODOS' || catFiltro === 'todos') return true;
+    const catProdNorm = normalizar(prodCat);
+    const catFiltroNorm = normalizar(catFiltro);
+    if (!catFiltroNorm) return true;
+
+    // Substring bidireccional exacto (sensible y flexible a acentos/espacios/mayúsculas)
+    if (catProdNorm.includes(catFiltroNorm) || catFiltroNorm.includes(catProdNorm)) return true;
+
+    // Singular / Plural (ej: "conjuntos" vs "conjunto", "bombachas" vs "bombacha")
+    const baseFiltro = catFiltroNorm.endsWith('s') ? catFiltroNorm.slice(0, -1) : catFiltroNorm;
+    const baseProd = catProdNorm.endsWith('s') ? catProdNorm.slice(0, -1) : catProdNorm;
+    if (baseFiltro && baseFiltro === baseProd) return true;
+
+    // Sinónimos masculinos ("masculino", "hombres", "hombre", "boxer")
+    const esHombresFiltro = catFiltroNorm.includes('hombre') || catFiltroNorm.includes('masculin') || catFiltroNorm.includes('boxer');
+    const esHombresProd = catProdNorm.includes('hombre') || catProdNorm.includes('masculin') || catProdNorm.includes('boxer');
+    if (esHombresFiltro && esHombresProd) return true;
+
+    // Sinónimos bombachas / colaless
+    const esBombachaFiltro = catFiltroNorm.includes('bombach') || catFiltroNorm.includes('colaless') || catFiltroNorm.includes('tanga') || catFiltroNorm.includes('panties');
+    const esBombachaProd = catProdNorm.includes('bombach') || catProdNorm.includes('colaless') || catProdNorm.includes('tanga') || catProdNorm.includes('panties');
+    if (esBombachaFiltro && esBombachaProd) return true;
+
+    return false;
+}
+
 function normalizarCategoria(cat) {
-    if (!cat) return 'conjuntos';
-    const c = cat.toLowerCase();
-    if (c === 'masculino' || c === 'hombres' || c === 'hombre') return 'hombres';
+    if (!cat) return '';
+    const c = normalizar(cat);
+    if (c.includes('masculin') || c.includes('hombr') || c.includes('boxer')) return 'hombres';
+    if (c.includes('conjunt')) return 'conjuntos';
+    if (c.includes('bombach') || c.includes('colaless') || c.includes('tanga')) return 'bombachas';
+    if (c.includes('media')) return 'medias';
     return c;
 }
 
 // --- FILTROS DE CATÁLOGO Y TALLES CONTEXTUALES (DRAWER OFFCANVAS) ---
 window.cambiarCategoriaDesdeDrawer = function(cat) {
-    categoriaActiva = normalizarCategoria(cat);
+    categoriaActiva = cat || '';
+    talleFiltroActivo = 'TODOS';
+    actualizarFiltrosTallesContextuales(categoriaActiva);
+    aplicarFiltrosYOrdenCatalogo();
+    try {
+        const nuevaUrl = new URL(window.location);
+        if (categoriaActiva) {
+            nuevaUrl.searchParams.set('categoria', categoriaActiva.toUpperCase());
+        } else {
+            nuevaUrl.searchParams.delete('categoria');
+        }
+        window.history.replaceState({}, '', nuevaUrl);
+    } catch(e) {}
+};
     talleFiltroActivo = 'TODOS';
     actualizarFiltrosTallesContextuales(categoriaActiva);
     aplicarFiltrosYOrdenCatalogo();
@@ -287,7 +336,10 @@ function actualizarFiltrosTallesContextuales(categoria) {
     let tallesDisponibles = [];
     const catNorm = normalizarCategoria(categoria);
 
-    if (catNorm === 'conjuntos') {
+    if (!catNorm || catNorm === 'todos') {
+        tallesDisponibles = ['1', '2', '3', '4', '85', '90', '95', '100', '105', 'S', 'M', 'L', 'XL', 'ÚNICO'];
+        if (hint) hint.innerText = 'Todos los Talles';
+    } else if (catNorm === 'conjuntos') {
         tallesDisponibles = ['85', '90', '95', '100', '105'];
         if (hint) hint.innerText = 'Corpiños / Busto';
     } else if (catNorm === 'bombachas') {
@@ -314,10 +366,14 @@ function actualizarFiltrosTallesContextuales(categoria) {
     contenedorFiltros.innerHTML = html;
 
     // Sincronizar radio del drawer
-    const radioChecked = document.querySelector(`input[name="drawerCatFilter"][value="${catNorm}"]`);
-    if (radioChecked) {
-        radioChecked.checked = true;
-    }
+    const radios = document.querySelectorAll('input[name="drawerCatFilter"]');
+    radios.forEach(radio => {
+        if (catNorm && radio.value === catNorm) {
+            radio.checked = true;
+        } else if (!catNorm && radio.value === 'todos') {
+            radio.checked = true;
+        }
+    });
 }
 
 // Compatibilidad previa
@@ -347,11 +403,15 @@ function actualizarTituloYContadorCatalogo(cantidadVisible) {
     const breadcrumbActive = document.getElementById('breadcrumb-categoria-activa');
 
     const catNorm = normalizarCategoria(categoriaActiva);
-    let tituloTexto = "Colección Conjuntos";
-    let breadcrumbTexto = "Colección Conjuntos";
-    let docTitle = "Colección Conjuntos - My Bella Afrodita";
+    let tituloTexto = "Colección Atelier";
+    let breadcrumbTexto = "Todas las Colecciones";
+    let docTitle = "Catálogo Exclusivo - My Bella Afrodita";
 
-    if (catNorm === 'conjuntos') {
+    if (!catNorm || catNorm === 'todos') {
+        tituloTexto = "Colección Atelier";
+        breadcrumbTexto = "Todas las Colecciones";
+        docTitle = "Catálogo Exclusivo - My Bella Afrodita";
+    } else if (catNorm === 'conjuntos') {
         tituloTexto = "Colección Conjuntos";
         breadcrumbTexto = "Colección Conjuntos";
         docTitle = "Colección Conjuntos - My Bella Afrodita";
@@ -367,6 +427,11 @@ function actualizarTituloYContadorCatalogo(cantidadVisible) {
         tituloTexto = "Colección Medias";
         breadcrumbTexto = "Colección Medias";
         docTitle = "Colección Medias - My Bella Afrodita";
+    } else {
+        const catCap = catNorm.charAt(0).toUpperCase() + catNorm.slice(1);
+        tituloTexto = `Colección ${catCap}`;
+        breadcrumbTexto = `Colección ${catCap}`;
+        docTitle = `Colección ${catCap} - My Bella Afrodita`;
     }
 
     if (breadcrumbActive) breadcrumbActive.innerText = breadcrumbTexto;
@@ -382,7 +447,7 @@ function actualizarTituloYContadorCatalogo(cantidadVisible) {
     document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
         link.classList.remove('active');
         const href = (link.getAttribute('href') || '').toLowerCase();
-        if (href.includes(`categoria=${catNorm}`) || (catNorm === 'hombres' && href.includes('categoria=masculino'))) {
+        if (catNorm && (href.includes(`categoria=${catNorm}`) || (catNorm === 'hombres' && href.includes('categoria=masculino')))) {
             link.classList.add('active');
         }
     });
@@ -417,19 +482,22 @@ window.manejarOrdenamientoCatalogo = function (criterio) {
 };
 
 function aplicarFiltrosYOrdenCatalogo() {
-    // 1. Filtrar de forma estricta por la colección activa (no existe vista mezclada)
-    const catNorm = normalizarCategoria(categoriaActiva);
-    let resultado = PRODUCTOS.filter(p => {
-        const prodCat = (p.categoria || '').toLowerCase();
-        if (catNorm === 'hombres') {
-            return prodCat === 'hombres' || prodCat === 'masculino';
-        }
-        return prodCat === catNorm;
-    });
+    let catFiltro = categoriaActiva;
+
+    // 1. Filtrar por categoría usando coincidencia flexible y normalizada
+    let productosFiltrados = PRODUCTOS.filter(p => coincideCategoria(p.categoria, catFiltro));
+
+    // Si se especificó una categoría pero ninguna prenda coincide con ella en toda la base,
+    // mostrar la lista completa por defecto para no dejar en blanco la pantalla
+    if (catFiltro && productosFiltrados.length === 0 && PRODUCTOS.length > 0) {
+        console.warn(`[CATÁLOGO] Ninguna prenda coincidió con la categoría '${catFiltro}'. Mostrando lista disponible por defecto.`);
+        productosFiltrados = [...PRODUCTOS];
+        catFiltro = '';
+    }
 
     // 2. Filtrar por talle activo
     if (talleFiltroActivo && talleFiltroActivo !== 'TODOS') {
-        resultado = resultado.filter(p => {
+        productosFiltrados = productosFiltrados.filter(p => {
             const coincideTalleArray = Array.isArray(p.talles) && p.talles.includes(talleFiltroActivo);
             const coincideVariante = Array.isArray(p.variantes) && p.variantes.some(v => v.talle === talleFiltroActivo && (v.stock || 0) > 0);
             return coincideTalleArray || coincideVariante;
@@ -438,23 +506,27 @@ function aplicarFiltrosYOrdenCatalogo() {
 
     // 3. Filtrar reactivamente por búsqueda de texto (nombre o descripción)
     if (busquedaCatalogo) {
-        resultado = resultado.filter(p => {
-            const nom = (p.nombre || '').toLowerCase();
-            const desc = (p.descripcion || '').toLowerCase();
-            return nom.includes(busquedaCatalogo) || desc.includes(busquedaCatalogo);
+        const busqNorm = normalizar(busquedaCatalogo);
+        productosFiltrados = productosFiltrados.filter(p => {
+            const nom = normalizar(p.nombre);
+            const desc = normalizar(p.descripcion);
+            return nom.includes(busqNorm) || desc.includes(busqNorm);
         });
     }
 
+    // 3. Logs de Diagnóstico:
+    console.log('Prendas recibidas:', PRODUCTOS.length, 'Categoría URL:', catFiltro || '(todas)', 'Prendas tras filtro:', productosFiltrados.length);
+
     // 4. Ordenamiento reactivo
     if (ordenCatalogo === 'precio-asc') {
-        resultado.sort((a, b) => (Number(a.precioMinorista) || 0) - (Number(b.precioMinorista) || 0));
+        productosFiltrados.sort((a, b) => (Number(a.precioMinorista) || 0) - (Number(b.precioMinorista) || 0));
     } else if (ordenCatalogo === 'precio-desc') {
-        resultado.sort((a, b) => (Number(b.precioMinorista) || 0) - (Number(a.precioMinorista) || 0));
+        productosFiltrados.sort((a, b) => (Number(b.precioMinorista) || 0) - (Number(a.precioMinorista) || 0));
     } else if (ordenCatalogo === 'alfabetico') {
-        resultado.sort((a, b) => (a.nombre || '').localeCompare(b.nombre || ''));
+        productosFiltrados.sort((a, b) => (a.nombre || '').localeCompare(b.nombre || ''));
     } else {
         // "destacados": prioriza prendas con etiqueta (MÁS VENDIDO, OFERTA, NUEVO, etc.) y luego por ID
-        resultado.sort((a, b) => {
+        productosFiltrados.sort((a, b) => {
             const tieneTagA = Boolean(a.etiqueta);
             const tieneTagB = Boolean(b.etiqueta);
             if (tieneTagA && !tieneTagB) return -1;
@@ -464,23 +536,52 @@ function aplicarFiltrosYOrdenCatalogo() {
     }
 
     actualizarBadgeFiltros();
-    actualizarTituloYContadorCatalogo(resultado.length);
-    dibujarProductos(resultado);
+    actualizarTituloYContadorCatalogo(productosFiltrados.length);
+    dibujarProductos(productosFiltrados);
 }
+
+// --- RESTABLECER CATÁLOGO COMPLETO ---
+window.restablecerCatalogoCompleto = function () {
+    categoriaActiva = '';
+    talleFiltroActivo = 'TODOS';
+    busquedaCatalogo = '';
+
+    const inputBusqueda = document.getElementById('buscador-catalogo');
+    if (inputBusqueda) inputBusqueda.value = '';
+
+    const btnLimpiar = document.getElementById('btn-limpiar-busqueda');
+    if (btnLimpiar) btnLimpiar.classList.add('d-none');
+
+    try {
+        const urlLimpia = window.location.pathname;
+        window.history.replaceState({}, '', urlLimpia);
+    } catch (e) {}
+
+    actualizarFiltrosTallesContextuales('');
+    aplicarFiltrosYOrdenCatalogo();
+};
 
 // --- DIBUJAR GRILLA DE PRODUCTOS (LOOK & FEEL ZARA / SAVAGE X FENTY) ---
 function dibujarProductos(lista) {
-    const contenedor = document.getElementById("contenedor-productos");
+    const contenedor = document.getElementById("contenedor-productos") || document.getElementById("productos-grid");
     if (!contenedor) return;
+
+    contenedor.style.display = 'flex';
+    contenedor.style.visibility = 'visible';
+    contenedor.style.minHeight = '400px';
     contenedor.innerHTML = "";
 
     if (lista.length === 0) {
         contenedor.innerHTML = `
-            <div class="col-12 text-center py-5">
-                <i class="fas fa-tag text-muted fa-2x mb-3" style="opacity: 0.4;"></i>
-                <h5 class="fw-bold text-dark font-playfair">No hay modelos disponibles con este filtro</h5>
-                <p class="text-muted small">Intenta seleccionando "TODOS" o explorando otra categoría.</p>
-                <button class="btn btn-dark btn-sm rounded-1 px-3 mt-2" onclick="filtrarPorTalle('TODOS')">Ver Todos</button>
+            <div class="col-12 text-center py-5 my-4">
+                <div class="empty-state-luxury p-4 p-md-5 rounded-3 border mx-auto" style="max-width: 580px; background: rgba(250, 249, 246, 0.95); border-color: rgba(212, 175, 55, 0.3) !important;">
+                    <i class="fas fa-gem text-muted fa-2x mb-3" style="color: #D4AF37 !important; opacity: 0.85;"></i>
+                    <h4 class="fw-bold text-dark font-serif mb-2">No se encontraron prendas en esta colección</h4>
+                    <p class="text-muted small mb-4">No hay modelos disponibles con los filtros actuales o en esta colección.</p>
+                    <button type="button" class="btn btn-dark btn-sm px-4 py-2 text-uppercase fw-semibold" style="letter-spacing: 1px; font-size: 0.75rem;" onclick="window.restablecerCatalogoCompleto()">
+                        Ver todas las colecciones
+                    </button>
+                </div>
             </div>`;
         return;
     }
