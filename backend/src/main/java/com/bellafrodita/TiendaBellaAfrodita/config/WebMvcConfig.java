@@ -17,6 +17,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Value("${file.images-dir:}")
     private String imagesDir;
 
+    @Value("${file.thumbnails-dir:thumbnails}")
+    private String thumbnailsDir;
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
@@ -36,6 +39,19 @@ public class WebMvcConfig implements WebMvcConfigurer {
             }
             registry.addResourceHandler("/images/**")
                     .addResourceLocations(imagesResourceLocation, "classpath:/static/images/");
+        }
+
+        if (thumbnailsDir != null && !thumbnailsDir.trim().isEmpty()) {
+            Path thumbPath = Paths.get(thumbnailsDir).toAbsolutePath().normalize();
+            try {
+                java.nio.file.Files.createDirectories(thumbPath);
+            } catch (Exception ignored) {}
+            String thumbResourceLocation = thumbPath.toUri().toString();
+            if (!thumbResourceLocation.endsWith("/")) {
+                thumbResourceLocation += "/";
+            }
+            registry.addResourceHandler("/thumbnails/**")
+                    .addResourceLocations(thumbResourceLocation, "classpath:/static/thumbnails/");
         }
     }
 }
