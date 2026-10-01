@@ -37,20 +37,17 @@
         <!-- Contenedor dinámico de Admin Quick Bar (inyectado por script.js si es ROLE_ADMIN) -->
         <div id="admin-quickbar-mount"></div>
 
-        <!-- Barra de Anuncios Promocionales Rotativa -->
+        <!-- Announcement Bar de una sola línea sutil (#4A0E17, 30px, 11px) -->
         <div class="promo-announcement-bar">
             <div class="container text-center">
                 <span class="promo-text active" id="promo-msg-0">
-                    <i class="fas fa-crown me-1.5" style="color: #D4AF37;"></i>
-                    Acceso Mayorista Exclusivo: <strong>3 o más prendas</strong> activan precio especial automáticamente
+                    Acceso Mayorista: <strong>3 o más prendas</strong> activan precio especial automáticamente
                 </span>
                 <span class="promo-text" id="promo-msg-1">
-                    <i class="fas fa-motorcycle me-1.5" style="color: #C5A880;"></i>
                     Envíos en el día por moto cadetería en <strong>San Juan</strong> &bull; Tienda 100% Online
                 </span>
                 <span class="promo-text" id="promo-msg-2">
-                    <i class="fab fa-whatsapp me-1.5" style="color: #25D366;"></i>
-                    Atención privada y <strong>asesoramiento de calce</strong> vía WhatsApp
+                    Atención privada y asesoramiento de calce vía <strong>WhatsApp</strong>
                 </span>
             </div>
         </div>
@@ -60,15 +57,19 @@
             <div class="container">
                 <a class="navbar-brand-custom" href="./index.html">
                     <img src="./images/LOGO.png" alt="My Bella Afrodita" class="navbar-logo">
-                    <span class="navbar-brand-text d-none d-sm-inline">My Bella Afrodita</span>
+                    <span class="navbar-brand-text d-none d-md-inline">My Bella Afrodita</span>
                 </a>
 
-                <div class="d-flex align-items-center order-lg-last gap-2">
-                    <a class="nav-icon-link position-relative" href="#" id="cartIcon" onclick="abrirCarritoDrawer(); return false;" title="Bolsa de Compras">
-                        <i class="fas fa-shopping-bag"></i>
-                        <span id="cart-count" class="position-absolute top-0 start-100 translate-middle">0</span>
+                <!-- Buscador discreto, bolsa de compras con badge minimalista y menú hamburguesa -->
+                <div class="header-actions-wrap order-lg-last">
+                    <a class="nav-icon-link" href="./productos.html" title="Buscar prendas" aria-label="Buscar">
+                        <i class="fas fa-search"></i>
                     </a>
-                    <button class="navbar-toggler p-2 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Navegación">
+                    <a class="nav-icon-link position-relative" href="#" id="cartIcon" onclick="abrirCarritoDrawer(); return false;" title="Bolsa de Compras" aria-label="Bolsa de Compras">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span id="cart-count">0</span>
+                    </a>
+                    <button class="navbar-toggler p-1 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Navegación">
                         <i class="fas fa-bars text-dark"></i>
                     </button>
                 </div>
@@ -138,7 +139,7 @@
                 </div>
 
                 <!-- Grilla de Tarjetas Boutique (3:4, Dual Hover & Translucent Size Overlay) -->
-                <div id="contenedor-productos" data-alias="productos-grid" class="row g-3 g-md-4 productos-grid" style="min-height: 400px; display: flex !important; visibility: visible !important;">
+                <div id="contenedor-productos" data-alias="productos-grid" class="row g-2 g-md-4 productos-grid" style="min-height: 400px; display: flex !important; visibility: visible !important;">
                     <!-- Renderizado dinámico desde /api/productos en script.js -->
                 </div>
 

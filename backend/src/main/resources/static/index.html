@@ -39,20 +39,17 @@
         <!-- Contenedor dinámico de Admin Quick Bar (inyectado por script.js si es ROLE_ADMIN) -->
         <div id="admin-quickbar-mount"></div>
 
-        <!-- Barra de Anuncios Promocionales Rotativa -->
+        <!-- Announcement Bar de una sola línea sutil (#4A0E17, 30px, 11px) -->
         <div class="promo-announcement-bar">
             <div class="container text-center">
                 <span class="promo-text active" id="promo-msg-0">
-                    <i class="fas fa-crown me-1.5" style="color: #D4AF37;"></i>
-                    Acceso Mayorista Exclusivo: <strong>3 o más prendas</strong> activan precio especial automáticamente
+                    Acceso Mayorista: <strong>3 o más prendas</strong> activan precio especial automáticamente
                 </span>
                 <span class="promo-text" id="promo-msg-1">
-                    <i class="fas fa-motorcycle me-1.5" style="color: #C5A880;"></i>
                     Envíos en el día por moto cadetería en <strong>San Juan</strong> &bull; Tienda 100% Online
                 </span>
                 <span class="promo-text" id="promo-msg-2">
-                    <i class="fab fa-whatsapp me-1.5" style="color: #25D366;"></i>
-                    Atención privada y <strong>asesoramiento de calce</strong> vía WhatsApp
+                    Atención privada y asesoramiento de calce vía <strong>WhatsApp</strong>
                 </span>
             </div>
         </div>
@@ -62,15 +59,19 @@
             <div class="container">
                 <a class="navbar-brand-custom" href="./index.html">
                     <img src="./images/LOGO.png" alt="My Bella Afrodita" class="navbar-logo">
-                    <span class="navbar-brand-text d-none d-sm-inline">My Bella Afrodita</span>
+                    <span class="navbar-brand-text d-none d-md-inline">My Bella Afrodita</span>
                 </a>
 
-                <div class="d-flex align-items-center order-lg-last gap-2">
-                    <a class="nav-icon-link position-relative" href="#" id="cartIcon" onclick="abrirCarritoDrawer(); return false;" title="Bolsa de Compras">
-                        <i class="fas fa-shopping-bag"></i>
-                        <span id="cart-count" class="position-absolute top-0 start-100 translate-middle">0</span>
+                <!-- Buscador discreto, bolsa de compras con badge minimalista y menú hamburguesa -->
+                <div class="header-actions-wrap order-lg-last">
+                    <a class="nav-icon-link" href="./productos.html" title="Buscar prendas" aria-label="Buscar">
+                        <i class="fas fa-search"></i>
                     </a>
-                    <button class="navbar-toggler p-2 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Navegación">
+                    <a class="nav-icon-link position-relative" href="#" id="cartIcon" onclick="abrirCarritoDrawer(); return false;" title="Bolsa de Compras" aria-label="Bolsa de Compras">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span id="cart-count">0</span>
+                    </a>
+                    <button class="navbar-toggler p-1 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Navegación">
                         <i class="fas fa-bars text-dark"></i>
                     </button>
                 </div>
@@ -78,6 +79,7 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto align-items-center">
                         <li class="nav-item"><a class="nav-link active" href="./index.html">INICIO</a></li>
+                        <li class="nav-item"><a class="nav-link" href="./productos.html">CATÁLOGO</a></li>
                         <li class="nav-item"><a class="nav-link" href="./productos.html?categoria=CONJUNTOS">CONJUNTOS</a></li>
                         <li class="nav-item"><a class="nav-link" href="./productos.html?categoria=BOMBACHAS">BOMBACHAS</a></li>
                         <li class="nav-item"><a class="nav-link" href="./productos.html?categoria=MASCULINO">MASCULINO</a></li>
@@ -89,65 +91,19 @@
     </header>
 
     <main>
-        <!-- 1. HERO BANNER LUMINOSA Y FEMENINA (MY BELLA AFRODITA) -->
-        <section class="hero-luminous-section">
-            <div class="container">
-                <div class="row align-items-center g-5">
-                    <div class="col-lg-6 hero-luminous-wrap">
-                        <div class="hero-eyebrow-badge">
-                            <i class="fas fa-gem me-1.5" style="color: var(--gold-champagne);"></i> Haute Lingerie Atelier &bull; San Juan
-                        </div>
-                        <h1 class="hero-title-luminous">
-                            Realzá tu <span class="hero-title-accent">Belleza Natural</span>
-                        </h1>
-                        <p class="hero-bajada-luminous">
-                            Lencería fina diseñada con detalles que enamoran. Envíos en moto a todo San Juan con empaque discreto.
-                        </p>
-                        <div class="d-flex flex-wrap gap-3 align-items-center">
-                            <a href="#destacados" class="btn-atelier-primary">
-                                Ver Colección Destacada 💕
-                            </a>
-                            <a href="./productos.html" class="btn-atelier-outline">
-                                Explorar Catálogo <i class="fas fa-arrow-right ms-1"></i>
-                            </a>
-                        </div>
-                        <div class="hero-trust-pills">
-                            <span class="hero-trust-pill">
-                                <i class="fas fa-heart text-danger"></i> Calce Anatómico Real
-                            </span>
-                            <span class="hero-trust-pill">
-                                <i class="fas fa-feather" style="color: var(--color-primary);"></i> Telas Suaves y Delicadas
-                            </span>
-                            <span class="hero-trust-pill">
-                                <i class="fas fa-map-marker-alt" style="color: var(--gold-dark);"></i> Atelier San Juan
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-6">
-                        <div class="hero-showcase-container">
-                            <div class="hero-showcase-frame">
-                                <img src="./images/session-Conjuntos.jpg" alt="Lencería Fina My Bella Afrodita">
-                            </div>
-                            <!-- Floating Badge 1: Calce Anatómico -->
-                            <div class="hero-floating-card">
-                                <div class="author-avatar-badge" style="background: #FDF4F5; color: #9E2A4B;">
-                                    <i class="fas fa-sparkles"></i>
-                                </div>
-                                <div>
-                                    <div class="small fw-bold" style="color: var(--text-charcoal); line-height: 1.2;">Confección Boutique</div>
-                                    <small class="text-muted" style="font-size: 0.72rem;">Encajes nobles sin marcas</small>
-                                </div>
-                            </div>
-                            <!-- Floating Badge 2: Envíos en Moto -->
-                            <div class="hero-floating-card-delivery">
-                                <i class="fas fa-motorcycle" style="color: var(--color-secondary); font-size: 1.1rem;"></i>
-                                <div>
-                                    <div class="small fw-bold" style="color: var(--text-charcoal); line-height: 1.2;">Envíos en el Día</div>
-                                    <small class="text-muted" style="font-size: 0.72rem;">En moto a todo San Juan</small>
-                                </div>
-                            </div>
-                        </div>
+        <!-- 1. HERO BANNER EDITORIAL DE ALTA COSTURA (ZARA / INTIMISSIMI LOOKBOOK) -->
+        <section class="hero-editorial-section">
+            <div class="hero-editorial-banner">
+                <img src="./images/session-Conjuntos.jpg" alt="My Bella Afrodita Haute Lingerie" class="hero-editorial-img">
+                <div class="hero-editorial-overlay"></div>
+                <div class="container hero-editorial-content text-center">
+                    <span class="hero-editorial-eyebrow">Haute Lingerie Atelier &bull; San Juan</span>
+                    <h1 class="hero-editorial-title">Realzá tu Belleza Natural</h1>
+                    <p class="hero-editorial-subtitle">Confección cuidada, calce anatómico y encajes seleccionados para inspirar confianza y distinción.</p>
+                    <div class="mt-3">
+                        <a href="./productos.html" class="hero-editorial-btn">
+                            Explorar Catálogo <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -208,7 +164,7 @@
                     <p class="section-subtext">Piezas curadas por el atelier, destacadas especialmente por su diseño y calce sublime.</p>
                 </div>
 
-                <div class="row g-4 align-items-stretch" id="featured-products-home" style="min-height: 250px; display: flex !important; visibility: visible !important;">
+                <div class="row g-2 g-md-4 align-items-stretch" id="featured-products-home" style="min-height: 250px; display: flex !important; visibility: visible !important;">
                     <!-- Renderizado dinámicamente desde /api/productos/destacados por script.js -->
                     <div class="col-12 text-center py-5">
                         <div class="spinner-border" role="status" style="width: 2rem; height: 2rem; color: var(--color-secondary);">

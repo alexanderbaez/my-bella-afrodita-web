@@ -668,7 +668,7 @@ function dibujarProductos(lista) {
 
         // Bloque de Precios (Minorista destacado + Mayorista sutil en tono oro viejo)
         const wholesaleHtml = p.precioMayorista 
-            ? `<span class="price-wholesale-pill" title="Llevando 3 o más prendas de la tienda">Mayorista x3: $${Number(p.precioMayorista).toLocaleString('es-AR')}</span>`
+            ? `<span class="price-wholesale-subtle">x3 $${Number(p.precioMayorista).toLocaleString('es-AR')}</span>`
             : '';
 
         // Botón flotante para edición directa en Admin (solo visible si es ROLE_ADMIN)
@@ -679,50 +679,24 @@ function dibujarProductos(lista) {
             : '';
 
         divCol.innerHTML = `
-            <div class="product-card-boutique w-100">
-                <!-- Contenedor Imagen 3:4 con Cross-Fade y Redirección Directa a Ficha -->
-                <div class="product-media-container position-relative" style="cursor: pointer;" onclick="navegarAProducto('${p.id}')">
+            <div class="product-card-boutique w-100" onclick="navegarAProducto('${p.id}')" title="Ver ${p.nombre}">
+                <!-- Contenedor Imagen 3:4 con Dual Hover Crossfade -->
+                <div class="product-media-container position-relative">
                     ${adminBtnHtml}
                     ${badgeHtml}
                     ${stockBadgeHtml}
 
                     <img src="${fotoPrincipal}" alt="${p.nombre}" class="img-primary" onerror="this.src='https://via.placeholder.com/300x400?text=My+Bella+Afrodita'">
                     ${fotoSecundaria ? `<img src="${fotoSecundaria}" alt="${p.nombre} dorsal" class="img-secondary">` : ''}
-                    
-                    ${tallesHtml}
                 </div>
 
-                <!-- Detalles del Producto y Acciones Alineadas -->
+                <!-- Detalles: Categoría, Título 1 línea con ellipsis, Precios -->
                 <div class="product-info-wrap">
-                    <div>
-                        <div class="product-category-label">${p.categoria || 'Colección'}</div>
-                        <h3 class="product-title-luxury" title="${p.nombre}" style="cursor: pointer;" onclick="navegarAProducto('${p.id}')">${p.nombre}</h3>
-                        <p class="product-desc-clamped">${p.descripcion || 'Confección boutique de alta calidad y confort.'}</p>
-                    </div>
-
-                    <div>
-                        ${selectorTallesHtml}
-
-                        <!-- Precios con Redirección Directa -->
-                        <div class="product-pricing-box d-flex align-items-baseline" style="cursor: pointer;" onclick="navegarAProducto('${p.id}')" title="Ver prenda">
-                            <span class="price-retail-highlight">$${Number(p.precioMinorista).toLocaleString('es-AR')}</span>
-                            ${wholesaleHtml}
-                        </div>
-
-                        <!-- Botones de Acción: Añadir y Compartir Estilo Mercado Libre -->
-                        <div class="product-card-actions">
-                            <button class="btn btn-add-boutique flex-grow-1" 
-                                    ${!tieneStock ? 'disabled' : ''} 
-                                    onclick="navegarAProducto('${p.id}')">
-                                <i class="fas ${tieneStock ? 'fa-tag' : 'fa-times'} me-1.5"></i>
-                                ${tieneStock ? 'Elegir Talle / Comprar' : 'Agotado'}
-                            </button>
-                            <button class="btn-share-card" 
-                                    onclick="compartirProducto(event, '${p.id}', '${p.nombre.replace(/'/g, "\\'")}', '${p.precioMinorista}')" 
-                                    title="Compartir enlace de la prenda">
-                                <i class="fas fa-share-nodes"></i>
-                            </button>
-                        </div>
+                    <div class="product-category-label">${p.categoria || 'Colección'}</div>
+                    <h3 class="product-title-luxury" title="${p.nombre}">${p.nombre}</h3>
+                    <div class="product-pricing-box">
+                        <span class="price-retail-highlight">$${Number(p.precioMinorista).toLocaleString('es-AR')}</span>
+                        ${wholesaleHtml}
                     </div>
                 </div>
             </div>`;
@@ -909,33 +883,25 @@ async function cargarDestacadosInicio() {
                 const fotoPrincipal = fotos[0];
                 const fotoSecundaria = fotos.length > 1 ? fotos[1] : null;
 
+                const wholesaleHtml = p.precioMayorista 
+                    ? `<span class="price-wholesale-subtle">x3 $${Number(p.precioMayorista).toLocaleString('es-AR')}</span>`
+                    : '';
+
                 const divCol = document.createElement('div');
-                divCol.className = 'col-6 col-md-4 col-lg-3 d-flex align-items-stretch';
+                divCol.className = 'col-6 col-md-4 col-lg-3 d-flex align-items-stretch product-item-card';
                 divCol.innerHTML = `
-                    <div class="product-card-boutique w-100">
-                        <div class="product-media-container position-relative" style="cursor: pointer;" onclick="navegarAProducto('${p.id}')">
-                            <span class="badge-luxury-tag">⭐ Destacado</span>
+                    <div class="product-card-boutique w-100" onclick="navegarAProducto('${p.id}')" title="Ver ${p.nombre}">
+                        <div class="product-media-container position-relative">
+                            <span class="badge-luxury-tag">Destacado</span>
                             <img src="${fotoPrincipal}" alt="${p.nombre}" class="img-primary" onerror="this.src='https://via.placeholder.com/300x400?text=My+Bella+Afrodita'">
                             ${fotoSecundaria ? `<img src="${fotoSecundaria}" alt="${p.nombre} dorsal" class="img-secondary">` : ''}
                         </div>
                         <div class="product-info-wrap">
-                            <div>
-                                <div class="product-category-label">${p.categoria || 'Colección'}</div>
-                                <h3 class="product-title-luxury" style="cursor: pointer;" onclick="navegarAProducto('${p.id}')">${p.nombre}</h3>
-                                <p class="product-desc-clamped">${p.descripcion || 'Confección boutique de alta calidad.'}</p>
-                            </div>
-                            <div class="mt-2">
-                                <div class="product-pricing-box d-flex align-items-baseline" style="cursor: pointer;" onclick="navegarAProducto('${p.id}')">
-                                    <span class="price-retail-highlight">$${Number(p.precioMinorista).toLocaleString('es-AR')}</span>
-                                </div>
-                                <div class="product-card-actions mt-2">
-                                    <button class="btn btn-add-boutique flex-grow-1" onclick="navegarAProducto('${p.id}')">
-                                        <i class="fas fa-tag me-1.5"></i> Elegir Talle / Comprar
-                                    </button>
-                                    <button class="btn-share-card" onclick="compartirProducto(event, '${p.id}', '${p.nombre.replace(/'/g, "\\'")}', '${p.precioMinorista}')" title="Compartir">
-                                        <i class="fas fa-share-nodes"></i>
-                                    </button>
-                                </div>
+                            <div class="product-category-label">${p.categoria || 'Colección'}</div>
+                            <h3 class="product-title-luxury" title="${p.nombre}">${p.nombre}</h3>
+                            <div class="product-pricing-box">
+                                <span class="price-retail-highlight">$${Number(p.precioMinorista).toLocaleString('es-AR')}</span>
+                                ${wholesaleHtml}
                             </div>
                         </div>
                     </div>`;

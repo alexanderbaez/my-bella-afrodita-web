@@ -523,26 +523,24 @@ async function cargarProductosRelacionados() {
             const foto1 = fotos[0];
             const foto2 = fotos.length > 1 ? fotos[1] : null;
 
+            const wholesaleHtml = p.precioMayorista 
+                ? `<span class="price-wholesale-subtle">x3 $${Number(p.precioMayorista).toLocaleString('es-AR')}</span>`
+                : '';
+
             return `
-                <div class="col-6 col-md-3 d-flex align-items-stretch">
-                    <div class="product-card-boutique w-100">
-                        <div class="product-media-container position-relative" style="cursor: pointer;" onclick="window.location.href='./producto.html?id=${p.id}'">
+                <div class="col-6 col-md-3 d-flex align-items-stretch product-item-card">
+                    <div class="product-card-boutique w-100" onclick="window.location.href='./producto.html?id=${p.id}'" title="Ver ${p.nombre}">
+                        <div class="product-media-container position-relative">
                             ${p.etiqueta ? `<span class="badge-luxury-tag">${p.etiqueta}</span>` : ''}
                             <img src="${foto1}" alt="${p.nombre}" class="img-primary" onerror="this.src='https://via.placeholder.com/300x400?text=My+Bella+Afrodita'">
                             ${foto2 ? `<img src="${foto2}" alt="${p.nombre} dorso" class="img-secondary">` : ''}
                         </div>
                         <div class="product-info-wrap">
-                            <div>
-                                <div class="product-category-label">${p.categoria || 'Colección'}</div>
-                                <h3 class="product-title-luxury" title="${p.nombre}" style="cursor: pointer;" onclick="window.location.href='./producto.html?id=${p.id}'">${p.nombre}</h3>
-                            </div>
-                            <div class="mt-2">
-                                <div class="product-pricing-box d-flex align-items-baseline">
-                                    <span class="price-retail-main">$${Number(p.precioMinorista || 0).toLocaleString('es-AR')}</span>
-                                </div>
-                                <a href="./producto.html?id=${p.id}" class="btn btn-outline-dark btn-sm w-100 mt-2 text-uppercase fw-semibold" style="letter-spacing: 1px; font-size: 0.68rem; border-radius: 2px;">
-                                    Ver Detalle
-                                </a>
+                            <div class="product-category-label">${p.categoria || 'Colección'}</div>
+                            <h3 class="product-title-luxury" title="${p.nombre}">${p.nombre}</h3>
+                            <div class="product-pricing-box">
+                                <span class="price-retail-highlight">$${Number(p.precioMinorista || 0).toLocaleString('es-AR')}</span>
+                                ${wholesaleHtml}
                             </div>
                         </div>
                     </div>
