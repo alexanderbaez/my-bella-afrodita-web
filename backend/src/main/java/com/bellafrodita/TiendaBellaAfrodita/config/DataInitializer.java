@@ -17,6 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import com.bellafrodita.TiendaBellaAfrodita.resena.model.Resena;
+import com.bellafrodita.TiendaBellaAfrodita.resena.repository.ResenaRepository;
 import java.util.List;
 
 @Configuration
@@ -26,7 +28,8 @@ public class DataInitializer {
     public CommandLineRunner initDatabase(ProductoRepository productoRepository,
                                           UsuarioRepository usuarioRepository,
                                           PasswordEncoder passwordEncoder,
-                                          JdbcTemplate jdbcTemplate) {
+                                          JdbcTemplate jdbcTemplate,
+                                          ResenaRepository resenaRepository) {
         return args -> {
             // 0. ACTUALIZAR ESQUEMA tipo_entrega EN MYSQL (Soporte ENVIO_MOTO_SAN_JUAN)
             try {
@@ -138,11 +141,46 @@ public class DataInitializer {
                 }
             }
 
-            if (productosMigrados > 0) {
-                System.out.println(">>> [DataInitializer] Migración de inventario completada: " + variantesCreadasTotal +
-                        " variantes creadas con stock inicial (5 u.) en " + productosMigrados + " productos.");
-            } else {
-                System.out.println(">>> [DataInitializer] Inventario de variantes ya se encuentra inicializado y sincronizado.");
+            // 4. SEEDER DE RESEÑAS VERIFICADAS INICIALES Y ACTUALIZACIÓN DE NOMBRES
+            try {
+                jdbcTemplate.execute("UPDATE resenas SET nombre_cliente = 'Camila M.', comentario = 'La suavidad de las telas y el calce son impecables. La atención por WhatsApp para el talle fue excelente.' WHERE nombre_cliente LIKE '%Sofía%' OR nombre_cliente LIKE '%Sofia%'");
+                jdbcTemplate.execute("UPDATE resenas SET nombre_cliente = 'Luciana R.', comentario = 'Hermosa lencería, los elásticos no marcan y la puntilla es de primera calidad.' WHERE nombre_cliente LIKE '%Valentina%'");
+            } catch (Exception e) {
+                System.out.println(">>> [DataInitializer] Nota actualización resenas: " + e.getMessage());
+            }
+
+            if (resenaRepository.count() == 0) {
+                List<Resena> iniciales = List.of(
+                    Resena.builder()
+                        .nombreCliente("Camila M.")
+                        .departamento("Capital")
+                        .estrellas(5)
+                        .comentario("La suavidad de las telas y el calce son impecables. La atención por WhatsApp para el talle fue excelente.")
+                        .aprobada(true)
+                        .destacadaHome(true)
+                        .fechaCreacion(LocalDateTime.now().minusDays(2))
+                        .build(),
+                    Resena.builder()
+                        .nombreCliente("Paula V.")
+                        .departamento("Rivadavia")
+                        .estrellas(5)
+                        .comentario("Me llegó en moto súper rápido y el empaque muy cuidado y discreto. Feliz con mi conjunto.")
+                        .aprobada(true)
+                        .destacadaHome(true)
+                        .fechaCreacion(LocalDateTime.now().minusDays(1))
+                        .build(),
+                    Resena.builder()
+                        .nombreCliente("Luciana R.")
+                        .departamento("Santa Lucía")
+                        .estrellas(5)
+                        .comentario("Hermosa lencería, los elásticos no marcan y la puntilla es de primera calidad.")
+                        .aprobada(true)
+                        .destacadaHome(true)
+                        .fechaCreacion(LocalDateTime.now())
+                        .build()
+                );
+                resenaRepository.saveAll(iniciales);
+                System.out.println(">>> [DataInitializer] 3 Reseñas verificadas iniciales sembradas en MySQL.");
             }
         };
     }

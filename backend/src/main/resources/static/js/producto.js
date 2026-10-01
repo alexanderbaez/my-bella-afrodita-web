@@ -5,7 +5,13 @@
  * Micro-tarjeta Mayorista, Guía de Medidas y Cross-selling "Completa tu Look".
  */
 
+// Consumo seguro de la constante centralizada o fallback local sin colisión en scope global
+const API_PRODUCTOS_ENDPOINT = (typeof window !== 'undefined' && window.API_PRODUCTOS) 
+    ? window.API_PRODUCTOS 
+    : '/api/productos';
+
 let PRODUCTO_ACTUAL = null;
+window.PRODUCTO_ACTUAL = null;
 let TALLE_SELECCIONADO = null;
 let STOCK_DISPONIBLE_TALLE = 0;
 let CANTIDAD_SELECCIONADA = 1;
@@ -29,12 +35,13 @@ async function cargarDetalleProducto(id) {
     if (!contenedor) return;
 
     try {
-        const response = await fetch(`/api/productos/${id}`);
+        const response = await fetch(`${API_PRODUCTOS_ENDPOINT}/${id}`);
         if (!response.ok) {
             throw new Error(`Producto no encontrado (HTTP ${response.status})`);
         }
 
         PRODUCTO_ACTUAL = await response.json();
+        window.PRODUCTO_ACTUAL = PRODUCTO_ACTUAL;
         renderizarPaginaProducto(PRODUCTO_ACTUAL);
         actualizarMetadatosSEO(PRODUCTO_ACTUAL);
 
@@ -309,6 +316,8 @@ function restablecerZoomOptico() {
         img.style.transformOrigin = 'center center';
     }
 }
+window.aplicarZoomOptico = aplicarZoomOptico;
+window.restablecerZoomOptico = restablecerZoomOptico;
 
 // --- INTERCAMBIO DE FOTO EN GALERÍA ---
 function cambiarFotoPrincipal(url, thumbElement) {
@@ -319,6 +328,7 @@ function cambiarFotoPrincipal(url, thumbElement) {
     thumbs.forEach(t => t.classList.remove('active'));
     if (thumbElement) thumbElement.classList.add('active');
 }
+window.cambiarFotoPrincipal = cambiarFotoPrincipal;
 
 // --- SELECTOR DE TALLE INTERACTIVO ---
 window.cambiarTalleDetalle = function (talle, stock) {
@@ -379,6 +389,7 @@ function ajustarCantidadDetalle(delta) {
     const qtyVal = document.getElementById('detalle-qty-val');
     if (qtyVal) qtyVal.innerText = CANTIDAD_SELECCIONADA;
 }
+window.ajustarCantidadDetalle = ajustarCantidadDetalle;
 
 window.agregarAlCarritoDesdeDetalle = function (e) {
     if (e) {
@@ -473,7 +484,7 @@ async function cargarProductosRelacionados() {
 
     try {
         const cat = PRODUCTO_ACTUAL.categoria || '';
-        const url = cat ? `/api/productos?categoria=${encodeURIComponent(cat)}` : '/api/productos';
+        const url = cat ? `${API_PRODUCTOS_ENDPOINT}?categoria=${encodeURIComponent(cat)}` : API_PRODUCTOS_ENDPOINT;
         const res = await fetch(url);
         if (!res.ok) return;
 
@@ -483,7 +494,7 @@ async function cargarProductosRelacionados() {
 
         if (lista.length < 4) {
             // Si la categoría tiene menos de 4, completar con otros
-            const resTodos = await fetch('/api/productos');
+            const resTodos = await fetch(API_PRODUCTOS_ENDPOINT);
             if (resTodos.ok) {
                 const todos = await resTodos.json();
                 todos.forEach(t => {
@@ -564,9 +575,16 @@ function actualizarMetadatosSEO(p) {
 
 function normalizarUrl(url) {
     if (!url) return '';
-    if (url.startsWith('http://') || url.startsWith('https://')) return url;
-    if (url.startsWith('/')) return url;
-    return '/' + url;
+    let clean = String(url).trim();
+    // Elimina host/puerto absoluto local o IP si existiese previamente en base de datos
+    clean = clean.replace(/^https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?(\/.*)$/, '$1');
+    clean = clean.replace(/^https?:\/\/(?:[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|localhost)(?::\d+)?(\/(?:uploads|images)\/.*)$/, '$1');
+    if (clean.startsWith('http://') || clean.startsWith('https://')) return clean;
+    if (clean.startsWith('../images/')) return clean.replace('../images/', '/images/');
+    if (clean.startsWith('images/')) return '/' + clean;
+    if (clean.startsWith('uploads/')) return '/' + clean;
+    if (clean.startsWith('/')) return clean;
+    return '/' + clean;
 }
 
 // --- BOTÓN COMPARTIR ESTILO MERCADO LIBRE ---

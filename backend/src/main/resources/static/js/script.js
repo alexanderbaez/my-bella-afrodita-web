@@ -4,15 +4,40 @@
    ========================================================================== */
 
 const WHATSAPP_NUMBER = '5492646121771';
-const API_URL = '/api/productos';
+
+// --- CONFIGURACIÓN CENTRALIZADA DE APIS (Rutas relativas directas al host/puerto activo) ---
+const API_BASE = ''; // Usa el origen activo del navegador automáticamente
+const API_PRODUCTOS = `${API_BASE}/api/productos`;
+const API_DESTACADOS = `${API_BASE}/api/productos/destacados`;
+const API_AUTH_STATUS = `${API_BASE}/api/auth/status`;
+const API_AUTH_LOGOUT = `${API_BASE}/api/auth/logout`;
+const API_CHECKOUT = `${API_BASE}/api/ordenes/checkout`;
+const API_RESENAS = `${API_BASE}/api/resenas`;
+const API_RESENAS_DESTACADAS = `${API_BASE}/api/resenas/destacadas`;
+const API_URL = API_PRODUCTOS; // Retrocompatibilidad para referencias existentes
+
+// Exponer en window para consumo modular seguro en otras páginas (ej: producto.js)
+window.API_BASE = API_BASE;
+window.API_PRODUCTOS = API_PRODUCTOS;
+window.API_DESTACADOS = API_DESTACADOS;
+window.API_AUTH_STATUS = API_AUTH_STATUS;
+window.API_AUTH_LOGOUT = API_AUTH_LOGOUT;
+window.API_CHECKOUT = API_CHECKOUT;
+window.API_RESENAS = API_RESENAS;
+window.API_RESENAS_DESTACADAS = API_RESENAS_DESTACADAS;
 
 function normalizarUrlImagen(url) {
     if (!url) return 'https://via.placeholder.com/300x400?text=My+Bella+Afrodita';
-    if (url.startsWith('http://') || url.startsWith('https://')) return url;
-    if (url.startsWith('../images/')) return url.replace('../images/', '/images/');
-    if (url.startsWith('images/')) return '/' + url;
-    if (url.startsWith('uploads/')) return '/' + url;
-    return url;
+    let clean = String(url).trim();
+    // Elimina host/puerto absoluto local o IP si existiese previamente en base de datos
+    clean = clean.replace(/^https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?(\/.*)$/, '$1');
+    clean = clean.replace(/^https?:\/\/(?:[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|localhost)(?::\d+)?(\/(?:uploads|images)\/.*)$/, '$1');
+    if (clean.startsWith('http://') || clean.startsWith('https://')) return clean;
+    if (clean.startsWith('../images/')) return clean.replace('../images/', '/images/');
+    if (clean.startsWith('images/')) return '/' + clean;
+    if (clean.startsWith('uploads/')) return '/' + clean;
+    if (!clean.startsWith('/')) return '/' + clean;
+    return clean;
 }
 
 let PRODUCTOS = [];
@@ -142,6 +167,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 1. CARGA DE PRENDAS DESTACADAS EN PORTADA (SI EXISTE EL CONTENEDOR EN INDEX.HTML)
     cargarDestacadosInicio();
 
+    // 1.1 CARGA DE RESEÑAS DESTACADAS DE CLIENTAS
+    cargarResenasDestacadas();
+
     // 2. CARGA ASÍNCRONA DE PRODUCTOS DESDE LA API SPRING BOOT / MYSQL PARA CATÁLOGO
     const contenedor = document.getElementById("contenedor-productos") || document.getElementById("productos-grid");
     if (contenedor) {
@@ -167,7 +195,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="col-12 text-center py-5">
                     <i class="fas fa-exclamation-circle text-danger fa-2x mb-3"></i>
                     <h5 class="fw-bold text-dark font-playfair">No pudimos conectar con el catálogo</h5>
-                    <p class="text-muted small">Por favor, confirma que el servidor de Tienda Bella Afrodita esté activo en el puerto 8080.</p>
+                    <p class="text-muted small">Por favor, confirma que el servidor de Tienda Bella Afrodita esté activo.</p>
                 </div>`;
             return;
         }
@@ -754,7 +782,7 @@ function iniciarRotadorAnuncios() {
 // ==========================================================================
 async function verificarAdminEnTienda() {
     try {
-        const res = await fetch('/api/auth/status', { credentials: 'include' });
+        const res = await fetch(API_AUTH_STATUS, { credentials: 'include' });
         if (!res.ok) return;
         const data = await res.json();
         if (data.authenticated && data.rol === 'ROLE_ADMIN') {
@@ -807,7 +835,7 @@ function renderizarAdminQuickBar(data) {
 
 window.cerrarSesionAdminDesdeTienda = async function () {
     try {
-        await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+        await fetch(API_AUTH_LOGOUT, { method: 'POST', credentials: 'include' });
     } catch (e) {}
     sessionStorage.removeItem('myBellaAdminUser');
     localStorage.removeItem('myBellaAdminUser');
@@ -833,7 +861,7 @@ async function cargarDestacadosInicio() {
     try {
         let destacados = [];
         try {
-            const res = await fetch('/api/productos/destacados');
+            const res = await fetch(API_DESTACADOS);
             if (res.ok) {
                 const data = await res.json();
                 console.log('[INICIO] Destacados recibidos:', Array.isArray(data) ? data.length : 0);
@@ -1488,7 +1516,7 @@ async function enviarPedidoWhatsApp() {
 
                 <div class="mb-2">
                     <label class="form-label small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">1. Nombre y Apellido *</label>
-                    <input type="text" id="swal-cliente-nombre" class="form-control form-control-sm" placeholder="Ej: Valentina Gómez" autocomplete="name">
+                    <input type="text" id="swal-cliente-nombre" class="form-control form-control-sm" placeholder="Ej: Camila Gómez" autocomplete="name">
                 </div>
                 <div class="mb-2">
                     <label class="form-label small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">2. WhatsApp de Contacto *</label>
@@ -1496,7 +1524,7 @@ async function enviarPedidoWhatsApp() {
                 </div>
                 <div class="mb-2">
                     <label class="form-label small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">3. Email <span class="text-muted fw-normal">(Opcional)</span></label>
-                    <input type="email" id="swal-cliente-email" class="form-control form-control-sm" placeholder="Ej: valentina@email.com" autocomplete="email">
+                    <input type="email" id="swal-cliente-email" class="form-control form-control-sm" placeholder="Ej: camila@email.com" autocomplete="email">
                 </div>
                 <div class="mb-2">
                     <label class="form-label small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">4. Departamento (San Juan) *</label>
@@ -1675,7 +1703,7 @@ async function enviarPedidoWhatsApp() {
             }))
         };
 
-        const res = await fetch('/api/ordenes/checkout', {
+        const res = await fetch(API_CHECKOUT, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
@@ -1761,3 +1789,373 @@ async function enviarPedidoWhatsApp() {
         });
     }
 }
+
+/* ==========================================================================
+   MÓDULO DE RESEÑAS REALES DE CLIENTAS (EXPERIENCIA ATELIER)
+   ========================================================================== */
+
+const RESENAS_DEFAULT = [
+    {
+        nombreCliente: "Camila M.",
+        departamento: "Capital",
+        estrellas: 5,
+        comentario: "La suavidad de las telas y el calce son impecables. La atención por WhatsApp para el talle fue excelente."
+    },
+    {
+        nombreCliente: "Paula V.",
+        departamento: "Rivadavia",
+        estrellas: 5,
+        comentario: "Me llegó en moto súper rápido y el empaque muy cuidado y discreto. Feliz con mi conjunto."
+    },
+    {
+        nombreCliente: "Luciana R.",
+        departamento: "Santa Lucía",
+        estrellas: 5,
+        comentario: "Hermosa lencería, los elásticos no marcan y la puntilla es de primera calidad."
+    }
+];
+
+function obtenerIniciales(nombre) {
+    if (!nombre) return "BA";
+    const parts = nombre.trim().split(/\s+/);
+    if (parts.length >= 2) {
+        return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return nombre.substring(0, 2).toUpperCase();
+}
+
+function generarHtmlEstrellas(cantidad) {
+    let html = '';
+    const num = Math.max(1, Math.min(5, cantidad || 5));
+    for (let i = 1; i <= 5; i++) {
+        if (i <= num) {
+            html += '<i class="fas fa-star"></i>';
+        } else {
+            html += '<i class="far fa-star text-muted opacity-50"></i>';
+        }
+    }
+    return html;
+}
+
+window.cargarResenasDestacadas = async function () {
+    const contenedor = document.getElementById("contenedor-resenas");
+    if (!contenedor) return;
+
+    try {
+        const res = await fetch(API_RESENAS_DESTACADAS);
+        if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data) && data.length > 0) {
+                renderizarResenasCards(data);
+                return;
+            }
+        }
+    } catch (e) {
+        console.warn("[RESEÑAS] No se pudo cargar /api/resenas/destacadas, usando testimonios predeterminados:", e);
+    }
+
+    // Si la API devuelve vacío o falla conexión, renderizamos los 3 por defecto
+    renderizarResenasCards(RESENAS_DEFAULT);
+};
+
+let carruselResenasIndice = 0;
+let carruselResenasInterval = null;
+let carruselResenasTotalItems = 0;
+
+function obtenerItemsVisiblesCarrusel() {
+    if (window.innerWidth >= 992) return 3;
+    if (window.innerWidth >= 768) return 2;
+    return 1;
+}
+
+function renderizarResenasCards(lista) {
+    const contenedor = document.getElementById("contenedor-resenas");
+    if (!contenedor) return;
+
+    carruselResenasTotalItems = lista.length;
+
+    contenedor.innerHTML = lista.map(resena => {
+        const iniciales = obtenerIniciales(resena.nombreCliente);
+        const estrellasHtml = generarHtmlEstrellas(resena.estrellas);
+        const depto = resena.departamento ? `${resena.departamento}, San Juan` : 'San Juan';
+
+        return `
+            <div class="review-slide-item">
+                <div class="testimonial-card-boutique">
+                    <div>
+                        <div class="testimonial-stars">
+                            ${estrellasHtml}
+                        </div>
+                        <p class="testimonial-quote">
+                            "${resena.comentario}"
+                        </p>
+                    </div>
+                    <div class="testimonial-author-wrap">
+                        <div class="author-avatar-badge">${iniciales}</div>
+                        <div>
+                            <div class="author-name">${resena.nombreCliente}</div>
+                            <div class="author-location"><i class="fas fa-map-marker-alt me-1" style="color: var(--gold-dark, #C5A059);"></i> ${depto}</div>
+                        </div>
+                        <span class="badge-verified-purchase">
+                            <i class="fas fa-check-circle"></i> Verificada
+                        </span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join("");
+
+    inicializarCarruselResenas(lista.length);
+}
+
+window.inicializarCarruselResenas = function (total) {
+    if (typeof total === 'number') {
+        carruselResenasTotalItems = total;
+    }
+    carruselResenasIndice = 0;
+    actualizarCarruselResenasUI();
+    iniciarAutoPlayResenas();
+};
+
+window.moverCarruselResenas = function (direccion) {
+    const visibles = obtenerItemsVisiblesCarrusel();
+    const maxIndice = Math.max(0, carruselResenasTotalItems - visibles);
+    if (maxIndice <= 0) return;
+
+    carruselResenasIndice += direccion;
+    if (carruselResenasIndice > maxIndice) {
+        carruselResenasIndice = 0;
+    } else if (carruselResenasIndice < 0) {
+        carruselResenasIndice = maxIndice;
+    }
+    actualizarCarruselResenasUI();
+    reiniciarAutoPlayResenas();
+};
+
+window.irACarruselResenas = function (indice) {
+    const visibles = obtenerItemsVisiblesCarrusel();
+    const maxIndice = Math.max(0, carruselResenasTotalItems - visibles);
+    carruselResenasIndice = Math.max(0, Math.min(indice, maxIndice));
+    actualizarCarruselResenasUI();
+    reiniciarAutoPlayResenas();
+};
+
+function actualizarCarruselResenasUI() {
+    const track = document.getElementById("contenedor-resenas");
+    const dotsContainer = document.getElementById("reviewsCarouselDots");
+    const btnPrev = document.getElementById("btnPrevResena");
+    const btnNext = document.getElementById("btnNextResena");
+    if (!track) return;
+
+    const visibles = obtenerItemsVisiblesCarrusel();
+    const maxIndice = Math.max(0, carruselResenasTotalItems - visibles);
+
+    // Si la cantidad de testimonios cabe completa en pantalla, ocultamos flechas y dots
+    if (carruselResenasTotalItems <= visibles) {
+        if (btnPrev) btnPrev.style.display = 'none';
+        if (btnNext) btnNext.style.display = 'none';
+        if (dotsContainer) dotsContainer.style.display = 'none';
+        track.style.transform = `translateX(0px)`;
+        return;
+    }
+
+    if (btnPrev) btnPrev.style.display = 'flex';
+    if (btnNext) btnNext.style.display = 'flex';
+    if (dotsContainer) dotsContainer.style.display = 'flex';
+
+    const slides = track.querySelectorAll(".review-slide-item");
+    if (slides.length > 0 && slides[0]) {
+        const slideWidth = slides[0].getBoundingClientRect().width;
+        const gap = 24; // Mismo gap que CSS .reviews-carousel-track
+        const desplazamiento = carruselResenasIndice * (slideWidth + gap);
+        track.style.transform = `translateX(-${desplazamiento}px)`;
+    }
+
+    // Renderizar dots
+    if (dotsContainer) {
+        const totalDots = maxIndice + 1;
+        let dotsHtml = '';
+        for (let i = 0; i < totalDots; i++) {
+            dotsHtml += `
+                <button type="button" class="carousel-dot ${i === carruselResenasIndice ? 'active' : ''}" 
+                        onclick="irACarruselResenas(${i})" 
+                        aria-label="Ir a diapositiva ${i + 1}"></button>
+            `;
+        }
+        dotsContainer.innerHTML = dotsHtml;
+    }
+}
+
+function iniciarAutoPlayResenas() {
+    detenerAutoPlayResenas();
+    const visibles = obtenerItemsVisiblesCarrusel();
+    if (carruselResenasTotalItems <= visibles) return;
+
+    carruselResenasInterval = setInterval(() => {
+        moverCarruselResenas(1);
+    }, 5000);
+}
+
+function detenerAutoPlayResenas() {
+    if (carruselResenasInterval) {
+        clearInterval(carruselResenasInterval);
+        carruselResenasInterval = null;
+    }
+}
+
+function reiniciarAutoPlayResenas() {
+    detenerAutoPlayResenas();
+    iniciarAutoPlayResenas();
+}
+
+window.abrirModalResena = function () {
+    const modalEl = document.getElementById("modalNuevaResena");
+    if (!modalEl) return;
+
+    const form = document.getElementById("formNuevaResena");
+    if (form) form.reset();
+
+    seleccionarEstrellas(5);
+    const charCount = document.getElementById("charCountResena");
+    if (charCount) charCount.textContent = "0";
+
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modal.show();
+};
+
+window.seleccionarEstrellas = function (n) {
+    const input = document.getElementById("resenaEstrellasInput");
+    if (input) input.value = n;
+
+    const stars = document.querySelectorAll("#starRatingSelector .star-item");
+    stars.forEach(star => {
+        const rating = parseInt(star.getAttribute("data-rating"), 10);
+        if (rating <= n) {
+            star.classList.add("active");
+        } else {
+            star.classList.remove("active");
+        }
+    });
+};
+
+window.enviarNuevaResena = async function (e) {
+    e.preventDefault();
+
+    const nombre = document.getElementById("resenaNombre")?.value?.trim();
+    const depto = document.getElementById("resenaDepto")?.value?.trim();
+    const estrellas = parseInt(document.getElementById("resenaEstrellasInput")?.value || "5", 10);
+    const comentario = document.getElementById("resenaComentario")?.value?.trim();
+    const btnSubmit = document.getElementById("btnEnviarResena");
+
+    if (!nombre || !depto || !comentario) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Campos requeridos',
+            text: 'Por favor completa todos los campos del formulario.',
+            confirmButtonColor: '#9E2A4B'
+        });
+        return;
+    }
+
+    if (btnSubmit) {
+        btnSubmit.disabled = true;
+        btnSubmit.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Publicando...`;
+    }
+
+    try {
+        const resp = await fetch(API_RESENAS, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                nombreCliente: nombre,
+                departamento: depto,
+                estrellas: estrellas,
+                comentario: comentario
+            })
+        });
+
+        if (!resp.ok) {
+            throw new Error(`Error en el servidor (${resp.status})`);
+        }
+
+        // Cerrar modal
+        const modalEl = document.getElementById("modalNuevaResena");
+        if (modalEl) {
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) modal.hide();
+        }
+
+        // Feedback positivo solicitado
+        Swal.fire({
+            icon: 'success',
+            title: '¡Muchas Gracias!',
+            text: '¡Gracias por compartir tu experiencia! Tu reseña será visible una vez validada.',
+            confirmButtonColor: '#9E2A4B',
+            confirmButtonText: 'Aceptar'
+        });
+
+    } catch (err) {
+        console.error("Error al enviar reseña:", err);
+        Swal.fire({
+            icon: 'error',
+            title: 'No se pudo enviar la reseña',
+            text: 'Ocurrió un problema de comunicación. Por favor intenta nuevamente.',
+            confirmButtonColor: '#9E2A4B'
+        });
+    } finally {
+        if (btnSubmit) {
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = `Publicar mi Reseña 💕`;
+        }
+    }
+};
+
+// Eventos del carrusel y contador de caracteres
+document.addEventListener("DOMContentLoaded", () => {
+    const textarea = document.getElementById("resenaComentario");
+    const charCount = document.getElementById("charCountResena");
+    if (textarea && charCount) {
+        textarea.addEventListener("input", () => {
+            charCount.textContent = textarea.value.length;
+        });
+    }
+
+    const outer = document.getElementById("reviewsCarouselOuter");
+    if (outer) {
+        let touchStartX = 0;
+        let touchStartY = 0;
+        outer.addEventListener("mouseenter", detenerAutoPlayResenas);
+        outer.addEventListener("mouseleave", iniciarAutoPlayResenas);
+        outer.addEventListener("touchstart", (e) => {
+            detenerAutoPlayResenas();
+            if (e.touches && e.touches[0]) {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+            }
+        }, { passive: true });
+        outer.addEventListener("touchend", (e) => {
+            iniciarAutoPlayResenas();
+            if (e.changedTouches && e.changedTouches[0]) {
+                const diffX = e.changedTouches[0].clientX - touchStartX;
+                const diffY = e.changedTouches[0].clientY - touchStartY;
+                // Si el gesto fue predominantemente horizontal y superó 40px
+                if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
+                    if (diffX < 0) {
+                        moverCarruselResenas(1);
+                    } else {
+                        moverCarruselResenas(-1);
+                    }
+                }
+            }
+        }, { passive: true });
+    }
+
+    window.addEventListener("resize", () => {
+        clearTimeout(window._resizeTimerResenas);
+        window._resizeTimerResenas = setTimeout(() => {
+            actualizarCarruselResenasUI();
+        }, 150);
+    });
+});

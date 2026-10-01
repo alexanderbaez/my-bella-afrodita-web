@@ -64,6 +64,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/admin", "/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/ordenes", "/api/ordenes/**").hasRole("ADMIN")
                 .requestMatchers("/api/productos/admin", "/api/productos/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/resenas/admin", "/api/resenas/admin/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/upload", "/api/upload/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/productos", "/api/productos/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/productos/**").hasRole("ADMIN")
@@ -73,11 +74,13 @@ public class SecurityConfig {
                 // 2. Endpoints de autenticación públicos
                 .requestMatchers("/api/auth/login", "/api/auth/status", "/api/auth/logout", "/api/auth/me", "/api/auth/verify").permitAll()
 
-                // 3. Catálogo público (Lectura GET)
+                // 3. Catálogo público y reseñas destacadas (Lectura GET)
                 .requestMatchers(HttpMethod.GET, "/api/productos", "/api/productos/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/resenas/destacadas").permitAll()
 
-                // 4. Checkout de órdenes público
+                // 4. Checkout de órdenes y envío público de reseñas
                 .requestMatchers(HttpMethod.POST, "/api/ordenes/checkout").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/resenas").permitAll()
 
                 // 5. Recursos estáticos y páginas web públicas (excluyendo admin.html y js/admin.js)
                 .requestMatchers("/", "/index.html", "/login.html", "/productos.html", "/producto.html", "/favicon.ico", "/error").permitAll()

@@ -8,6 +8,21 @@ const AUTH_STATUS_URL = '/api/auth/status';
 const AUTH_ME_URL = '/api/auth/me';
 const AUTH_LOGOUT_URL = '/api/auth/logout';
 const UPLOAD_API = '/api/upload';
+const API_RESENAS = '/api/resenas/admin';
+
+function normalizarUrlImagen(url) {
+    if (!url) return 'https://via.placeholder.com/80x100?text=Sin+Foto';
+    let clean = String(url).trim();
+    // Elimina host/puerto absoluto local o IP si existiese previamente en base de datos
+    clean = clean.replace(/^https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?(\/.*)$/, '$1');
+    clean = clean.replace(/^https?:\/\/(?:[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|localhost)(?::\d+)?(\/(?:uploads|images)\/.*)$/, '$1');
+    if (clean.startsWith('http://') || clean.startsWith('https://')) return clean;
+    if (clean.startsWith('../images/')) return clean.replace('../images/', '/images/');
+    if (clean.startsWith('images/')) return '/' + clean;
+    if (clean.startsWith('uploads/')) return '/' + clean;
+    if (!clean.startsWith('/')) return '/' + clean;
+    return clean;
+}
 
 let listaProductos = [];
 let listaOrdenes = [];
@@ -133,39 +148,60 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (inputBusquedaPedidos) inputBusquedaPedidos.addEventListener('input', filtrarYRenderizarPedidos);
     if (selectEstadoPedidos) selectEstadoPedidos.addEventListener('change', filtrarYRenderizarPedidos);
 
-    // Cargar productos y órdenes
+    // Buscador y filtro de reseñas en tiempo real
+    const inputBusquedaResenas = document.getElementById('filtro-resenas-busqueda');
+    const selectEstadoResenas = document.getElementById('filtro-resenas-estado');
+    if (inputBusquedaResenas) inputBusquedaResenas.addEventListener('input', filtrarYRenderizarResenas);
+    if (selectEstadoResenas) selectEstadoResenas.addEventListener('change', filtrarYRenderizarResenas);
+
+    // Cargar productos, órdenes y reseñas
     cargarProductos();
     cargarOrdenes();
+    cargarResenasAdmin();
 });
 
-// --- PESTAÑAS: PRODUCTOS VS PEDIDOS ---
+// --- PESTAÑAS: PRODUCTOS VS PEDIDOS VS RESEÑAS ---
 window.cambiarPestana = function (pestana) {
     pestanaActiva = pestana;
     const btnProd = document.getElementById('tab-btn-productos');
     const btnPed = document.getElementById('tab-btn-pedidos');
+    const btnRes = document.getElementById('tab-btn-resenas');
     const secProd = document.getElementById('seccion-productos');
     const secPed = document.getElementById('seccion-pedidos');
+    const secRes = document.getElementById('seccion-resenas');
     const topAction = document.getElementById('btn-top-action-container');
 
+    if (btnProd) btnProd.classList.remove('active');
+    if (btnPed) btnPed.classList.remove('active');
+    if (btnRes) btnRes.classList.remove('active');
+
+    if (secProd) secProd.classList.add('d-none');
+    if (secPed) secPed.classList.add('d-none');
+    if (secRes) secRes.classList.add('d-none');
+
     if (pestana === 'productos') {
-        btnProd.classList.add('active');
-        btnPed.classList.remove('active');
-        secProd.classList.remove('d-none');
-        secPed.classList.add('d-none');
-        topAction.innerHTML = `
-            <button class="btn btn-boutique-add shadow-sm" onclick="abrirModalCrear()">
-                <i class="fas fa-plus me-1.5"></i> Nuevo Producto
+        if (btnProd) btnProd.classList.add('active');
+        if (secProd) secProd.classList.remove('d-none');
+        if (topAction) topAction.innerHTML = `
+            <button id="btnNuevoProducto" class="btn-atelier-cta shadow-sm" onclick="abrirModalCrearProducto()">
+                + Cargar Nueva Prenda ✨
             </button>`;
-    } else {
-        btnPed.classList.add('active');
-        btnProd.classList.remove('active');
-        secPed.classList.remove('d-none');
-        secProd.classList.add('d-none');
-        topAction.innerHTML = `
+    } else if (pestana === 'pedidos') {
+        if (btnPed) btnPed.classList.add('active');
+        if (secPed) secPed.classList.remove('d-none');
+        if (topAction) topAction.innerHTML = `
             <button class="btn btn-outline-dark btn-sm shadow-sm py-2 px-3 fw-bold" onclick="cargarOrdenes()">
                 <i class="fas fa-sync-alt me-1.5"></i> Actualizar Pedidos
             </button>`;
         cargarOrdenes();
+    } else if (pestana === 'resenas') {
+        if (btnRes) btnRes.classList.add('active');
+        if (secRes) secRes.classList.remove('d-none');
+        if (topAction) topAction.innerHTML = `
+            <button class="btn btn-outline-dark btn-sm shadow-sm py-2 px-3 fw-bold" onclick="cargarResenasAdmin()">
+                <i class="fas fa-sync-alt me-1.5"></i> Actualizar Reseñas
+            </button>`;
+        cargarResenasAdmin();
     }
 };
 
@@ -207,7 +243,7 @@ async function cargarProductos() {
                 <td colspan="8" class="text-center py-5 text-danger">
                     <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
                     <p class="fw-bold mb-1">No se pudo conectar con el servidor backend.</p>
-                    <small class="text-muted">Asegúrate de que Spring Boot esté corriendo en el puerto 8080.</small>
+                    <small class="text-muted">Asegúrate de que el servidor Spring Boot esté en ejecución.</small>
                 </td>
             </tr>`;
     }
@@ -264,7 +300,7 @@ function renderizarTabla(productos) {
 
     tbody.innerHTML = productos.map(p => {
         const fotoPrincipal = (p.imagenes && p.imagenes.length > 0) 
-            ? p.imagenes[0] 
+            ? normalizarUrlImagen(p.imagenes[0]) 
             : 'https://via.placeholder.com/80x100?text=Sin+Foto';
 
         const variantes = Array.isArray(p.variantes) ? p.variantes : [];
@@ -278,13 +314,21 @@ function renderizarTabla(productos) {
             : '';
 
         const tallesHtml = variantes.length > 0
-            ? variantes.map(v => `
-                <span class="badge-talle ${v.stock < 2 ? 'badge-talle-critico' : ''} me-1 mb-1" 
-                      title="Stock disponible: ${v.stock} unidades">
-                    ${v.talle}: ${v.stock}u
-                </span>`).join('')
+            ? variantes.map(v => {
+                let badgeClass = 'badge-talle-ok';
+                if (v.stock === 0) {
+                    badgeClass = 'badge-talle-cero';
+                } else if (v.stock < 2) {
+                    badgeClass = 'badge-talle-critico';
+                }
+                return `
+                    <span class="badge-talle ${badgeClass} me-1 mb-1" 
+                          title="Stock disponible: ${v.stock} unidades">
+                        ${v.talle}: ${v.stock}u
+                    </span>`;
+            }).join('')
             : ((p.talles && p.talles.length > 0) 
-                ? p.talles.map(t => `<span class="badge-talle me-1">${t}</span>`).join('') 
+                ? p.talles.map(t => `<span class="badge-talle badge-talle-ok me-1 mb-1">${t}</span>`).join('') 
                 : '<span class="text-muted small">-</span>');
 
         const etiquetaHtml = p.etiqueta 
@@ -298,7 +342,9 @@ function renderizarTabla(productos) {
         return `
             <tr data-id="${p.id}">
                 <td>
-                    <img src="${fotoPrincipal}" alt="${p.nombre}" class="thumb-img" onerror="this.src='https://via.placeholder.com/80x100?text=Foto'">
+                    <div class="thumb-img-wrapper" title="${p.nombre}">
+                        <img src="${fotoPrincipal}" alt="${p.nombre}" class="thumb-img" onerror="this.src='https://via.placeholder.com/80x100?text=Foto'">
+                    </div>
                 </td>
                 <td>
                     <div class="fw-bold text-dark text-uppercase" style="font-size: 0.85rem;">
@@ -345,12 +391,12 @@ function renderizarTabla(productos) {
                                title="Click para alternar disponibilidad">
                     </div>
                 </td>
-                <td class="text-end">
-                    <button class="btn btn-outline-dark btn-sm py-1 px-2 rounded-1 me-1" onclick="abrirModalEditar('${p.id}')" title="Editar">
-                        <i class="fas fa-pencil-alt"></i>
+                <td class="text-end text-nowrap">
+                    <button class="btn-action-pill btn-action-edit me-1" onclick="editarProducto('${p.id}')" title="Editar prenda">
+                        <i class="fas fa-pencil-alt"></i> Editar
                     </button>
-                    <button class="btn btn-outline-danger btn-sm py-1 px-2 rounded-1" onclick="eliminarProducto('${p.id}', '${p.nombre.replace(/'/g, "\\'")}')" title="Eliminar">
-                        <i class="fas fa-trash-alt"></i>
+                    <button class="btn-action-pill btn-action-del-pill" onclick="eliminarProducto('${p.id}', '${p.nombre.replace(/'/g, "\\'")}')" title="Eliminar prenda">
+                        <i class="fas fa-trash-alt"></i> Borrar
                     </button>
                 </td>
             </tr>
@@ -481,10 +527,13 @@ function renderizarChipsTalles(categoria, tallesActivos = [], mapaStock = {}) {
 
     container.innerHTML = todosTalles.map(talle => {
         const activo = tallesActivos.includes(talle);
+        const esCustom = !presets.includes(talle);
         return `
             <span class="talle-chip ${activo ? 'active' : ''}" 
                   data-talle="${talle}" 
-                  onclick="toggleTalleChip(this)">
+                  data-custom="${esCustom ? 'true' : 'false'}"
+                  onclick="toggleTalleChip(this)"
+                  title="${activo ? 'Clic para desactivar talle' : 'Clic para activar talle'}">
                 ${talle}
             </span>
         `;
@@ -493,9 +542,62 @@ function renderizarChipsTalles(categoria, tallesActivos = [], mapaStock = {}) {
     actualizarGridInputsVariantes(mapaStock);
 }
 
+// --- TOGGLE DE TALLES SUGERIDOS (ACTIVAR / DESACTIVAR CON 1 CLIC) ---
 window.toggleTalleChip = function (chip) {
-    chip.classList.toggle('active');
-    actualizarGridInputsVariantes();
+    const estaActivo = chip.classList.contains('active');
+    const talle = chip.getAttribute('data-talle');
+
+    // Capturar stock actual de los inputs visibles
+    const mapaActual = {};
+    document.querySelectorAll('#variantes-stock-grid .input-stock-talle').forEach(input => {
+        const t = input.getAttribute('data-talle');
+        mapaActual[t] = input.value;
+    });
+
+    if (estaActivo) {
+        // Al hacer clic en un talle que está ACTIVO:
+        // Cambia su estado a INACTIVO y elimina automáticamente de la matriz su cajita de stock
+        chip.classList.remove('active');
+        delete mapaActual[talle];
+    } else {
+        // Al hacer clic en un talle que está INACTIVO:
+        // Cambia a ACTIVO y crea de inmediato su cajita de stock numérico con valor inicial (1)
+        chip.classList.add('active');
+        if (mapaActual[talle] === undefined) {
+            mapaActual[talle] = 1;
+        }
+    }
+
+    actualizarGridInputsVariantes(mapaActual);
+};
+
+// --- QUITAR TALLE RÁPIDO DESDE EL BOTÓN '×' DE LA TARJETA DE STOCK ---
+window.quitarTalle = function (talle) {
+    const categoria = (document.getElementById('prod-categoria')?.value || 'conjuntos').toLowerCase();
+    const presets = TALLES_PRESETS[categoria] || [];
+    const esPreset = presets.includes(talle);
+
+    const chip = document.querySelector(`#talles-chips-container .talle-chip[data-talle="${talle}"]`);
+    if (chip) {
+        if (esPreset) {
+            // Si pertenecía a los sugeridos, apaga su chip poniéndolo en gris
+            chip.classList.remove('active');
+        } else {
+            // Si era un talle personalizado (ej: XL, 110), lo elimina completamente de la lista
+            chip.remove();
+        }
+    }
+
+    // Capturar stock de los demás talles excluyendo el eliminado
+    const mapaActual = {};
+    document.querySelectorAll('#variantes-stock-grid .input-stock-talle').forEach(input => {
+        const t = input.getAttribute('data-talle');
+        if (t !== talle) {
+            mapaActual[t] = input.value;
+        }
+    });
+
+    actualizarGridInputsVariantes(mapaActual);
 };
 
 window.cambiarCategoriaEnModal = function (nuevaCategoria) {
@@ -506,7 +608,7 @@ window.cambiarCategoriaEnModal = function (nuevaCategoria) {
     });
 
     const catKey = (nuevaCategoria || 'conjuntos').toLowerCase();
-    const presets = TALLES_PRESETS[catKey] || ['S', 'M', 'L', 'XL'];
+    const presets = TALLES_PRESETS[catKey] || ['85', '90', '95', '100', '105'];
     renderizarChipsTalles(nuevaCategoria, presets, mapaActual);
 };
 
@@ -524,12 +626,24 @@ window.agregarTalleCustom = function () {
         const nuevoSpan = document.createElement('span');
         nuevoSpan.className = 'talle-chip active';
         nuevoSpan.setAttribute('data-talle', valor);
+        nuevoSpan.setAttribute('data-custom', 'true');
         nuevoSpan.innerText = valor;
+        nuevoSpan.title = 'Clic para desactivar talle';
         nuevoSpan.onclick = function () { toggleTalleChip(this); };
         container.appendChild(nuevoSpan);
     }
     input.value = '';
-    actualizarGridInputsVariantes();
+
+    // Asignar valor inicial 1 si no tenía
+    const mapaActual = {};
+    document.querySelectorAll('#variantes-stock-grid .input-stock-talle').forEach(inp => {
+        mapaActual[inp.getAttribute('data-talle')] = inp.value;
+    });
+    if (mapaActual[valor] === undefined) {
+        mapaActual[valor] = 1;
+    }
+
+    actualizarGridInputsVariantes(mapaActual);
 };
 
 // --- GRID DINÁMICO DE INVENTARIO POR TALLE ---
@@ -550,20 +664,22 @@ function actualizarGridInputsVariantes(mapaValores = {}) {
     const chipsActivos = document.querySelectorAll('#talles-chips-container .talle-chip.active');
 
     if (chipsActivos.length === 0) {
-        grid.innerHTML = '<div class="col-12 text-muted small py-1" style="font-size: 0.72rem;">Ningún talle seleccionado todavía. Haz clic arriba para activar.</div>';
+        grid.innerHTML = '<div class="col-12 text-muted small py-2 text-center" style="font-size: 0.75rem;"><i class="fas fa-info-circle me-1"></i> Ningún talle activo. Haz clic en los chips de arriba para activar talles con stock.</div>';
         return;
     }
 
     chipsActivos.forEach(chip => {
         const talle = chip.getAttribute('data-talle');
-        const valorStock = valoresActuales[talle] !== undefined ? valoresActuales[talle] : 5;
+        const valorStock = valoresActuales[talle] !== undefined ? valoresActuales[talle] : 1;
 
         const col = document.createElement('div');
         col.className = 'col-6 col-sm-4 col-md-3';
+        col.id = `col-stock-talle-${talle}`;
         col.innerHTML = `
-            <div class="card p-2 border shadow-none bg-white">
-                <div class="d-flex justify-content-between align-items-center mb-1">
-                    <span class="badge bg-dark" style="font-size: 0.65rem;">Talle ${talle}</span>
+            <div class="stock-talle-card p-2 bg-white rounded-3 shadow-none position-relative">
+                <button type="button" class="btn-quitar-talle" onclick="quitarTalle('${talle}')" title="Eliminar talle ${talle}">×</button>
+                <div class="d-flex align-items-center gap-1 mb-1 pe-3">
+                    <span class="badge" style="background-color: #9E2A4B; font-size: 0.68rem;">Talle ${talle}</span>
                     <small class="text-muted" style="font-size: 0.65rem;">Stock</small>
                 </div>
                 <input type="number" min="0" value="${valorStock}" 
@@ -575,13 +691,64 @@ function actualizarGridInputsVariantes(mapaValores = {}) {
     });
 }
 
+// --- FUNCIONES LIVE PREVIEW DE IMAGEN ---
+function actualizarLivePreview(url) {
+    const img = document.getElementById('img-live-preview');
+    const placeholder = document.getElementById('live-preview-placeholder');
+    const box = document.getElementById('live-preview-wrapper');
+    if (!img || !placeholder || !box) return;
+
+    const normalized = normalizarUrlImagen(url);
+    if (url && typeof url === 'string' && url.trim().length > 4) {
+        img.src = normalized;
+        img.classList.remove('d-none');
+        placeholder.classList.add('d-none');
+        box.classList.add('has-image');
+    } else {
+        img.src = '';
+        img.classList.add('d-none');
+        placeholder.classList.remove('d-none');
+        box.classList.remove('has-image');
+    }
+}
+
+window.mostrarPlaceholderLivePreview = function () {
+    const img = document.getElementById('img-live-preview');
+    const placeholder = document.getElementById('live-preview-placeholder');
+    const box = document.getElementById('live-preview-wrapper');
+    if (img) img.classList.add('d-none');
+    if (placeholder) placeholder.classList.remove('d-none');
+    if (box) box.classList.remove('has-image');
+};
+
+window.actualizarPreviewDesdeUrl = function (url) {
+    actualizarLivePreview(url);
+};
+
+window.agregarUrlDesdeInput = function () {
+    const input = document.getElementById('prod-imagen-url-input');
+    const val = input ? normalizarUrlImagen(input.value.trim()) : '';
+    if (val && !imagenesProductoActual.includes(val)) {
+        imagenesProductoActual.push(val);
+        renderizarGaleriaPreview();
+    }
+};
+
 // --- MODAL: CREAR PRODUCTO ---
 function abrirModalCrear() {
+    if (!modalInstancia) {
+        const el = document.getElementById('modalProducto');
+        if (el && window.bootstrap) modalInstancia = new bootstrap.Modal(el);
+    }
     document.getElementById('form-producto').reset();
     document.getElementById('prod-id').value = '';
-    document.getElementById('modalProductoLabel').innerHTML = '<i class="fas fa-plus-circle me-2"></i> Nuevo Producto';
-    document.getElementById('btn-submit-producto').innerHTML = '<i class="fas fa-save me-1"></i> Guardar Producto';
+    document.getElementById('modalProductoLabel').innerHTML = '<i class="fas fa-sparkles me-2" style="color: #C5A059;"></i> Cargar Nueva Prenda ✨';
+    document.getElementById('btn-submit-producto').innerHTML = '<i class="fas fa-save me-1.5"></i> Guardar Prenda en Catálogo 💕';
     
+    const inputUrl = document.getElementById('prod-imagen-url-input');
+    if (inputUrl) inputUrl.value = '';
+    actualizarLivePreview('');
+
     // Categoría inicial por defecto y sus chips de talles
     const catInicial = document.getElementById('prod-categoria').value || 'conjuntos';
     const presetsIniciales = TALLES_PRESETS[catInicial] || ['85', '90', '95', '100', '105'];
@@ -598,11 +765,15 @@ function abrirModalCrear() {
     const progress = document.getElementById('upload-progress-container');
     if (progress) progress.classList.add('d-none');
 
-    modalInstancia.show();
+    if (modalInstancia) modalInstancia.show();
 }
 
 // --- MODAL: EDITAR PRODUCTO ---
 function abrirModalEditar(id) {
+    if (!modalInstancia) {
+        const el = document.getElementById('modalProducto');
+        if (el && window.bootstrap) modalInstancia = new bootstrap.Modal(el);
+    }
     const p = listaProductos.find(prod => String(prod.id) === String(id));
     if (!p) return;
 
@@ -638,12 +809,15 @@ function abrirModalEditar(id) {
 
     // Imágenes
     imagenesProductoActual = Array.isArray(p.imagenes) ? [...p.imagenes] : [];
+    const inputUrl = document.getElementById('prod-imagen-url-input');
+    if (inputUrl) inputUrl.value = imagenesProductoActual[0] || '';
+    actualizarLivePreview(imagenesProductoActual[0] || '');
     renderizarGaleriaPreview();
 
-    document.getElementById('modalProductoLabel').innerHTML = `<i class="fas fa-edit me-2"></i> Editar Producto #${p.id}`;
-    document.getElementById('btn-submit-producto').innerHTML = '<i class="fas fa-sync-alt me-1"></i> Actualizar Cambios';
+    document.getElementById('modalProductoLabel').innerHTML = `<i class="fas fa-edit me-2" style="color: #C5A059;"></i> Editar Prenda #${p.id}`;
+    document.getElementById('btn-submit-producto').innerHTML = '<i class="fas fa-sync-alt me-1.5"></i> Guardar Prenda en Catálogo 💕';
 
-    modalInstancia.show();
+    if (modalInstancia) modalInstancia.show();
 }
 
 // --- SUBIDA ASÍNCRONA DE IMÁGENES AL BACKEND ---
@@ -696,9 +870,9 @@ async function subirArchivos(files) {
             }
 
             const data = await res.json();
-            const urlFinal = data.url || data.relativePath;
+            const urlFinal = data.relativePath || data.url;
             if (urlFinal) {
-                imagenesProductoActual.push(urlFinal);
+                imagenesProductoActual.push(normalizarUrlImagen(urlFinal));
                 subidos++;
             }
         } catch (error) {
@@ -737,20 +911,33 @@ function renderizarGaleriaPreview() {
     if (textarea) {
         textarea.value = imagenesProductoActual.join('\n');
     }
+
+    if (imagenesProductoActual.length > 0) {
+        actualizarLivePreview(imagenesProductoActual[0]);
+        const input = document.getElementById('prod-imagen-url-input');
+        if (input && !input.value) {
+            input.value = imagenesProductoActual[0];
+        }
+    } else {
+        const input = document.getElementById('prod-imagen-url-input');
+        actualizarLivePreview(input ? input.value : '');
+    }
+
     if (!container) return;
 
     if (imagenesProductoActual.length === 0) {
-        container.innerHTML = '<span class="text-muted small" style="font-size: 0.72rem;">No hay fotos seleccionadas aún.</span>';
+        container.innerHTML = '<span class="text-muted small" style="font-size: 0.72rem;">No hay fotos en galería aún.</span>';
         return;
     }
 
     container.innerHTML = imagenesProductoActual.map((url, index) => {
         const esPortada = index === 0;
+        const urlNorm = normalizarUrlImagen(url);
         return `
-            <div class="gallery-preview-item ${esPortada ? 'is-portada' : ''}" title="${url}">
+            <div class="gallery-preview-item ${esPortada ? 'is-portada' : ''}" title="${urlNorm}" onclick="actualizarLivePreview('${urlNorm}')" style="cursor: pointer;">
                 ${esPortada ? '<span class="badge-portada">PORTADA</span>' : ''}
-                <img src="${url}" alt="Foto ${index + 1}" onerror="this.src='https://via.placeholder.com/85x113?text=Foto'">
-                <button type="button" class="btn-remove-thumb" onclick="eliminarImagenDeGaleria(${index})" title="Quitar foto">&times;</button>
+                <img src="${urlNorm}" alt="Foto ${index + 1}" onerror="this.src='https://via.placeholder.com/85x113?text=Foto'">
+                <button type="button" class="btn-remove-thumb" onclick="event.stopPropagation(); eliminarImagenDeGaleria(${index})" title="Quitar foto">&times;</button>
             </div>
         `;
     }).join('');
@@ -763,13 +950,20 @@ window.eliminarImagenDeGaleria = function (index) {
 
 window.sincronizarDesdeTextarea = function () {
     const raw = document.getElementById('prod-imagenes')?.value || '';
-    imagenesProductoActual = raw.split(/[\n,]/).map(u => u.trim()).filter(u => u.length > 3);
+    imagenesProductoActual = raw.split(/[\n,]/).map(u => normalizarUrlImagen(u.trim())).filter(u => u.length > 3);
     renderizarGaleriaPreview();
 };
 
 // --- GUARDAR PRODUCTO (POST O PUT) ---
 async function guardarProducto(event) {
     event.preventDefault();
+
+    const btnSubmit = document.getElementById('btn-submit-producto');
+    const btnOriginalHtml = btnSubmit ? btnSubmit.innerHTML : '<i class="fas fa-save me-1.5"></i> Guardar Prenda en Catálogo 💕';
+    if (btnSubmit) {
+        btnSubmit.disabled = true;
+        btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Guardando Prenda...';
+    }
 
     const id = document.getElementById('prod-id').value;
     const nombre = document.getElementById('prod-nombre').value.trim();
@@ -782,18 +976,14 @@ async function guardarProducto(event) {
     const stock = document.getElementById('prod-stock').checked;
     const destacadoInicio = document.getElementById('prod-destacadoInicio')?.checked || false;
 
-    // Obtener talles activos
+    // Obtener SOLO talles y variantes con input de stock activo en el DOM
     const talles = [];
-    document.querySelectorAll('#talles-chips-container .talle-chip.active').forEach(chip => {
-        talles.push(chip.getAttribute('data-talle'));
-    });
-
-    // Obtener variantes con stock numérico configurado
     const variantes = [];
     document.querySelectorAll('#variantes-stock-grid .input-stock-talle').forEach(input => {
         const talle = input.getAttribute('data-talle');
         const stockQty = parseInt(input.value, 10);
-        if (talle) {
+        if (talle && !talles.includes(talle)) {
+            talles.push(talle);
             variantes.push({
                 talle: talle,
                 stock: isNaN(stockQty) || stockQty < 0 ? 0 : stockQty
@@ -801,14 +991,12 @@ async function guardarProducto(event) {
         }
     });
 
-    // Si hay talles activos pero por alguna razón no se generó input, asegurar variante con 0
-    talles.forEach(t => {
-        if (!variantes.some(v => v.talle === t)) {
-            variantes.push({ talle: t, stock: 0 });
-        }
-    });
+    // Imágenes: Si el arreglo está vacío pero se colocó URL en el input, incluirlo
+    const inputUrlVal = document.getElementById('prod-imagen-url-input')?.value?.trim();
+    if (imagenesProductoActual.length === 0 && inputUrlVal && inputUrlVal.length > 4) {
+        imagenesProductoActual.push(inputUrlVal);
+    }
 
-    // Imágenes del arreglo interactivo
     const imagenes = imagenesProductoActual.length > 0
         ? imagenesProductoActual
         : document.getElementById('prod-imagenes').value.split(/[\n,]/).map(u => u.trim()).filter(u => u.length > 3);
@@ -851,13 +1039,13 @@ async function guardarProducto(event) {
             throw new Error(errData.message || `HTTP ${res.status}`);
         }
 
-        modalInstancia.hide();
+        if (modalInstancia) modalInstancia.hide();
 
         Swal.fire({
             icon: 'success',
-            title: esEdicion ? '¡Producto Actualizado!' : '¡Producto Creado!',
-            text: `"${nombre}" se guardó correctamente en la base de datos.`,
-            confirmButtonColor: '#1a1a1a',
+            title: esEdicion ? '¡Prenda Actualizada!' : '¡Prenda Guardada!',
+            text: `"${nombre}" se guardó correctamente en el catálogo.`,
+            confirmButtonColor: '#9E2A4B',
             timer: 2000
         });
 
@@ -869,6 +1057,11 @@ async function guardarProducto(event) {
             title: 'Error al Guardar',
             text: error.message || 'No se pudo completar la operación en el servidor.'
         });
+    } finally {
+        if (btnSubmit) {
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = btnOriginalHtml;
+        }
     }
 }
 
@@ -1533,3 +1726,312 @@ window.verDetallePedido = function (id) {
         modalDetallePedidoInstancia.show();
     }
 };
+
+/* ==========================================================================
+   MODERACIÓN DE RESEÑAS DE CLIENTAS (PANEL ADMIN)
+   ========================================================================== */
+
+let RESENAS = [];
+
+window.cargarResenasAdmin = async function () {
+    const tbody = document.getElementById('tabla-resenas-body');
+    if (!tbody) return;
+
+    try {
+        const resp = await fetch(API_RESENAS, { credentials: 'include' });
+        if (!resp.ok) {
+            throw new Error(`Error HTTP: ${resp.status}`);
+        }
+        RESENAS = await resp.json();
+        actualizarMetricasResenas(RESENAS);
+        filtrarYRenderizarResenas();
+    } catch (err) {
+        console.error("Error al cargar reseñas admin:", err);
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" class="text-center py-4 text-danger">
+                    <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                    <div>No se pudieron cargar las reseñas. Revisa la sesión de administrador.</div>
+                </td>
+            </tr>
+        `;
+    }
+};
+
+function actualizarMetricasResenas(lista) {
+    const destacadas = lista.filter(r => r.destacadaHome && r.aprobada).length;
+    const aprobadas = lista.filter(r => r.aprobada).length;
+    const pendientes = lista.filter(r => !r.aprobada).length;
+    const total = lista.length;
+
+    const elDest = document.getElementById('stat-resenas-destacadas');
+    const elAprob = document.getElementById('stat-resenas-aprobadas');
+    const elPend = document.getElementById('stat-resenas-pendientes');
+    const elTotal = document.getElementById('stat-resenas-total');
+    const badgeTab = document.getElementById('badge-resenas-count');
+    const contadorCabecera = document.getElementById('contador-resenas-mostradas');
+
+    if (elDest) elDest.textContent = destacadas;
+    if (elAprob) elAprob.textContent = aprobadas;
+    if (elPend) elPend.textContent = pendientes;
+    if (elTotal) elTotal.textContent = total;
+    if (badgeTab) badgeTab.textContent = pendientes;
+    if (contadorCabecera) {
+        contadorCabecera.innerHTML = `Mostrando <span class="badge bg-warning text-dark px-2 py-1">${destacadas}</span> reseñas activas en la Portada`;
+    }
+}
+
+window.filtrarYRenderizarResenas = function () {
+    const texto = (document.getElementById('filtro-resenas-busqueda')?.value || '').toLowerCase().trim();
+    const filtroEstado = document.getElementById('filtro-resenas-estado')?.value || '';
+
+    let filtradas = RESENAS.filter(r => {
+        const coincideTexto = !texto ||
+            (r.nombreCliente && r.nombreCliente.toLowerCase().includes(texto)) ||
+            (r.departamento && r.departamento.toLowerCase().includes(texto)) ||
+            (r.comentario && r.comentario.toLowerCase().includes(texto));
+
+        let coincideEstado = true;
+        if (filtroEstado === 'PORTADA') {
+            coincideEstado = r.destacadaHome && r.aprobada;
+        } else if (filtroEstado === 'APROBADA') {
+            coincideEstado = r.aprobada;
+        } else if (filtroEstado === 'PENDIENTE') {
+            coincideEstado = !r.aprobada;
+        }
+
+        return coincideTexto && coincideEstado;
+    });
+
+    renderizarTablaResenas(filtradas);
+};
+
+function renderizarTablaResenas(lista) {
+    const tbody = document.getElementById('tabla-resenas-body');
+    if (!tbody) return;
+
+    if (lista.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" class="text-center py-5 text-muted">
+                    <i class="far fa-comment-dots fa-3x mb-2 text-secondary opacity-50"></i>
+                    <p class="mb-0 fw-semibold">No se encontraron reseñas con los filtros seleccionados.</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = lista.map(r => {
+        const fecha = r.fechaCreacion 
+            ? new Date(r.fechaCreacion).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' })
+            : '-';
+
+        let estrellasHtml = '';
+        for (let i = 1; i <= 5; i++) {
+            if (i <= r.estrellas) {
+                estrellasHtml += '<i class="fas fa-star" style="color: #f1c40f;"></i>';
+            } else {
+                estrellasHtml += '<i class="far fa-star text-muted opacity-50"></i>';
+            }
+        }
+
+        return `
+            <tr>
+                <td class="text-muted small">${fecha}</td>
+                <td>
+                    <div class="fw-bold text-dark">${r.nombreCliente}</div>
+                </td>
+                <td>
+                    <span class="badge bg-light text-dark border">
+                        <i class="fas fa-map-marker-alt me-1 text-danger"></i>${r.departamento}
+                    </span>
+                </td>
+                <td>
+                    <div class="d-inline-flex gap-1" title="${r.estrellas} de 5 estrellas">
+                        ${estrellasHtml}
+                    </div>
+                </td>
+                <td style="max-width: 320px;">
+                    <div class="text-muted small text-truncate-2" title="${r.comentario}" style="line-height: 1.4;">
+                        "${r.comentario}"
+                    </div>
+                </td>
+                <td class="text-center">
+                    <div class="form-check form-switch d-inline-block">
+                        <input class="form-check-input switch-custom switch-aprobada switch-input" type="checkbox" role="switch"
+                            id="switch-aprobada-${r.id}"
+                            ${r.aprobada ? 'checked' : ''}
+                            onchange="toggleAprobada(${r.id}, this.checked)"
+                            title="${r.aprobada ? 'Aprobada (clic para desaprobar)' : 'Pendiente (clic para aprobar)'}">
+                    </div>
+                </td>
+                <td class="text-center">
+                    <div class="form-check form-switch d-inline-block">
+                        <input class="form-check-input switch-custom switch-destacada switch-input" type="checkbox" role="switch"
+                            id="switch-destacada-${r.id}"
+                            ${r.destacadaHome ? 'checked' : ''}
+                            onchange="toggleDestacada(${r.id}, this.checked)"
+                            title="${r.destacadaHome ? 'En portada (clic para quitar)' : 'Clic para mostrar en Portada'}">
+                    </div>
+                </td>
+                <td class="text-end">
+                    <button type="button" class="btn btn-action-del" onclick="eliminarResena(${r.id})" title="Eliminar reseña spam">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+window.toggleAprobada = async function (id, nuevoEstado) {
+    try {
+        const resp = await fetch(`${API_RESENAS}/${id}/toggle-aprobada`, {
+            method: 'PATCH',
+            credentials: 'include'
+        });
+
+        if (!resp.ok) {
+            throw new Error(`Error HTTP: ${resp.status}`);
+        }
+
+        const data = await resp.json();
+
+        // 1. Actualizar el objeto en el array local en memoria
+        const index = RESENAS.findIndex(r => String(r.id) === String(id));
+        if (index !== -1) {
+            RESENAS[index] = data;
+        }
+
+        // 2. Llamar INMEDIATAMENTE al recálculo de métricas y re-renderizado
+        actualizarMetricasResenas(RESENAS);
+        filtrarYRenderizarResenas();
+
+        const toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 1400,
+            timerProgressBar: true
+        });
+        toast.fire({
+            icon: data.aprobada ? 'success' : 'info',
+            title: data.aprobada ? 'Aprobada (Verde)' : 'Desaprobada (Gris)'
+        });
+
+    } catch (err) {
+        console.error("Error en toggleAprobada:", err);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error de Sincronización',
+            text: 'No se pudo actualizar el estado de aprobación.'
+        });
+        cargarResenasAdmin();
+    }
+};
+
+window.toggleDestacada = async function (id, nuevoEstado) {
+    try {
+        const resp = await fetch(`${API_RESENAS}/${id}/toggle-destacada`, {
+            method: 'PATCH',
+            credentials: 'include'
+        });
+
+        if (!resp.ok) {
+            throw new Error(`Error HTTP: ${resp.status}`);
+        }
+
+        const data = await resp.json();
+
+        // 1. Actualizar el objeto en el array local en memoria
+        const index = RESENAS.findIndex(r => String(r.id) === String(id));
+        if (index !== -1) {
+            RESENAS[index] = data;
+        }
+
+        // 2. Llamar INMEDIATAMENTE al recálculo de métricas y re-renderizado
+        actualizarMetricasResenas(RESENAS);
+        filtrarYRenderizarResenas();
+
+        const toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 1400,
+            timerProgressBar: true
+        });
+        toast.fire({
+            icon: data.destacadaHome ? 'success' : 'info',
+            title: data.destacadaHome ? 'Destacada en Portada ⭐' : 'Removida de Portada'
+        });
+
+    } catch (err) {
+        console.error("Error en toggleDestacada:", err);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error de Sincronización',
+            text: 'No se pudo alternar la visibilidad en portada.'
+        });
+        cargarResenasAdmin();
+    }
+};
+
+// Aliases para compatibilidad total de invocación
+window.toggleAprobadaResena = window.toggleAprobada;
+window.toggleDestacadaResena = window.toggleDestacada;
+window.cargarResenas = window.cargarResenasAdmin;
+
+window.eliminarResena = async function (id) {
+    const confirm = await Swal.fire({
+        title: '¿Eliminar reseña?',
+        text: 'Esta acción no se puede deshacer. Se eliminará definitivamente.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e74c3c',
+        cancelButtonColor: '#706E6B',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    });
+
+    if (!confirm.isConfirmed) return;
+
+    try {
+        const resp = await fetch(`${API_RESENAS}/${id}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+        if (!resp.ok) throw new Error('Error al eliminar');
+
+        RESENAS = RESENAS.filter(r => r.id !== id);
+        actualizarMetricasResenas(RESENAS);
+        filtrarYRenderizarResenas();
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Eliminada',
+            text: 'La reseña fue eliminada con éxito.',
+            timer: 1600,
+            showConfirmButton: false
+        });
+    } catch (err) {
+        console.error("Error al eliminar reseña:", err);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo eliminar la reseña.'
+        });
+        cargarResenasAdmin();
+    }
+};
+
+// --- EXPORTAR ALIASES GLOBALES PARA COMPATIBILIDAD ATELIER ---
+window.abrirModalCrearProducto = abrirModalCrear;
+window.abrirModalCrear = abrirModalCrear;
+window.editarProducto = abrirModalEditar;
+window.abrirModalEditar = abrirModalEditar;
+window.guardarProducto = guardarProducto;
+window.quitarTalle = quitarTalle;
+window.toggleTalleChip = toggleTalleChip;
+
+
