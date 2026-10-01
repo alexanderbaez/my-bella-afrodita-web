@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -110,7 +112,7 @@ public class ProductoViewController {
                 .body(htmlEnriquecido);
     }
 
-    private String inyectarOpenGraph(String template, Producto p, Long id, HttpServletRequest request) {
+    String inyectarOpenGraph(String template, Producto p, Long id, HttpServletRequest request) {
         int startIdx = template.indexOf(START_TAG);
         int endIdx = template.indexOf(END_TAG);
 
@@ -178,18 +180,79 @@ public class ProductoViewController {
         return before + START_TAG + "\n    " + ogTags.toString() + "\n    " + END_TAG + after;
     }
 
-    private String construirUrlAbsoluta(String foto, String baseUrl) {
+    public String construirUrlAbsoluta(String foto, String baseUrl) {
         if (foto == null || foto.isBlank()) {
             return baseUrl + "/images/LOGO.png";
         }
         String trimmed = foto.trim();
-        if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
-            return trimmed;
+        String encodedPath = encodeUriPath(trimmed);
+        if (encodedPath.startsWith("http://") || encodedPath.startsWith("https://")) {
+            return encodedPath;
         }
-        if (trimmed.startsWith("/")) {
-            return baseUrl + trimmed;
+        if (encodedPath.startsWith("/")) {
+            return baseUrl + encodedPath;
         }
-        return baseUrl + "/" + trimmed;
+        return baseUrl + "/" + encodedPath;
+    }
+
+    /**
+     * Codifica los segmentos de ruta de la imagen según RFC 3986 (espacios a %20, eñes y tildes a %XX)
+     * preservando el esquema (http/https) y las barras de separación sin generar doble encoding (%2520).
+     */
+    public String encodeUriPath(String path) {
+        if (path == null || path.isBlank()) {
+            return "";
+        }
+        if (path.startsWith("http://") || path.startsWith("https://")) {
+            try {
+                int schemeEnd = path.indexOf("://");
+                int pathStart = path.indexOf('/', schemeEnd + 3);
+                if (pathStart == -1) {
+                    return path;
+                }
+                String origin = path.substring(0, pathStart);
+                String pathAndQuery = path.substring(pathStart);
+                return origin + encodePathSegments(pathAndQuery);
+            } catch (Exception e) {
+                log.warn("[SOCIAL-PREVIEW] Error codificando URL absoluta {}: {}", path, e.getMessage());
+                return path;
+            }
+        }
+        return encodePathSegments(path);
+    }
+
+    public String encodePathSegments(String path) {
+        if (path == null) return "";
+        String query = "";
+        int queryIdx = path.indexOf('?');
+        if (queryIdx != -1) {
+            query = path.substring(queryIdx);
+            path = path.substring(0, queryIdx);
+        }
+
+        boolean startsWithSlash = path.startsWith("/");
+        String[] segments = path.split("/");
+        StringBuilder sb = new StringBuilder();
+        if (startsWithSlash) {
+            sb.append("/");
+        }
+        boolean first = true;
+        for (String segment : segments) {
+            if (segment.isEmpty()) continue;
+            if (!first) {
+                sb.append("/");
+            }
+            try {
+                // Decodificar previamente para evitar doble encoding (%2520) si ya contenía partes codificadas
+                String decoded = URLDecoder.decode(segment, StandardCharsets.UTF_8);
+                String encoded = URLEncoder.encode(decoded, StandardCharsets.UTF_8).replace("+", "%20");
+                sb.append(encoded);
+            } catch (Exception e) {
+                sb.append(URLEncoder.encode(segment, StandardCharsets.UTF_8).replace("+", "%20"));
+            }
+            first = false;
+        }
+        return sb.toString() + query;
     }
 
     private String detectarTipoImagen(String url) {
