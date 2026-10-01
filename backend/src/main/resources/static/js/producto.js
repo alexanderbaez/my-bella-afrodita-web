@@ -17,9 +17,17 @@ let STOCK_DISPONIBLE_TALLE = 0;
 let CANTIDAD_SELECCIONADA = 1;
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Obtener ID del producto desde la URL
+    // 1. Obtener ID del producto desde la URL (?id=... o permalink /producto/{id})
     const urlParams = new URLSearchParams(window.location.search);
-    const prodId = urlParams.get('id');
+    let prodId = urlParams.get('id');
+
+    if (!prodId) {
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        const lastSegment = pathSegments[pathSegments.length - 1];
+        if (lastSegment && /^\d+$/.test(lastSegment)) {
+            prodId = lastSegment;
+        }
+    }
 
     if (!prodId) {
         window.location.href = './productos.html';

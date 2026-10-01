@@ -83,7 +83,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/resenas").permitAll()
 
                 // 5. Recursos estáticos y páginas web públicas (excluyendo admin.html y js/admin.js)
-                .requestMatchers("/", "/index.html", "/login.html", "/productos.html", "/producto.html", "/favicon.ico", "/error").permitAll()
+                .requestMatchers("/", "/index.html", "/login.html", "/productos.html", "/producto.html", "/producto", "/producto/**", "/favicon.ico", "/error").permitAll()
                 .requestMatchers("/css/**", "/images/**", "/static/**", "/uploads/**").permitAll()
                 .requestMatchers("/js/login.js", "/js/script.js", "/js/producto.js").permitAll()
 
