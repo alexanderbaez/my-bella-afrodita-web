@@ -14,6 +14,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Value("${file.upload-dir:uploads}")
     private String uploadDir;
 
+    @Value("${file.images-dir:}")
+    private String imagesDir;
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
@@ -24,5 +27,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations(uploadResourceLocation);
+
+        if (imagesDir != null && !imagesDir.trim().isEmpty()) {
+            Path imagesPath = Paths.get(imagesDir).toAbsolutePath().normalize();
+            String imagesResourceLocation = imagesPath.toUri().toString();
+            if (!imagesResourceLocation.endsWith("/")) {
+                imagesResourceLocation += "/";
+            }
+            registry.addResourceHandler("/images/**")
+                    .addResourceLocations(imagesResourceLocation, "classpath:/static/images/");
+        }
     }
 }
