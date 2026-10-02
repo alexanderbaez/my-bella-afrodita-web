@@ -1677,19 +1677,24 @@ async function enviarPedidoWhatsApp() {
 
         const ordenResponse = await res.json();
 
-        // Vaciar la bolsa local una vez persistida la orden en MySQL
+        // 1. Limpieza de Carrito inmediata tras el registro exitoso (código 201)
         carrito = [];
         actualizarYGuardar();
         renderizarListaCarrito();
+        const badgeContador = document.getElementById('cart-count');
+        if (badgeContador) {
+            badgeContador.innerText = '0';
+            badgeContador.style.display = 'none';
+        }
 
-        // 1. Construir detalle de items para el mensaje
+        // 2. Construir detalle de items para el mensaje
         const itemsTexto = (ordenResponse.items && ordenResponse.items.length > 0)
             ? ordenResponse.items.map(it => `• ${it.productoNombre} (Talle: ${it.talle || 'Único'}) x${it.cantidad} - $${Number(it.subtotal).toLocaleString('es-AR')}`).join('\n')
             : 'Prendas seleccionadas';
 
         const totalPrendasFormateado = Number(ordenResponse.subtotal || ordenResponse.total).toLocaleString('es-AR');
 
-        // 2. Redacción del Mensaje de WhatsApp (Perspectiva del Cliente)
+        // 3. Redacción del Mensaje de WhatsApp (Perspectiva del Comprador)
         let msgWa = `¡Hola Mi Bella Afrodita! 👋 Acabo de registrar mi pedido en la web:\n`;
         msgWa += `📦 Pedido: #${ordenResponse.codigoSeguimiento}\n`;
         msgWa += `🛍️ Detalle:\n`;
@@ -1701,27 +1706,27 @@ async function enviarPedidoWhatsApp() {
 
         const waUrl = ordenResponse.whatsappUrl || `https://wa.me/5492646121771?text=${encodeURIComponent(msgWa)}`;
 
-        // Detección de dispositivo móvil para disparar WhatsApp directamente
+        // 4. Redirección Directa Inmediata tras recibir el 201 Created
         const isMobile = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         if (isMobile) {
-            setTimeout(() => {
-                window.location.href = waUrl;
-            }, 300);
+            window.location.href = waUrl;
+        } else {
+            window.open(waUrl, '_blank');
         }
 
+        // 5. Modal de Éxito / Respaldo con diseño sólido y botón explícito
         Swal.fire({
             icon: 'success',
             title: '¡Pedido Registrado con Éxito! 💕',
             html: `
                 <div class="text-center py-2">
-                    <div class="badge bg-dark text-white px-3 py-1.5 my-2 font-monospace" style="font-size: 1rem; letter-spacing: 1px;">
+                    <span class="badge bg-dark text-white px-3 py-2 my-2 font-monospace" style="font-size: 1rem; letter-spacing: 1px;">
                         Pedido #${ordenResponse.codigoSeguimiento}
-                    </div>
-                    <p class="text-muted small mt-2 mb-3" style="line-height: 1.6; font-size: 0.88rem;">
-                        Tu pedido ha sido recibido con éxito en nuestro atelier online.<br>
-                        <b>Para coordinar el envío en moto y el pago</b>, finaliza la orden en WhatsApp con nuestro equipo.
+                    </span>
+                    <p class="text-muted mt-3 mb-3" style="line-height: 1.6; font-size: 0.95rem;">
+                        ¡Tu pedido fue registrado! Estamos abriendo WhatsApp para coordinar el envío con el atelier.
                     </p>
-                    <div class="p-2.5 rounded bg-light border text-start small mb-3" style="font-size: 0.8rem;">
+                    <div class="p-3 rounded bg-light border text-start small mb-2" style="font-size: 0.82rem;">
                         <div class="d-flex justify-content-between mb-1">
                             <span class="text-muted">Total Prendas:</span>
                             <strong class="text-dark">$${totalPrendasFormateado}</strong>
@@ -1735,21 +1740,15 @@ async function enviarPedidoWhatsApp() {
                             <span class="text-truncate ps-2" style="max-width: 230px;">${formValues.depto}, ${formValues.direccionExacta}</span>
                         </div>
                     </div>
-                    <div class="alert alert-success py-2 px-3 mb-0 small text-start border-0" style="background-color: #E8F8F0; color: #1E7E45;">
-                        <i class="fab fa-whatsapp fa-lg me-1"></i> Pulsa el botón verde a continuación para abrir WhatsApp directamente.
-                    </div>
                 </div>
             `,
             showConfirmButton: true,
-            confirmButtonText: 'FINALIZAR PEDIDO EN WHATSAPP 📲',
+            confirmButtonText: '<i class="fab fa-whatsapp"></i> ABRIR WHATSAPP AHORA',
             confirmButtonColor: '#25D366',
             showCancelButton: true,
-            cancelButtonText: 'Cerrar ventana',
-            cancelButtonColor: '#706E6B',
-            allowOutsideClick: false,
-            customClass: {
-                confirmButton: 'btn btn-lg fw-bold px-4 py-2.5 shadow-sm text-white'
-            }
+            cancelButtonText: 'Cerrar',
+            cancelButtonColor: '#6c757d',
+            allowOutsideClick: false
         }).then((result) => {
             if (result.isConfirmed) {
                 if (isMobile) {
