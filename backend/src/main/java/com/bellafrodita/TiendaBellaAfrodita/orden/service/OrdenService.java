@@ -57,9 +57,14 @@ public class OrdenService {
 
         // 2. Determinar tipo de entrega y costo logístico (100% Online San Juan)
         TipoEntrega tipoEntrega = request.getTipoEntrega() != null ? request.getTipoEntrega() : TipoEntrega.ENVIO_MOTO_SAN_JUAN;
-        BigDecimal costoEnvio = (request.getCostoEnvio() != null && request.getCostoEnvio().compareTo(BigDecimal.ZERO) >= 0)
-                ? request.getCostoEnvio()
-                : BigDecimal.ZERO;
+        BigDecimal costoEnvio = BigDecimal.ZERO;
+        if (request.getCostoEnvio() != null && request.getCostoEnvio().compareTo(BigDecimal.ZERO) >= 0) {
+            costoEnvio = request.getCostoEnvio();
+        } else if (tipoEntrega == TipoEntrega.ENVIO_MOTO_SAN_JUAN) {
+            costoEnvio = COSTO_SAN_JUAN;
+        } else if (tipoEntrega == TipoEntrega.ENVIO_NACIONAL) {
+            costoEnvio = COSTO_NACIONAL;
+        }
 
         // 3. Generar código de seguimiento único
         String timestampPart = String.valueOf(System.currentTimeMillis()).substring(7);
@@ -219,6 +224,16 @@ public class OrdenService {
     public OrdenResponse obtenerPorId(Long ordenId) {
         Orden orden = ordenRepository.findById(ordenId)
                 .orElseThrow(() -> new IllegalArgumentException("Orden no encontrada con ID: " + ordenId));
+        return mapearAResponse(orden, generarEnlaceWhatsApp(orden));
+    }
+
+    @Transactional(readOnly = true)
+    public OrdenResponse obtenerPorCodigoSeguimiento(String codigo) {
+        if (codigo == null || codigo.isBlank()) {
+            throw new IllegalArgumentException("El código de seguimiento no puede estar vacío.");
+        }
+        Orden orden = ordenRepository.findByCodigoSeguimiento(codigo.trim())
+                .orElseThrow(() -> new IllegalArgumentException("No se encontró ninguna orden con el código: " + codigo));
         return mapearAResponse(orden, generarEnlaceWhatsApp(orden));
     }
 

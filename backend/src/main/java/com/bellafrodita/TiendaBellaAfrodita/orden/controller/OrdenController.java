@@ -24,11 +24,20 @@ public class OrdenController {
 
     /**
      * Endpoint PÚBLICO para registrar una orden de compra y generar el link oficial de WhatsApp.
+     * Permite acceso anónimo tanto en /checkout como en la raíz de creación de pedidos.
      */
-    @PostMapping("/checkout")
+    @PostMapping({"/checkout", ""})
     public ResponseEntity<OrdenResponse> checkout(@Valid @RequestBody CheckoutRequest request) {
         OrdenResponse response = ordenService.crearOrden(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    /**
+     * Endpoint PÚBLICO para consultar el estado y detalle de una orden por su código de seguimiento.
+     */
+    @GetMapping({"/tracking/{codigo}", "/seguimiento/{codigo}"})
+    public ResponseEntity<OrdenResponse> consultarPorCodigoSeguimiento(@PathVariable String codigo) {
+        return ResponseEntity.ok(ordenService.obtenerPorCodigoSeguimiento(codigo));
     }
 
     /**

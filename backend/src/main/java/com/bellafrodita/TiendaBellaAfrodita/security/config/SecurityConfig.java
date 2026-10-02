@@ -59,8 +59,27 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                // 1. Vistas y recursos de administración protegidos estrictamente para ROLE_ADMIN
-                .requestMatchers("/admin.html", "/js/admin.js").hasRole("ADMIN")
+                // 1. Endpoints PÚBLICOS de Checkout y creación de órdenes (clientes anónimos)
+                .requestMatchers(HttpMethod.POST, "/api/ordenes/checkout", "/api/ordenes", "/api/ordenes/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/ordenes/tracking/**", "/api/ordenes/seguimiento/**").permitAll()
+
+                // 2. Endpoints de autenticación públicos
+                .requestMatchers("/api/auth/login", "/api/auth/status", "/api/auth/logout", "/api/auth/me", "/api/auth/verify").permitAll()
+
+                // 3. Catálogo público y reseñas destacadas (Lectura GET)
+                .requestMatchers(HttpMethod.GET, "/api/productos", "/api/productos/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/resenas/destacadas").permitAll()
+
+                // 4. Envío público de reseñas
+                .requestMatchers(HttpMethod.POST, "/api/resenas").permitAll()
+
+                // 5. Recursos estáticos y páginas web públicas (excluyendo admin.html y js/admin.js)
+                .requestMatchers("/", "/index.html", "/login.html", "/productos.html", "/producto.html", "/producto", "/producto/**", "/catalogo.html", "/favicon.ico", "/error").permitAll()
+                .requestMatchers("/css/**", "/images/**", "/static/**", "/uploads/**").permitAll()
+                .requestMatchers("/js/login.js", "/js/script.js", "/js/producto.js").permitAll()
+
+                // 6. Vistas y recursos de administración protegidos estrictamente para ROLE_ADMIN
+                .requestMatchers("/admin.html", "/admin/**", "/js/admin.js").hasRole("ADMIN")
                 .requestMatchers("/api/admin", "/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/ordenes", "/api/ordenes/**").hasRole("ADMIN")
                 .requestMatchers("/api/productos/admin", "/api/productos/admin/**").hasRole("ADMIN")
@@ -70,22 +89,6 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT, "/api/productos/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PATCH, "/api/productos/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/productos/**").hasRole("ADMIN")
-
-                // 2. Endpoints de autenticación públicos
-                .requestMatchers("/api/auth/login", "/api/auth/status", "/api/auth/logout", "/api/auth/me", "/api/auth/verify").permitAll()
-
-                // 3. Catálogo público y reseñas destacadas (Lectura GET)
-                .requestMatchers(HttpMethod.GET, "/api/productos", "/api/productos/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/resenas/destacadas").permitAll()
-
-                // 4. Checkout de órdenes y envío público de reseñas
-                .requestMatchers(HttpMethod.POST, "/api/ordenes/checkout").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/resenas").permitAll()
-
-                // 5. Recursos estáticos y páginas web públicas (excluyendo admin.html y js/admin.js)
-                .requestMatchers("/", "/index.html", "/login.html", "/productos.html", "/producto.html", "/producto", "/producto/**", "/favicon.ico", "/error").permitAll()
-                .requestMatchers("/css/**", "/images/**", "/static/**", "/uploads/**").permitAll()
-                .requestMatchers("/js/login.js", "/js/script.js", "/js/producto.js").permitAll()
 
                 // Todo lo demás requiere autenticación
                 .anyRequest().authenticated()
