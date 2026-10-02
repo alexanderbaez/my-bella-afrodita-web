@@ -1,6 +1,6 @@
 /* ==========================================================================
-   MY BELLA AFRODITA - HAUTE COUTURE & LUXURY LINGERIE BOUTIQUE
-   Design System & Editorial Aesthetics (Inspired by Intimissimi & La Perla)
+   MI BELLA AFRODITA - LENCERÍA EN SAN JUAN
+   Design System & Editorial Aesthetics
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
@@ -209,7 +209,7 @@ img {
 }
 
 /* ==========================================================================
-   NAVBAR BOUTIQUE HAUTE COUTURE
+   NAVBAR PRINCIPAL
    ========================================================================== */
 .header-boutique-wrapper {
     background: rgba(255, 255, 255, 0.97);
@@ -441,7 +441,7 @@ img {
 }
 
 /* ==========================================================================
-   HERO BANNER LUMINOSA & FEMENINA (MY BELLA AFRODITA)
+   HERO BANNER LUMINOSA & FEMENINA (MI BELLA AFRODITA)
    ========================================================================== */
 .hero-luminous-section {
     position: relative;
@@ -506,7 +506,7 @@ img {
     max-width: 560px;
 }
 
-/* Botones Atelier */
+/* Botones Principales */
 .btn-atelier-primary {
     display: inline-flex;
     align-items: center;
@@ -956,7 +956,7 @@ img {
 }
 
 /* ==========================================================================
-   CARRUSEL ATELIER DE RESEÑAS REALES (SLIDER RESPONSIVE)
+   CARRUSEL DE RESEÑAS REALES (SLIDER RESPONSIVE)
    ========================================================================== */
 .reviews-carousel-wrapper {
     position: relative;

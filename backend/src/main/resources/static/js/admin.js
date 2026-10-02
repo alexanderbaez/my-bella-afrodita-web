@@ -1,5 +1,5 @@
 /* ==========================================================================
-   ADMIN.JS - BACKOFFICE & GESTIÓN DE CATÁLOGO (MY BELLA AFRODITA)
+   ADMIN.JS - BACKOFFICE & GESTIÓN DE CATÁLOGO (MI BELLA AFRODITA)
    ========================================================================== */
 
 const API_BASE = '/api/productos';
@@ -88,7 +88,7 @@ async function verificarSesionAdmin() {
             }
         } catch (_) {}
 
-        manejarNoAutorizado('No se pudo verificar la sesión con el atelier.');
+        manejarNoAutorizado('No se pudo verificar la sesión con el servidor.');
         return null;
     }
 }
@@ -1134,7 +1134,7 @@ function manejarNoAutorizado(mensaje = 'Tu sesión ha expirado o no tienes permi
 }
 
 // ==========================================================================
-// GESTIÓN DE PEDIDOS Y VENTAS (MY BELLA AFRODITA)
+// GESTIÓN DE PEDIDOS Y VENTAS (MI BELLA AFRODITA)
 // ==========================================================================
 
 async function cargarOrdenes() {
@@ -2035,7 +2035,7 @@ window.eliminarResena = async function (id) {
     }
 };
 
-// --- EXPORTAR ALIASES GLOBALES PARA COMPATIBILIDAD ATELIER ---
+// --- EXPORTAR ALIASES GLOBALES PARA COMPATIBILIDAD ---
 window.abrirModalCrearProducto = abrirModalCrear;
 window.abrirModalCrear = abrirModalCrear;
 window.editarProducto = abrirModalEditar;

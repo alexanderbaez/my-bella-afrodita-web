@@ -1,6 +1,6 @@
 /**
  * ==========================================================================
- * LOGIN.JS - ACCESO PRIVADO / ATELIER (MY BELLA AFRODITA)
+ * LOGIN.JS - ACCESO PRIVADO (MI BELLA AFRODITA)
  * Control de autenticación, alternancia de contraseña, persistencia y feedback.
  * ==========================================================================
  */
@@ -166,15 +166,15 @@ async function ejecutarLogin(event) {
             mostrarErrorFeedback(mensajeError);
             if (btn) {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i> Ingresar al Atelier';
+                btn.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i> Ingresar al Panel';
             }
         }
     } catch (error) {
         console.error('Error durante autenticación:', error);
-        mostrarErrorFeedback('No se pudo conectar con el servidor del Atelier. Intente nuevamente.');
+        mostrarErrorFeedback('No se pudo conectar con el servidor. Intente nuevamente.');
         if (btn) {
             btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i> Ingresar al Atelier';
+            btn.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i> Ingresar al Panel';
         }
     }
 }

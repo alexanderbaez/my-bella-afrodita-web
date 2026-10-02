@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Control - My Bella Afrodita</title>
+    <title>Mi Bella Afrodita | Panel de Administración</title>
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/alexanderbaez/my-bella-afrodita-web/master/images/LOGO.png">
     
     <!-- Bootstrap 5.3 & Fonts -->
@@ -218,7 +218,7 @@
             border-color: #28a745;
         }
 
-        /* Botón CTA Primario Atelier (+ Cargar Nueva Prenda) */
+        /* Botón CTA Primario (+ Cargar Nueva Prenda) */
         #btnNuevoProducto,
         .btn-atelier-cta {
             background: linear-gradient(135deg, #9E2A4B, #B23B5A) !important;
@@ -264,7 +264,7 @@
             transform: translateY(-1px);
         }
 
-        /* Modal Atelier UI & Scroll Control */
+        /* Modal UI & Scroll Control */
         .modal-atelier .modal-dialog,
         #modalProducto .modal-dialog {
             max-height: 90vh;
@@ -809,7 +809,7 @@
             <div class="container-fluid px-lg-4">
                 <a class="navbar-brand-admin d-flex align-items-center" href="/admin.html">
                     <img src="https://raw.githubusercontent.com/alexanderbaez/my-bella-afrodita-web/master/images/LOGO.png" alt="Logo" height="38" class="me-2">
-                    <span>MY BELLA AFRODITA</span>
+                    <span>MI BELLA AFRODITA</span>
                     <span class="ms-2 admin-badge">BACKOFFICE</span>
                 </a>
 
@@ -1175,7 +1175,7 @@
         </div>
     </main>
 
-    <!-- Modal Form: Crear / Editar Producto (Atelier UX 2 Columnas) -->
+    <!-- Modal Form: Crear / Editar Producto (Diseño 2 Columnas) -->
     <div class="modal fade modal-atelier" id="modalProducto" tabindex="-1" aria-labelledby="modalProductoLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
             <form class="modal-content" id="form-producto" onsubmit="guardarProducto(event)">
@@ -1380,7 +1380,7 @@
                         </div>
                     </div>
 
-                    <!-- Modal Footer con Botón Guardar Atelier Fijo -->
+                    <!-- Modal Footer con Botón Guardar Fijo -->
                     <div class="modal-footer bg-white border-top py-3 px-4 d-flex justify-content-between align-items-center">
                         <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-pill" data-bs-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn-guardar-catalogo shadow-sm" id="btn-submit-producto">

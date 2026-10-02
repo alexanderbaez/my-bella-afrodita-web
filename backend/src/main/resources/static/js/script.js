@@ -1,6 +1,6 @@
 /* ==========================================================================
-   LÓGICA DE NEGOCIO Y EXPERIENCIA DE COMPRA - MY BELLA AFRODITA
-   (Estándar Boutique Luxury 2026 - Zara / Savage X Fenty UX Style)
+   LÓGICA DE NEGOCIO Y EXPERIENCIA DE COMPRA - MI BELLA AFRODITA
+   (Estándar 2026 - Mi Bella Afrodita)
    ========================================================================== */
 
 const WHATSAPP_NUMBER = '5492646121771';
@@ -102,12 +102,12 @@ window.compartirProducto = async function (e, id, nombre, precio) {
     }
     const permalink = `${window.location.origin}/producto.html?id=${id}`;
     const precioFormat = Number(precio || 0).toLocaleString('es-AR');
-    const texto = `${nombre} - My Bella Afrodita ($${precioFormat})`;
+    const texto = `${nombre} - Mi Bella Afrodita ($${precioFormat})`;
 
     if (navigator.share) {
         try {
             await navigator.share({
-                title: `${nombre} | My Bella Afrodita`,
+                title: `${nombre} | Mi Bella Afrodita`,
                 text: texto,
                 url: permalink
             });
@@ -400,35 +400,35 @@ function actualizarTituloYContadorCatalogo(cantidadVisible) {
     const breadcrumbActive = document.getElementById('breadcrumb-categoria-activa');
 
     const catNorm = normalizarCategoria(categoriaActiva);
-    let tituloTexto = "Colección Atelier";
+    let tituloTexto = "Catálogo de Productos";
     let breadcrumbTexto = "Todas las Colecciones";
-    let docTitle = "Catálogo Exclusivo - My Bella Afrodita";
+    let docTitle = "Catálogo | Mi Bella Afrodita";
 
     if (!catNorm || catNorm === 'todos') {
-        tituloTexto = "Colección Atelier";
+        tituloTexto = "Catálogo de Productos";
         breadcrumbTexto = "Todas las Colecciones";
-        docTitle = "Catálogo Exclusivo - My Bella Afrodita";
+        docTitle = "Catálogo | Mi Bella Afrodita";
     } else if (catNorm === 'conjuntos') {
         tituloTexto = "Colección Conjuntos";
         breadcrumbTexto = "Colección Conjuntos";
-        docTitle = "Colección Conjuntos - My Bella Afrodita";
+        docTitle = "Colección Conjuntos - Mi Bella Afrodita";
     } else if (catNorm === 'bombachas') {
         tituloTexto = "Colección Bombachas";
         breadcrumbTexto = "Colección Bombachas";
-        docTitle = "Colección Bombachas - My Bella Afrodita";
+        docTitle = "Colección Bombachas - Mi Bella Afrodita";
     } else if (catNorm === 'hombres') {
         tituloTexto = "Colección Masculino";
         breadcrumbTexto = "Colección Masculino";
-        docTitle = "Colección Masculino - My Bella Afrodita";
+        docTitle = "Colección Masculino - Mi Bella Afrodita";
     } else if (catNorm === 'medias') {
         tituloTexto = "Colección Medias";
         breadcrumbTexto = "Colección Medias";
-        docTitle = "Colección Medias - My Bella Afrodita";
+        docTitle = "Colección Medias - Mi Bella Afrodita";
     } else {
         const catCap = catNorm.charAt(0).toUpperCase() + catNorm.slice(1);
         tituloTexto = `Colección ${catCap}`;
         breadcrumbTexto = `Colección ${catCap}`;
-        docTitle = `Colección ${catCap} - My Bella Afrodita`;
+        docTitle = `Colección ${catCap} - Mi Bella Afrodita`;
     }
 
     if (breadcrumbActive) breadcrumbActive.innerText = breadcrumbTexto;
@@ -926,7 +926,7 @@ async function cargarDestacadosInicio() {
         contenedor.innerHTML = `
             <div class="col-12 text-center py-5">
                 <div class="p-4 rounded-3 border mx-auto" style="max-width: 500px; background: #FAF9F6; border-color: rgba(212, 175, 55, 0.3);">
-                    <p class="text-muted small mb-3">Descubre nuestras colecciones exclusivas en el catálogo atelier.</p>
+                    <p class="text-muted small mb-3">Descubre nuestras colecciones en nuestra tienda online.</p>
                     <div class="d-flex flex-wrap justify-content-center gap-2">
                         <a href="./productos.html?categoria=CONJUNTOS" class="btn btn-outline-dark btn-sm">Conjuntos</a>
                         <a href="./productos.html?categoria=BOMBACHAS" class="btn btn-outline-dark btn-sm">Bombachas</a>
@@ -1013,7 +1013,7 @@ window.compartirWhatsApp = function (event, id) {
     if (!p) return;
 
     const precioTxt = Number(p.precioMinorista).toLocaleString('es-AR');
-    const msg = `¡Mira este modelo exclusivo en My Bella Afrodita!\n*${p.nombre}*\nPrecio: $${precioTxt}\nLink: ${window.location.origin}${window.location.pathname}?id=${p.id}`;
+    const msg = `¡Mira este modelo en Mi Bella Afrodita!\n*${p.nombre}*\nPrecio: $${precioTxt}\nLink: ${window.location.origin}${window.location.pathname}?id=${p.id}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
 };
 
@@ -1724,7 +1724,7 @@ async function enviarPedidoWhatsApp() {
                         Pedido #${ordenResponse.codigoSeguimiento}
                     </span>
                     <p class="text-muted mt-3 mb-3" style="line-height: 1.6; font-size: 0.95rem;">
-                        ¡Tu pedido fue registrado! Estamos abriendo WhatsApp para coordinar el envío con el atelier.
+                        ¡Tu pedido fue registrado! Estamos abriendo WhatsApp para coordinar el envío con nuestro equipo de Mi Bella Afrodita.
                     </p>
                     <div class="p-3 rounded bg-light border text-start small mb-2" style="font-size: 0.82rem;">
                         <div class="d-flex justify-content-between mb-1">
@@ -1773,7 +1773,7 @@ async function enviarPedidoWhatsApp() {
 }
 
 /* ==========================================================================
-   MÓDULO DE RESEÑAS REALES DE CLIENTAS (EXPERIENCIA ATELIER)
+   MÓDULO DE RESEÑAS REALES DE CLIENTAS
    ========================================================================== */
 
 const RESENAS_DEFAULT = [

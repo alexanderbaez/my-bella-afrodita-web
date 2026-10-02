@@ -1,5 +1,5 @@
 /**
- * My Bella Afrodita - Lógica de Página de Detalle de Producto Permalink
+ * Mi Bella Afrodita - Lógica de Página de Detalle de Producto Permalink
  * Permalinks: /producto.html?id={id}
  * Incluye: Galería Vertical, Zoom Óptico, Selector de Talles en Vivo con Stock Urgente,
  * Micro-tarjeta Mayorista, Guía de Medidas y Cross-selling "Completa tu Look".
@@ -199,7 +199,7 @@ function renderizarPaginaProducto(p) {
                 <!-- Columna Derecha: Información Editorial & Conversión -->
                 <div class="col-12 col-lg-6">
                     <div class="product-detail-info">
-                        <span class="product-eyebrow-tag">${p.categoria || 'Alta Costura'} &bull; Confección Atelier</span>
+                        <span class="product-eyebrow-tag">${p.categoria || 'Lencería'} &bull; Mi Bella Afrodita</span>
                         <h1 class="product-editorial-title">${p.nombre}</h1>
 
                         <!-- Precios -->
@@ -475,7 +475,7 @@ function actualizarEnlaceWhatsApp() {
     const urlPrenda = window.location.href;
     const precio = Number(PRODUCTO_ACTUAL.precioMinorista || 0).toLocaleString('es-AR');
 
-    let msg = `🛍️ *CONSULTA BOUTIQUE: MY BELLA AFRODITA*\n`;
+    let msg = `🛍️ *CONSULTA: MI BELLA AFRODITA*\n`;
     msg += `✨ Hola! Me interesa consultar por el modelo *${PRODUCTO_ACTUAL.nombre}*\n`;
     msg += `📏 *Talle seleccionado:* ${TALLE_SELECCIONADO || 'A definir'}\n`;
     msg += `💰 *Precio Minorista:* $${precio}\n`;
@@ -555,15 +555,15 @@ async function cargarProductosRelacionados() {
 
 // --- ACTUALIZACIÓN DINÁMICA DE METADATOS OPENGRAPH ---
 function actualizarMetadatosSEO(p) {
-    document.title = `${p.nombre} | My Bella Afrodita Haute Couture`;
+    document.title = `${p.nombre} | Mi Bella Afrodita`;
 
     const metaTags = [
-        { property: 'og:title', content: `${p.nombre} | My Bella Afrodita Boutique` },
-        { property: 'og:description', content: p.descripcion || 'Lencería boutique de alta gama en San Juan. Calce anatómico y encajes seleccionados.' },
+        { property: 'og:title', content: `${p.nombre} | Mi Bella Afrodita` },
+        { property: 'og:description', content: p.descripcion || 'Lencería en San Juan. Calce anatómico y telas suaves seleccionadas.' },
         { property: 'og:image', content: (p.imagenes && p.imagenes.length > 0) ? normalizarUrl(p.imagenes[0]) : 'https://alexanderbaez.github.io/my-bella-afrodita-web/images/LOGO.png' },
         { property: 'og:url', content: window.location.href },
         { property: 'twitter:title', content: p.nombre },
-        { property: 'twitter:description', content: p.descripcion || 'Lencería boutique de alta gama.' }
+        { property: 'twitter:description', content: p.descripcion || 'Lencería en San Juan.' }
     ];
 
     metaTags.forEach(m => {
@@ -598,12 +598,12 @@ window.compartirFichaProducto = async function() {
     if (!PRODUCTO_ACTUAL) return;
     const url = window.location.href;
     const precio = Number(PRODUCTO_ACTUAL.precioMinorista || 0).toLocaleString('es-AR');
-    const texto = `${PRODUCTO_ACTUAL.nombre} - My Bella Afrodita ($${precio})`;
+    const texto = `${PRODUCTO_ACTUAL.nombre} - Mi Bella Afrodita ($${precio})`;
 
     if (navigator.share) {
         try {
             await navigator.share({
-                title: `${PRODUCTO_ACTUAL.nombre} | My Bella Afrodita`,
+                title: `${PRODUCTO_ACTUAL.nombre} | Mi Bella Afrodita`,
                 text: texto,
                 url: url
             });
