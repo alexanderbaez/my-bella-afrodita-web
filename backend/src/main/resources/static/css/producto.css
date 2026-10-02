@@ -67,17 +67,21 @@
 }
 
 /* --- ESTRUCTURA DE LA GALERÍA --- */
-.product-gallery-container {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
+.product-gallery-container,
+.product-gallery-layout {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 /* a) Visor Principal (.product-main-image-wrap / .product-main-viewport) */
 .product-main-image-wrap,
 .product-main-viewport {
     position: relative;
-    width: 100%;
+    width: 100% !important;
     height: 520px;
     max-height: 520px;
     display: flex;
@@ -143,14 +147,19 @@
     border-radius: 3px;
 }
 
-/* b) Tira de Miniaturas (.product-thumbnails-strip) */
+/* 1. Contenedor de miniaturas (.product-thumbnails-strip):
+   FORZAR en todas las resoluciones (tanto mobile como desktop >= 992px) */
 .product-thumbnails-strip {
-    margin-top: 14px;
-    display: flex;
-    gap: 10px;
-    justify-content: flex-start;
-    overflow-x: auto;
-    padding: 2px 2px 8px;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 12px !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    margin-top: 14px !important;
+    padding: 4px 2px !important;
     scrollbar-width: thin;
     -webkit-overflow-scrolling: touch;
 }
@@ -164,29 +173,29 @@
     border-radius: 3px;
 }
 
-/* Miniaturas (.product-thumb-item / .thumb-item) */
+/* 2. Elemento miniatura (.product-thumb-item / .thumb-item): */
 .product-thumb-item,
 .thumb-item {
-    width: 75px;
-    height: 95px;
-    flex-shrink: 0;
-    border-radius: 6px;
-    border: 2px solid transparent;
-    cursor: pointer;
-    overflow: hidden;
+    flex: 0 0 75px !important;
+    width: 75px !important;
+    height: 95px !important;
+    border-radius: 6px !important;
+    overflow: hidden !important;
+    border: 2px solid transparent !important;
+    cursor: pointer !important;
     background-color: #F8F8F8;
     opacity: 0.65;
     transition: all 0.2s ease;
-    display: block;
-    padding: 0;
+    display: block !important;
+    padding: 0 !important;
 }
 
 .product-thumb-item img,
 .thumb-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
 }
 
 .product-thumb-item:hover,
@@ -202,27 +211,29 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 
-/* Compatibilidad Mobile (< 768px) */
+/* 3. Compatibilidad Mobile (< 768px) */
 @media (max-width: 767.98px) {
     .product-main-image-wrap,
     .product-main-viewport {
-        height: auto;
-        aspect-ratio: 3 / 4;
-        max-height: 480px;
+        height: auto !important;
+        aspect-ratio: 3 / 4 !important;
+        max-height: 480px !important;
     }
 
     .product-thumbnails-strip {
-        margin-top: 10px;
-        gap: 8px;
-        padding-bottom: 4px;
+        margin-top: 10px !important;
+        gap: 8px !important;
+        padding: 2px 0 6px !important;
     }
 
     .product-thumb-item,
     .thumb-item {
-        width: 60px;
-        height: 80px;
+        flex: 0 0 60px !important;
+        width: 60px !important;
+        height: 80px !important;
     }
 }
+
 
 
 
