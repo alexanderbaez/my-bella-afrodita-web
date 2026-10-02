@@ -112,25 +112,20 @@ function renderizarPaginaProducto(p) {
     let selectorTallesHtml = '';
     if (variantes.length > 0) {
         selectorTallesHtml = `
-            <div class="product-size-section">
-                <div class="size-header-bar">
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="size-header-title">Seleccionar Talle:</span>
-                        <div id="indicador-stock-live">
-                            <span class="text-muted small" style="font-size:0.72rem;"><i class="fas fa-hand-pointer me-1"></i> Elige tu talle para ver disponibilidad</span>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-measure-guide" onclick="abrirGuiaMedidas()">
-                        <i class="fas fa-ruler-combined me-1"></i> Guía de Medidas (cm)
+            <div class="product-sizes-block">
+                <div class="size-row-header">
+                    <span class="size-label-text">TALLE</span>
+                    <button type="button" class="btn-size-guide" onclick="abrirGuiaMedidas()">
+                        <i class="fas fa-ruler-combined me-1"></i> Guía de talles
                     </button>
                 </div>
-                <div class="product-size-grid" id="detalle-size-chips">
+                <div class="size-chips-wrap" id="detalle-size-chips">
                     ${variantes.map(v => {
                         const agotado = (v.stock || 0) <= 0;
                         const esActivo = TALLE_SELECCIONADO && v.talle === TALLE_SELECCIONADO;
                         return `
                             <button type="button" 
-                                    class="btn-talle-detail ${agotado ? 'out-of-stock' : ''} ${esActivo ? 'selected active' : ''}" 
+                                    class="btn-size-chip btn-talle-detail ${agotado ? 'disabled-chip out-of-stock' : ''} ${esActivo ? 'selected active' : ''}" 
                                     data-talle="${v.talle}" 
                                     data-stock="${v.stock || 0}"
                                     ${agotado ? 'disabled title="Agotado"' : `title="${v.stock} disponibles"`}
@@ -140,28 +135,23 @@ function renderizarPaginaProducto(p) {
                         `;
                     }).join('')}
                 </div>
+                <div class="size-status-msg" id="indicador-stock-live">
+                    <span class="text-hint-talle"><i class="fas fa-info-circle me-1"></i> Seleccioná un talle para continuar</span>
+                </div>
             </div>
         `;
     }
 
-    // Micro-tarjeta de Beneficio Mayorista x3
+    // Bloque Mayorista (Incentivo sutil y minimalista)
     let tarjetaMayoristaHtml = '';
     if (precioMayoristaNum > 0) {
         tarjetaMayoristaHtml = `
-            <div class="wholesale-benefit-card">
-                <div class="wholesale-benefit-icon">
-                    <i class="fas fa-crown"></i>
-                </div>
-                <div class="wholesale-benefit-text">
-                    <div class="d-flex align-items-center">
-                        <span class="wholesale-benefit-price">$${precioMayoristaNum.toLocaleString('es-AR')}</span>
-                        <span class="wholesale-pill-tag">Mayorista x3</span>
-                    </div>
-                    <div class="wholesale-benefit-sub">
-                        Lleva 3 o más prendas de cualquier categoría y desbloquea este precio 
-                        ${ahorroPorPrenda > 0 ? `(Ahorras <b>$${ahorroPorPrenda.toLocaleString('es-AR')}</b> por prenda)` : ''}.
-                    </div>
-                </div>
+            <div class="wholesale-incentive-badge">
+                <span class="wholesale-tag-clean">Mayorista x3</span>
+                <span class="wholesale-text-clean">
+                    Llevando 3+ prendas: <strong>$${precioMayoristaNum.toLocaleString('es-AR')} c/u</strong>
+                    ${ahorroPorPrenda > 0 ? `<span class="wholesale-saving-clean">(Ahorrás $${ahorroPorPrenda.toLocaleString('es-AR')} por prenda)</span>` : ''}
+                </span>
             </div>
         `;
     }
@@ -170,10 +160,22 @@ function renderizarPaginaProducto(p) {
         <div class="product-detail-wrapper">
             <div class="row g-4 g-lg-5 align-items-start">
                 
-                <!-- Columna Izquierda: Galería Vertical & Zoom Óptico -->
+                <!-- Columna Izquierda: Galería Editorial (Visor Principal Dominante + Tira Horizontal) -->
                 <div class="col-12 col-lg-6">
                     <div class="product-gallery-layout">
-                        <!-- Strip de Miniaturas -->
+                        <!-- Visor Principal con Zoom Óptico (Dominante 3:4) -->
+                        <div class="product-main-viewport" id="zoom-viewport" onmousemove="aplicarZoomOptico(event)" onmouseleave="restablecerZoomOptico()">
+                            <div class="main-img-badges">
+                                ${badgeEtiqueta}
+                                ${badgeStockOut}
+                            </div>
+                            <img src="${fotos[0]}" alt="${p.nombre}" class="product-zoom-img" id="main-zoom-image" onerror="this.src='https://via.placeholder.com/600x800?text=Mi+Bella+Afrodita'">
+                            <div class="zoom-hint-badge">
+                                <i class="fas fa-search-plus"></i> Desliza para zoom
+                            </div>
+                        </div>
+
+                        <!-- Tira Horizontal de Miniaturas -->
                         <div class="product-thumbnails-strip" id="gallery-thumbs">
                             ${fotos.map((img, idx) => `
                                 <div class="thumb-item ${idx === 0 ? 'active' : ''}" onclick="cambiarFotoPrincipal('${img}', this)">
@@ -181,77 +183,65 @@ function renderizarPaginaProducto(p) {
                                 </div>
                             `).join('')}
                         </div>
-
-                        <!-- Visor Principal con Zoom Óptico -->
-                        <div class="product-main-viewport" id="zoom-viewport" onmousemove="aplicarZoomOptico(event)" onmouseleave="restablecerZoomOptico()">
-                            <div class="main-img-badges">
-                                ${badgeEtiqueta}
-                                ${badgeStockOut}
-                            </div>
-                            <img src="${fotos[0]}" alt="${p.nombre}" class="product-zoom-img" id="main-zoom-image" onerror="this.src='https://via.placeholder.com/600x800?text=My+Bella+Afrodita'">
-                            <div class="zoom-hint-badge">
-                                <i class="fas fa-search-plus"></i> Desliza para zoom óptico
-                            </div>
-                        </div>
                     </div>
                 </div>
 
                 <!-- Columna Derecha: Información Editorial & Conversión -->
                 <div class="col-12 col-lg-6">
                     <div class="product-detail-info">
-                        <span class="product-eyebrow-tag">${p.categoria || 'Lencería'} &bull; Mi Bella Afrodita</span>
-                        <h1 class="product-editorial-title">${p.nombre}</h1>
+                        <!-- Encabezado con Categoría y Botón Compartir -->
+                        <div class="d-flex align-items-center justify-content-between">
+                            <span class="product-category-eyebrow">${p.categoria || 'Lencería'} &bull; Mi Bella Afrodita</span>
+                            <button type="button" class="btn-share-icon" onclick="compartirFichaProducto()" title="Compartir prenda">
+                                <i class="fas fa-share-nodes"></i>
+                            </button>
+                        </div>
 
-                        <!-- Precios -->
-                        <div class="product-pricing-editorial">
-                            <div class="price-retail-highlight">
-                                <span>$${precioMinoristaNum.toLocaleString('es-AR')}</span>
-                                <span class="price-retail-label">Precio Minorista</span>
-                            </div>
+                        <!-- Título de la Prenda -->
+                        <h1 class="product-title-detail">${p.nombre}</h1>
+
+                        <!-- Precios: Minorista Principal Grande + Badge Mayorista Sutil -->
+                        <div class="product-pricing-box-clean">
+                            <div class="price-value-main">$${precioMinoristaNum.toLocaleString('es-AR')}</div>
                             ${tarjetaMayoristaHtml}
                         </div>
 
                         <!-- Selector de Talle en Tiempo Real -->
                         ${selectorTallesHtml}
 
-                        <!-- Controles de Compra -->
-                        <div class="product-actions-bar">
-                            <!-- Stepper Cantidad -->
-                            <div class="product-quantity-selector">
-                                <button type="button" class="qty-step-btn" onclick="ajustarCantidadDetalle(-1)" title="Restar">&minus;</button>
-                                <span class="qty-step-num" id="detalle-qty-val">1</span>
-                                <button type="button" class="qty-step-btn" onclick="ajustarCantidadDetalle(1)" title="Sumar">&plus;</button>
+                        <!-- Fila de Compra (Stepper + CTA Principal) -->
+                        <div class="purchase-action-row">
+                            <!-- Stepper Cantidad Compacto 48px -->
+                            <div class="qty-selector-compact">
+                                <button type="button" class="qty-btn" onclick="ajustarCantidadDetalle(-1)" aria-label="Restar">&minus;</button>
+                                <span class="qty-display" id="detalle-qty-val">1</span>
+                                <button type="button" class="qty-btn" onclick="ajustarCantidadDetalle(1)" aria-label="Sumar">&plus;</button>
                             </div>
 
-                            <!-- Botón Añadir a la Bolsa -->
-                            <button type="button" class="btn-add-to-bag-luxury" id="btn-add-bag" onclick="agregarAlCarritoDesdeDetalle(event)">
-                                <i class="fas fa-shopping-bag"></i> AÑADIR A LA BOLSA
+                            <!-- Botón Añadir a la Bolsa CTA Principal Sólido 48px -->
+                            <button type="button" class="btn-add-cart-primary" id="btn-add-bag" onclick="agregarAlCarritoDesdeDetalle(event)">
+                                <i class="fas fa-shopping-bag me-2"></i> AÑADIR A LA BOLSA
                             </button>
                         </div>
 
-                        <!-- Botones de Conversión: WhatsApp & Compartir -->
-                        <div class="d-flex gap-2 flex-wrap mb-3">
-                            <a href="#" id="btn-consultar-wa" target="_blank" class="btn-ask-whatsapp-luxury flex-grow-1">
-                                <i class="fab fa-whatsapp fa-lg"></i> Consultar por WhatsApp este modelo
-                            </a>
-                            <button type="button" class="btn-share-ml" onclick="compartirFichaProducto()" title="Compartir prenda">
-                                <i class="fas fa-share-nodes"></i> Compartir
-                            </button>
-                        </div>
+                        <!-- Botón Secundario de WhatsApp Elegante 42px -->
+                        <a href="#" id="btn-consultar-wa" target="_blank" class="btn-whatsapp-secondary">
+                            <i class="fab fa-whatsapp me-2"></i> ¿Dudas con el talle? Consultar por WhatsApp
+                        </a>
 
                         <!-- Micro-Trust Badges -->
-                        <div class="product-micro-trust">
-                            <div class="micro-trust-item">
-                                <i class="fas fa-shield-alt"></i>
-                                <span>Garantía de Calce & Higiene</span>
+                        <div class="product-trust-strip">
+                            <div class="trust-item">
+                                <i class="fas fa-shield-halved"></i>
+                                <span>Garantía de calce y calidad anatómica</span>
                             </div>
-                            <div class="micro-trust-item">
-                                <i class="fas fa-box-open"></i>
-                                <span>Empaque Discreto de Lujo</span>
+                            <div class="trust-item">
+                                <i class="fas fa-box"></i>
+                                <span>Empaque 100% discreto y seguro</span>
                             </div>
-                            <div class="micro-trust-item">
+                            <div class="trust-item">
                                 <i class="fas fa-motorcycle"></i>
-                                <span>Envíos en Moto a Todo San Juan</span>
+                                <span>Envíos en moto cadetería en San Juan</span>
                             </div>
                         </div>
 
@@ -260,36 +250,36 @@ function renderizarPaginaProducto(p) {
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc" aria-expanded="true">
-                                        <i class="fas fa-feather-alt me-2" style="color: var(--gold-dark);"></i> Descripción & Calce
+                                        <i class="fas fa-feather-alt me-2" style="color: #A4865E;"></i> Descripción & Calce
                                     </button>
                                 </h2>
                                 <div id="collapseDesc" class="accordion-collapse collapse show" data-bs-parent="#accordionDetalles">
                                     <div class="accordion-body">
-                                        ${p.descripcion || 'Prenda de lencería boutique diseñada para ofrecer confort anatómico inigualable, soporte sutil y realce elegante.'}
+                                        ${p.descripcion || 'Prenda de lencería diseñada para ofrecer confort anatómico inigualable, soporte suave y realce natural.'}
                                     </div>
                                 </div>
                             </div>
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCuidados" aria-expanded="false">
-                                        <i class="fas fa-hand-sparkles me-2" style="color: var(--gold-dark);"></i> Cuidados de la Lencería
+                                        <i class="fas fa-hand-sparkles me-2" style="color: #A4865E;"></i> Cuidados de la Prenda
                                     </button>
                                 </h2>
                                 <div id="collapseCuidados" class="accordion-collapse collapse" data-bs-parent="#accordionDetalles">
                                     <div class="accordion-body">
-                                        Lavar a mano siempre con agua fría (máximo 30°C) y jabón neutro. No retorcer ni centrifugar para proteger la fibra y el encaje. Secar en plano sobre toalla a la sombra. No planchar directo sobre apliques ni satén.
+                                        Lavar a mano siempre con agua fría (máximo 30°C) y jabón neutro. No retorcer ni centrifugar para proteger la fibra y el encaje. Secar en plano sobre toalla a la sombra. No planchar directo sobre apliques ni telas elastizadas.
                                     </div>
                                 </div>
                             </div>
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHigiene" aria-expanded="false">
-                                        <i class="fas fa-stethoscope me-2" style="color: var(--gold-dark);"></i> Políticas de Higiene & Cambios
+                                        <i class="fas fa-stethoscope me-2" style="color: #A4865E;"></i> Políticas de Higiene & Cambios
                                     </button>
                                 </h2>
                                 <div id="collapseHigiene" class="accordion-collapse collapse" data-bs-parent="#accordionDetalles">
                                     <div class="accordion-body">
-                                        Por normativas de salud e higiene sanitaria, <strong>las bombachas, colaless y bodies no tienen cambio</strong>. Los conjuntos y corsetería pueden cambiarse dentro de los 7 días de recibido exclusivamente si conservan etiquetas intactas, protectores y empaque original sin indicios de uso.
+                                        Por normativas de salud e higiene sanitaria, <strong>las bombachas, colaless y boxers no admiten cambios</strong>. Los conjuntos pueden cambiarse dentro de los 7 días de recibido exclusivamente si conservan etiquetas intactas, protectores y empaque original sin indicios de uso.
                                     </div>
                                 </div>
                             </div>
@@ -349,7 +339,7 @@ window.cambiarTalleDetalle = function (talle, stock) {
     if (qtyVal) qtyVal.innerText = '1';
 
     // Actualizar chips activos marcando visualmente con .selected y .active
-    const chips = document.querySelectorAll('.btn-talle-detail');
+    const chips = document.querySelectorAll('.btn-size-chip, .btn-talle-detail');
     chips.forEach(c => {
         if (c.getAttribute('data-talle') === talle) {
             c.classList.add('selected');
@@ -372,11 +362,11 @@ window.cambiarTalleDetalle = function (talle, stock) {
 
 function generarBadgeStock(stock) {
     if (stock <= 0) {
-        return `<span class="badge bg-secondary text-white" style="font-size:0.65rem;">Agotado</span>`;
+        return `<span class="stock-out-text"><i class="fas fa-ban me-1"></i> Agotado en este talle</span>`;
     } else if (stock <= 2) {
-        return `<span class="badge-stock-urgent-pulse"><i class="fas fa-fire-alt me-1"></i> ¡Solo quedan ${stock} unidades!</span>`;
+        return `<span class="stock-low-text"><i class="fas fa-fire me-1"></i> ¡Últimas ${stock} unidades disponibles!</span>`;
     } else {
-        return `<span class="badge-stock-normal"><i class="fas fa-check-circle me-1"></i> En Stock Inmediato (${stock} disp.)</span>`;
+        return `<span class="stock-ok-text"><i class="fas fa-check-circle me-1"></i> En stock inmediato (${stock} disponibles)</span>`;
     }
 }
 

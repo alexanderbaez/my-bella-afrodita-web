@@ -1,0 +1,519 @@
+/* ==========================================================================
+   PRODUCTO.CSS - DETALLE DE PRODUCTO (MOBILE-FIRST LUXURY E-COMMERCE)
+   Mi Bella Afrodita - San Juan
+   ========================================================================== */
+
+/* --- LAYOUT GENERAL DE LA FICHA --- */
+.product-detail-wrapper {
+    background: #FFFFFF;
+    border-radius: 8px;
+    padding: 24px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 767.98px) {
+    .product-detail-wrapper {
+        padding: 12px 6px;
+        border: none;
+        background: transparent;
+    }
+}
+
+/* --- GALERÍA DE FOTOS EDITORIAL --- */
+.product-gallery-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.product-main-viewport {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    background-color: #F8F6F3;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.product-zoom-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.25s ease-out;
+    transform-origin: center center;
+    cursor: zoom-in;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .product-main-viewport:hover .product-zoom-img {
+        transform: scale(1.6);
+    }
+}
+
+.main-img-badges {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.badge-luxury-tag {
+    background: rgba(26, 26, 26, 0.9);
+    color: #FFFFFF;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 3px;
+    backdrop-filter: blur(4px);
+}
+
+.badge-stock-out {
+    background: rgba(214, 48, 49, 0.92);
+    color: #FFFFFF;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 4px 10px;
+    border-radius: 3px;
+}
+
+/* Tira Horizontal de Miniaturas */
+.product-thumbnails-strip {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 2px 0 6px;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+}
+
+.product-thumbnails-strip::-webkit-scrollbar {
+    height: 4px;
+}
+
+.product-thumbnails-strip::-webkit-scrollbar-thumb {
+    background: #E0E0E0;
+    border-radius: 2px;
+}
+
+.thumb-item {
+    width: 60px;
+    height: 80px;
+    aspect-ratio: 3 / 4;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    flex-shrink: 0;
+    border: 2px solid transparent;
+    opacity: 0.6;
+    transition: all 0.2s ease;
+    background-color: #F8F6F3;
+}
+
+.thumb-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.thumb-item:hover {
+    opacity: 0.9;
+}
+
+.thumb-item.active {
+    border-color: #111111;
+    opacity: 1;
+}
+
+/* --- COLUMNA DERECHA: INFORMACIÓN Y PRECIOS --- */
+.product-detail-info {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.product-category-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #8C7B70;
+}
+
+.btn-share-icon {
+    background: none;
+    border: none;
+    padding: 6px;
+    color: #777777;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.btn-share-icon:hover {
+    color: #111111;
+    background-color: #F5F5F5;
+}
+
+.product-title-detail {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 2.1rem;
+    font-weight: 600;
+    line-height: 1.15;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+@media (max-width: 767.98px) {
+    .product-title-detail {
+        font-size: 1.75rem;
+    }
+}
+
+/* Bloque de Precios */
+.product-pricing-box-clean {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #F0ECE8;
+}
+
+.price-value-main {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: #111111;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+}
+
+@media (max-width: 767.98px) {
+    .price-value-main {
+        font-size: 1.75rem;
+    }
+}
+
+/* Badge Mayorista Minimalista */
+.wholesale-incentive-badge {
+    background-color: #FAF8F5;
+    border: 1px solid #ECE4DA;
+    border-radius: 6px;
+    padding: 8px 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    max-width: 100%;
+}
+
+.wholesale-tag-clean {
+    background-color: #111111;
+    color: #FFFFFF;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.wholesale-text-clean {
+    font-size: 0.78rem;
+    color: #4A4A4A;
+    line-height: 1.3;
+}
+
+.wholesale-saving-clean {
+    color: #A4865E;
+    font-weight: 600;
+    margin-left: 3px;
+}
+
+/* --- SELECTOR DE TALLES --- */
+.product-sizes-block {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.size-row-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.size-label-text {
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #666666;
+}
+
+.btn-size-guide {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    transition: opacity 0.2s ease;
+}
+
+.btn-size-guide:hover {
+    opacity: 0.75;
+}
+
+.size-chips-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.btn-size-chip {
+    min-width: 46px;
+    height: 44px;
+    padding: 0 12px;
+    border: 1px solid #E0E0E0;
+    border-radius: 4px;
+    background-color: #FFFFFF;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.18s ease;
+}
+
+.btn-size-chip:hover:not(:disabled) {
+    border-color: #111111;
+    color: #111111;
+}
+
+.btn-size-chip.selected,
+.btn-size-chip.active {
+    background-color: #111111 !important;
+    color: #FFFFFF !important;
+    border-color: #111111 !important;
+}
+
+.btn-size-chip.disabled-chip,
+.btn-size-chip:disabled {
+    background-color: #F8F8F8;
+    color: #BDBDBD;
+    border-color: #EBEBEB;
+    cursor: not-allowed;
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+/* Indicador de Estado del Talle / Stock */
+.size-status-msg {
+    min-height: 20px;
+    font-size: 0.74rem;
+}
+
+.text-hint-talle {
+    color: #777777;
+}
+
+.stock-ok-text {
+    color: #27ae60;
+    font-weight: 600;
+}
+
+.stock-low-text {
+    color: #e67e22;
+    font-weight: 600;
+}
+
+.stock-out-text {
+    color: #c0392b;
+    font-weight: 600;
+}
+
+/* --- FILA DE ACCIONES DE COMPRA (CTA PRINCIPAL) --- */
+.purchase-action-row {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+    margin-top: 4px;
+}
+
+.qty-selector-compact {
+    width: 105px;
+    height: 48px;
+    border: 1px solid #DCDCDC;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #FFFFFF;
+    flex-shrink: 0;
+}
+
+.qty-btn {
+    background: none;
+    border: none;
+    width: 32px;
+    height: 100%;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #333333;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease;
+}
+
+.qty-btn:hover {
+    background-color: #F5F5F5;
+}
+
+.qty-display {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #111111;
+    min-width: 26px;
+    text-align: center;
+}
+
+.btn-add-cart-primary {
+    flex-grow: 1;
+    height: 48px;
+    background-color: #111111;
+    color: #FFFFFF;
+    border: 1px solid #111111;
+    border-radius: 4px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.84rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.btn-add-cart-primary:hover {
+    background-color: #2b2b2b;
+    border-color: #2b2b2b;
+    color: #FFFFFF;
+}
+
+.btn-add-cart-primary:active {
+    transform: scale(0.99);
+}
+
+/* Botón Secundario de WhatsApp (Limpio y Elegante) */
+.btn-whatsapp-secondary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 42px;
+    border: 1px solid #25D366;
+    background-color: rgba(37, 211, 102, 0.06);
+    color: #15803d;
+    border-radius: 4px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    margin-top: 2px;
+}
+
+.btn-whatsapp-secondary:hover {
+    background-color: #25D366;
+    color: #FFFFFF;
+    border-color: #25D366;
+}
+
+/* --- TRUST BADGES COMPACTOS --- */
+.product-trust-strip {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px 0;
+    border-top: 1px solid #F0ECE8;
+    border-bottom: 1px solid #F0ECE8;
+    margin-top: 4px;
+}
+
+.trust-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.76rem;
+    color: #666666;
+}
+
+.trust-item i {
+    color: #A4865E;
+    font-size: 0.9rem;
+    width: 16px;
+    text-align: center;
+}
+
+/* --- ACORDEÓN EDITORIAL --- */
+.product-editorial-accordion {
+    margin-top: 4px;
+}
+
+.product-editorial-accordion .accordion-item {
+    border: none;
+    border-bottom: 1px solid #F0ECE8;
+    background: transparent;
+}
+
+.product-editorial-accordion .accordion-button {
+    background: transparent !important;
+    padding: 14px 0;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    box-shadow: none !important;
+}
+
+.product-editorial-accordion .accordion-button:not(.collapsed) {
+    color: #111111;
+}
+
+.product-editorial-accordion .accordion-body {
+    padding: 0 0 16px 0;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: #666666;
+}
+
+/* Evitar botón flotante duplicado que compite con el CTA en mobile */
+@media (max-width: 767.98px) {
+    .whatsapp-flotante {
+        display: none !important;
+    }
+}
+
