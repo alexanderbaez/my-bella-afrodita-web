@@ -160,11 +160,11 @@ function renderizarPaginaProducto(p) {
         <div class="product-detail-wrapper">
             <div class="product-detail-grid">
                 
-                <!-- Columna Izquierda: Galería Editorial (Visor Principal Dominante + Tira Horizontal) -->
+                <!-- Columna Izquierda: Galería Editorial -->
                 <div class="product-gallery-col">
-                    <div class="product-gallery-layout">
-                        <!-- Visor Principal con Zoom Óptico (Dominante 3:4 / max-height: 580px) -->
-                        <div class="product-main-viewport" id="zoom-viewport" onmousemove="aplicarZoomOptico(event)" onmouseleave="restablecerZoomOptico()">
+                    <div class="product-gallery-container product-gallery-layout">
+                        <!-- a) Visor Principal (.product-main-image-wrap / max-height: 520px) -->
+                        <div class="product-main-image-wrap product-main-viewport" id="zoom-viewport" onmousemove="aplicarZoomOptico(event)" onmouseleave="restablecerZoomOptico()">
                             <div class="main-img-badges">
                                 ${badgeEtiqueta}
                                 ${badgeStockOut}
@@ -175,10 +175,10 @@ function renderizarPaginaProducto(p) {
                             </div>
                         </div>
 
-                        <!-- Tira Horizontal de Miniaturas (Chips 70x90px) -->
+                        <!-- b) Tira de Miniaturas (.product-thumbnails-strip / chips 75x95px) -->
                         <div class="product-thumbnails-strip" id="gallery-thumbs">
                             ${fotos.map((img, idx) => `
-                                <div class="thumb-item ${idx === 0 ? 'active' : ''}" onclick="cambiarFotoPrincipal('${img}', this)">
+                                <div class="product-thumb-item thumb-item ${idx === 0 ? 'active' : ''}" onclick="cambiarFotoPrincipal('${img}', this)">
                                     <img src="${img}" alt="${p.nombre} vista ${idx + 1}" onerror="this.src='https://via.placeholder.com/150x200?text=Foto'">
                                 </div>
                             `).join('')}
@@ -322,7 +322,7 @@ function cambiarFotoPrincipal(url, thumbElement) {
     const img = document.getElementById('main-zoom-image');
     if (img) img.src = url;
 
-    const thumbs = document.querySelectorAll('.thumb-item');
+    const thumbs = document.querySelectorAll('.product-thumb-item, .thumb-item');
     thumbs.forEach(t => t.classList.remove('active'));
     if (thumbElement) thumbElement.classList.add('active');
 }
