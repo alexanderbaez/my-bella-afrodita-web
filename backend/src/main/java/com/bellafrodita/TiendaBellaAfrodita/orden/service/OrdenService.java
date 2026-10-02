@@ -80,7 +80,7 @@ public class OrdenService {
                 .metodoPago(request.getMetodoPago() != null ? request.getMetodoPago() : MetodoPago.WHATSAPP_EFECTIVO)
                 .tipoEntrega(tipoEntrega)
                 .costoEnvio(costoEnvio)
-                .estado(EstadoOrden.PENDIENTE_COTIZACION)
+                .estado(EstadoOrden.PENDIENTE)
                 .esMayorista(esMayorista)
                 .items(new ArrayList<>())
                 .build();
@@ -244,12 +244,13 @@ public class OrdenService {
         DecimalFormat df = new DecimalFormat("#,##0", symbols);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("¡Hola ").append(orden.getClienteNombre()).append("! Nos comunicamos de *Lencería Mi Bella Afrodita* 💕\n\n");
-        sb.append("Recibimos tu pedido *#").append(orden.getCodigoSeguimiento()).append("*:\n");
+        sb.append("¡Hola Mi Bella Afrodita! 👋 Acabo de registrar mi pedido en la web:\n");
+        sb.append("📦 Pedido: #").append(orden.getCodigoSeguimiento()).append("\n");
+        sb.append("🛍️ Detalle:\n");
 
         for (OrdenItem item : orden.getItems()) {
             sb.append("• ").append(item.getProductoNombre())
-                    .append(" (Talle: ").append(item.getTalle() != null ? item.getTalle() : "-").append(")")
+                    .append(" (Talle: ").append(item.getTalle() != null ? item.getTalle() : "Único").append(")")
                     .append(" x").append(item.getCantidad())
                     .append(" - $").append(df.format(item.getSubtotal()))
                     .append("\n");
@@ -257,28 +258,19 @@ public class OrdenService {
 
         BigDecimal subtotal = orden.getSubtotal() != null ? orden.getSubtotal() : BigDecimal.ZERO;
         BigDecimal descuento = orden.getDescuentoMayorista() != null ? orden.getDescuentoMayorista() : BigDecimal.ZERO;
-        BigDecimal subtotalPrendas = subtotal.subtract(descuento);
-        if (subtotalPrendas.compareTo(BigDecimal.ZERO) < 0) {
-            subtotalPrendas = BigDecimal.ZERO;
+        BigDecimal totalPrendas = subtotal.subtract(descuento);
+        if (totalPrendas.compareTo(BigDecimal.ZERO) < 0) {
+            totalPrendas = BigDecimal.ZERO;
         }
 
-        sb.append("💵 Subtotal Prendas: $").append(df.format(subtotalPrendas)).append("\n\n");
-
-        BigDecimal costoEnvio = orden.getCostoEnvio() != null ? orden.getCostoEnvio() : BigDecimal.ZERO;
-        if (costoEnvio.compareTo(BigDecimal.ZERO) > 0) {
-            sb.append("🛵 *Envío en Cadete en Moto:* $").append(df.format(costoEnvio)).append("\n");
-        } else {
-            sb.append("🛵 *Envío en Cadete en Moto:* A cotizar por zona\n");
-        }
+        sb.append("💵 Total Prendas: $").append(df.format(totalPrendas)).append("\n");
 
         String dirCliente = (orden.getClienteDireccion() != null && !orden.getClienteDireccion().isBlank())
                 ? orden.getClienteDireccion()
                 : "San Juan";
-        sb.append("📍 Destino: ").append(dirCliente).append("\n\n");
-
-        sb.append("👉 *TOTAL FINAL:* $").append(df.format(orden.getTotal())).append("\n\n");
-        sb.append("¿Nos confirmas si te parece bien para comenzar a prepararlo?\n");
-        sb.append("📌 *Por favor, compartinos tu ubicación por este chat (clip 📎 -> Ubicación) o el enlace de Google Maps para que el cadete llegue directo a tu puerta.*");
+        sb.append("📍 Entrega en San Juan: ").append(dirCliente).append("\n");
+        sb.append("👤 Mi nombre: ").append(orden.getClienteNombre()).append("\n\n");
+        sb.append("¿Me confirman disponibilidad y el valor del envío en moto para coordinar? ¡Muchas gracias!");
 
         String textoCodificado = URLEncoder.encode(sb.toString(), StandardCharsets.UTF_8);
         return "https://wa.me/" + WHATSAPP_PHONE + "?text=" + textoCodificado;

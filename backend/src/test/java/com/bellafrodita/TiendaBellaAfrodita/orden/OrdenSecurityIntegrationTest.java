@@ -85,6 +85,7 @@ public class OrdenSecurityIntegrationTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.estado").value("PENDIENTE"))
                 .andExpect(jsonPath("$.codigoSeguimiento").isNotEmpty())
                 .andExpect(jsonPath("$.whatsappUrl").isNotEmpty());
     }

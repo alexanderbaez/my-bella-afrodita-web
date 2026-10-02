@@ -1201,7 +1201,17 @@ async function cargarOrdenes() {
 function parsearDireccionCompleta(dirTexto) {
     if (!dirTexto) return { departamento: 'San Juan', direccion: 'A convenir', referencias: 'Sin referencias' };
     
-    // Formato: "[Depto] - Dirección: [Calle, Nro], Entrecalles: [Referencias]"
+    // Formato 1: "[Depto], [Calle, Nro] (Entre: [Referencias])"
+    const match0 = dirTexto.match(/^([^,]+),\s*(.+?)\s*(?:\(Entre:\s*(.+?)\))?$/i);
+    if (match0) {
+        return {
+            departamento: match0[1].trim(),
+            direccion: match0[2].trim(),
+            referencias: (match0[3] || 'A convenir').trim()
+        };
+    }
+
+    // Formato 2: "[Depto] - Dirección: [Calle, Nro], Entrecalles: [Referencias]"
     const match = dirTexto.match(/^([^-]+)\s*-\s*Dirección:\s*(.+?)(?:,\s*Entrecalles:\s*(.+))?$/i);
     if (match) {
         return {

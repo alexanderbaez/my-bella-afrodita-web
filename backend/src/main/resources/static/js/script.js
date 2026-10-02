@@ -1489,11 +1489,7 @@ async function enviarPedidoWhatsApp() {
                     <input type="tel" id="swal-cliente-telefono" class="form-control form-control-sm" placeholder="Ej: 264 555-1234" autocomplete="tel">
                 </div>
                 <div class="mb-2">
-                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">3. Email <span class="text-muted fw-normal">(Opcional)</span></label>
-                    <input type="email" id="swal-cliente-email" class="form-control form-control-sm" placeholder="Ej: camila@email.com" autocomplete="email">
-                </div>
-                <div class="mb-2">
-                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">4. Departamento (San Juan) *</label>
+                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">3. Departamento (San Juan) *</label>
                     <select id="swal-cliente-departamento" class="form-select form-select-sm">
                         <option value="">Selecciona tu departamento...</option>
                         ${departamentosSanJuan.map(d => `<option value="${d}">${d}</option>`).join('')}
@@ -1501,7 +1497,7 @@ async function enviarPedidoWhatsApp() {
                 </div>
                 <div class="mb-2">
                     <div class="d-flex justify-content-between align-items-center mb-1">
-                        <label class="form-label small fw-bold text-uppercase mb-0" style="font-size: 0.68rem; letter-spacing: 0.5px;">5. Dirección Exacta (Calle, Nro, Barrio) *</label>
+                        <label class="form-label small fw-bold text-uppercase mb-0" style="font-size: 0.68rem; letter-spacing: 0.5px;">4. Dirección Exacta (Calle, Nro, Barrio) *</label>
                         <button type="button" id="btn-gps-ubicacion" class="btn btn-outline-dark btn-xs py-0 px-2 fw-normal" style="font-size: 0.68rem; border-radius: 12px;" title="Obtener mi posición GPS exacta para el cadete">
                             <i class="fas fa-crosshairs text-danger me-1"></i> 📍 Compartir mi ubicación GPS actual
                         </button>
@@ -1510,7 +1506,7 @@ async function enviarPedidoWhatsApp() {
                     <div id="gps-status-feedback" class="small mt-1 text-success fw-semibold d-none" style="font-size: 0.72rem;"></div>
                 </div>
                 <div class="mb-2">
-                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">6. Entrecalles y Referencias para el Cadete *</label>
+                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">5. Entrecalles y Referencias para el Cadete *</label>
                     <input type="text" id="swal-cliente-referencias" class="form-control form-control-sm" placeholder="Ej: Entre Urquiza y Paula. Portón negro">
                     <small class="text-muted" style="font-size:0.67rem;">Requerido para que el cadete ubique tu domicilio sin demoras.</small>
                 </div>
@@ -1596,7 +1592,6 @@ async function enviarPedidoWhatsApp() {
         preConfirm: () => {
             const nombre = document.getElementById('swal-cliente-nombre')?.value.trim();
             const telefono = document.getElementById('swal-cliente-telefono')?.value.trim();
-            const email = document.getElementById('swal-cliente-email')?.value.trim();
             const depto = document.getElementById('swal-cliente-departamento')?.value.trim();
             const direccion = document.getElementById('swal-cliente-direccion')?.value.trim();
             const referencias = document.getElementById('swal-cliente-referencias')?.value.trim();
@@ -1622,12 +1617,12 @@ async function enviarPedidoWhatsApp() {
                 return false;
             }
 
-            // Formato estructurado: [Departamento] - Dirección: [Calle, Nro, Entrecalles]
-            const direccionCompleta = `${depto} - Dirección: ${direccion}, Entrecalles: ${referencias}`;
+            // Formato estructurado para backend y admin: [Departamento], [Dirección] (Entre: [Referencias])
+            const direccionCompleta = `${depto}, ${direccion} (Entre: ${referencias})`;
             return {
                 nombre,
                 telefono,
-                email,
+                email: null,
                 depto,
                 direccionExacta: direccion,
                 referencias,
@@ -1658,7 +1653,7 @@ async function enviarPedidoWhatsApp() {
         const payload = {
             clienteNombre: formValues.nombre,
             clienteTelefono: formValues.telefono,
-            clienteEmail: formValues.email || null,
+            clienteEmail: null,
             clienteDireccion: formValues.direccion,
             tipoEntrega: 'ENVIO_MOTO_SAN_JUAN',
             costoEnvio: costoEnvio,
@@ -1687,38 +1682,49 @@ async function enviarPedidoWhatsApp() {
         actualizarYGuardar();
         renderizarListaCarrito();
 
-        // Construir URL WhatsApp en caso de fallback si la API no la devolviera
-        let waUrl = ordenResponse.whatsappUrl;
-        if (!waUrl) {
-            const tel = "5492646121771";
-            let msg = `🛍️ *NUEVO PEDIDO: MY BELLA AFRODITA*\n`;
-            msg += `🔖 *Código:* #${ordenResponse.codigoSeguimiento}\n`;
-            msg += `------------------------------------------\n`;
-            msg += `👤 *Cliente:* ${formValues.nombre}\n`;
-            msg += `📱 *Teléfono:* ${formValues.telefono}\n`;
-            msg += `🛵 *Entrega:* Envío en Moto a ${formValues.depto} - Dirección: ${formValues.direccionExacta}, ${formValues.referencias} (Costo de envío a coordinar)\n`;
-            msg += `------------------------------------------\n`;
-            msg += `📦 *Envío:* A cotizar por zona\n`;
-            msg += `💰 *TOTAL PRENDAS: $${Number(ordenResponse.total).toLocaleString('es-AR')}*\n`;
-            waUrl = `https://wa.me/${tel}?text=${encodeURIComponent(msg)}`;
+        // 1. Construir detalle de items para el mensaje
+        const itemsTexto = (ordenResponse.items && ordenResponse.items.length > 0)
+            ? ordenResponse.items.map(it => `• ${it.productoNombre} (Talle: ${it.talle || 'Único'}) x${it.cantidad} - $${Number(it.subtotal).toLocaleString('es-AR')}`).join('\n')
+            : 'Prendas seleccionadas';
+
+        const totalPrendasFormateado = Number(ordenResponse.subtotal || ordenResponse.total).toLocaleString('es-AR');
+
+        // 2. Redacción del Mensaje de WhatsApp (Perspectiva del Cliente)
+        let msgWa = `¡Hola Mi Bella Afrodita! 👋 Acabo de registrar mi pedido en la web:\n`;
+        msgWa += `📦 Pedido: #${ordenResponse.codigoSeguimiento}\n`;
+        msgWa += `🛍️ Detalle:\n`;
+        msgWa += `${itemsTexto}\n`;
+        msgWa += `💵 Total Prendas: $${totalPrendasFormateado}\n`;
+        msgWa += `📍 Entrega en San Juan: ${formValues.depto}, ${formValues.direccionExacta} (Entre: ${formValues.referencias})\n`;
+        msgWa += `👤 Mi nombre: ${formValues.nombre}\n\n`;
+        msgWa += `¿Me confirman disponibilidad y el valor del envío en moto para coordinar? ¡Muchas gracias!`;
+
+        const waUrl = ordenResponse.whatsappUrl || `https://wa.me/5492646121771?text=${encodeURIComponent(msgWa)}`;
+
+        // Detección de dispositivo móvil para disparar WhatsApp directamente
+        const isMobile = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        if (isMobile) {
+            setTimeout(() => {
+                window.location.href = waUrl;
+            }, 300);
         }
 
         Swal.fire({
             icon: 'success',
-            title: '¡Gracias por tu compra en Lencería Mi Bella Afrodita! 💕',
+            title: '¡Pedido Registrado con Éxito! 💕',
             html: `
                 <div class="text-center py-2">
-                    <div class="badge bg-dark px-3 py-1.5 my-2 font-monospace" style="font-size: 0.95rem; letter-spacing: 1px;">
+                    <div class="badge bg-dark text-white px-3 py-1.5 my-2 font-monospace" style="font-size: 1rem; letter-spacing: 1px;">
                         Pedido #${ordenResponse.codigoSeguimiento}
                     </div>
                     <p class="text-muted small mt-2 mb-3" style="line-height: 1.6; font-size: 0.88rem;">
                         Tu pedido ha sido recibido con éxito en nuestro atelier online.<br>
-                        <b>En breve nos comunicaremos a tu WhatsApp</b> para informarte el costo exacto del cadete en moto y coordinar el horario de entrega.
+                        <b>Para coordinar el envío en moto y el pago</b>, finaliza la orden en WhatsApp con nuestro equipo.
                     </p>
-                    <div class="p-2.5 rounded bg-light border text-start small mb-2" style="font-size: 0.78rem;">
+                    <div class="p-2.5 rounded bg-light border text-start small mb-3" style="font-size: 0.8rem;">
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="text-muted">Subtotal Prendas:</span>
-                            <strong class="text-dark">$${Number(ordenResponse.total).toLocaleString('es-AR')}</strong>
+                            <span class="text-muted">Total Prendas:</span>
+                            <strong class="text-dark">$${totalPrendasFormateado}</strong>
                         </div>
                         <div class="d-flex justify-content-between mb-1">
                             <span class="text-muted">Envío en Moto:</span>
@@ -1729,17 +1735,28 @@ async function enviarPedidoWhatsApp() {
                             <span class="text-truncate ps-2" style="max-width: 230px;">${formValues.depto}, ${formValues.direccionExacta}</span>
                         </div>
                     </div>
+                    <div class="alert alert-success py-2 px-3 mb-0 small text-start border-0" style="background-color: #E8F8F0; color: #1E7E45;">
+                        <i class="fab fa-whatsapp fa-lg me-1"></i> Pulsa el botón verde a continuación para abrir WhatsApp directamente.
+                    </div>
                 </div>
             `,
             showConfirmButton: true,
-            confirmButtonText: 'Entendido, muchas gracias',
-            confirmButtonColor: '#121212',
+            confirmButtonText: 'FINALIZAR PEDIDO EN WHATSAPP 📲',
+            confirmButtonColor: '#25D366',
             showCancelButton: true,
-            cancelButtonText: '<i class="fab fa-whatsapp me-1 text-success"></i> Abrir WhatsApp (Opcional)',
-            cancelButtonColor: '#706E6B'
+            cancelButtonText: 'Cerrar ventana',
+            cancelButtonColor: '#706E6B',
+            allowOutsideClick: false,
+            customClass: {
+                confirmButton: 'btn btn-lg fw-bold px-4 py-2.5 shadow-sm text-white'
+            }
         }).then((result) => {
-            if (result.dismiss === Swal.DismissReason.cancel && waUrl) {
-                window.open(waUrl, '_blank');
+            if (result.isConfirmed) {
+                if (isMobile) {
+                    window.location.href = waUrl;
+                } else {
+                    window.open(waUrl, '_blank');
+                }
             }
         });
 

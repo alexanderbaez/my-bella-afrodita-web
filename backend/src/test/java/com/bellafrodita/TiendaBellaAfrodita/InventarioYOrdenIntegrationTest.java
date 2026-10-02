@@ -190,11 +190,12 @@ public class InventarioYOrdenIntegrationTest {
         OrdenResponse respuesta = ordenService.crearOrden(request);
 
         Assertions.assertNotNull(respuesta);
+        Assertions.assertEquals(com.bellafrodita.TiendaBellaAfrodita.orden.model.EstadoOrden.PENDIENTE, respuesta.getEstado());
         Assertions.assertEquals(com.bellafrodita.TiendaBellaAfrodita.orden.model.TipoEntrega.ENVIO_MOTO_SAN_JUAN, respuesta.getTipoEntrega());
         Assertions.assertEquals(new BigDecimal("2500.00"), respuesta.getCostoEnvio());
         Assertions.assertEquals(new BigDecimal("20000.00"), respuesta.getSubtotal());
         Assertions.assertEquals(new BigDecimal("22500.00"), respuesta.getTotal());
-        Assertions.assertTrue(respuesta.getWhatsappUrl().contains("TOTAL"));
+        Assertions.assertTrue(respuesta.getWhatsappUrl().contains("Total") || respuesta.getWhatsappUrl().contains("TOTAL"));
         Assertions.assertTrue(respuesta.getWhatsappUrl().contains("San+Juan"));
     }
 
