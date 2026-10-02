@@ -1341,23 +1341,41 @@ window.agregarAlCarrito = function (event, id, talleForzado = null, cantidadToAd
     actualizarYGuardar();
     renderizarListaCarrito();
 
-    // Notificación toast boutique
+    // a) Actualizar contador numérico en la bolsa del navbar (#cart-count) con animación suave de pulso
+    actualizarContadorUI(true);
+
+    // b) Disparar Toast sutil y elegante (no bloqueante, flotante superior de 2.5 segundos)
     Swal.fire({
         toast: true,
         position: 'top-end',
         icon: 'success',
-        title: '¡Añadido a tu bolsa!',
+        title: '✓ Prenda añadida a la bolsa',
         text: `${p.nombre} (Talle ${talleElegido}) x${cantNum}`,
         showConfirmButton: false,
-        timer: 1800,
+        timer: 2500,
         timerProgressBar: true,
-        iconColor: '#8e62a3',
+        iconColor: '#111111',
+        background: '#FAF8F5',
+        color: '#111111',
         width: '320px'
     });
 
-    // Abrir Slide-Over Drawer automáticamente
-    abrirCarritoDrawer();
+    // c) Cambiar temporalmente el texto del botón por 1.5s a "✓ ¡Añadido!"
+    const btnTarget = (event && event.target) ? event.target.closest('button') : document.getElementById('btn-add-bag');
+    if (btnTarget && !btnTarget.classList.contains('qty-btn')) {
+        const originalHtml = btnTarget.innerHTML;
+        btnTarget.innerHTML = '<i class="fas fa-check me-2"></i> ¡Añadido!';
+        btnTarget.classList.add('btn-added-success');
+        setTimeout(() => {
+            btnTarget.innerHTML = originalHtml;
+            btnTarget.classList.remove('btn-added-success');
+        }, 1500);
+    }
+
+    // NOTA UX: El offcanvas del carrito NO se abre forzosamente.
+    // Solo se abre cuando el usuario hace clic deliberadamente en el ícono de la bolsa en el navbar.
 };
+
 
 window.cambiarCantidad = function (index, valor) {
     if (!carrito[index]) return;
@@ -1431,22 +1449,29 @@ function actualizarYGuardar() {
     actualizarContadorUI();
 }
 
-function actualizarContadorUI() {
+function actualizarContadorUI(animar = false) {
     const contador = document.getElementById('cart-count');
     if (!contador) return;
     const totalUnidades = carrito.reduce((acc, item) => acc + item.cantidad, 0);
     contador.innerText = totalUnidades;
     
     const ocultarFalta = totalUnidades === 0;
-    contador.style.display = ocultarFalta ? 'none' : 'flex';
+    contador.style.display = ocultarFalta ? 'none' : 'inline-flex';
 
     const { esMayorista } = calcularTotalCarrito();
     if (esMayorista) {
         contador.style.backgroundColor = "#28a745";
     } else {
-        contador.style.backgroundColor = "#1a1a1a";
+        contador.style.backgroundColor = "#111111";
+    }
+
+    if (animar && totalUnidades > 0) {
+        contador.classList.remove('cart-count-pulse');
+        void contador.offsetWidth; // forzar reflow para reiniciar animación
+        contador.classList.add('cart-count-pulse');
     }
 }
+
 
 // --- CHECKOUT DIRECTO A TRAVÉS DE LA API Y WHATSAPP ---
 async function enviarPedidoWhatsApp() {

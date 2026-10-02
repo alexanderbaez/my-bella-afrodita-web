@@ -158,12 +158,12 @@ function renderizarPaginaProducto(p) {
 
     mount.innerHTML = `
         <div class="product-detail-wrapper">
-            <div class="row g-4 g-lg-5 align-items-start">
+            <div class="product-detail-grid">
                 
                 <!-- Columna Izquierda: Galería Editorial (Visor Principal Dominante + Tira Horizontal) -->
-                <div class="col-12 col-lg-6">
+                <div class="product-gallery-col">
                     <div class="product-gallery-layout">
-                        <!-- Visor Principal con Zoom Óptico (Dominante 3:4) -->
+                        <!-- Visor Principal con Zoom Óptico (Dominante 3:4 / max-height: 580px) -->
                         <div class="product-main-viewport" id="zoom-viewport" onmousemove="aplicarZoomOptico(event)" onmouseleave="restablecerZoomOptico()">
                             <div class="main-img-badges">
                                 ${badgeEtiqueta}
@@ -175,7 +175,7 @@ function renderizarPaginaProducto(p) {
                             </div>
                         </div>
 
-                        <!-- Tira Horizontal de Miniaturas -->
+                        <!-- Tira Horizontal de Miniaturas (Chips 70x90px) -->
                         <div class="product-thumbnails-strip" id="gallery-thumbs">
                             ${fotos.map((img, idx) => `
                                 <div class="thumb-item ${idx === 0 ? 'active' : ''}" onclick="cambiarFotoPrincipal('${img}', this)">
@@ -186,8 +186,8 @@ function renderizarPaginaProducto(p) {
                     </div>
                 </div>
 
-                <!-- Columna Derecha: Información Editorial & Conversión -->
-                <div class="col-12 col-lg-6">
+                <!-- Columna Derecha: Información Editorial & Conversión (Sticky Desktop) -->
+                <div class="product-info-col">
                     <div class="product-detail-info">
                         <!-- Encabezado con Categoría y Botón Compartir -->
                         <div class="d-flex align-items-center justify-content-between">
@@ -428,6 +428,18 @@ window.agregarAlCarritoDesdeDetalle = function (e) {
     const talleFinal = TALLE_SELECCIONADO || (PRODUCTO_ACTUAL.talles && PRODUCTO_ACTUAL.talles[0] ? PRODUCTO_ACTUAL.talles[0] : 'Único');
     const cantidad = CANTIDAD_SELECCIONADA || 1;
 
+    // Feedback visual en el botón de compra: cambiar a "✓ ¡Añadido!" por 1.5s
+    const btnAdd = document.getElementById('btn-add-bag') || (e?.target?.closest('button'));
+    if (btnAdd) {
+        const originalHtml = btnAdd.innerHTML;
+        btnAdd.innerHTML = '<i class="fas fa-check me-2"></i> ¡Añadido!';
+        btnAdd.classList.add('btn-added-success');
+        setTimeout(() => {
+            btnAdd.innerHTML = originalHtml;
+            btnAdd.classList.remove('btn-added-success');
+        }, 1500);
+    }
+
     if (typeof window.agregarAlCarrito === 'function') {
         window.agregarAlCarrito(e, PRODUCTO_ACTUAL.id, talleFinal, cantidad);
     } else {
@@ -451,11 +463,27 @@ window.agregarAlCarritoDesdeDetalle = function (e) {
             });
         }
         localStorage.setItem('myBellaCarrito', JSON.stringify(carritoLocal));
-        if (typeof window.actualizarContadorUI === 'function') window.actualizarContadorUI();
+        if (typeof window.actualizarContadorUI === 'function') window.actualizarContadorUI(true);
         if (typeof window.renderizarListaCarrito === 'function') window.renderizarListaCarrito();
-        if (typeof window.abrirCarritoDrawer === 'function') window.abrirCarritoDrawer();
+
+        // Notificación Toast sutil y elegante de 2.5s (no bloqueante)
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: '✓ Prenda añadida a la bolsa',
+            text: `${PRODUCTO_ACTUAL.nombre} (Talle ${talleFinal}) x${cantidad}`,
+            showConfirmButton: false,
+            timer: 2500,
+            timerProgressBar: true,
+            iconColor: '#111111',
+            background: '#FAF8F5',
+            color: '#111111',
+            width: '320px'
+        });
     }
 };
+
 
 function actualizarEnlaceWhatsApp() {
     const btn = document.getElementById('btn-consultar-wa');

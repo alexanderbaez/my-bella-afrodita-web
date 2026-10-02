@@ -329,7 +329,32 @@ img {
     position: absolute;
     top: -4px;
     right: -7px;
+    transition: transform 0.2s ease;
 }
+
+#cart-count.cart-count-pulse {
+    animation: cartBadgePulse 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes cartBadgePulse {
+    0% {
+        transform: scale(1);
+    }
+    40% {
+        transform: scale(1.6);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.btn-added-success {
+    background-color: #1b7e3f !important;
+    border-color: #1b7e3f !important;
+    color: #FFFFFF !important;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
 
 /* ==========================================================================
    HERO EDITORIAL LOOKBOOK (ESTILO ZARA / INTIMISSIMI)
@@ -1916,7 +1941,8 @@ img {
     right: 0;
     width: 450px;
     max-width: 94vw;
-    height: 100vh;
+    height: 100%;
+    max-height: 100vh;
     background-color: var(--bg-ivory);
     z-index: 1090;
     display: flex;
@@ -1933,7 +1959,8 @@ img {
 
 /* Header Drawer */
 .cart-drawer-header {
-    padding: 24px;
+    flex-shrink: 0;
+    padding: 1.25rem 1.5rem;
     border-bottom: 1px solid var(--border-gold-subtle);
     display: flex;
     align-items: center;
@@ -1964,11 +1991,13 @@ img {
     color: var(--text-charcoal);
 }
 
-/* Body Drawer */
-.cart-drawer-body {
-    padding: 24px;
+/* Body Drawer / Contenedor de Productos */
+.cart-drawer-body,
+#cart-items-container {
+    flex: 1 1 auto;
     overflow-y: auto;
-    flex-grow: 1;
+    -webkit-overflow-scrolling: touch;
+    padding: 1rem;
     scrollbar-width: thin;
     scrollbar-color: rgba(197, 168, 128, 0.3) transparent;
 }
@@ -2059,10 +2088,13 @@ img {
 
 /* Footer Drawer */
 .cart-drawer-footer {
-    padding: 24px;
-    border-top: 1px solid var(--border-gold-subtle);
-    background: var(--bg-white);
+    flex-shrink: 0;
+    background: #FFFFFF;
+    border-top: 1px solid #EEEEEE;
+    padding: 1rem;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
 }
+
 
 .btn-whatsapp-checkout {
     background: #111111;
@@ -3377,12 +3409,34 @@ img, video, canvas, svg {
         font-size: 0.95rem;
     }
 
-    /* Carrito Drawer en celulares: ancho completo */
+    /* Carrito Drawer en celulares: ancho completo y flexbox vertical */
     .cart-drawer {
         width: 100% !important;
         max-width: 100vw !important;
+        height: 100% !important;
+        height: 100dvh !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    .cart-drawer-header {
+        flex-shrink: 0 !important;
+    }
+    .cart-drawer-body,
+    #cart-items-container {
+        flex: 1 1 auto !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding: 1rem !important;
+    }
+    .cart-drawer-footer {
+        flex-shrink: 0 !important;
+        background: #FFFFFF !important;
+        border-top: 1px solid #EEEEEE !important;
+        padding: 1rem !important;
+        box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05) !important;
     }
 }
+
 
 /* 3. Tablets y Pantallas Medianas (768px a 1024px) */
 @media (min-width: 768px) and (max-width: 1024px) {
