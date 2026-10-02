@@ -60,8 +60,8 @@ async function cargarDetalleProducto(id) {
                 <i class="fas fa-gem text-muted fa-3x mb-3" style="color: var(--gold-champagne) !important;"></i>
                 <h3 class="font-serif text-dark mb-2">Prenda no disponible</h3>
                 <p class="text-muted small mb-4">La pieza solicitada no se encuentra disponible en nuestro catálogo activo o el enlace ha expirado.</p>
-                <a href="./productos.html" class="btn btn-dark btn-sm rounded-1 px-4 py-2 text-uppercase fw-semibold" style="letter-spacing: 1.5px; font-size: 0.75rem;">
-                    Explorar Catálogo Boutique
+                <a href="./productos.html?categoria=CONJUNTOS" class="btn btn-dark btn-sm rounded-1 px-4 py-2 text-uppercase fw-semibold" style="letter-spacing: 1.5px; font-size: 0.75rem;">
+                    Ver Colección Conjuntos
                 </a>
             </div>
         `;

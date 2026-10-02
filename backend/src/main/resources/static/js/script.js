@@ -206,9 +206,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         contenedor.style.minHeight = '400px';
 
         // 3. CAPTURAMOS LA COLECCIÓN DESDE LA URL (ej: productos.html?categoria=CONJUNTOS)
-        // Si no hay categoría especificada o no coincide ninguna, muestra la lista disponible por defecto
+        // Por arquitectura de información, si no se especifica categoría, se inicia en CONJUNTOS
         const urlParams = new URLSearchParams(window.location.search);
         let catParam = urlParams.get('categoria') || urlParams.get('cat') || '';
+        if (!catParam) {
+            catParam = 'CONJUNTOS';
+        }
         categoriaActiva = catParam;
 
         // 4. INICIALIZAMOS TALLES CONTEXTUALES Y FILTROS SEGÚN LA COLECCIÓN
@@ -400,14 +403,14 @@ function actualizarTituloYContadorCatalogo(cantidadVisible) {
     const breadcrumbActive = document.getElementById('breadcrumb-categoria-activa');
 
     const catNorm = normalizarCategoria(categoriaActiva);
-    let tituloTexto = "Catálogo de Productos";
-    let breadcrumbTexto = "Todas las Colecciones";
-    let docTitle = "Catálogo | Mi Bella Afrodita";
+    let tituloTexto = "Colección Conjuntos";
+    let breadcrumbTexto = "Colección Conjuntos";
+    let docTitle = "Colección Conjuntos - Mi Bella Afrodita";
 
     if (!catNorm || catNorm === 'todos') {
-        tituloTexto = "Catálogo de Productos";
-        breadcrumbTexto = "Todas las Colecciones";
-        docTitle = "Catálogo | Mi Bella Afrodita";
+        tituloTexto = "Colección Conjuntos";
+        breadcrumbTexto = "Colección Conjuntos";
+        docTitle = "Colección Conjuntos - Mi Bella Afrodita";
     } else if (catNorm === 'conjuntos') {
         tituloTexto = "Colección Conjuntos";
         breadcrumbTexto = "Colección Conjuntos";
