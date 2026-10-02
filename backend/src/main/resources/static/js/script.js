@@ -867,8 +867,8 @@ async function cargarDestacadosInicio() {
                     }
                 }
                 if (Array.isArray(catalogoGeneral) && catalogoGeneral.length > 0) {
-                    // Tomar las primeras 4 a 6 prendas
-                    destacados = catalogoGeneral.slice(0, 6);
+                    // Tomar exactamente 4 prendas para la sección de favoritos
+                    destacados = catalogoGeneral.slice(0, 4);
                     console.log('[INICIO] Destacados obtenidos vía fallback:', destacados.length);
                 }
             } catch (errFallback) {
@@ -876,13 +876,15 @@ async function cargarDestacadosInicio() {
             }
         }
 
-        // Renderizar prendas
+        // Renderizar exactamente 4 prendas destacadas
         if (destacados && destacados.length > 0) {
             contenedor.innerHTML = '';
-            destacados.forEach(p => {
+            const cuatroFavoritos = destacados.slice(0, 4);
+
+            cuatroFavoritos.forEach(p => {
                 const fotos = Array.isArray(p.imagenes) && p.imagenes.length > 0 
                     ? p.imagenes.map(normalizarUrlImagen) 
-                    : ['https://via.placeholder.com/300x400?text=My+Bella+Afrodita'];
+                    : ['https://via.placeholder.com/300x400?text=Mi+Bella+Afrodita'];
                 const fotoPrincipal = fotos[0];
                 const fotoSecundaria = fotos.length > 1 ? fotos[1] : null;
 
@@ -890,22 +892,33 @@ async function cargarDestacadosInicio() {
                     ? `<span class="price-wholesale-subtle">x3 $${Number(p.precioMayorista).toLocaleString('es-AR')}</span>`
                     : '';
 
+                // Extraer talles disponibles
+                const tallesDisponibles = Array.isArray(p.variantes) && p.variantes.length > 0
+                    ? p.variantes.filter(v => (v.stock || 0) > 0).map(v => v.talle).join(' · ')
+                    : (Array.isArray(p.talles) && p.talles.length > 0 ? p.talles.join(' · ') : 'Único');
+
                 const divCol = document.createElement('div');
-                divCol.className = 'col-6 col-md-4 col-lg-3 d-flex align-items-stretch product-item-card';
+                divCol.className = 'col-6 col-md-3 d-flex align-items-stretch product-item-card';
                 divCol.innerHTML = `
-                    <div class="product-card-boutique w-100" onclick="navegarAProducto('${p.id}')" title="Ver ${p.nombre}">
+                    <div class="product-card-boutique w-100 d-flex flex-column" onclick="navegarAProducto('${p.id}')" title="Ver ${p.nombre}">
                         <div class="product-media-container position-relative">
-                            <span class="badge-luxury-tag">Destacado</span>
-                            <img src="${fotoPrincipal}" alt="${p.nombre}" class="img-primary" onerror="this.src='https://via.placeholder.com/300x400?text=My+Bella+Afrodita'">
+                            <span class="badge-luxury-tag">Favorito</span>
+                            <img src="${fotoPrincipal}" alt="${p.nombre}" class="img-primary" onerror="this.src='https://via.placeholder.com/300x400?text=Mi+Bella+Afrodita'">
                             ${fotoSecundaria ? `<img src="${fotoSecundaria}" alt="${p.nombre} dorsal" class="img-secondary">` : ''}
                         </div>
-                        <div class="product-info-wrap">
+                        <div class="product-info-wrap d-flex flex-column flex-grow-1 p-3">
                             <div class="product-category-label">${p.categoria || 'Colección'}</div>
-                            <h3 class="product-title-luxury" title="${p.nombre}">${p.nombre}</h3>
-                            <div class="product-pricing-box">
+                            <h3 class="product-title-luxury mb-1" title="${p.nombre}">${p.nombre}</h3>
+                            <div class="product-talles-available">
+                                <i class="fas fa-ruler-combined me-1 text-muted"></i> Talles: <strong>${tallesDisponibles || 'Disponibles'}</strong>
+                            </div>
+                            <div class="product-pricing-box mt-auto pt-2">
                                 <span class="price-retail-highlight">$${Number(p.precioMinorista).toLocaleString('es-AR')}</span>
                                 ${wholesaleHtml}
                             </div>
+                            <a href="./producto.html?id=${p.id}" class="btn-card-view-item" onclick="event.stopPropagation();">
+                                Ver Prenda <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
                         </div>
                     </div>`;
                 contenedor.appendChild(divCol);
@@ -917,13 +930,14 @@ async function cargarDestacadosInicio() {
                     <div class="p-4 rounded-3 border mx-auto" style="max-width: 500px; background: #FAF9F6; border-color: rgba(212, 175, 55, 0.3);">
                         <i class="fas fa-gem text-muted fa-2x mb-3" style="color: #D4AF37 !important;"></i>
                         <h5 class="fw-bold text-dark font-serif mb-2">Colección en Preparación</h5>
-                        <p class="text-muted small mb-3">Estamos preparando las nuevas piezas de alta costura para esta temporada.</p>
+                        <p class="text-muted small mb-3">Estamos preparando las nuevas piezas de lencería para esta temporada.</p>
                         <a href="./productos.html?categoria=CONJUNTOS" class="btn btn-dark btn-sm px-4 py-2 text-uppercase fw-semibold" style="letter-spacing: 1px; font-size: 0.75rem;">
                             Explorar Colecciones
                         </a>
                     </div>
                 </div>`;
         }
+
     } catch (err) {
         console.error('[INICIO] Error fatal al cargar destacados en portada:', err);
         contenedor.innerHTML = `
