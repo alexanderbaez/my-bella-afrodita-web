@@ -290,7 +290,7 @@ function renderizarPaginaProducto(p) {
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHigiene" aria-expanded="false">
-                                        <i class="fas fa-shield-halved me-2 accordion-icon"></i> 🛡️ POLÍTICA SANITARIA: PRENDAS SIN CAMBIO
+                                        <i class="fas fa-shield-halved me-2 accordion-icon"></i> POLÍTICA SANITARIA: PRENDAS SIN CAMBIO
                                     </button>
                                 </h2>
                                 <div id="collapseHigiene" class="accordion-collapse collapse" data-bs-parent="#accordionDetalles">
