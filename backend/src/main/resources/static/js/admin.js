@@ -9,9 +9,15 @@ const AUTH_ME_URL = '/api/auth/me';
 const AUTH_LOGOUT_URL = '/api/auth/logout';
 const UPLOAD_API = '/api/upload';
 const API_RESENAS = '/api/resenas/admin';
+const IMG_FALLBACK = window.IMG_FALLBACK || ('data:image/svg+xml;utf8,' + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">' +
+    '<rect width="600" height="800" fill="#FAF8F5"/>' +
+    '<text x="50%" y="50%" text-anchor="middle" fill="#C5A059" font-family="sans-serif" font-size="24" letter-spacing="2">MI BELLA AFRODITA</text>' +
+    '</svg>'
+));
 
 function normalizarUrlImagen(url) {
-    if (!url) return 'https://via.placeholder.com/80x100?text=Sin+Foto';
+    if (!url) return IMG_FALLBACK;
     let clean = String(url).trim();
     // Elimina host/puerto absoluto local o IP si existiese previamente en base de datos
     clean = clean.replace(/^https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?(\/.*)$/, '$1');
@@ -301,7 +307,7 @@ function renderizarTabla(productos) {
     tbody.innerHTML = productos.map(p => {
         const fotoPrincipal = (p.imagenes && p.imagenes.length > 0) 
             ? normalizarUrlImagen(p.imagenes[0]) 
-            : 'https://via.placeholder.com/80x100?text=Sin+Foto';
+            : IMG_FALLBACK;
 
         const variantes = Array.isArray(p.variantes) ? p.variantes : [];
         const stockTotal = variantes.length > 0
@@ -343,7 +349,7 @@ function renderizarTabla(productos) {
             <tr data-id="${p.id}">
                 <td>
                     <div class="thumb-img-wrapper" title="${p.nombre}">
-                        <img src="${fotoPrincipal}" alt="${p.nombre}" class="thumb-img" onerror="this.src='https://via.placeholder.com/80x100?text=Foto'">
+                        <img src="${fotoPrincipal}" alt="${p.nombre}" class="thumb-img" onerror="this.src=IMG_FALLBACK">
                     </div>
                 </td>
                 <td>
@@ -936,7 +942,7 @@ function renderizarGaleriaPreview() {
         return `
             <div class="gallery-preview-item ${esPortada ? 'is-portada' : ''}" title="${urlNorm}" onclick="actualizarLivePreview('${urlNorm}')" style="cursor: pointer;">
                 ${esPortada ? '<span class="badge-portada">PORTADA</span>' : ''}
-                <img src="${urlNorm}" alt="Foto ${index + 1}" onerror="this.src='https://via.placeholder.com/85x113?text=Foto'">
+                <img src="${urlNorm}" alt="Foto ${index + 1}" onerror="this.src=IMG_FALLBACK">
                 <button type="button" class="btn-remove-thumb" onclick="event.stopPropagation(); eliminarImagenDeGaleria(${index})" title="Quitar foto">&times;</button>
             </div>
         `;

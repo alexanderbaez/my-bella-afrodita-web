@@ -208,7 +208,7 @@ public class ProductoViewController {
             cleanDesc = cleanDesc.substring(0, 137) + "...";
         }
         if (cleanDesc.isBlank()) {
-            cleanDesc = "Lencería boutique de alta costura en San Juan. Encajes importados, satén y calce refinado.";
+            cleanDesc = "Lencería en San Juan. Prendas seleccionadas con diseño, confort y calce perfecto.";
         }
 
         BigDecimal precio = p.getPrecioMinorista() != null ? p.getPrecioMinorista() : BigDecimal.ZERO;
