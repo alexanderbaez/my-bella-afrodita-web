@@ -66,20 +66,28 @@ public class SecurityConfig {
                 // 2. Endpoints de autenticación públicos
                 .requestMatchers("/api/auth/login", "/api/auth/status", "/api/auth/logout", "/api/auth/me", "/api/auth/verify").permitAll()
 
-                // 3. Catálogo público y reseñas destacadas (Lectura GET)
+                // 3. Catálogo público y reseñas destacadas (Lectura GET/HEAD).
+                // HEAD debe permitirse explícitamente: `curl -I`, health checks, CDN y crawlers lo usan,
+                // y sin esto caía en anyRequest().authenticated() (401 en producción).
                 .requestMatchers(HttpMethod.GET, "/api/productos", "/api/productos/**").permitAll()
+                .requestMatchers(HttpMethod.HEAD, "/api/productos", "/api/productos/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/resenas/destacadas").permitAll()
+                .requestMatchers(HttpMethod.HEAD, "/api/resenas/destacadas").permitAll()
 
                 // 4. Envío público de reseñas
                 .requestMatchers(HttpMethod.POST, "/api/resenas").permitAll()
 
-                // 5. Recursos estáticos y páginas web públicas (excluyendo admin.html y js/admin.js)
-                .requestMatchers("/", "/index.html", "/login.html", "/productos.html", "/producto.html", "/producto", "/producto/**", "/catalogo.html", "/favicon.ico", "/error").permitAll()
-                .requestMatchers("/css/**", "/images/**", "/static/**", "/uploads/**").permitAll()
-                .requestMatchers("/js/login.js", "/js/script.js", "/js/producto.js").permitAll()
-
-                // 6. Vistas y recursos de administración protegidos estrictamente para ROLE_ADMIN
+                // 5. Recursos de administración: DEBEN evaluarse ANTES de los comodines públicos (/js/**)
                 .requestMatchers("/admin.html", "/admin/**", "/js/admin.js").hasRole("ADMIN")
+
+                // 6. Recursos estáticos y páginas web públicas
+                .requestMatchers(HttpMethod.GET, "/", "/index.html", "/login.html", "/productos.html", "/producto.html", "/producto", "/producto/**", "/catalogo.html", "/favicon.ico", "/error").permitAll()
+                .requestMatchers(HttpMethod.HEAD, "/", "/index.html", "/login.html", "/productos.html", "/producto.html", "/producto", "/producto/**", "/catalogo.html", "/favicon.ico").permitAll()
+                .requestMatchers("/error").permitAll()
+                .requestMatchers(HttpMethod.GET, "/css/**", "/js/**", "/assets/**", "/images/**", "/img/**", "/static/**", "/uploads/**", "/thumbnails/**").permitAll()
+                .requestMatchers(HttpMethod.HEAD, "/css/**", "/js/**", "/assets/**", "/images/**", "/img/**", "/static/**", "/uploads/**", "/thumbnails/**").permitAll()
+
+                // 7. Endpoints de administración protegidos estrictamente para ROLE_ADMIN
                 .requestMatchers("/api/admin", "/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/ordenes", "/api/ordenes/**").hasRole("ADMIN")
                 .requestMatchers("/api/productos/admin", "/api/productos/admin/**").hasRole("ADMIN")
