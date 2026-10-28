@@ -118,8 +118,9 @@ function renderizarPaginaProducto(p) {
             <div class="product-sizes-block">
                 <div class="size-row-header">
                     <span class="size-label-text">TALLE</span>
-                    <button type="button" class="btn-size-guide" onclick="abrirGuiaMedidas()">
-                        <i class="fas fa-ruler-horizontal me-1.5" style="color: var(--gold-dark);"></i> Guía de talles
+                    <button type="button" class="btn-size-guide" onclick="abrirGuiaMedidas()" aria-label="Ver guía de talles y medidas">
+                        <i class="fas fa-ruler-horizontal" style="color: var(--gold-dark);"></i>
+                        <span>Guía de talles</span>
                     </button>
                 </div>
                 <div class="size-chips-wrap" id="detalle-size-chips">

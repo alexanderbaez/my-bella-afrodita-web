@@ -115,9 +115,9 @@ html, body { max-width: 100%; }
 }
 
 /* Ficha de producto: selector de cantidad y chips de talle */
-.qty-selector-compact { width: 120px; height: 50px; }
-.qty-btn { width: 38px; min-width: 38px; height: 100%; }
-.btn-size-chip { min-width: 48px; height: 48px; }
+.qty-selector-compact { width: 112px; height: 48px; }
+.qty-btn { width: 34px; min-width: 34px; height: 100%; }
+.btn-size-chip { min-width: 44px; height: 44px; }
 .qty-step-btn { width: var(--tap); min-width: var(--tap); }
 .btn-talle-select { min-width: var(--tap); min-height: var(--tap); }
 
@@ -180,11 +180,17 @@ button:not(:disabled):not(.btn-close):not(.swal2-close):active,
 }
 
 /* ---------- 5. FICHA DE PRODUCTO (paleta de marca: vino / marfil / rosa cálido) ---------- */
+.product-detail-info {
+    max-height: none !important;
+    overflow: visible !important;
+    overflow-y: visible !important;
+}
+
 .btn-add-cart-primary {
     background-color: var(--color-secondary);
     border-color: var(--color-secondary);
-    border-radius: 10px;
-    height: 50px;
+    border-radius: 8px;
+    height: 48px;
     box-shadow: 0 4px 14px rgba(158, 42, 75, 0.28);
     transition: var(--transition-editorial);
 }
@@ -197,8 +203,8 @@ button:not(:disabled):not(.btn-close):not(.swal2-close):active,
 
 .btn-size-chip {
     border-radius: 8px;
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     border-color: var(--border-control);
     font-family: var(--font-sans);
     color: var(--text-charcoal);
@@ -224,7 +230,7 @@ button:not(:disabled):not(.btn-close):not(.swal2-close):active,
 
 .qty-selector-compact {
     border-color: var(--border-control);
-    border-radius: 12px;
+    border-radius: 8px;
     overflow: hidden;
     background-color: var(--bg-white);
 }
