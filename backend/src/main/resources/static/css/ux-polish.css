@@ -115,9 +115,9 @@ html, body { max-width: 100%; }
 }
 
 /* Ficha de producto: selector de cantidad y chips de talle */
-.qty-selector-compact { width: calc(var(--tap) * 2 + 36px); height: 48px; }
-.qty-btn { width: var(--tap); min-width: var(--tap); }
-.btn-size-chip { min-width: var(--tap); min-height: var(--tap); }
+.qty-selector-compact { width: 120px; height: 50px; }
+.qty-btn { width: 38px; min-width: 38px; height: 100%; }
+.btn-size-chip { min-width: 48px; height: 48px; }
 .qty-step-btn { width: var(--tap); min-width: var(--tap); }
 .btn-talle-select { min-width: var(--tap); min-height: var(--tap); }
 
@@ -183,18 +183,22 @@ button:not(:disabled):not(.btn-close):not(.swal2-close):active,
 .btn-add-cart-primary {
     background-color: var(--color-secondary);
     border-color: var(--color-secondary);
-    border-radius: 12px;
-    box-shadow: var(--elev-1);
+    border-radius: 10px;
+    height: 50px;
+    box-shadow: 0 4px 14px rgba(158, 42, 75, 0.28);
     transition: var(--transition-editorial);
 }
 .btn-add-cart-primary:hover:not(:disabled) {
     background-color: var(--color-secondary-hover);
     border-color: var(--color-secondary-hover);
-    box-shadow: var(--elev-2);
+    box-shadow: 0 6px 20px rgba(158, 42, 75, 0.38);
+    transform: translateY(-1px);
 }
 
 .btn-size-chip {
-    border-radius: 10px;
+    border-radius: 8px;
+    width: 48px;
+    height: 48px;
     border-color: var(--border-control);
     font-family: var(--font-sans);
     color: var(--text-charcoal);

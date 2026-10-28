@@ -119,7 +119,7 @@ function renderizarPaginaProducto(p) {
                 <div class="size-row-header">
                     <span class="size-label-text">TALLE</span>
                     <button type="button" class="btn-size-guide" onclick="abrirGuiaMedidas()">
-                        <i class="fas fa-ruler-combined me-1"></i> Guía de talles
+                        <i class="fas fa-ruler-horizontal me-1.5" style="color: var(--gold-dark);"></i> Guía de talles
                     </button>
                 </div>
                 <div class="size-chips-wrap" id="detalle-size-chips">
@@ -145,15 +145,15 @@ function renderizarPaginaProducto(p) {
         `;
     }
 
-    // Bloque Mayorista (Incentivo sutil y minimalista)
+    // Bloque Mayorista (Píldora minimalista de lujo)
     let tarjetaMayoristaHtml = '';
     if (precioMayoristaNum > 0) {
         tarjetaMayoristaHtml = `
             <div class="wholesale-incentive-badge">
-                <span class="wholesale-tag-clean">Mayorista x3</span>
+                <i class="fas fa-crown wholesale-badge-icon"></i>
                 <span class="wholesale-text-clean">
-                    Llevando 3+ prendas: <strong>$${precioMayoristaNum.toLocaleString('es-AR')} c/u</strong>
-                    ${ahorroPorPrenda > 0 ? `<span class="wholesale-saving-clean">(Ahorrás $${ahorroPorPrenda.toLocaleString('es-AR')} por prenda)</span>` : ''}
+                    Mayorista llevando 3+ prendas: <strong>$${precioMayoristaNum.toLocaleString('es-AR')} c/u</strong>
+                    ${ahorroPorPrenda > 0 ? `<span class="wholesale-saving-clean">(Ahorrás $${ahorroPorPrenda.toLocaleString('es-AR')} c/u)</span>` : ''}
                 </span>
             </div>
         `;
@@ -166,7 +166,7 @@ function renderizarPaginaProducto(p) {
                 <!-- Columna Izquierda: Galería Editorial -->
                 <div class="product-gallery-col">
                     <div class="product-gallery-container product-gallery-layout">
-                        <!-- a) Visor Principal (.product-main-image-wrap / max-height: 520px) -->
+                        <!-- a) Visor Principal Proporción 3:4 Editorial -->
                         <div class="product-main-image-wrap product-main-viewport" id="zoom-viewport" onmousemove="aplicarZoomOptico(event)" onmouseleave="restablecerZoomOptico()">
                             <div class="main-img-badges">
                                 ${badgeEtiqueta}
@@ -178,11 +178,11 @@ function renderizarPaginaProducto(p) {
                             </div>
                         </div>
 
-                        <!-- b) Tira de Miniaturas (.product-thumbnails-strip / chips 75x95px) -->
+                        <!-- b) Tira de Miniaturas Refinadas (Chips 3:4 con micro-interacciones) -->
                         <div class="product-thumbnails-strip" id="gallery-thumbs">
                             ${fotos.map((img, idx) => `
                                 <div class="product-thumb-item thumb-item ${idx === 0 ? 'active' : ''}" onclick="cambiarFotoPrincipal('${img}', this)">
-                                    <img src="${img}" alt="${p.nombre} vista ${idx + 1}" width="75" height="95" loading="lazy" decoding="async" onerror="imgError(this)">
+                                    <img src="${img}" alt="${p.nombre} vista ${idx + 1}" width="75" height="100" loading="lazy" decoding="async" onerror="imgError(this)">
                                 </div>
                             `).join('')}
                         </div>
@@ -192,92 +192,104 @@ function renderizarPaginaProducto(p) {
                 <!-- Columna Derecha: Información Editorial & Conversión (Sticky Desktop) -->
                 <div class="product-info-col">
                     <div class="product-detail-info">
-                        <!-- Encabezado con Categoría y Botón Compartir -->
-                        <div class="d-flex align-items-center justify-content-between">
+                        <!-- Header del Producto: Categoría y Botón Compartir -->
+                        <div class="product-header-row">
                             <span class="product-category-eyebrow">${p.categoria || 'Lencería'} &bull; Mi Bella Afrodita</span>
-                            <button type="button" class="btn-share-icon" onclick="compartirFichaProducto()" title="Compartir prenda">
+                            <button type="button" class="btn-share-icon" onclick="compartirFichaProducto()" title="Compartir prenda" aria-label="Compartir prenda">
                                 <i class="fas fa-share-nodes"></i>
                             </button>
                         </div>
 
-                        <!-- Título de la Prenda -->
+                        <!-- Título de la Prenda en Cormorant Garamond -->
                         <h1 class="product-title-detail">${p.nombre}</h1>
 
-                        <!-- Precios: Minorista Principal Grande + Badge Mayorista Sutil -->
+                        <!-- Precios: Minorista Destacado + Píldora Mayorista de Lujo -->
                         <div class="product-pricing-box-clean">
                             <div class="price-value-main">$${precioMinoristaNum.toLocaleString('es-AR')}</div>
                             ${tarjetaMayoristaHtml}
                         </div>
 
-                        <!-- Selector de Talle en Tiempo Real -->
+                        <!-- Selector de Talle en Tiempo Real (Chips Boutique) -->
                         ${selectorTallesHtml}
 
-                        <!-- Fila de Compra (Stepper + CTA Principal) -->
+                        <!-- Fila de Compra Principal: Stepper + Botón Añadir a la Bolsa Integrados -->
                         <div class="purchase-action-row">
-                            <!-- Stepper Cantidad Compacto 48px -->
+                            <!-- Stepper Cantidad Compacto 50px -->
                             <div class="qty-selector-compact">
-                                <button type="button" class="qty-btn" onclick="ajustarCantidadDetalle(-1)" aria-label="Restar">&minus;</button>
+                                <button type="button" class="qty-btn" onclick="ajustarCantidadDetalle(-1)" aria-label="Restar una unidad">&minus;</button>
                                 <span class="qty-display" id="detalle-qty-val">1</span>
-                                <button type="button" class="qty-btn" onclick="ajustarCantidadDetalle(1)" aria-label="Sumar">&plus;</button>
+                                <button type="button" class="qty-btn" onclick="ajustarCantidadDetalle(1)" aria-label="Sumar una unidad">&plus;</button>
                             </div>
 
-                            <!-- Botón Añadir a la Bolsa CTA Principal Sólido 48px -->
+                            <!-- Botón Añadir a la Bolsa CTA Principal Sólido 50px -->
                             <button type="button" class="btn-add-cart-primary" id="btn-add-bag" onclick="agregarAlCarritoDesdeDetalle(event)">
-                                <i class="fas fa-shopping-bag me-2"></i> AÑADIR A LA BOLSA
+                                <i class="fas fa-shopping-bag"></i> AÑADIR A LA BOLSA
                             </button>
                         </div>
 
-                        <!-- Botón Secundario de WhatsApp Elegante 42px -->
-                        <a href="#" id="btn-consultar-wa" target="_blank" class="btn-whatsapp-secondary">
-                            <i class="fab fa-whatsapp me-2"></i> ¿Dudas con el talle? Consultar por WhatsApp
+                        <!-- Enlace sutil de Asesoría WhatsApp (Una sola línea refinada) -->
+                        <a href="#" id="btn-consultar-wa" target="_blank" class="pdp-wa-link">
+                            <i class="fab fa-whatsapp pdp-wa-icon"></i>
+                            <span>¿Dudas con el calce o talle? <strong class="pdp-wa-cta">Chateá con una asesora por WhatsApp</strong></span>
                         </a>
 
-                        <!-- Micro-Trust Badges -->
-                        <div class="product-trust-strip">
-                            <div class="trust-item">
-                                <i class="fas fa-shield-halved"></i>
-                                <span>Garantía de calce y calidad anatómica</span>
+                        <!-- Tarjeta de Confianza y Entrega (Trust Badges de Lujo) -->
+                        <div class="pdp-trust-card">
+                            <div class="pdp-trust-item">
+                                <div class="pdp-trust-icon"><i class="fas fa-motorcycle"></i></div>
+                                <div class="pdp-trust-content">
+                                    <span class="pdp-trust-title">Envío en moto en el día en San Juan</span>
+                                    <span class="pdp-trust-desc">Entrega ágil a domicilio coordinada por WhatsApp.</span>
+                                </div>
                             </div>
-                            <div class="trust-item">
-                                <i class="fas fa-box"></i>
-                                <span>Empaque 100% discreto y seguro</span>
+                            <div class="pdp-trust-divider"></div>
+                            <div class="pdp-trust-item">
+                                <div class="pdp-trust-icon"><i class="fas fa-box-open"></i></div>
+                                <div class="pdp-trust-content">
+                                    <span class="pdp-trust-title">Empaque 100% confidencial</span>
+                                    <span class="pdp-trust-desc">Bolsa termosellada opaca y discreta sin marcas externas.</span>
+                                </div>
                             </div>
-                            <div class="trust-item">
-                                <i class="fas fa-motorcycle"></i>
-                                <span>Envíos en moto cadetería en San Juan</span>
+                            <div class="pdp-trust-divider"></div>
+                            <div class="pdp-trust-item">
+                                <div class="pdp-trust-icon"><i class="fas fa-gem"></i></div>
+                                <div class="pdp-trust-content">
+                                    <span class="pdp-trust-title">Garantía de calce y calidad</span>
+                                    <span class="pdp-trust-desc">Encajes seleccionados, satén premium y calce anatómico.</span>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Acordeón Editorial de Detalles -->
+                        <!-- Acordeones Editoriales de Información (Líneas Ultrafinas) -->
                         <div class="accordion product-editorial-accordion" id="accordionDetalles">
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDesc" aria-expanded="true">
-                                        <i class="fas fa-feather-alt me-2" style="color: #A4865E;"></i> Descripción & Calce
+                                        <i class="fas fa-feather-alt me-2 accordion-icon"></i> Descripción & Calce
                                     </button>
                                 </h2>
                                 <div id="collapseDesc" class="accordion-collapse collapse show" data-bs-parent="#accordionDetalles">
                                     <div class="accordion-body">
-                                        ${p.descripcion || 'Prenda de lencería diseñada para ofrecer confort anatómico inigualable, soporte suave y realce natural.'}
+                                        ${p.descripcion || 'Prenda de lencería diseñada para ofrecer confort anatómico inigualable, soporte suave y realce natural con telas de textura sedosa.'}
                                     </div>
                                 </div>
                             </div>
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCuidados" aria-expanded="false">
-                                        <i class="fas fa-hand-sparkles me-2" style="color: #A4865E;"></i> Cuidados de la Prenda
+                                        <i class="fas fa-hand-sparkles me-2 accordion-icon"></i> Cuidados de la Prenda
                                     </button>
                                 </h2>
                                 <div id="collapseCuidados" class="accordion-collapse collapse" data-bs-parent="#accordionDetalles">
                                     <div class="accordion-body">
-                                        Lavar a mano siempre con agua fría (máximo 30°C) y jabón neutro. No retorcer ni centrifugar para proteger la fibra y el encaje. Secar en plano sobre toalla a la sombra. No planchar directo sobre apliques ni telas elastizadas.
+                                        Lavar a mano siempre con agua fría (máximo 30°C) y jabón neutro. No retorcer ni centrifugar para proteger la fibra y el encaje. Secar en plano sobre toalla a la sombra. No planchar directo sobre apliques ni elásticos.
                                     </div>
                                 </div>
                             </div>
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHigiene" aria-expanded="false">
-                                        <i class="fas fa-stethoscope me-2" style="color: #A4865E;"></i> Políticas de Higiene & Cambios
+                                        <i class="fas fa-shield-halved me-2 accordion-icon"></i> Políticas de Higiene & Cambios
                                     </button>
                                 </h2>
                                 <div id="collapseHigiene" class="accordion-collapse collapse" data-bs-parent="#accordionDetalles">
