@@ -31,6 +31,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="css/index.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- UX polish: SIEMPRE el ultimo CSS -->
+    <link rel="stylesheet" href="css/ux-polish.css">
 </head>
 
 <body>
@@ -58,7 +60,7 @@
         <nav class="navbar navbar-expand-lg" id="mainNav">
             <div class="container">
                 <a class="navbar-brand-custom" href="./index.html">
-                    <img src="./images/LOGO.png" alt="Mi Bella Afrodita" class="navbar-logo">
+                    <img src="./images/LOGO.png" alt="Mi Bella Afrodita" class="navbar-logo" decoding="async">
                     <span class="navbar-brand-text d-none d-md-inline">Mi Bella Afrodita</span>
                 </a>
 
@@ -93,7 +95,7 @@
         <!-- 1. HERO SECTION DE ALTA CONVERSIÓN COMERCIAL -->
         <section class="hero-editorial-section">
             <div class="hero-editorial-banner">
-                <img src="./images/session-Conjuntos.jpg" alt="Mi Bella Afrodita Lencería San Juan" class="hero-editorial-img">
+                <img src="./images/session-Conjuntos.jpg" alt="Mi Bella Afrodita Lencería San Juan" class="hero-editorial-img" fetchpriority="high" decoding="async">
                 <div class="hero-editorial-overlay"></div>
                 <div class="container hero-editorial-content text-center">
                     <span class="hero-editorial-eyebrow">
@@ -175,7 +177,7 @@
                     <div class="col-6 col-md-3">
                         <a href="./productos.html?categoria=CONJUNTOS" class="category-story-card" title="Ver Conjuntos">
                             <div class="category-story-img-wrap">
-                                <img src="./images/session-Conjuntos.jpg" alt="Conjuntos de Lencería" class="category-story-img" loading="lazy">
+                                <img src="./images/session-Conjuntos.jpg" alt="Conjuntos de Lencería" class="category-story-img" loading="lazy" decoding="async">
                                 <div class="category-story-overlay"></div>
                             </div>
                             <div class="category-story-content">
@@ -190,7 +192,7 @@
                     <div class="col-6 col-md-3">
                         <a href="./productos.html?categoria=BOMBACHAS" class="category-story-card" title="Ver Bombachas & Less">
                             <div class="category-story-img-wrap">
-                                <img src="./images/session-bombis.jpg" alt="Bombachas y Colaless" class="category-story-img" loading="lazy">
+                                <img src="./images/session-bombis.jpg" alt="Bombachas y Colaless" class="category-story-img" loading="lazy" decoding="async">
                                 <div class="category-story-overlay"></div>
                             </div>
                             <div class="category-story-content">
@@ -205,7 +207,7 @@
                     <div class="col-6 col-md-3">
                         <a href="./productos.html?categoria=MASCULINO" class="category-story-card" title="Ver Línea Masculina">
                             <div class="category-story-img-wrap">
-                                <img src="./images/masculino.png" alt="Línea Masculina" class="category-story-img" loading="lazy">
+                                <img src="./images/masculino.png" alt="Línea Masculina" class="category-story-img" loading="lazy" decoding="async">
                                 <div class="category-story-overlay"></div>
                             </div>
                             <div class="category-story-content">
@@ -220,7 +222,7 @@
                     <div class="col-6 col-md-3">
                         <a href="./productos.html?categoria=MEDIAS" class="category-story-card" title="Ver Medias">
                             <div class="category-story-img-wrap">
-                                <img src="./images/Medias-Alo-dama.jpg" alt="Medias" class="category-story-img" loading="lazy">
+                                <img src="./images/Medias-Alo-dama.jpg" alt="Medias" class="category-story-img" loading="lazy" decoding="async">
                                 <div class="category-story-overlay"></div>
                             </div>
                             <div class="category-story-content">
@@ -305,7 +307,7 @@
         <section class="manifesto-section">
             <div class="container">
                 <div class="manifesto-container">
-                    <img src="./images/LOGO.png" alt="Mi Bella Afrodita" class="manifesto-emblem">
+                    <img src="./images/LOGO.png" alt="Mi Bella Afrodita" class="manifesto-emblem" loading="lazy" decoding="async">
                     <span class="section-eyebrow">Nuestra Esencia</span>
                     <h2 class="section-heading-editorial">El Arte del Calce Perfecto</h2>
                     
@@ -429,7 +431,7 @@
         <div class="container">
             <div class="row g-5">
                 <div class="col-md-4 text-center text-md-start">
-                    <img src="./images/LOGO.png" alt="Mi Bella Afrodita" style="height: 52px;" class="mb-3">
+                    <img src="./images/LOGO.png" alt="Mi Bella Afrodita" style="height: 52px;" class="mb-3" loading="lazy" decoding="async">
                     <p class="small text-muted pe-md-4" style="line-height: 1.8;">
                         Tienda de lencería en San Juan, Argentina. Calce anatómico, texturas suaves y atención personalizada.
                     </p>
@@ -815,6 +817,7 @@
 
     <!-- Bootstrap & Lógica de Tienda -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/ux-helpers.js"></script>
     <script src="js/script.js"></script>
 </body>
 

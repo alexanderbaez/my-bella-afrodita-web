@@ -1,0 +1,299 @@
+/* ==========================================================================
+   UX POLISH - MI BELLA AFRODITA
+   Capa de refinamiento. DEBE cargarse SIEMPRE al final (después de
+   index.css / producto.css). No contiene lógica; se revierte quitando el <link>.
+   Secciones:
+     1. Tokens (escala tipográfica, spacing 4/8, elevación, motion)
+     2. Base & legibilidad (piso 12px)
+     3. Touch targets 44x44
+     4. Microinteracciones (hover/active/focus-visible/reduced-motion)
+     5. Ficha de producto con la paleta de marca
+     6. Skeleton shimmer
+     7. Checkout (validación inline)
+   ========================================================================== */
+
+/* ---------- 1. TOKENS ---------- */
+:root {
+    /* Escala tipográfica Major Third (1.25) con piso de 12px */
+    --fs-xs: 0.75rem;      /* 12px  badges, captions, microcopy */
+    --fs-sm: 0.875rem;     /* 14px  UI, labels                  */
+    --fs-md: 1rem;         /* 16px  body / inputs               */
+    --fs-lg: 1.25rem;      /* 20px  h4, precios                 */
+    --fs-xl: 1.5625rem;    /* 25px  h3                          */
+    --fs-2xl: 1.953rem;    /* 31px  h2                          */
+    --fs-3xl: 2.441rem;    /* 39px  h1                          */
+
+    /* Espaciado 4/8 */
+    --sp-1: 4px;   --sp-2: 8px;   --sp-3: 12px;  --sp-4: 16px;
+    --sp-5: 24px;  --sp-6: 32px;  --sp-7: 48px;  --sp-8: 64px;
+
+    /* Elevación: 3 niveles difusos, tintados cálidos */
+    --elev-1: 0 1px 2px rgba(44, 38, 39, 0.04), 0 4px 12px rgba(44, 38, 39, 0.05);
+    --elev-2: 0 2px 6px rgba(44, 38, 39, 0.05), 0 12px 28px rgba(158, 42, 75, 0.08);
+    --elev-3: 0 4px 12px rgba(44, 38, 39, 0.06), 0 24px 48px rgba(158, 42, 75, 0.12);
+
+    /* Motion (150-250ms para UI) */
+    --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+    --dur-fast: 150ms;
+    --dur-base: 200ms;
+    --dur-slow: 320ms;
+
+    /* Controles */
+    --tap: 44px;
+    --border-control: rgba(109, 96, 98, 0.30);
+    --focus-ring-color: #D96B7B;
+    --danger: #B03A2E;
+
+    /* El token editorial dejaba de animar "all": ahora solo propiedades seguras */
+    --transition-editorial:
+        background-color var(--dur-base) var(--ease-out),
+        border-color var(--dur-base) var(--ease-out),
+        color var(--dur-base) var(--ease-out),
+        box-shadow var(--dur-base) var(--ease-out),
+        transform var(--dur-base) var(--ease-out),
+        opacity var(--dur-base) var(--ease-out);
+}
+
+/* ---------- 2. BASE & LEGIBILIDAD ---------- */
+html { font-size: 100%; }
+
+/* 100vw incluye la barra de scroll y provoca desborde; 100% no. */
+html, body { max-width: 100%; }
+
+/* Piso de 12px en componentes que eran < 12px */
+#cart-count {
+    font-size: var(--fs-xs);
+    width: auto;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    line-height: 16px;
+    border-radius: 9px;
+    right: -9px;
+}
+.promo-announcement-bar { font-size: var(--fs-xs); }
+#mainNav .nav-link { font-size: var(--fs-xs); letter-spacing: 0.14em; }
+
+/* Inputs a 16px en móvil: evita el zoom automático de iOS */
+@media (max-width: 767.98px) {
+    input:not([type="checkbox"]):not([type="radio"]),
+    select,
+    textarea { font-size: 16px; }
+}
+
+/* Imágenes: hover más ágil (antes 0.6-0.8s) */
+.hero-showcase-frame img,
+.product-media-container .img-primary,
+.product-media-container .img-secondary {
+    transition-duration: 400ms;
+}
+
+/* ---------- 3. TOUCH TARGETS (mínimo 44x44) ---------- */
+.nav-icon-link {
+    min-width: var(--tap);
+    min-height: var(--tap);
+    padding: 0 !important;
+}
+
+.navbar-toggler { min-width: var(--tap); min-height: var(--tap); }
+
+.btn-close-drawer {
+    min-width: var(--tap);
+    min-height: var(--tap);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Bootstrap .btn-close: área de 44px con la X del mismo tamaño visual */
+.btn-close {
+    box-sizing: content-box;
+    width: 1em;
+    height: 1em;
+    padding: 0.75em;
+    font-size: 1.1rem;
+}
+
+/* Ficha de producto: selector de cantidad y chips de talle */
+.qty-selector-compact { width: calc(var(--tap) * 2 + 36px); height: 48px; }
+.qty-btn { width: var(--tap); min-width: var(--tap); }
+.btn-size-chip { min-width: var(--tap); min-height: var(--tap); }
+.qty-step-btn { width: var(--tap); min-width: var(--tap); }
+.btn-talle-select { min-width: var(--tap); min-height: var(--tap); }
+
+/* Área táctil ampliada (sin agrandar el control visual) para el stepper del drawer */
+.drawer-qty-btn { position: relative; }
+.drawer-qty-btn::after {
+    content: "";
+    position: absolute;
+    inset: calc(50% - 22px) calc(50% - 22px);
+}
+
+/* Controles densos: se amplían solo en pantallas táctiles */
+@media (pointer: coarse) {
+    .filter-pill-luxury,
+    .btn-share-card,
+    .btn-share-ml,
+    .btn-card-view-item {
+        min-height: var(--tap);
+    }
+    .thumb-item { min-width: var(--tap); }
+}
+
+/* ---------- 4. MICROINTERACCIONES ---------- */
+/* Feedback táctil al presionar (sin tocar tarjetas completas) */
+button:not(:disabled):not(.btn-close):not(.swal2-close):active,
+.btn:not(.disabled):not(:disabled):active,
+.btn-size-chip:not(:disabled):active,
+.btn-talle-select:not(:disabled):active,
+.filter-pill-luxury:active,
+.nav-icon-link:active {
+    transform: scale(0.97);
+}
+
+/* Foco accesible solo para teclado */
+:where(a, button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"])):focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
+    border-radius: inherit;
+}
+.form-control:focus-visible,
+.form-select:focus-visible { outline: none; }
+
+/* Estados deshabilitados consistentes en controles propios */
+.btn-size-chip:disabled,
+.btn-talle-select:disabled,
+.btn-add-cart-primary:disabled {
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+.btn-add-cart-primary:disabled { opacity: 0.5; }
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ---------- 5. FICHA DE PRODUCTO (paleta de marca: vino / marfil / rosa cálido) ---------- */
+.btn-add-cart-primary {
+    background-color: var(--color-secondary);
+    border-color: var(--color-secondary);
+    border-radius: 12px;
+    box-shadow: var(--elev-1);
+    transition: var(--transition-editorial);
+}
+.btn-add-cart-primary:hover:not(:disabled) {
+    background-color: var(--color-secondary-hover);
+    border-color: var(--color-secondary-hover);
+    box-shadow: var(--elev-2);
+}
+
+.btn-size-chip {
+    border-radius: 10px;
+    border-color: var(--border-control);
+    font-family: var(--font-sans);
+    color: var(--text-charcoal);
+    transition: var(--transition-editorial);
+}
+.btn-size-chip:hover:not(:disabled) {
+    border-color: var(--color-secondary);
+    color: var(--color-secondary);
+    background-color: var(--bg-rose-subtle);
+}
+.btn-size-chip.selected,
+.btn-size-chip.active {
+    background-color: var(--color-secondary) !important;
+    border-color: var(--color-secondary) !important;
+    color: var(--text-light) !important;
+}
+.btn-size-chip.disabled-chip,
+.btn-size-chip:disabled {
+    background-color: var(--bg-warm-subtle);
+    border-color: var(--border-subtle);
+    color: var(--text-muted);
+}
+
+.qty-selector-compact {
+    border-color: var(--border-control);
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: var(--bg-white);
+}
+.qty-btn { color: var(--text-charcoal); transition: var(--transition-editorial); }
+.qty-btn:hover { background-color: var(--bg-rose-subtle); color: var(--color-secondary); }
+.qty-display { color: var(--text-charcoal); }
+
+.thumb-item.active,
+.product-thumb-item.active { border-color: var(--color-secondary) !important; }
+
+/* ---------- 6. SKELETON SHIMMER ---------- */
+@keyframes shimmer {
+    from { background-position: 200% 0; }
+    to   { background-position: -200% 0; }
+}
+
+.skeleton,
+.product-media-container.is-loading {
+    background-color: var(--bg-warm-subtle);
+    background-image: linear-gradient(100deg,
+        var(--bg-warm-subtle) 30%,
+        rgba(255, 255, 255, 0.85) 50%,
+        var(--bg-warm-subtle) 70%);
+    background-size: 200% 100%;
+    animation: shimmer 1.6s linear infinite;
+}
+
+.skeleton-col { padding-bottom: var(--sp-5); }
+.skeleton-card { width: 100%; aspect-ratio: 3 / 4; border-radius: 4px; }
+.skeleton-line { height: 12px; border-radius: 6px; margin-top: var(--sp-3); }
+.skeleton-line.short { width: 60%; }
+
+/* ---------- 7. CHECKOUT: VALIDACIÓN INLINE ---------- */
+.swal2-popup .swal-label {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.06em;
+    color: var(--text-taupe);
+    margin-bottom: var(--sp-1);
+}
+
+.swal2-popup .form-control,
+.swal2-popup .form-select {
+    min-height: var(--tap);
+    font-size: var(--fs-md);
+    border-radius: 10px;
+    border-color: var(--border-control);
+    transition: var(--transition-editorial);
+}
+
+.swal2-popup .form-control:focus,
+.swal2-popup .form-select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(217, 107, 123, 0.22);
+}
+
+.swal2-popup .form-control.is-invalid,
+.swal2-popup .form-select.is-invalid {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 3px rgba(176, 58, 46, 0.12);
+    background-color: #FFF9F8;
+}
+
+.field-error {
+    color: var(--danger);
+    font-size: var(--fs-xs);
+    font-weight: 500;
+    margin-top: var(--sp-1);
+    line-height: 1.4;
+}
+
+.swal2-popup .swal2-confirm,
+.swal2-popup .swal2-cancel {
+    border-radius: 10px;
+    min-height: var(--tap);
+    transition: var(--transition-editorial);
+}

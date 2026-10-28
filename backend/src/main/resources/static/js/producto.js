@@ -43,6 +43,9 @@ async function cargarDetalleProducto(id) {
     if (!contenedor) return;
 
     try {
+        if (!contenedor.querySelector('.skeleton')) {
+            contenedor.innerHTML = '<div class="container py-4" aria-hidden="true"><div class="row g-4"><div class="col-12 col-md-6"><div class="skeleton skeleton-card"></div></div><div class="col-12 col-md-6"><div class="skeleton skeleton-line short"></div><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-card" style="aspect-ratio:3/1;margin-top:24px"></div></div></div></div><span class="visually-hidden" role="status">Cargando prenda…</span>';
+        }
         const response = await fetch(`${API_PRODUCTOS_ENDPOINT}/${id}`);
         if (!response.ok) {
             throw new Error(`Producto no encontrado (HTTP ${response.status})`);
@@ -87,7 +90,7 @@ function renderizarPaginaProducto(p) {
     // Normalizar imágenes
     const fotos = Array.isArray(p.imagenes) && p.imagenes.length > 0
         ? p.imagenes.map(normalizarUrl)
-        : ['https://via.placeholder.com/600x800?text=My+Bella+Afrodita'];
+        : [IMG_FALLBACK];
 
     // Variantes y Stock (Sin preselección para obligar a elegir talle con precisión)
     const variantes = Array.isArray(p.variantes) ? p.variantes : [];
@@ -169,7 +172,7 @@ function renderizarPaginaProducto(p) {
                                 ${badgeEtiqueta}
                                 ${badgeStockOut}
                             </div>
-                            <img src="${fotos[0]}" alt="${p.nombre}" class="product-zoom-img" id="main-zoom-image" onerror="this.src='https://via.placeholder.com/600x800?text=Mi+Bella+Afrodita'">
+                            <img src="${fotos[0]}" alt="${p.nombre}" class="product-zoom-img" id="main-zoom-image" width="600" height="800" fetchpriority="high" decoding="async" onload="imgLoaded(this)" onerror="imgError(this)">
                             <div class="zoom-hint-badge">
                                 <i class="fas fa-search-plus"></i> Desliza para zoom
                             </div>
@@ -179,7 +182,7 @@ function renderizarPaginaProducto(p) {
                         <div class="product-thumbnails-strip" id="gallery-thumbs">
                             ${fotos.map((img, idx) => `
                                 <div class="product-thumb-item thumb-item ${idx === 0 ? 'active' : ''}" onclick="cambiarFotoPrincipal('${img}', this)">
-                                    <img src="${img}" alt="${p.nombre} vista ${idx + 1}" onerror="this.src='https://via.placeholder.com/150x200?text=Foto'">
+                                    <img src="${img}" alt="${p.nombre} vista ${idx + 1}" width="75" height="95" loading="lazy" decoding="async" onerror="imgError(this)">
                                 </div>
                             `).join('')}
                         </div>
@@ -378,7 +381,7 @@ function ajustarCantidadDetalle(delta) {
             icon: 'warning',
             title: 'Stock Límite',
             text: `Solo disponemos de ${STOCK_DISPONIBLE_TALLE} unidades en talle ${TALLE_SELECCIONADO}.`,
-            confirmButtonColor: '#1a1a1a'
+            confirmButtonColor: '#9E2A4B'
         });
         return;
     }
@@ -405,7 +408,7 @@ window.agregarAlCarritoDesdeDetalle = function (e) {
             icon: 'info',
             title: 'Selecciona tu talle',
             text: 'Por favor, selecciona tu talle antes de continuar.',
-            confirmButtonColor: '#121212',
+            confirmButtonColor: '#9E2A4B',
             confirmButtonText: 'Entendido'
         });
         const chipsContainer = document.getElementById('detalle-size-chips');
@@ -420,7 +423,7 @@ window.agregarAlCarritoDesdeDetalle = function (e) {
             icon: 'warning',
             title: 'Talle Agotado',
             text: 'Este talle se encuentra agotado momentáneamente.',
-            confirmButtonColor: '#1a1a1a'
+            confirmButtonColor: '#9E2A4B'
         });
         return;
     }
@@ -476,9 +479,9 @@ window.agregarAlCarritoDesdeDetalle = function (e) {
             showConfirmButton: false,
             timer: 2500,
             timerProgressBar: true,
-            iconColor: '#111111',
+            iconColor: '#9E2A4B',
             background: '#FAF8F5',
-            color: '#111111',
+            color: '#2C2627',
             width: '320px'
         });
     }
@@ -537,7 +540,7 @@ async function cargarProductosRelacionados() {
         contenedor.innerHTML = seleccionados.map(p => {
             const fotos = Array.isArray(p.imagenes) && p.imagenes.length > 0
                 ? p.imagenes.map(normalizarUrl)
-                : ['https://via.placeholder.com/300x400?text=My+Bella+Afrodita'];
+                : [IMG_FALLBACK];
             const foto1 = fotos[0];
             const foto2 = fotos.length > 1 ? fotos[1] : null;
 
@@ -548,10 +551,10 @@ async function cargarProductosRelacionados() {
             return `
                 <div class="col-6 col-md-3 d-flex align-items-stretch product-item-card">
                     <div class="product-card-boutique w-100" onclick="window.location.href='./producto.html?id=${p.id}'" title="Ver ${p.nombre}">
-                        <div class="product-media-container position-relative">
+                        <div class="product-media-container position-relative is-loading">
                             ${p.etiqueta ? `<span class="badge-luxury-tag">${p.etiqueta}</span>` : ''}
-                            <img src="${foto1}" alt="${p.nombre}" class="img-primary" onerror="this.src='https://via.placeholder.com/300x400?text=My+Bella+Afrodita'">
-                            ${foto2 ? `<img src="${foto2}" alt="${p.nombre} dorso" class="img-secondary">` : ''}
+                            <img src="${foto1}" alt="${p.nombre}" class="img-primary" width="600" height="800" loading="lazy" decoding="async" onload="imgLoaded(this)" onerror="imgError(this)">
+                            ${foto2 ? `<img src="${foto2}" alt="${p.nombre} dorso" class="img-secondary" width="600" height="800" loading="lazy" decoding="async" onerror="imgError(this)">` : ''}
                         </div>
                         <div class="product-info-wrap">
                             <div class="product-category-label">${p.categoria || 'Colección'}</div>

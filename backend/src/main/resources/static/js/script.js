@@ -27,7 +27,7 @@ window.API_RESENAS = API_RESENAS;
 window.API_RESENAS_DESTACADAS = API_RESENAS_DESTACADAS;
 
 function normalizarUrlImagen(url) {
-    if (!url) return 'https://via.placeholder.com/300x400?text=My+Bella+Afrodita';
+    if (!url) return IMG_FALLBACK;
     let clean = String(url).trim();
     // Elimina host/puerto absoluto local o IP si existiese previamente en base de datos
     clean = clean.replace(/^https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?(\/.*)$/, '$1');
@@ -174,13 +174,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const contenedor = document.getElementById("contenedor-productos") || document.getElementById("productos-grid");
     if (contenedor) {
         try {
-            contenedor.innerHTML = `
-                <div class="col-12 text-center py-5">
-                    <div class="spinner-border text-dark" role="status" style="width: 2.2rem; height: 2.2rem; border-width: 0.18em;">
-                        <span class="visually-hidden">Cargando colección...</span>
-                    </div>
-                    <p class="text-muted small mt-2 text-uppercase fw-semibold" style="letter-spacing: 1.5px; font-size: 0.72rem;">Cargando colección boutique...</p>
-                </div>`;
+            renderSkeletonGrid(contenedor, 8);
 
             const response = await fetch(API_URL);
             if (!response.ok) {
@@ -601,7 +595,7 @@ function dibujarProductos(lista) {
         // Fotos para el efecto hover cross-fade (Zara / Savage X Fenty style)
         const fotos = Array.isArray(p.imagenes) && p.imagenes.length > 0 
             ? p.imagenes.map(normalizarUrlImagen) 
-            : ['https://via.placeholder.com/300x400?text=My+Bella+Afrodita'];
+            : [IMG_FALLBACK];
         const fotoPrincipal = fotos[0];
         const fotoSecundaria = fotos.length > 1 ? fotos[1] : null;
 
@@ -684,13 +678,13 @@ function dibujarProductos(lista) {
         divCol.innerHTML = `
             <div class="product-card-boutique w-100" onclick="navegarAProducto('${p.id}')" title="Ver ${p.nombre}">
                 <!-- Contenedor Imagen 3:4 con Dual Hover Crossfade -->
-                <div class="product-media-container position-relative">
+                <div class="product-media-container position-relative is-loading">
                     ${adminBtnHtml}
                     ${badgeHtml}
                     ${stockBadgeHtml}
 
-                    <img src="${fotoPrincipal}" alt="${p.nombre}" class="img-primary" onerror="this.src='https://via.placeholder.com/300x400?text=My+Bella+Afrodita'">
-                    ${fotoSecundaria ? `<img src="${fotoSecundaria}" alt="${p.nombre} dorsal" class="img-secondary">` : ''}
+                    <img src="${fotoPrincipal}" alt="${p.nombre}" class="img-primary" width="600" height="800" loading="lazy" decoding="async" onload="imgLoaded(this)" onerror="imgError(this)">
+                    ${fotoSecundaria ? `<img src="${fotoSecundaria}" alt="${p.nombre} dorsal" class="img-secondary" width="600" height="800" loading="lazy" decoding="async" onerror="imgError(this)">` : ''}
                 </div>
 
                 <!-- Detalles: Categoría, Título 1 línea con ellipsis, Precios -->
@@ -835,6 +829,10 @@ async function cargarDestacadosInicio() {
     contenedor.style.display = 'flex';
     contenedor.style.visibility = 'visible';
 
+    if (!contenedor.children.length) {
+        renderSkeletonGrid(contenedor, 4, 'col-6 col-md-3');
+    }
+
     try {
         let destacados = [];
         try {
@@ -884,7 +882,7 @@ async function cargarDestacadosInicio() {
             cuatroFavoritos.forEach(p => {
                 const fotos = Array.isArray(p.imagenes) && p.imagenes.length > 0 
                     ? p.imagenes.map(normalizarUrlImagen) 
-                    : ['https://via.placeholder.com/300x400?text=Mi+Bella+Afrodita'];
+                    : [IMG_FALLBACK];
                 const fotoPrincipal = fotos[0];
                 const fotoSecundaria = fotos.length > 1 ? fotos[1] : null;
 
@@ -901,10 +899,10 @@ async function cargarDestacadosInicio() {
                 divCol.className = 'col-6 col-md-3 d-flex align-items-stretch product-item-card';
                 divCol.innerHTML = `
                     <div class="product-card-boutique w-100 d-flex flex-column" onclick="navegarAProducto('${p.id}')" title="Ver ${p.nombre}">
-                        <div class="product-media-container position-relative">
+                        <div class="product-media-container position-relative is-loading">
                             <span class="badge-luxury-tag">Favorito</span>
-                            <img src="${fotoPrincipal}" alt="${p.nombre}" class="img-primary" onerror="this.src='https://via.placeholder.com/300x400?text=Mi+Bella+Afrodita'">
-                            ${fotoSecundaria ? `<img src="${fotoSecundaria}" alt="${p.nombre} dorsal" class="img-secondary">` : ''}
+                            <img src="${fotoPrincipal}" alt="${p.nombre}" class="img-primary" width="600" height="800" loading="lazy" decoding="async" onload="imgLoaded(this)" onerror="imgError(this)">
+                            ${fotoSecundaria ? `<img src="${fotoSecundaria}" alt="${p.nombre} dorsal" class="img-secondary" width="600" height="800" loading="lazy" decoding="async" onerror="imgError(this)">` : ''}
                         </div>
                         <div class="product-info-wrap d-flex flex-column flex-grow-1 p-3">
                             <div class="product-category-label">${p.categoria || 'Colección'}</div>
@@ -1151,7 +1149,7 @@ window.renderizarListaCarrito = function () {
         cartHtml += `
             <div class="drawer-cart-item">
                 <!-- Miniatura 3:4 -->
-                <img src="${fotoItem}" alt="${item.nombre}" class="drawer-item-img">
+                <img src="${fotoItem}" alt="${item.nombre}" class="drawer-item-img" width="68" height="90" loading="lazy" decoding="async" onerror="imgError(this)">
 
                 <!-- Info Producto -->
                 <div class="flex-grow-1 ps-1">
@@ -1494,7 +1492,7 @@ async function enviarPedidoWhatsApp() {
             title: "Bolsa vacía", 
             text: "Por favor selecciona al menos una prenda antes de finalizar.", 
             icon: "warning",
-            confirmButtonColor: '#1a1a1a'
+            confirmButtonColor: '#9E2A4B'
         });
         return;
     }
@@ -1522,35 +1520,34 @@ async function enviarPedidoWhatsApp() {
                     </p>
                 </div>
 
-                <div class="mb-2">
-                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">1. Nombre y Apellido *</label>
-                    <input type="text" id="swal-cliente-nombre" class="form-control form-control-sm" placeholder="Ej: Camila Gómez" autocomplete="name">
+                <div class="mb-3 swal-field">
+                    <label class="form-label fw-bold text-uppercase swal-label" for="swal-cliente-nombre">1. Nombre y Apellido *</label>
+                    <input type="text" id="swal-cliente-nombre" class="form-control" placeholder="Ej: Camila Gómez" autocomplete="name" required>
                 </div>
-                <div class="mb-2">
-                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">2. WhatsApp de Contacto *</label>
-                    <input type="tel" id="swal-cliente-telefono" class="form-control form-control-sm" placeholder="Ej: 264 555-1234" autocomplete="tel">
+                <div class="mb-3 swal-field">
+                    <label class="form-label fw-bold text-uppercase swal-label" for="swal-cliente-telefono">2. WhatsApp de Contacto *</label>
+                    <input type="tel" id="swal-cliente-telefono" class="form-control" placeholder="Ej: 264 555-1234" autocomplete="tel" inputmode="tel" required>
                 </div>
-                <div class="mb-2">
-                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">3. Departamento (San Juan) *</label>
-                    <select id="swal-cliente-departamento" class="form-select form-select-sm">
+                <div class="mb-3 swal-field">
+                    <label class="form-label fw-bold text-uppercase swal-label" for="swal-cliente-departamento">3. Departamento (San Juan) *</label>
+                    <select id="swal-cliente-departamento" class="form-select" required>
                         <option value="">Selecciona tu departamento...</option>
                         ${departamentosSanJuan.map(d => `<option value="${d}">${d}</option>`).join('')}
                     </select>
                 </div>
-                <div class="mb-2">
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                        <label class="form-label small fw-bold text-uppercase mb-0" style="font-size: 0.68rem; letter-spacing: 0.5px;">4. Dirección Exacta (Calle, Nro, Barrio) *</label>
-                        <button type="button" id="btn-gps-ubicacion" class="btn btn-outline-dark btn-xs py-0 px-2 fw-normal" style="font-size: 0.68rem; border-radius: 12px;" title="Obtener mi posición GPS exacta para el cadete">
+                <div class="mb-3 swal-field">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-1 mb-1">
+                        <label class="form-label fw-bold text-uppercase mb-0 swal-label" for="swal-cliente-direccion">4. Dirección Exacta (Calle, Nro, Barrio) *</label>
+                        <button type="button" id="btn-gps-ubicacion" class="btn btn-outline-dark btn-xs py-0 px-2 fw-normal" style="font-size: 0.75rem; border-radius: 12px;" title="Obtener mi posición GPS exacta para el cadete">
                             <i class="fas fa-crosshairs text-danger me-1"></i> 📍 Compartir mi ubicación GPS actual
                         </button>
                     </div>
-                    <input type="text" id="swal-cliente-direccion" class="form-control form-control-sm" placeholder="Ej: Av. Libertador 1250 Oeste, Barrio Rivadavia">
-                    <div id="gps-status-feedback" class="small mt-1 text-success fw-semibold d-none" style="font-size: 0.72rem;"></div>
+                    <input type="text" id="swal-cliente-direccion" class="form-control" placeholder="Ej: Av. Libertador 1250 Oeste, Barrio Rivadavia" autocomplete="street-address" required>
+                    <div id="gps-status-feedback" class="small mt-1 text-success fw-semibold d-none" style="font-size: 0.75rem;"></div>
                 </div>
-                <div class="mb-2">
-                    <label class="form-label small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">5. Entrecalles y Referencias para el Cadete *</label>
-                    <input type="text" id="swal-cliente-referencias" class="form-control form-control-sm" placeholder="Ej: Entre Urquiza y Paula. Portón negro">
-                    <small class="text-muted" style="font-size:0.67rem;">Requerido para que el cadete ubique tu domicilio sin demoras.</small>
+                <div class="mb-2 swal-field">
+                    <label class="form-label fw-bold text-uppercase swal-label" for="swal-cliente-referencias">5. Entrecalles y Referencias para el Cadete</label>
+                    <input type="text" id="swal-cliente-referencias" class="form-control" placeholder="Opcional (ayuda al cadete a llegar más rápido)">
                 </div>
 
                 <!-- Resumen de Pedido Transparente -->
@@ -1569,12 +1566,20 @@ async function enviarPedidoWhatsApp() {
         showCancelButton: true,
         confirmButtonText: '<i class="fab fa-whatsapp me-1.5"></i> CONFIRMAR PEDIDO Y COORDINAR PAGO',
         cancelButtonText: 'Volver a la bolsa',
-        confirmButtonColor: '#121212',
+        confirmButtonColor: '#9E2A4B',
         cancelButtonColor: '#706E6B',
         didOpen: () => {
             const input = document.getElementById('swal-cliente-nombre');
             if (input) input.focus();
 
+            // Limpia el error de cada campo apenas la clienta lo corrige
+            ['swal-cliente-nombre', 'swal-cliente-telefono', 'swal-cliente-departamento', 'swal-cliente-direccion'].forEach(fid => {
+                const campo = document.getElementById(fid);
+                if (campo) {
+                    campo.addEventListener('input', () => limpiarCampoInvalido(campo));
+                    campo.addEventListener('change', () => limpiarCampoInvalido(campo));
+                }
+            });
             const btnGps = document.getElementById('btn-gps-ubicacion');
             const feedbackGps = document.getElementById('gps-status-feedback');
             const inputRef = document.getElementById('swal-cliente-referencias');
@@ -1638,29 +1643,41 @@ async function enviarPedidoWhatsApp() {
             const direccion = document.getElementById('swal-cliente-direccion')?.value.trim();
             const referencias = document.getElementById('swal-cliente-referencias')?.value.trim();
 
-            if (!nombre) {
-                Swal.showValidationMessage('¡Por favor ingresa tu nombre y apellido!');
-                return false;
-            }
+            // Validación inline simultánea: se marcan TODOS los campos con error a la vez
+            const campos = {
+                nombre: document.getElementById('swal-cliente-nombre'),
+                telefono: document.getElementById('swal-cliente-telefono'),
+                depto: document.getElementById('swal-cliente-departamento'),
+                direccion: document.getElementById('swal-cliente-direccion')
+            };
+            Object.values(campos).forEach(limpiarCampoInvalido);
+
+            const errores = [];
+            if (!nombre || nombre.length < 3) errores.push([campos.nombre, 'Ingresá tu nombre y apellido']);
             if (!telefono) {
-                Swal.showValidationMessage('¡Ingresa tu número de WhatsApp para contactarte!');
-                return false;
+                errores.push([campos.telefono, 'Ingresá tu número de WhatsApp para contactarte']);
+            } else if (!esTelefonoArgentinoValido(telefono)) {
+                errores.push([campos.telefono, 'Revisá el número (ej: 264 555-1234)']);
             }
-            if (!depto) {
-                Swal.showValidationMessage('¡Selecciona tu Departamento de San Juan!');
-                return false;
-            }
-            if (!direccion || direccion.length < 4) {
-                Swal.showValidationMessage('¡Ingresa tu calle y número o barrio exacto!');
-                return false;
-            }
-            if (!referencias || referencias.length < 3) {
-                Swal.showValidationMessage('¡Indica entrecalles o referencias para el cadete en moto!');
+            if (!depto) errores.push([campos.depto, 'Seleccioná tu departamento de San Juan']);
+            if (!direccion || direccion.length < 4) errores.push([campos.direccion, 'Ingresá calle y número o barrio']);
+
+            if (errores.length > 0) {
+                errores.forEach(([el, msg]) => marcarCampoInvalido(el, msg));
+                const primero = errores[0][0];
+                if (primero) {
+                    primero.scrollIntoView({ block: 'center', behavior: 'smooth' });
+                    primero.focus({ preventScroll: true });
+                }
+                Swal.showValidationMessage(errores.length === 1 ? 'Revisá el campo marcado' : `Revisá los ${errores.length} campos marcados`);
                 return false;
             }
 
             // Formato estructurado para backend y admin: [Departamento], [Dirección] (Entre: [Referencias])
-            const direccionCompleta = `${depto}, ${direccion} (Entre: ${referencias})`;
+            // Las referencias son opcionales: si están vacías se omite el sufijo (admin.js ya lo tolera)
+            const direccionCompleta = referencias
+                ? `${depto}, ${direccion} (Entre: ${referencias})`
+                : `${depto}, ${direccion}`;
             return {
                 nombre,
                 telefono,
@@ -1742,7 +1759,7 @@ async function enviarPedidoWhatsApp() {
         msgWa += `🛍️ Detalle:\n`;
         msgWa += `${itemsTexto}\n`;
         msgWa += `💵 Total Prendas: $${totalPrendasFormateado}\n`;
-        msgWa += `📍 Entrega en San Juan: ${formValues.depto}, ${formValues.direccionExacta} (Entre: ${formValues.referencias})\n`;
+        msgWa += `📍 Entrega en San Juan: ${formValues.depto}, ${formValues.direccionExacta}${formValues.referencias ? ` (Entre: ${formValues.referencias})` : ''}\n`;
         msgWa += `👤 Mi nombre: ${formValues.nombre}\n\n`;
         msgWa += `¿Me confirman disponibilidad y el valor del envío en moto para coordinar? ¡Muchas gracias!`;
 
