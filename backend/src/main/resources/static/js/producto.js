@@ -255,8 +255,8 @@ function renderizarPaginaProducto(p) {
                             <div class="pdp-trust-item">
                                 <div class="pdp-trust-icon"><i class="fas fa-gem"></i></div>
                                 <div class="pdp-trust-content">
-                                    <span class="pdp-trust-title">Garantía de calce y calidad</span>
-                                    <span class="pdp-trust-desc">Encajes seleccionados, satén premium y calce anatómico.</span>
+                                    <span class="pdp-trust-title">Garantía de calidad & asesoría personalizada</span>
+                                    <span class="pdp-trust-desc">Te asesoramos por WhatsApp antes de tu compra para que elijas tu talle exacto sin dudas.</span>
                                 </div>
                             </div>
                         </div>
@@ -290,12 +290,13 @@ function renderizarPaginaProducto(p) {
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHigiene" aria-expanded="false">
-                                        <i class="fas fa-shield-halved me-2 accordion-icon"></i> Políticas de Higiene & Cambios
+                                        <i class="fas fa-shield-halved me-2 accordion-icon"></i> 🛡️ POLÍTICA SANITARIA: PRENDAS SIN CAMBIO
                                     </button>
                                 </h2>
                                 <div id="collapseHigiene" class="accordion-collapse collapse" data-bs-parent="#accordionDetalles">
                                     <div class="accordion-body">
-                                        Por normativas de salud e higiene sanitaria, <strong>las bombachas, colaless y boxers no admiten cambios</strong>. Los conjuntos pueden cambiarse dentro de los 7 días de recibido exclusivamente si conservan etiquetas intactas, protectores y empaque original sin indicios de uso.
+                                        <p class="mb-2">Por estrictas normas de higiene sanitaria y protección de la salud de nuestras clientas, las prendas de lencería y ropa interior son de uso estrictamente íntimo y personal, por lo que <strong>NO TIENEN CAMBIO NI DEVOLUCIÓN</strong> una vez entregadas.</p>
+                                        <p class="mb-0">Para garantizar tu calce ideal y evitar errores, contas con asesoría personalizada por WhatsApp antes de realizar tu compra para resolver cualquier duda sobre talles, medidas y modelos.</p>
                                     </div>
                                 </div>
                             </div>
