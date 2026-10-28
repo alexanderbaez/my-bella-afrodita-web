@@ -186,6 +186,29 @@ button:not(:disabled):not(.btn-close):not(.swal2-close):active,
     overflow-y: visible !important;
 }
 
+/* Visor principal sin recortes ni distorsión */
+.product-main-image-wrap,
+.product-main-viewport {
+    background-color: var(--bg-warm-subtle, #FAF8F5) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 480px !important;
+    max-height: 480px !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+}
+
+.product-zoom-img,
+.product-main-image-wrap img,
+.product-main-viewport img {
+    object-fit: contain !important;
+    object-position: center center !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 480px !important;
+}
+
 .btn-add-cart-primary {
     background-color: var(--color-secondary);
     border-color: var(--color-secondary);
