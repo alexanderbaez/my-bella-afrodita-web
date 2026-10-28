@@ -264,6 +264,17 @@ button:not(:disabled):not(.btn-close):not(.swal2-close):active,
 .thumb-item.active,
 .product-thumb-item.active { border-color: var(--color-secondary) !important; }
 
+.btn-card-view-item {
+    background-color: var(--color-secondary) !important;
+    border-radius: 8px;
+    transition: var(--transition-editorial);
+}
+.btn-card-view-item:hover {
+    background-color: var(--color-secondary-hover) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(158, 42, 75, 0.3);
+}
+
 /* ---------- 6. SKELETON SHIMMER ---------- */
 @keyframes shimmer {
     from { background-position: 200% 0; }

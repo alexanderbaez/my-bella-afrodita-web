@@ -887,7 +887,7 @@ async function cargarDestacadosInicio() {
                 const fotoSecundaria = fotos.length > 1 ? fotos[1] : null;
 
                 const wholesaleHtml = p.precioMayorista 
-                    ? `<span class="price-wholesale-subtle">x3 $${Number(p.precioMayorista).toLocaleString('es-AR')}</span>`
+                    ? `<span class="wholesale-pill-badge" title="Llevando 3 o más prendas">x3 $${Number(p.precioMayorista).toLocaleString('es-AR')} c/u</span>`
                     : '';
 
                 // Extraer talles disponibles
@@ -904,11 +904,11 @@ async function cargarDestacadosInicio() {
                             <img src="${fotoPrincipal}" alt="${p.nombre}" class="img-primary" width="600" height="800" loading="lazy" decoding="async" onload="imgLoaded(this)" onerror="imgError(this)">
                             ${fotoSecundaria ? `<img src="${fotoSecundaria}" alt="${p.nombre} dorsal" class="img-secondary" width="600" height="800" loading="lazy" decoding="async" onerror="imgError(this)">` : ''}
                         </div>
-                        <div class="product-info-wrap d-flex flex-column flex-grow-1 p-3">
+                        <div class="product-info-wrap d-flex flex-column flex-grow-1 p-2.5 p-md-3">
                             <div class="product-category-label">${p.categoria || 'Colección'}</div>
                             <h3 class="product-title-luxury mb-1" title="${p.nombre}">${p.nombre}</h3>
                             <div class="product-talles-available">
-                                <i class="fas fa-ruler-combined me-1 text-muted"></i> Talles: <strong>${tallesDisponibles || 'Disponibles'}</strong>
+                                <span class="talles-label">Talles:</span> <strong class="talles-values">${tallesDisponibles || 'Disponibles'}</strong>
                             </div>
                             <div class="product-pricing-box mt-auto pt-2">
                                 <span class="price-retail-highlight">$${Number(p.precioMinorista).toLocaleString('es-AR')}</span>
@@ -1938,7 +1938,7 @@ function renderizarResenasCards(lista) {
                             <div class="author-location"><i class="fas fa-map-marker-alt me-1" style="color: var(--gold-dark, #C5A059);"></i> ${depto}</div>
                         </div>
                         <span class="badge-verified-purchase">
-                            <i class="fas fa-check-circle"></i> Verificada
+                            <i class="fas fa-check-circle"></i> Compra verificada en San Juan
                         </span>
                     </div>
                 </div>
