@@ -898,11 +898,16 @@ async function cargarDestacadosInicio() {
                 const divCol = document.createElement('div');
                 divCol.className = 'col-6 col-md-3 d-flex align-items-stretch product-item-card';
                 divCol.innerHTML = `
-                    <div class="product-card-boutique w-100 d-flex flex-column" onclick="navegarAProducto('${p.id}')" title="Ver ${p.nombre}">
+                    <a href="./producto.html?id=${p.id}" class="product-card-boutique w-100 d-flex flex-column text-decoration-none" title="Ver ${p.nombre}">
                         <div class="product-media-container position-relative is-loading">
                             <span class="badge-luxury-tag">Favorito</span>
                             <img src="${fotoPrincipal}" alt="${p.nombre}" class="img-primary" width="600" height="800" loading="lazy" decoding="async" onload="imgLoaded(this)" onerror="imgError(this)">
                             ${fotoSecundaria ? `<img src="${fotoSecundaria}" alt="${p.nombre} dorsal" class="img-secondary" width="600" height="800" loading="lazy" decoding="async" onerror="imgError(this)">` : ''}
+                            
+                            <!-- Micro-botón circular flotante estilo boutique -->
+                            <span class="btn-product-float-action" aria-label="Ver detalle">
+                                <i class="fas fa-eye"></i>
+                            </span>
                         </div>
                         <div class="product-info-wrap d-flex flex-column flex-grow-1 p-2.5 p-md-3">
                             <div class="product-category-label">${p.categoria || 'Colección'}</div>
@@ -910,15 +915,12 @@ async function cargarDestacadosInicio() {
                             <div class="product-talles-available">
                                 <span class="talles-label">Talles:</span> <strong class="talles-values">${tallesDisponibles || 'Disponibles'}</strong>
                             </div>
-                            <div class="product-pricing-box mt-auto pt-2">
+                            <div class="product-pricing-box mt-auto pt-1">
                                 <span class="price-retail-highlight">$${Number(p.precioMinorista).toLocaleString('es-AR')}</span>
                                 ${wholesaleHtml}
                             </div>
-                            <a href="./producto.html?id=${p.id}" class="btn-card-view-item" onclick="event.stopPropagation();">
-                                Ver Prenda <i class="fas fa-arrow-right ms-1"></i>
-                            </a>
                         </div>
-                    </div>`;
+                    </a>`;
                 contenedor.appendChild(divCol);
             });
         } else {
@@ -1932,10 +1934,12 @@ function renderizarResenasCards(lista) {
                         </p>
                     </div>
                     <div class="testimonial-author-wrap">
-                        <div class="author-avatar-badge">${iniciales}</div>
-                        <div>
-                            <div class="author-name">${resena.nombreCliente}</div>
-                            <div class="author-location"><i class="fas fa-map-marker-alt me-1" style="color: var(--gold-dark, #C5A059);"></i> ${depto}</div>
+                        <div class="author-identity-group d-flex align-items-center gap-2">
+                            <div class="author-avatar-badge">${iniciales}</div>
+                            <div class="author-info-text">
+                                <div class="author-name">${resena.nombreCliente}</div>
+                                <div class="author-location"><i class="fas fa-map-marker-alt me-1" style="color: var(--gold-dark, #C5A059);"></i> ${depto}</div>
+                            </div>
                         </div>
                         <span class="badge-verified-purchase">
                             <i class="fas fa-check-circle"></i> Compra verificada en San Juan
