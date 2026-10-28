@@ -72,3 +72,33 @@ window.limpiarCampoInvalido = function (el) {
     const fb = parent && parent.querySelector('.field-error[data-for="' + el.id + '"]');
     if (fb) fb.remove();
 };
+
+// --- Blindaje Dinámico del Botón Flotante de WhatsApp ---
+const WA_OFICIAL_URL = "https://wa.me/5492646121771?text=Hola!%20Quisiera%20hacer%20una%20consulta%20sobre%20lencer%C3%ADa%20en%20Mi%20Bella%20Afrodita%20%E2%9C%A8";
+window.WA_OFICIAL_URL = WA_OFICIAL_URL;
+
+function forzarEnlaceWhatsAppOficial() {
+    const botones = document.querySelectorAll('.whatsapp-flotante, a[href*="5492646121771"]');
+    botones.forEach(btn => {
+        if (btn.classList.contains('whatsapp-flotante') || (btn.href && btn.href.toLowerCase().includes('boutique'))) {
+            btn.href = WA_OFICIAL_URL;
+            btn.setAttribute('href', WA_OFICIAL_URL);
+        }
+    });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', forzarEnlaceWhatsAppOficial);
+} else {
+    forzarEnlaceWhatsAppOficial();
+}
+
+// Interceptor en captura para asegurar que cualquier click en el botón flotante use la URL canónica
+document.addEventListener('click', function(e) {
+    const btn = e.target && e.target.closest && e.target.closest('.whatsapp-flotante');
+    if (btn) {
+        btn.href = WA_OFICIAL_URL;
+        btn.setAttribute('href', WA_OFICIAL_URL);
+    }
+}, true);
+

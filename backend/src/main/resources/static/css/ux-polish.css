@@ -117,7 +117,15 @@ html, body { max-width: 100%; }
 /* Ficha de producto: selector de cantidad y chips de talle */
 .qty-selector-compact { width: 112px; height: 48px; }
 .qty-btn { width: 34px; min-width: 34px; height: 100%; }
-.btn-size-chip { min-width: 44px; height: 44px; }
+.btn-size-chip,
+.size-chip,
+.btn-size,
+.btn-talle-detail {
+    min-width: 44px !important;
+    width: auto !important;
+    height: 44px !important;
+    padding: 0 14px !important;
+}
 .qty-step-btn { width: var(--tap); min-width: var(--tap); }
 .btn-talle-select { min-width: var(--tap); min-height: var(--tap); }
 
@@ -224,10 +232,33 @@ button:not(:disabled):not(.btn-close):not(.swal2-close):active,
     transform: translateY(-1px);
 }
 
-.btn-size-chip {
-    border-radius: 8px;
-    width: 44px;
-    height: 44px;
+.size-chips-wrap,
+.product-size-chips,
+.talles-selector-wrap,
+.sizes-grid {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    align-items: center !important;
+}
+
+.btn-size-chip,
+.size-chip,
+.btn-size,
+.btn-talle-detail {
+    min-width: 44px !important;
+    width: auto !important;
+    height: 44px !important;
+    padding: 0 14px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    white-space: nowrap !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    flex-shrink: 0 !important;
+    box-sizing: border-box !important;
     border-color: var(--border-control);
     font-family: var(--font-sans);
     color: var(--text-charcoal);
